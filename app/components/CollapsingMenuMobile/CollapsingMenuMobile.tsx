@@ -1,5 +1,7 @@
 import React from "react";
 import { Search, X } from "lucide-react";
+import { CollapsingMenuMobileLink, MAIN_LINKS } from "../NavbarLink/NavbarLink";
+import styles from './CollapsingMenuMobile.module.scss';
 
 export default function CollapsingMenuMobile({ open, onClose }) {
   return (
@@ -13,28 +15,35 @@ export default function CollapsingMenuMobile({ open, onClose }) {
         aria-hidden="true"
       />
 
-      {/* Mobile Menu Sliding from Bottom */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Mobile Navigation"
-        className={`md:hidden fixed inset-x-0 bg-black bg-opacity-95 transition-transform duration-300 ease-in-out z-50 ${
+        className={`md:hidden fixed inset-x-0 bg-[#DAE684] transition-transform duration-300 ease-in-out z-50 overflow-y-auto rounded-tl-3xl ${
           open ? "translate-y-0" : "translate-y-full"
         }`}
-        style={{ bottom: 0, top: "10%" }}
+        style={{ 
+          bottom: 0, 
+          top: "10%",
+          backgroundImage: `url("./svg/flipped-m-collapsing-mobile.svg")`,
+          // backgroundBlendMode: 'overlay',
+          backgroundSize: '100%',
+          backgroundRepeat: 'no-repeat',
+          // backgroundPosition: 'left'
+        }}
       >
-        <div className="flex flex-col justify-between h-full py-8">
-          {/* Navigation Links */}
-          <div className="flex flex-col items-center gap-8 text-2xl">
-            <a href="#" className="text-white hover:text-opacity-80 transition">Home</a>
-            <a href="#" className="text-white hover:text-opacity-80 transition">Services</a>
-            <a href="#" className="text-white hover:text-opacity-80 transition">Portfolio</a>
-            <a href="#" className="text-white hover:text-opacity-80 transition">Blog</a>
-            <a href="#" className="text-white hover:text-opacity-80 transition">About</a>
-            <a href="#" className="text-white hover:text-opacity-80 transition">Contact</a>
-
-            <div className="relative w-64 mt-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70 w-5 h-5" />
+        <div className="flex flex-col min-h-full py-8">
+          {/* Navigation Links - Left Aligned */}
+          <div className="flex flex-col items-start gap-8 text-2xl flex-1 justify-center">
+            {MAIN_LINKS.map(link => (
+              <CollapsingMenuMobileLink key={link.href} href={link.href}>
+                {link.label}
+              </CollapsingMenuMobileLink>
+            ))}
+            
+            {/* Search Bar - Left Aligned */}
+            <div className="relative w-full px-8 mt-4">
+              <Search className="absolute left-11 top-1/2 -translate-y-1/2 text-white/70 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search..."
@@ -42,8 +51,8 @@ export default function CollapsingMenuMobile({ open, onClose }) {
               />
             </div>
 
-            {/* Close Button */}
-            <div className="flex justify-center">
+            {/* Close Button - Left Aligned */}
+            <div className="w-full flex justify-center mt-4">
               <button
                 onClick={onClose}
                 className="text-white bg-white/20 p-3 rounded-full hover:bg-opacity-30 transition"

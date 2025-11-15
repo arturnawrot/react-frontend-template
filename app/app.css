@@ -1,5 +1,52 @@
 @import "tailwindcss";
 
+@font-face {
+    font-family: "Copernicus New Cond Trial";
+    src: url("./fonts/copernicus-font-family/CopernicusNewCondTrial-070.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "GT America Condensed";
+    src: url("./fonts/gt-america-trial/GT-America-Condensed-Ultra-Light-Trial.woff2") format("woff2");
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "GT America Condensed";
+    src: url("./fonts/gt-america-trial/GT-America-Condensed-Thin-Trial.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "GT America Condensed";
+    src: url("./fonts/gt-america-trial/GT-America-Condensed-Regular-Trial.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "GT America Condensed";
+    src: url("./fonts/gt-america-trial/GT-America-Condensed-Medium-Trial.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: "GT America Condensed", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+}
+
 #home-landing-hero-background {
     color: #1C2F2980;
 }
+

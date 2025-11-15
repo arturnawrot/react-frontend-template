@@ -1,0 +1,31 @@
+:root {
+    --hero-font-size: 64px;
+    --hero-subheading-font-size: 20px;
+}
+  
+@media (min-width: 768px) {
+    :root {
+        --hero-font-size: 128px;
+        --hero-subheading-font-size: 24px;
+    }
+}
+
+.heroHeading {
+    font-family: "Copernicus New Cond Trial";
+    font-weight: 300;
+    font-size: var(--hero-font-size);
+    line-height: var(--hero-font-size);
+    color: #FFFFFF;
+}
+
+.unbreakable {
+    white-space: nowrap;
+}
+
+.heroSubheading {
+    font-family: "GT America Condensed", sans-serif;
+    font-weight: 500;
+    font-size: var(--hero-subheading-font-size);
+    line-height: var(--hero-subheading-font-size);
+    color: #FAF9F7;
+}

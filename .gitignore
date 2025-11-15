@@ -6,3 +6,6 @@
 /.react-router/
 /build/
 package-lock.json
+.Identifier
+Zone.Identifier
+*.Identifier
