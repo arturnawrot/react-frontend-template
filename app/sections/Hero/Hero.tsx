@@ -15,6 +15,7 @@ export default function Hero() {
           w-full 
           bg-cover bg-center bg-no-repeat
           md:h-[700px]
+          md:min-h-[700px]
         "
         style={{ backgroundImage: "url('/img/hero_section_background.png')" }}
       >
@@ -70,15 +71,6 @@ export default function Hero() {
         </div>
         
         <CollapsingMenuMobile open={menuOpen} onClose={() => setMenuOpen(false)} />
-      </div>
-      
-      <div className="bg-white py-16 px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Next Section</h2>
-          <p className="text-gray-600">
-            This is content below the hero section with a white background.
-          </p>
-        </div>
       </div>
     </>
   );

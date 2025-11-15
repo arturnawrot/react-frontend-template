@@ -25,7 +25,7 @@ export default function CollapsingMenuMobile({ open, onClose }) {
         style={{ 
           bottom: 0, 
           top: "10%",
-          backgroundImage: `url("./svg/flipped-m-collapsing-mobile.svg")`,
+          backgroundImage: `url("/svg/flipped-m-collapsing-mobile.svg")`,
           // backgroundBlendMode: 'overlay',
           backgroundSize: '100%',
           backgroundRepeat: 'no-repeat',
