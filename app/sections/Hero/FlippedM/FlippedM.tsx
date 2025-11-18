@@ -1,54 +1,41 @@
 import styles from "./FlippedM.module.scss";
 
-export default function FlippedM() {
-    const section = 
-        {
-          heading: "A Process Built for Business Growth",
-          subheading: "We'll make sure you never have to guess when navigating the complexities of leasing property.",
-          bulletPoints: [
-            "Detail your full list of needs so you're ready to search strategically",
-            "Comb through available options armed with detailed analytics",
-            "Tour potential sites and check them against your criteria",
-            "Negotiate a lease that aligns with your business goals",
-            "Move in to your new site and let us handle the logistics"
-          ],
-          image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80",
-          svgBackground: "/svg/flipped-m.svg"
-        }
-      ;
-    
-      return (
-        <div className="bg-white">
-          
-            <ProcessSection
-              heading={section.heading}
-              subheading={section.subheading}
-              bulletPoints={section.bulletPoints}
-              image={section.image}
-              svgPath={section.svgBackground}
-            />
-          
-          
-          {/* CTA Button */}
-          <div className="py-12 px-6 text-center">
-            <button className="bg-lime-400 hover:bg-lime-500 text-gray-900 font-medium px-8 py-3 rounded-full transition-colors">
-              See How it Works
-            </button>
-          </div>
-        </div>
-      );
-}
+// The BulletPoint component is perfect as is. No changes needed here.
+const BulletPoint = ({ title, description, linkText, linkHref, isLast = false }) => {
+  return (
+    <div className="flex">
+      {/* Left column for the dot and the connecting line */}
+      <div className="flex flex-col items-center mr-6">
+        {/* The Dot */}
+        <div className="flex-shrink-0 w-3 h-3 bg-gray-400 rounded-full"></div>
+        {/* The Line: uses flex-grow to fill all available vertical space */}
+        {!isLast && <div className="w-px flex-grow bg-gray-300"></div>}
+      </div>
 
+      {/* Right column for the text content */}
+      <div className={!isLast ? 'pb-10' : ''}>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2" style={{ transform: 'translateY(-4px)' }}>
+          {title}
+        </h2>
+        <p className="text-gray-600 mb-4">{description}</p>
+        <a href={linkHref} className="text-gray-800 font-semibold hover:text-gray-900">
+          {linkText} &rarr;
+        </a>
+      </div>
+    </div>
+  );
+};
 
+// The ProcessSection component with the fix applied.
 const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath }) => {
     return (
-      <div className="relative w-full min-h-screen flex justify-center py-12 md:py-20">
-        {/* SVG Background - original size, top-left corner at right column start */}
-        <div className="absolute inset-0 md:left-1/2 pointer-events-none overflow-visible">
+      <div className="relative w-full flex flex-col py-12 md:py-20 min-h-[1600px] max-w-[1400px] mx-auto">
+        {/* SVG Background */}
+        <div className="absolute inset-0 md:left-1/2 pointer-events-none">
           <img 
             src={svgPath} 
             alt=""
-            className="absolute top-0 left-0 w-auto h-auto"
+            className="absolute top-0 left-[-15%] w-auto h-auto z-1 overflow-hidden"
             style={{ 
               maxWidth: 'none',
               maxHeight: 'none'
@@ -56,50 +43,47 @@ const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath }) =
           />
         </div>
         
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Left Column - Content */}
-            <div className="space-y-6">
-              {/* Heading & Subheading */}
-              <div className="space-y-3">
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-light leading-tight">
-                  {heading}
-                </h2>
-                {subheading && (
-                  <p className="text-base md:text-lg text-gray-700">
-                    {subheading}
-                  </p>
-                )}
-              </div>
-              
-              {/* Bullet Points */}
-              {bulletPoints && bulletPoints.length > 0 && (
-                <ul className="space-y-3 mt-6">
-                  {bulletPoints.map((point, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="w-2 h-2 rounded-full bg-lime-400 mt-2 flex-shrink-0" />
-                      <span className="text-gray-700">{point}</span>                      <span className="text-gray-700">{point}</span>
-                      <span className="text-gray-700">{point}</span>
-                      <span className="text-gray-700">{point}</span>
-                      <span className="text-gray-700">{point}</span>
-                      <span className="text-gray-700">{point}</span>
-                      <span className="text-gray-700">{point}</span>
-                      <span className="text-gray-700">{point}</span>
-                      <span className="text-gray-700">{point}</span>
+        {/* Heading & Subheading */}
+        <div className="relative z-40">
+          <h2 className={`${styles.heading} text-4xl md:text-5xl lg:text-6xl font-light leading-tight`}>
+            {heading}
+          </h2>
+          {subheading && (
+            <p className={`${styles.subheading} text-base md:text-lg text-gray-700 mt-4 max-w-[400px]`}>
+              {subheading}
+            </p>
+          )}
+        </div>
 
-                    </li>
-                  ))}
-                </ul>
-              )}
+        {/* Content Grid */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-6 mt-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+            
+            {/* Left Column - Content */}
+            {/* 
+              FIX: Removed the "space-y-6" class from this div. 
+              The padding inside the BulletPoint component now handles the spacing correctly.
+            */}
+            <div>
+              {bulletPoints.map((service, index) => (
+                <BulletPoint
+                  key={index}
+                  title={service.title}
+                  description={service.description}
+                  linkText={service.linkText}
+                  linkHref={service.linkHref}
+                  isLast={index === bulletPoints.length - 1}
+                />
+              ))}
             </div>
             
-            {/* Right Column - Image (hidden on mobile) */}
+            {/* Right Column - Image */}
             <div className="hidden md:flex items-center justify-center">
               <div className="relative w-full max-w-lg">
                 <img 
                   src={image} 
-                  alt={heading}
-                  className="w-full h-auto rounded-lg shadow-2xl"
+                  alt="" // Alt text should ideally describe the image
+                  className="min-w-[720px] h-auto rounded-lg shadow-2xl"
                 />
               </div>
             </div>
@@ -108,3 +92,49 @@ const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath }) =
       </div>
     );
   };
+
+// Main FlippedM component. No changes needed here.
+export default function FlippedM() {
+    const Heading = () => (
+      <span>Built on more than <br/> transactions.</span>
+    );
+
+    const section = {
+      heading: <Heading />,
+      subheading: "We advise with the same care we'd want for our own portfolio. Whether you're investing, expanding, or exiting - we're built for your next move.",
+      bulletPoints: [
+        {
+          title: 'Acquisition support for owner-operators and investors.',
+          description: 'Whether you’re expanding your business or building out your portfolio, we offer the guidance and expertise to transform real estate into lasting prosperity.',
+          linkText: 'See All Buying',
+          linkHref: '#',
+        },
+        {
+          title: 'Space strategy and tenant representation.',
+          description: 'Our holistic approach to real estate means we equip you for every facet of ownership and investment - from long-term thinking to immediate solutions.',
+          linkText: 'See All Leasing',
+          linkHref: '#',
+        },
+        {
+          title: 'Disposition and portfolio exit planning.',
+          description: 'When it’s time to make a strategic exit we have the experience and track-record to guide you towards the best possible returns and tax-friendly options.',
+          linkText: 'See All Selling',
+          linkHref: '#',
+        }
+      ],
+      image: "/img/amazon_fc.png",
+      svgBackground: "/svg/flipped-m.svg"
+    };
+    
+    return (
+      <div className={`${styles.containerBackground} overflow-hidden`}>
+        <ProcessSection
+          heading={section.heading}
+          subheading={section.subheading}
+          bulletPoints={section.bulletPoints}
+          image={section.image}
+          svgPath={section.svgBackground}
+        />
+      </div>
+    );
+}
