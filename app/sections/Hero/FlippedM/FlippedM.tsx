@@ -136,45 +136,45 @@ const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath }) =
   );
 };
 
-export default function FlippedM() {
-  const Heading = () => (
-    <span>
-      Built on more than <br />
-      transactions.
-    </span>
-  );
+const Heading = () => (
+  <span>
+    Built on more than <br />
+    transactions.
+  </span>
+);
 
-  const section = {
-    heading: <Heading />,
-    subheading:
-      "We advise with the same care we'd want for our own portfolio. Whether you're investing, expanding, or exiting - we're built for your next move.",
-    bulletPoints: [
-      {
-        title: "Acquisition support for owner-operators and investors.",
-        description:
-          "Whether you’re expanding your business or building out your portfolio, we offer the guidance and expertise to transform real estate into lasting prosperity.",
-        linkText: "See All Buying",
-        linkHref: "#",
-      },
-      {
-        title: "Space strategy and tenant representation.",
-        description:
-          "Our holistic approach to real estate means we equip you for every facet of ownership and investment - from long-term thinking to immediate solutions.",
-        linkText: "See All Leasing",
-        linkHref: "#",
-      },
-      {
-        title: "Disposition and portfolio exit planning.",
-        description:
-          "When it’s time to make a strategic exit we have the experience and track-record to guide you towards the best possible returns and tax-friendly options.",
-        linkText: "See All Selling",
-        linkHref: "#",
-      },
-    ],
-    image: "/img/amazon_fc.png",
-    svgBackground: "/svg/flipped-m.svg",
-  };
+const sampleSection = {
+  heading: <Heading />,
+  subheading:
+    "We advise with the same care we'd want for our own portfolio. Whether you're investing, expanding, or exiting - we're built for your next move.",
+  bulletPoints: [
+    {
+      title: "Acquisition support for owner-operators and investors.",
+      description:
+        "Whether you’re expanding your business or building out your portfolio, we offer the guidance and expertise to transform real estate into lasting prosperity.",
+      linkText: "See All Buying",
+      linkHref: "#",
+    },
+    {
+      title: "Space strategy and tenant representation.",
+      description:
+        "Our holistic approach to real estate means we equip you for every facet of ownership and investment - from long-term thinking to immediate solutions.",
+      linkText: "See All Leasing",
+      linkHref: "#",
+    },
+    {
+      title: "Disposition and portfolio exit planning.",
+      description:
+        "When it’s time to make a strategic exit we have the experience and track-record to guide you towards the best possible returns and tax-friendly options.",
+      linkText: "See All Selling",
+      linkHref: "#",
+    },
+  ],
+  image: "/img/amazon_fc.png",
+  svgBackground: "/svg/flipped-m.svg",
+};
 
+export default function FlippedM({section = sampleSection}) {
   return (
     <div className={styles.containerBackground + " overflow-hidden"}>
       <ProcessSection

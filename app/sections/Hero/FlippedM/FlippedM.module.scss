@@ -1,14 +1,14 @@
 :root {
-    --flippedMHeadingSize: 48px;
+    --flippedMHeadingSize: var(--display4);
     --bulletPointHeadingSize: 24px;
-  }
+}
     
-  @media (min-width: 768px) {
+@media (min-width: 768px) {
     :root {
-      --flippedMHeadingSize: 64px;
-      --bulletPointHeadingSize: 32px;
+        --flippedMHeadingSize: var(--display2);
+        --bulletPointHeadingSize: var(--headline2);
     }
-  }
+}
   
   .heading,
   .subheading,
@@ -55,7 +55,7 @@
   .bulletPointLink {
     font-family: "GT America Condensed";
     font-weight: 400;
-    font-size: 16px;
+    font-size: var(--l);
     letter-spacing: 0%;
     line-height: 100%;
   }

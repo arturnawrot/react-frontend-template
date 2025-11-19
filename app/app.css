@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+:root {
+    --display2: 64px;
+    --display4: 48px;
+    --headline2: 32px;
+    --xxl: 20px;
+    --xl: 18px;
+    --l: 16px;
+}
+
 @font-face {
     font-family: "Copernicus New Cond Trial";
     src: url("/fonts/copernicus-font-family/CopernicusNewCondTrial-070.woff2") format("woff2");

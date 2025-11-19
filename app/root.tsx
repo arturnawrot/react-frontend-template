@@ -5,8 +5,10 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation
 } from "react-router";
 
+import { useEffect } from "react";
 import type { Route } from "./+types/root";
 import "./app.css";
 
@@ -29,7 +31,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <>
+      <ScrollOnReload />
+      <Outlet />
+    </>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
@@ -59,4 +66,30 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       )}
     </main>
   );
+}
+
+export function ScrollOnReload() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const KEY = `scroll:${location.pathname}`;
+
+    // Restore scroll only on first load
+    const saved = sessionStorage.getItem(KEY);
+    if (saved !== null) {
+      const y = parseInt(saved, 10);
+      if (!Number.isNaN(y)) {
+        window.scrollTo(0, y);
+      }
+    }
+
+    const handleBeforeUnload = () => {
+      sessionStorage.setItem(KEY, window.scrollY.toString());
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [location.pathname]);
+
+  return null;
 }
