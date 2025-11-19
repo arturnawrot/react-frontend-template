@@ -7,6 +7,9 @@
     --xxl: 20px;
     --xl: 18px;
     --l: 16px;
+
+    --strong-green: #1C2F29;
+    --sale-green: #DAE684;
 }
 
 @font-face {
@@ -47,6 +50,40 @@
     font-weight: 500;
     font-style: normal;
     font-display: swap;
+}
+
+@font-face {
+    font-family: "GT America Condensed";
+    src: url("/fonts/gt-america-trial/GT-America-Condensed-Bold-Trial.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+.sale-button {
+    background-color: var(--sale-green);
+    border-color: var(--sale-green);
+    border-width: 1px;
+    border-radius: 40px;
+    color: var(--strong-green);
+    font-family: "GT America Condensed";
+    font-weight: 700;
+    padding: 16px 24px;
+}
+
+.display2 {
+    font-family: "Copernicus New Cond Trial";
+    font-weight: 300;
+    font-size: var(--display2);
+    line-height: var(--display2);
+    color: var(--strong-green);
+}
+
+.description {
+    font-family: "GT America Condensed";
+    font-weight: 400;
+    font-size: var(--xxl);
+    line-height: 30px;
 }
 
 body {

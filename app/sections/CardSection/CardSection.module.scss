@@ -1,0 +1,21 @@
+.cardColumnIcon, .cardColumnTitle, .cardColumnDescription {
+    color: var(--strong-green);
+}
+
+.cardColumnIcon {
+    font-size: 54px;
+}
+
+.cardColumnTitle {
+    font-family: "GT America Condensed";
+    font-weight: 500;
+    font-size: var(--headline2);
+    line-height: 32px;
+}
+
+.cardColumnDescription {
+    font-family: "GT America Condensed";
+    font-weight: 400;
+    font-size: var(--xl);
+    line-height: 27px;
+}

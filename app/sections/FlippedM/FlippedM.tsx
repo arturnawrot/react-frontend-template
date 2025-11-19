@@ -81,7 +81,7 @@ const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath }) =
         <img
           src={svgPath}
           alt=""
-          className="absolute top-0 left-[-15%] w-auto h-auto z-1 overflow-hidden"
+          className="absolute top-0 left-[-15%] w-auto h-auto z-0 overflow-hidden"
           style={{ maxWidth: "none", maxHeight: "none" }}
         />
       </div>
@@ -89,7 +89,7 @@ const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath }) =
       {/* Heading & Subheading */}
       <div className="relative z-40 mx-auto md:mx-0 max-w-md">
         <h2
-          className={`${styles.heading} text-4xl md:text-5xl lg:text-6xl font-light leading-tight`}
+          className={`display2 text-4xl md:text-5xl lg:text-6xl font-light leading-tight`}
         >
           {heading}
         </h2>
