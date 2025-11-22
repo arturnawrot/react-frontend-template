@@ -7,9 +7,10 @@
     --xxl: 20px;
     --xl: 18px;
     --l: 16px;
+    --xs: 8px;
 
     --strong-green: #1C2F29;
-    --sale-green: #DAE684;
+    --sale-green: #DAE684; 
 }
 
 @font-face {
@@ -84,6 +85,10 @@
     font-weight: 400;
     font-size: var(--xxl);
     line-height: 30px;
+}
+
+.tan-linear-background {
+    background: linear-gradient(360deg, rgba(210, 167, 129, 0.1) 40%, rgba(217, 161, 113, 0) 100%);
 }
 
 body {
