@@ -5,6 +5,8 @@ import FlippedM from "~/sections/FlippedM/FlippedM";
 import CardSection from "~/sections/CardSection/CardSection";
 import TestimonialCarousel from "~/sections/TestimonialCarousel/TestimonialCarousel";
 import AgentCarousel from "~/sections/AgentCarousel/AgentCarousel";
+import Footer from "~/sections/Footer/Footer";
+import MapSearch from "~/sections/MapSearch/MapSearch";
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
@@ -25,9 +27,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
 
         <TestimonialCarousel/>
-        <AgentCarousel></AgentCarousel>
-
+        <MapSearch/>
+        <AgentCarousel/>
       </div>
+
+      <Footer/>
     </>
   );
 }
