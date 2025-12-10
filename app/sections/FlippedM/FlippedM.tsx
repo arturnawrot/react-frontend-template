@@ -87,7 +87,7 @@ const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath }) =
       </div>
 
       {/* Heading & Subheading */}
-      <div className="relative z-40 mx-auto md:mx-0 max-w-md">
+      <div className="relative z-40 mx-auto md:mx-0 max-w-md px-5 md:px-0">
         <h2
           className={`display2 text-4xl md:text-5xl lg:text-6xl font-light leading-tight`}
         >

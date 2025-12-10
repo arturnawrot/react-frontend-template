@@ -19,7 +19,7 @@ const MapSearch = () => {
   });
 
   return (
-    <div className="bg-[#FDFBF7] p-4 md:p-8 font-sans text-stone-800">
+    <div className="p-4 md:p-8 font-sans text-stone-800">
       
       {/* --- ROW 1: Full Width Header & Subheader --- */}
       <div className="max-w-[1400px] mx-auto mb-10">

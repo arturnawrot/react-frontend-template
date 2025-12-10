@@ -25,9 +25,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         <div className="mt-80">
 
         </div>
-
-        <TestimonialCarousel/>
+        
         <MapSearch/>
+        <TestimonialCarousel/>
         <AgentCarousel/>
       </div>
 
