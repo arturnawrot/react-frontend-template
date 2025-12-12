@@ -21,7 +21,7 @@ const MapSearch = () => {
   });
 
   return (
-    <div className="p-4 md:p-8 font-sans text-stone-800 bg-stone-50 min-h-screen">
+    <div className="p-4 md:p-8 font-sans text-stone-800 bg-transparent">
       
       {/* --- 1. Header Section (Restored) --- */}
       <div className="max-w-[1400px] mx-auto mb-10">

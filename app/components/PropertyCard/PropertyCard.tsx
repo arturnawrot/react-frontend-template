@@ -5,7 +5,7 @@ const PropertyCard = ({ property, variant = 'vertical' }) => {
   const isVertical = variant === 'vertical';
 
   return (
-    <div className={`rounded-xl shadow-sm border border-transparent hover:shadow-md transition-shadow flex overflow-hidden group ${isVertical ? 'flex-col' : 'flex-col sm:flex-row'}`}>
+    <div className={`bg-white rounded-xl shadow-sm border-black/10 border-light hover:shadow-md transition-shadow flex overflow-hidden group ${isVertical ? 'flex-col' : 'flex-col sm:flex-row'}`}>
       
       {/* Card Image */}
       <div className={`relative flex-shrink-0 ${isVertical ? 'h-48 w-full' : 'w-full sm:w-[240px] h-52 sm:h-auto'}`}>
