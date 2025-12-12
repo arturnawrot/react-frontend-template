@@ -1,8 +1,10 @@
 import React from 'react';
-import { List, Grid, Heart, Share2 } from 'lucide-react';
+import { List, Grid, Share2, Heart } from 'lucide-react';
+import PropertyCard from '~/components/PropertyCard/PropertyCard';
+import MapBackground from '~/components/MapBackground/MapBackground';
 
 const MapSearch = () => {
-  // Mock data - exactly 4 cards as requested to define height
+  // Mock data
   const properties = Array(4).fill({
     id: 1,
     address: "105 Lancaster St SW",
@@ -19,9 +21,9 @@ const MapSearch = () => {
   });
 
   return (
-    <div className="p-4 md:p-8 font-sans text-stone-800">
+    <div className="p-4 md:p-8 font-sans text-stone-800 bg-stone-50 min-h-screen">
       
-      {/* --- ROW 1: Full Width Header & Subheader --- */}
+      {/* --- 1. Header Section (Restored) --- */}
       <div className="max-w-[1400px] mx-auto mb-10">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div className="max-w-3xl">
@@ -40,128 +42,65 @@ const MapSearch = () => {
         </div>
       </div>
 
-      {/* --- ROW 2: Content Grid (Map + Listings) --- */}
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+      {/* --- 2. Main Content (Equal Height Split) --- */}
+      <div className="max-w-[1400px] mx-auto">
         
-        {/* --- LEFT COLUMN: Map Placeholder (Hidden on Mobile, Stretches on Desktop) --- */}
-        <div className="hidden lg:block w-full h-full min-h-[500px]">
-          <div className="relative w-full h-full bg-[#E5F0EC] rounded-3xl overflow-hidden border border-stone-200 shadow-inner">
-            
-            {/* Map Controls */}
-            <div className="absolute top-4 left-4 flex bg-white rounded-md shadow-md z-10 overflow-hidden">
-              <button className="px-4 py-2 font-bold text-sm bg-white hover:bg-gray-50">Map</button>
-              <button className="px-4 py-2 font-medium text-sm text-gray-500 bg-white border-l hover:bg-gray-50">Satellite</button>
-            </div>
-
-            {/* Map Zoom Controls */}
-            <div className="absolute bottom-4 right-4 flex flex-col gap-1 z-10">
-               <button className="w-8 h-8 bg-white rounded shadow flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50">+</button>
-               <button className="w-8 h-8 bg-white rounded shadow flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50">-</button>
-            </div>
-
-            {/* Boilerplate Map Content */}
-            <div className="w-full h-full relative">
-              {/* Abstract Map Background */}
-              <svg className="w-full h-full bg-[#D6EFE5]" preserveAspectRatio="none">
-                <defs>
-                   <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1"/>
-                   </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#grid)" opacity="0.3" />
-                
-                {/* Simulated Roads/Rivers */}
-                <path d="M-50 100 Q 200 300 500 100 T 1000 400" stroke="white" strokeWidth="4" fill="none" />
-                <path d="M200 0 L 300 800" stroke="white" strokeWidth="4" fill="none" />
-                <path d="M600 0 Q 500 400 0 600" stroke="white" strokeWidth="4" fill="none" />
-              </svg>
-              
-              {/* Pins */}
-              <div className="absolute top-[20%] left-[30%]">
-                <div className="w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold">4</div>
-              </div>
-              <div className="absolute top-[50%] left-[50%]">
-                <div className="w-10 h-10 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold">10</div>
-              </div>
-               <div className="absolute top-[70%] right-[20%]">
-                <div className="w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold">2</div>
-              </div>
-              
-               {/* Location Labels */}
-               <span className="absolute top-[25%] left-[28%] translate-x-4 font-semibold text-stone-600 text-sm shadow-white drop-shadow-md">Columbus</span>
-               <span className="absolute top-[52%] left-[52%] translate-x-4 font-semibold text-stone-600 text-sm shadow-white drop-shadow-md">Savannah</span>
-            </div>
-          </div>
-        </div>
-
-        {/* --- RIGHT COLUMN: Property List (Natural Height, No Scroll) --- */}
-        <div className="flex flex-col h-full w-full">
+        {/* 
+            Flex Container with items-stretch:
+            This ensures the Map Column (Left) grows to match the Property List (Right) height.
+        */}
+        <div className="flex flex-col lg:flex-row gap-6 items-stretch">
           
-          {/* List Toolbar */}
-          <div className="flex flex-wrap gap-2 justify-between items-center mb-4 pb-2">
-            <h2 className="text-lg font-medium text-stone-800">
-              99 Properties For Sale in or near Aiken
-            </h2>
-            <div className="flex gap-2 items-center">
-               <div className="hidden sm:flex bg-white rounded border border-stone-200 p-1">
-                 <button className="p-1 hover:bg-stone-100 rounded text-stone-600"><List size={18} /></button>
-                 <button className="p-1 hover:bg-stone-100 rounded text-stone-400"><Grid size={18} /></button>
+          {/* 
+              LEFT COLUMN: Map
+              - relative parent
+              - absolute inset-0 child
+              This combination fills the height provided by the sibling column.
+          */}
+          <div className="w-full lg:w-1/2 relative min-h-[500px] lg:min-h-0">
+            <div className="absolute inset-0 bg-[#E5F0EC] rounded-3xl overflow-hidden border border-stone-200 shadow-inner">
+               <MapBackground />
+               
+               {/* Map Controls */}
+               <div className="absolute top-4 left-4 flex bg-white rounded-md shadow-md z-10 overflow-hidden">
+                  <button className="px-4 py-2 font-bold text-sm bg-white hover:bg-gray-50">Map</button>
+                  <button className="px-4 py-2 font-medium text-sm text-gray-500 bg-white border-l hover:bg-gray-50">Satellite</button>
                </div>
-               <button className="text-xs font-medium bg-stone-100 px-3 py-1.5 rounded hover:bg-stone-200 text-stone-600">Last Updated</button>
-               <button className="p-1.5 hover:bg-stone-100 rounded text-stone-600 border border-transparent hover:border-stone-200"><Share2 size={16} /></button>
+               
+               {/* Zoom Controls */}
+               <div className="absolute bottom-4 right-4 flex flex-col gap-1 z-10">
+                  <button className="w-8 h-8 bg-white rounded shadow flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50">+</button>
+                  <button className="w-8 h-8 bg-white rounded shadow flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50">-</button>
+               </div>
             </div>
           </div>
 
-          {/* Cards Stack (No Overflow, Natural Height) */}
-          <div className="flex flex-col gap-4">
-            {properties.map((prop, idx) => (
-              <div key={idx} className="bg-white rounded-2xl p-3 shadow-sm border border-stone-100 hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-4">
-                
-                {/* Card Image */}
-                <div className="relative w-full sm:w-[240px] h-52 sm:h-auto flex-shrink-0 rounded-xl overflow-hidden group">
-                  <img 
-                    src={prop.image} 
-                    alt="Property" 
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                    {prop.badges.map((badge, bIdx) => (
-                      <span key={bIdx} className={`text-[10px] font-bold px-2 py-1 rounded-md text-stone-800 ${badge.color}`}>
-                        {badge.text}
-                      </span>
-                    ))}
-                  </div>
-                  <button className="absolute bottom-3 right-3 bg-white p-1.5 rounded-full shadow-md hover:bg-stone-50 transition-colors">
-                    <Heart size={14} className="text-stone-800" />
-                  </button>
-                </div>
-
-                {/* Card Details */}
-                <div className="flex flex-col justify-center w-full py-1 pr-2">
-                  <h3 className="text-xl sm:text-2xl font-serif text-stone-900 mb-1 leading-tight">{prop.address}</h3>
-                  <p className="text-stone-500 text-sm mb-3">{prop.cityStateZip}</p>
-                  
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-stone-800 mb-4">
-                    <span>{prop.price}</span>
-                    <span className="text-stone-300 hidden sm:inline">|</span>
-                    <span>{prop.sqft}</span>
-                    <span className="text-stone-300 hidden sm:inline">|</span>
-                    <span>{prop.type}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2 mt-auto pt-2">
-                    <div className="w-6 h-6 rounded-full bg-stone-200 overflow-hidden flex items-center justify-center">
-                        <img src="https://i.pravatar.cc/100?img=5" alt="Agent" className="w-full h-full object-cover" />
-                    </div>
-                    <span className="text-xs font-semibold bg-stone-100 px-3 py-1 rounded-full text-stone-600">
-                      {prop.agent}
-                    </span>
-                  </div>
-                </div>
+          {/* RIGHT COLUMN: Property List */}
+          <div className="flex flex-col w-full lg:w-1/2">
+            
+            {/* List Toolbar */}
+            <div className="flex flex-wrap gap-2 justify-between items-center mb-4 pb-2">
+              <h2 className="text-lg font-medium text-stone-800">
+                99 Properties For Sale in or near Aiken
+              </h2>
+              <div className="flex gap-2 items-center">
+                 <div className="hidden sm:flex bg-white rounded border border-stone-200 p-1">
+                   <button className="p-1 hover:bg-stone-100 rounded text-stone-600"><List size={18} /></button>
+                   <button className="p-1 hover:bg-stone-100 rounded text-stone-400"><Grid size={18} /></button>
+                 </div>
+                 <button className="text-xs font-medium bg-stone-100 px-3 py-1.5 rounded hover:bg-stone-200 text-stone-600">Last Updated</button>
+                 <button className="p-1.5 hover:bg-stone-100 rounded text-stone-600 border border-transparent hover:border-stone-200"><Share2 size={16} /></button>
               </div>
-            ))}
-          </div>
+            </div>
 
+            {/* Cards Stack */}
+            <div className="flex flex-col gap-4">
+              {properties.map((prop, idx) => (
+                <PropertyCard key={idx} property={prop} variant="horizontal" />
+              ))}
+            </div>
+
+          </div>
         </div>
       </div>
     </div>

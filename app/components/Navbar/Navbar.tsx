@@ -22,7 +22,7 @@ export default function Navbar() {
                     <div className="flex gap-8 ml-8">
                         {
                             UPPER_LINKS.map((link) => (
-                                <UpperNavbarLink href="{link.href}">
+                                <UpperNavbarLink href={link.href}>
                                     {link.label}
                                 </UpperNavbarLink>
                             ))
@@ -38,7 +38,7 @@ export default function Navbar() {
                     <div className="flex gap-8" id="mainNavbarLinks">
                         {
                             MAIN_LINKS.map((link) => (
-                                <MainNavbarLink href="{link.href}">
+                                <MainNavbarLink href={link.href}>
                                     {link.label}
                                 </MainNavbarLink>
                             ))

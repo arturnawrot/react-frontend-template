@@ -5,7 +5,7 @@ import Hero from "~/sections/Hero/Hero";
 export default function BuyPage(_: Route.ComponentProps) {
   return (
     <Hero
-      variant="meybohm"
+      variant="full-width-color"
       headingSegments={[
         { text: "Buy With Insight." },
         { text: "Invest With Confidence.", color: "#DAE684" },

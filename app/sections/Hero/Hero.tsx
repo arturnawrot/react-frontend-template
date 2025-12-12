@@ -4,7 +4,7 @@ import Navbar from '~/components/Navbar/Navbar';
 import CollapsingMenuMobile from '~/components/CollapsingMenuMobile/CollapsingMenuMobile';
 import styles from './Hero.module.scss';
 
-type HeroVariant = 'default' | 'meybohm' | 'split';
+type HeroVariant = 'default' | 'full-width-color' | 'split';
 
 type HeadingSegment = {
   text: React.ReactNode;
@@ -70,7 +70,7 @@ export default function Hero({
 }: HeroProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isMeybohm = variant === 'meybohm';
+  const isFullWidthColor = variant === 'full-width-color';
   const isSplit = variant === 'split';
 
   const {
@@ -80,7 +80,7 @@ export default function Hero({
     resolvedSecondaryCta,
     heroBackgroundImage,
   } = useMemo(() => {
-    const fallbackSegments: HeadingSegment[] = isMeybohm
+    const fallbackSegments: HeadingSegment[] = isFullWidthColor
       ? [
           { text: 'Buy With Insight.' },
           { text: 'Invest With Confidence.', color: '#DAE684' },
@@ -95,18 +95,18 @@ export default function Hero({
           { text: 'Strong Futures.', color: '#DAE684' },
         ];
 
-    const fallbackSubheading = isMeybohm
+    const fallbackSubheading = isFullWidthColor
       ? 'Approach every deal confidently, knowing you’re backed by analytical excellence, investment foresight, and personal care.'
       : isSplit
       ? 'From investment acquisitions to site selection, we find opportunities that align with your best interests.'
       : 'Advisory-led commercial real estate solutions across the Southeast. Rooted in partnership. Driven by performance. Informed by perspective.';
 
-    const fallbackPrimaryCta = isMeybohm
+    const fallbackPrimaryCta = isFullWidthColor
       ? 'Start Your Property Search'
       : isSplit
       ? 'Start the Conversation'
       : undefined;
-    const fallbackSecondaryCta = isMeybohm ? 'Schedule a Consultation' : undefined;
+    const fallbackSecondaryCta = isFullWidthColor ? 'Schedule a Consultation' : undefined;
 
     const defaultBackground = '/img/hero_section_background.png';
 
@@ -115,23 +115,23 @@ export default function Hero({
       resolvedSubheading: subheading ?? fallbackSubheading,
       resolvedPrimaryCta: ctaPrimaryLabel ?? fallbackPrimaryCta,
       resolvedSecondaryCta: ctaSecondaryLabel ?? fallbackSecondaryCta,
-      heroBackgroundImage: isMeybohm ? undefined : backgroundImage ?? defaultBackground,
+      heroBackgroundImage: isFullWidthColor ? undefined : backgroundImage ?? defaultBackground,
     };
-  }, [backgroundImage, ctaPrimaryLabel, ctaSecondaryLabel, headingSegments, isMeybohm, isSplit, subheading]);
+  }, [backgroundImage, ctaPrimaryLabel, ctaSecondaryLabel, headingSegments, isFullWidthColor, isSplit, subheading]);
 
   const heroBaseClasses = `
     relative w-full
-    ${isMeybohm ? 'bg-[#10251E]' : isSplit ? '' : 'bg-cover bg-center bg-no-repeat'}
+    ${isFullWidthColor ? 'bg-[var(--strong-green)]' : isSplit ? '' : 'bg-cover bg-center bg-no-repeat'}
     ${isSplit ? 'md:min-h-[600px]' : 'md:h-[700px] md:min-h-[700px]'}
   `;
 
-  const headingClassName = isMeybohm
+  const headingClassName = isFullWidthColor
     ? `${styles.meybohmHeading} text-center mb-6`
     : isSplit
     ? `${styles.splitHeading} text-left mb-4 z-10 relative leading-tight`
     : `text-white text-4xl md:text-7xl font-bold mb-6 ${styles.heroHeading}`;
 
-  const subheadingClassName = isMeybohm
+  const subheadingClassName = isFullWidthColor
     ? `${styles.meybohmSubheading} max-w-4xl mx-auto text-center`
     : isSplit
     ? `${styles.splitSubheading} text-white/90 font-light max-w-xl text-left leading-relaxed`
@@ -168,7 +168,7 @@ export default function Hero({
   return (
     <>
       {isSplit ? (
-        <div className="relative w-full bg-[#0F231D]">
+        <div className="relative w-full bg-[var(--strong-green)]">
           {/* Navbar sits on top of everything */}
           <div className="absolute inset-x-0 top-0 z-30">
             <Navbar />
@@ -176,7 +176,7 @@ export default function Hero({
 
           <div className="relative w-full flex flex-col md:flex-row">
             {/* Left Side Content (Top on Mobile) */}
-            <div className="relative w-full md:w-1/2 bg-[#0F231D] text-white px-6 sm:px-10 md:px-14 lg:px-16 pt-[120px] pb-16 md:py-16 flex justify-center">
+            <div className="relative w-full md:w-1/2 bg-[var(--strong-green)] text-white px-6 sm:px-10 md:px-14 lg:px-16 pt-[120px] pb-16 md:py-16 flex justify-center">
               <div className="flex flex-col gap-6 justify-center w-full max-w-xl md:mt-[150px] md:mb-[80px]">
                 <div className="relative w-full">
                   <HeroHeader segments={resolvedHeading} className={headingClassName} align="start" />
@@ -222,7 +222,7 @@ export default function Hero({
           </div>
 
           {belowContent && (
-            <div className="bg-[#0F231D]">
+            <div className="bg-[var(--strong-green)]">
               <div className="max-w-6xl mx-auto px-4 pb-10 flex justify-center">
                 <div className="w-full flex justify-center">{belowContent}</div>
               </div>
@@ -238,10 +238,10 @@ export default function Hero({
             className={heroBaseClasses}
             style={heroBackgroundImage ? { backgroundImage: `url('${heroBackgroundImage}')` } : undefined}
           >
-            <div className="absolute inset-0 bg-black/40" />
+            {!isFullWidthColor && <div className="absolute inset-0 bg-black/40" />}
             <div className="relative z-10 flex flex-col h-full pb-10">
               <Navbar />
-              <div className={`mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 text-center flex flex-col items-center ${isMeybohm ? 'gap-6' : ''}`}>
+              <div className={`mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 text-center flex flex-col items-center ${isFullWidthColor ? 'gap-6' : ''}`}>
                 <HeroHeader segments={resolvedHeading} className={headingClassName} align="center" />
                 {resolvedSubheading && <p className={subheadingClassName}>{resolvedSubheading}</p>}
                 {(resolvedPrimaryCta || resolvedSecondaryCta) && (
@@ -260,7 +260,7 @@ export default function Hero({
             <CollapsingMenuMobile open={menuOpen} onClose={() => setMenuOpen(false)} />
           </div>
           {belowContent && (
-            <div className={isMeybohm ? 'bg-[#10251E]' : ''}>
+            <div className={isFullWidthColor ? 'bg-[var(--strong-green)]' : ''}>
               <div className="relative px-4 pb-10 -mt-6 md:-mt-8">
                 <div className="max-w-6xl mx-auto flex justify-center">{belowContent}</div>
               </div>

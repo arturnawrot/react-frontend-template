@@ -7,6 +7,7 @@ import TestimonialCarousel from "~/sections/TestimonialCarousel/TestimonialCarou
 import AgentCarousel from "~/sections/AgentCarousel/AgentCarousel";
 import Footer from "~/sections/Footer/Footer";
 import MapSearch from "~/sections/MapSearch/MapSearch";
+import CTAFooter from "~/sections/CTAFooter/CTAFooter";
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
@@ -30,7 +31,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         <TestimonialCarousel/>
         <AgentCarousel/>
       </div>
-
+      
+      <CTAFooter/>
       <Footer/>
     </>
   );
