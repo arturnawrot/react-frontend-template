@@ -1,7 +1,6 @@
 import type { Route } from "./+types/buy";
-
 import Hero from "~/sections/Hero/Hero";
-import CardSection from "~/sections/CardSection/CardSection";
+import CardSection, { type CardItem } from "~/sections/CardSection/CardSection";
 import MapSearch from "~/sections/MapSearch/MapSearch";
 import TestimonialCarousel from "~/sections/TestimonialCarousel/TestimonialCarousel";
 import AgentCarousel from "~/sections/AgentCarousel/AgentCarousel";
@@ -19,6 +18,33 @@ const ArrowRight = () => (
   </svg>
 );
 
+const cardData: CardItem[] = [
+  {
+    title: "Partnership",
+    icon: "fa-regular fa-handshake",
+    description: "We build lasting relationships, offering fiduciary-level care and strategic guidance beyond the deal."
+  },
+  {
+    title: "Performance",
+    icon: "fa-regular fa-handshake",
+    description: "Our data-driven insights and disciplined approach deliver high-value, measurable results we're proud to stand behind."
+  },
+  {
+    title: "Performance",
+    icon: "fa-regular fa-handshake",
+    description: "Our data-driven insights and disciplined approach deliver high-value, measurable results we're proud to stand behind."
+  },
+  {
+    title: "Performance",
+    icon: "fa-regular fa-handshake",
+    description: "Our data-driven insights and disciplined approach deliver high-value, measurable results we're proud to stand behind."
+  },
+  {
+    title: "Perspective",
+    icon: "fa-regular fa-handshake",
+    description: "We take a holistic approach, ensuring real estate decisions align with broader wealth strategies and your highest priority values."
+  }
+];
 
 export default function BuyPage(_: Route.ComponentProps) {
   return (
@@ -35,67 +61,75 @@ export default function BuyPage(_: Route.ComponentProps) {
       belowContent={<div className="md:mb-20"></div>}
     />
 
-    {/* Card overlapping between sections */}
+    {/* Header overlap (left as is per original design for Hero/Search) */}
     <div className="-mt-0 md:-mt-[280px] md:-mb-[100px] relative z-1">
       <PropertySearch/>
     </div>
 
+    {/* Section Above */}
     <FeaturedProperties/>
 
-    <div className="relative z-10">
-        <CardSection/>
-    </div>
-
-    {/* Background wrapper for testimonial section - starts immediately after card */}
-    <div className="tan-linear-background pt-20 pb-20 -mt-80">
-      <div className="mt-70"></div>
-
-      <TestimonialCarousel/>
-
-      <SplitSection imageSrc="https://images.unsplash.com/photo-1593062096033-9a26b09da705">
-        <div className="space-y-6 md:pl-8">
-            <h2 className="text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
-              Navigating Complex Transactions with Confidence
-            </h2>
-            
-            <ul className="space-y-2 text-gray-700 font-medium">
-              <li className="flex items-center gap-3">
-                <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
-                1031 Exchange Advisory
-              </li>
-              <li className="flex items-center gap-3">
-                <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
-                Portfolio Structuring
-              </li>
-              <li className="flex items-center gap-3">
-                <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
-                Multi-Market Acquisition
-              </li>
-            </ul>
-
-            <div className="pt-4">
-              <a 
-                href="#" 
-                className="inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5"
-              >
-                Learn About Our Process
-                <ArrowRight />
-              </a>
-            </div>
+    {/* Tan Background Wrapper */}
+    <div className="tan-linear-background pb-20">
+        
+        {/* 
+            THE FIX:
+            We place the CardSection normally in the flow (no absolute).
+            We give this wrapper a gradient background:
+            - Top 50% White: Merges visually with the FeaturedProperties section above.
+            - Bottom 50% Transparent: Reveals the 'tan-linear-background' of the parent div.
+        */}
+        <div style={{ background: 'linear-gradient(to bottom, #ffffff 50%, transparent 50%)' }}>
+            <CardSection cards={cardData}/>
         </div>
 
-      <div className="mt-60"></div>
+        {/* 
+           Content below flows naturally. 
+           Added pt-20 to give some breathing room between the card and the testimonials.
+        */}
+        <div className="pt-20 relative z-0">
+            <TestimonialCarousel/>
+        </div>
 
-      </SplitSection>
+        <SplitSection imageSrc="https://images.unsplash.com/photo-1593062096033-9a26b09da705">
+            <div className="space-y-6 md:pl-8">
+                <h2 className="text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
+                  Navigating Complex Transactions with Confidence
+                </h2>
+                
+                <ul className="space-y-2 text-gray-700 font-medium">
+                  <li className="flex items-center gap-3">
+                    <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
+                    1031 Exchange Advisory
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
+                    Portfolio Structuring
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
+                    Multi-Market Acquisition
+                  </li>
+                </ul>
 
-      <InsightsSection/>
+                <div className="pt-4">
+                  <a 
+                    href="#" 
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5"
+                  >
+                    Learn About Our Process
+                    <ArrowRight />
+                  </a>
+                </div>
+            </div>
 
-      <div className="mt-20"></div>
+            <div className="mt-60"></div>
+        </SplitSection>
 
-      <TrackRecordSection/>
-
-      <MapSearch/>
-      <AgentCarousel/>
+        <InsightsSection/>
+        <TrackRecordSection/>
+        <MapSearch/>
+        <AgentCarousel/>
     </div>
     
     <CTAFooter/>
@@ -103,4 +137,3 @@ export default function BuyPage(_: Route.ComponentProps) {
     </>
   );
 }
-
