@@ -6,7 +6,7 @@ import CardSection, { type CardItem } from "~/sections/CardSection/CardSection";
 import TestimonialCarousel from "~/sections/TestimonialCarousel/TestimonialCarousel";
 import AgentCarousel from "~/sections/AgentCarousel/AgentCarousel";
 import Footer from "~/sections/Footer/Footer";
-import MapSearch from "~/sections/MapSearch/MapSearch";
+import PropertySearch from "~/sections/PropertySearch/PropertySearch";
 import CTAFooter from "~/sections/CTAFooter/CTAFooter";
 
 const cardData: CardItem[] = [
@@ -32,7 +32,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     <>
       <Hero/>
 
-      <FlippedM/>
+      <div className="flipped-m-background">
+        <FlippedM/>
+      </div>
 
       {/* Wrapper that spans both sections for perfect centering */}
       <div className="relative">
@@ -52,7 +54,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </div>
           
           <div className="relative z-0">
-            <MapSearch/>
+            <PropertySearch/>
           </div>
           <TestimonialCarousel/>
           <AgentCarousel/>

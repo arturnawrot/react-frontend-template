@@ -3,16 +3,19 @@ import { Search, ChevronDown, List, Grid, Share2, RotateCcw } from 'lucide-react
 import PropertyCard from '~/components/PropertyCard/PropertyCard';
 import MapBackground from '~/components/MapBackground/MapBackground';
 
-type MapSearchAdvancedProps = {
+type PropertySearchAdvancedProps = {
   /** Optional background to match the hero; when provided, the top block stays this color */
   backgroundColor?: string;
   /** How far the hero-matched background should extend into the content area */
   backgroundExtendPx?: number;
+  /** Layout variant: 'with-map' shows 2 columns with map, 'grid-only' shows single column with 4 properties per row */
+  variant?: 'with-map' | 'grid-only';
 };
 
-const MapSearchAdvanced = ({ backgroundColor, backgroundExtendPx = 200 }: MapSearchAdvancedProps) => {
+const PropertySearchAdvanced = ({ backgroundColor, backgroundExtendPx = 200, variant = 'with-map', properties = null }: PropertySearchAdvancedProps) => {
   // Mock data - Add more items to test the height stretching if desired
-  const properties = Array(4).fill({
+
+  const mockProperties = Array(4).fill({
     id: 1,
     address: "105 Lancaster St SW",
     cityStateZip: "Aiken, SC 29801",
@@ -26,6 +29,8 @@ const MapSearchAdvanced = ({ backgroundColor, backgroundExtendPx = 200 }: MapSea
       { text: "Price Reduction - 25k, July 1st", color: "bg-[#D4E157]" }
     ]
   });
+
+  properties = properties || mockProperties;
 
   return (
     <div
@@ -97,44 +102,56 @@ const MapSearchAdvanced = ({ backgroundColor, backgroundExtendPx = 200 }: MapSea
       <div className="px-4 md:px-8">
         <div className="max-w-[1400px] mx-auto py-6">
           
-          {/* 
-              Main Flex Container 
-              items-stretch: Ensures the map column grows to match the grid column height
-          */}
-          <div className="flex flex-col lg:flex-row gap-6 items-stretch">
-            
-            {/* Left Column: Property Grid (Determines Height) */}
-            <div className="w-full lg:w-1/2 flex flex-col">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-full">
+          {variant === 'with-map' ? (
+            /* 
+                Main Flex Container with Map
+                items-stretch: Ensures the map column grows to match the grid column height
+            */
+            <div className="flex flex-col lg:flex-row gap-6 items-stretch">
+              
+              {/* Left Column: Property Grid (Determines Height) */}
+              <div className="w-full lg:w-1/2 flex flex-col">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-full">
+                  {properties.map((prop, idx) => (
+                    <PropertyCard key={idx} property={prop} variant="vertical" />
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Column: Map (Fills Height) */}
+              <div className="w-full lg:w-1/2 relative min-h-[600px] lg:min-h-0">
+                 {/* 
+                     The container is relative. 
+                     The internal div is absolute inset-0 to fill the parent's stretched height.
+                     rounded-3xl + overflow-hidden clips the MapBackground.
+                 */}
+                <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-sm border border-stone-200">
+                  <MapBackground />
+                  
+                  {/* Map Controls */}
+                  <div className="absolute top-4 left-4 flex bg-white rounded-md shadow-md z-10 overflow-hidden text-sm font-bold text-stone-700">
+                    <button className="px-4 py-2 bg-white hover:bg-stone-50">Map</button>
+                    <button className="px-4 py-2 bg-white border-l hover:bg-stone-50 text-stone-500 font-normal">Satellite</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          ) : (
+            /* Grid-only variant: Single column with 4 properties per row */
+            <div className="w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {properties.map((prop, idx) => (
                   <PropertyCard key={idx} property={prop} variant="vertical" />
                 ))}
               </div>
             </div>
-
-            {/* Right Column: Map (Fills Height) */}
-            <div className="w-full lg:w-1/2 relative min-h-[600px] lg:min-h-0">
-               {/* 
-                   The container is relative. 
-                   The internal div is absolute inset-0 to fill the parent's stretched height.
-                   rounded-3xl + overflow-hidden clips the MapBackground.
-               */}
-              <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-sm border border-stone-200">
-                <MapBackground />
-                
-                {/* Map Controls */}
-                <div className="absolute top-4 left-4 flex bg-white rounded-md shadow-md z-10 overflow-hidden text-sm font-bold text-stone-700">
-                  <button className="px-4 py-2 bg-white hover:bg-stone-50">Map</button>
-                  <button className="px-4 py-2 bg-white border-l hover:bg-stone-50 text-stone-500 font-normal">Satellite</button>
-                </div>
-              </div>
-            </div>
-
-          </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default MapSearchAdvanced;
+export default PropertySearchAdvanced;
+

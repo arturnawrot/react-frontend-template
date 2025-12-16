@@ -113,8 +113,8 @@ export default function Hero({
     return {
       resolvedHeading: headingSegments ?? fallbackSegments,
       resolvedSubheading: subheading ?? fallbackSubheading,
-      resolvedPrimaryCta: ctaPrimaryLabel ?? fallbackPrimaryCta,
-      resolvedSecondaryCta: ctaSecondaryLabel ?? fallbackSecondaryCta,
+      resolvedPrimaryCta: ctaPrimaryLabel,
+      resolvedSecondaryCta: ctaSecondaryLabel,
       heroBackgroundImage: isFullWidthColor ? undefined : backgroundImage ?? defaultBackground,
     };
   }, [backgroundImage, ctaPrimaryLabel, ctaSecondaryLabel, headingSegments, isFullWidthColor, isSplit, subheading]);

@@ -73,7 +73,7 @@ const BulletPoint = ({
   );
 };
 
-const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath }) => {
+const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath, ctaText, ctaHref }) => {
   return (
     <div className="relative w-full flex flex-col py-12 md:py-20 min-h-[1600px] max-w-[1500px] mx-auto md:px-15">
       {/* SVG Background */}
@@ -115,9 +115,16 @@ const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath }) =
                 linkText={service.linkText}
                 linkHref={service.linkHref}
                 isLast={index === bulletPoints.length - 1}
-                isActive={index === 0} // only first one is “normal”
+                isActive={index === 0} // only first one is "normal"
               />
             ))}
+            {ctaText && (
+              <div className="mt-30">
+                <a href={ctaHref || "#"} className="sale-button inline-block">
+                  {ctaText}
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Right Column - Image */}
@@ -174,15 +181,17 @@ const sampleSection = {
   svgBackground: "/svg/flipped-m.svg",
 };
 
-export default function FlippedM({section = sampleSection}) {
+export default function FlippedM({section = sampleSection, ctaText, ctaHref}) {
   return (
-    <div className={styles.containerBackground + " overflow-hidden"}>
+    <div className="overflow-hidden">
       <ProcessSection
         heading={section.heading}
         subheading={section.subheading}
         bulletPoints={section.bulletPoints}
         image={section.image}
         svgPath={section.svgBackground}
+        ctaText={ctaText}
+        ctaHref={ctaHref}
       />
     </div>
   );

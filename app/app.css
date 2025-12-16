@@ -104,3 +104,11 @@ body {
 #home-landing-hero-background {
     color: #1C2F2980;
 }
+
+.flipped-m-background {
+    background: linear-gradient(
+        0deg,
+        rgba(217, 161, 113, 0) 0%,
+        rgba(217, 161, 113, 0.1) 100%
+    );
+}

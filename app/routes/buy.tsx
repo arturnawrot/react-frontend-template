@@ -1,12 +1,11 @@
 import type { Route } from "./+types/buy";
 import Hero from "~/sections/Hero/Hero";
 import CardSection, { type CardItem } from "~/sections/CardSection/CardSection";
-import MapSearch from "~/sections/MapSearch/MapSearch";
+import PropertySearch from "~/sections/PropertySearch/PropertySearch";
 import TestimonialCarousel from "~/sections/TestimonialCarousel/TestimonialCarousel";
 import AgentCarousel from "~/sections/AgentCarousel/AgentCarousel";
 import CTAFooter from "~/sections/CTAFooter/CTAFooter";
 import Footer from "~/sections/Footer/Footer";
-import PropertySearch from "~/sections/PropertySearch/PropertySearch";
 import FeaturedProperties from "~/sections/FeaturedProperties/FeaturedProperties";
 import SplitSection from "~/sections/SplitSection/SplitSection";
 import InsightsSection from "~/sections/InsightsSection/InsightsSection";
@@ -128,7 +127,7 @@ export default function BuyPage(_: Route.ComponentProps) {
 
         <InsightsSection/>
         <TrackRecordSection/>
-        <MapSearch/>
+        <PropertySearch/>
         <AgentCarousel/>
     </div>
     
