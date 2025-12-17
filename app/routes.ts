@@ -7,5 +7,6 @@ export default [
   route("property-search", "routes/property-search.tsx"),
   route("saved-properties", "routes/saved-properties.tsx"),
   route("exchange-support", "routes/exchange-support.tsx"),
-  route("individual-property-page", "routes/individual-property-page.tsx")
+  route("individual-property-page", "routes/individual-property-page.tsx"),
+  route("our-agents", "routes/our-agents.tsx")
 ] satisfies RouteConfig;
