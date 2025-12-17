@@ -112,3 +112,7 @@ body {
         rgba(217, 161, 113, 0.1) 100%
     );
 }
+
+.sand-gradient-background {
+    background: radial-gradient(97.87% 101.48% at 97.87% 11.48%, rgba(215, 209, 196, 0.7) 0%, rgba(215, 209, 196, 0.0121075) 72.23%, rgba(215, 209, 196, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}

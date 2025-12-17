@@ -3,7 +3,11 @@ import Logo from '../Logo/Logo';
 import { MainNavbarLink, UpperNavbarLink, MAIN_LINKS, UPPER_LINKS } from '../NavbarLink/NavbarLink';
 import styles from './Navbar.module.scss';
 
-export default function Navbar() {
+interface NavbarProps {
+  darkVariant?: boolean;
+}
+
+export default function Navbar({ darkVariant = false }: NavbarProps) {
     return (
         <>
             {/* Desktop: Top Search Bar - Hidden on Mobile */}
@@ -34,7 +38,7 @@ export default function Navbar() {
             {/* Desktop: Main Navigation - Hidden on Mobile */}
             <div className="hidden md:block px-[5%]">
                 <div className="flex items-center justify-between px-8 py-4">
-                    <Logo/>
+                    <Logo darkVariant={darkVariant}/>
                     <div className="flex gap-8" id="mainNavbarLinks">
                         {
                             MAIN_LINKS.map((link) => (
@@ -49,7 +53,7 @@ export default function Navbar() {
 
             {/* Mobile: Logo at Top - Hidden on Desktop */}
             <div className="md:hidden flex justify-center py-6">
-                <Logo/>
+                <Logo darkVariant={darkVariant}/>
             </div>
         </>
   );
