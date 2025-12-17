@@ -1,7 +1,7 @@
 import type { Route } from "./+types/buy";
 import Hero from "~/sections/Hero/Hero";
 import CardSection, { type CardItem } from "~/sections/CardSection/CardSection";
-import PropertySearch from "~/sections/PropertySearch/PropertySearch";
+import PropertySearchInput from "~/sections/PropertySearchInput/PropertySearchInput";
 import TestimonialCarousel from "~/sections/TestimonialCarousel/TestimonialCarousel";
 import AgentCarousel from "~/sections/AgentCarousel/AgentCarousel";
 import CTAFooter from "~/sections/CTAFooter/CTAFooter";
@@ -10,6 +10,7 @@ import FeaturedProperties from "~/sections/FeaturedProperties/FeaturedProperties
 import SplitSection from "~/sections/SplitSection/SplitSection";
 import InsightsSection from "~/sections/InsightsSection/InsightsSection";
 import TrackRecordSection from "~/sections/TrackRecord/TrackRecord";
+import PropertySearch from "~/sections/PropertySearch/PropertySearch";
 
 const ArrowRight = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -61,8 +62,8 @@ export default function BuyPage(_: Route.ComponentProps) {
     />
 
     {/* Header overlap (left as is per original design for Hero/Search) */}
-    <div className="-mt-0 md:-mt-[280px] md:-mb-[100px] relative z-1">
-      <PropertySearch/>
+    <div className="-mt-0 md:-mt-[220px] md:-mb-[100px] z-100" style={{ background: 'linear-gradient(to bottom, var(--strong-green) 50%, transparent 50%)' }}>
+      <PropertySearchInput/>
     </div>
 
     {/* Section Above */}
