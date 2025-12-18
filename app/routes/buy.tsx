@@ -122,8 +122,6 @@ export default function BuyPage(_: Route.ComponentProps) {
                   </a>
                 </div>
             </div>
-
-            <div className="mt-60"></div>
         </SplitSection>
 
         <InsightsSection/>
