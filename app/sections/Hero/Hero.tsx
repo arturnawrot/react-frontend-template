@@ -27,10 +27,12 @@ const HeroHeader = ({
   segments,
   className,
   align = 'center',
+  useJustifyCenter = false,
 }: {
   segments: HeadingSegment[];
   className?: string;
   align?: 'center' | 'start';
+  useJustifyCenter?: boolean;
 }) => {
   const containerAlign =
     align === 'center' ? 'items-center text-center' : 'items-start text-left';
@@ -41,6 +43,7 @@ const HeroHeader = ({
         className={`
           flex flex-col lg:flex-row lg:flex-wrap lg:gap-3 gap-0
           ${containerAlign}
+          ${useJustifyCenter ? 'justify-center' : ''}
         `}
       >
         {segments.map((segment, idx) => (
@@ -129,7 +132,7 @@ export default function Hero({
     ? `${styles.meybohmHeading} text-center mb-6`
     : isSplit
     ? `${styles.splitHeading} text-left mb-4 z-10 relative leading-tight`
-    : `text-white text-4xl md:text-7xl font-bold mb-6 ${styles.heroHeading}`;
+    : `text-white text-4xl md:text-7xl font-bold mb-6 ${styles.heroHeading} w-full`;
 
   const subheadingClassName = isFullWidthColor
     ? `${styles.meybohmSubheading} max-w-4xl mx-auto text-center`
@@ -242,7 +245,7 @@ export default function Hero({
             <div className="relative z-10 flex flex-col h-full pb-10">
               <Navbar />
               <div className={`mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 text-center flex flex-col items-center ${isFullWidthColor ? 'gap-6' : ''}`}>
-                <HeroHeader segments={resolvedHeading} className={headingClassName} align="center" />
+                <HeroHeader segments={resolvedHeading} className={headingClassName} align="center" useJustifyCenter={!isFullWidthColor} />
                 {resolvedSubheading && <p className={subheadingClassName}>{resolvedSubheading}</p>}
                 {(resolvedPrimaryCta || resolvedSecondaryCta) && (
                   <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
