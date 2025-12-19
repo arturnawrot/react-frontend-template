@@ -1,6 +1,6 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
 import PropertyCard from '~/components/PropertyCard/PropertyCard';
+import Arrow from '~/components/Arrow/Arrow';
 
 const featuredProperties = [
   {
@@ -80,7 +80,7 @@ const FeaturedProperties = () => {
           href="/property-search"
           className="inline-flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:underline"
         >
-          See All Listings <ArrowRight size={16} />
+          See All Listings <Arrow direction="right" size={16} />
         </a>
       </div>
 

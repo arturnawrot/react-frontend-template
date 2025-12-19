@@ -1,6 +1,4 @@
 import { 
-  ChevronLeft, 
-  ChevronRight, 
   Heart, 
   Download, 
   Mail, 
@@ -10,6 +8,7 @@ import {
   Facebook,
 } from 'lucide-react';
 import AgentCard from '~/components/AgentCard/AgentCard';
+import Arrow from '~/components/Arrow/Arrow';
 
 const PropertyDetails = () => {
   const limeGreen = "bg-[#dce676]";
@@ -20,7 +19,7 @@ const PropertyDetails = () => {
       {/* Top Navigation */}
       <div className="mb-6">
         <button className="flex items-center text-xs font-bold tracking-widest uppercase text-gray-500 hover:text-black">
-          <ChevronLeft className="w-4 h-4 mr-1" /> Back to Search
+          <Arrow direction="left" variant="chevron" size="w-4 h-4" className="mr-1" /> Back to Search
         </button>
       </div>
 
@@ -62,10 +61,10 @@ const PropertyDetails = () => {
 
             {/* Navigation Arrows */}
             <button className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-1 rounded-full text-white">
-              <ChevronLeft className="w-6 h-6" />
+              <Arrow direction="left" variant="chevron" size="w-6 h-6" />
             </button>
             <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-1 rounded-full text-white">
-              <ChevronRight className="w-6 h-6" />
+              <Arrow direction="right" variant="chevron" size="w-6 h-6" />
             </button>
 
             {/* Favorite Button */}

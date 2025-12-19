@@ -1,23 +1,6 @@
 import React, { useRef } from 'react';
 import ArticleCard from '~/components/ArticleCard/ArticleCard';
-
-// Icons
-const ArrowIcon = ({ direction }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    fill="none" 
-    viewBox="0 0 24 24" 
-    strokeWidth={2} 
-    stroke="currentColor" 
-    className="w-5 h-5"
-  >
-    {direction === 'left' ? (
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-    ) : (
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    )}
-  </svg>
-);
+import Arrow from '~/components/Arrow/Arrow';
 
 const InsightsSection = () => {
   const scrollRef = useRef(null);
@@ -79,7 +62,7 @@ const InsightsSection = () => {
             
             <a href="#" className="inline-flex items-center gap-2 font-bold uppercase tracking-wider text-xs md:text-sm text-[#1a2e2a] hover:opacity-70 transition-opacity">
               Explore More Insights
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+              <Arrow direction="right" size={16} />
             </a>
           </div>
 
@@ -87,15 +70,15 @@ const InsightsSection = () => {
           <div className="hidden lg:flex gap-4 mt-12">
             <button 
               onClick={() => scroll('left')}
-              className="w-12 h-12 flex items-center justify-center rounded-full border border-[#1a2e2a]/20 hover:bg-[#1a2e2a] hover:text-[#dad6cc] text-[#1a2e2a] transition-all duration-300"
+              className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
             >
-              <ArrowIcon direction="left" />
+              <Arrow direction="left" size="w-5 h-5" />
             </button>
             <button 
               onClick={() => scroll('right')}
-              className="w-12 h-12 flex items-center justify-center rounded-full border border-[#1a2e2a]/20 hover:bg-[#1a2e2a] hover:text-[#dad6cc] text-[#1a2e2a] transition-all duration-300"
+              className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
             >
-              <ArrowIcon direction="right" />
+              <Arrow direction="right" size="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -131,15 +114,15 @@ const InsightsSection = () => {
         <div className="flex lg:hidden justify-center gap-4 col-span-1">
           <button 
             onClick={() => scroll('left')}
-            className="w-12 h-12 flex items-center justify-center rounded-full border border-[#1a2e2a]/20 bg-[#dad6cc] text-[#1a2e2a]"
+            className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
           >
-            <ArrowIcon direction="left" />
+            <Arrow direction="left" size="w-5 h-5" />
           </button>
           <button 
             onClick={() => scroll('right')}
-            className="w-12 h-12 flex items-center justify-center rounded-full border border-[#1a2e2a]/20 bg-[#dad6cc] text-[#1a2e2a]"
+            className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
           >
-            <ArrowIcon direction="right" />
+            <Arrow direction="right" size="w-5 h-5" />
           </button>
         </div>
 

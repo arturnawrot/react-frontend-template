@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight } from 'lucide-react';
 import AgentCard from '~/components/AgentCard/AgentCard';
+import Arrow from '~/components/Arrow/Arrow';
 
 const categories = [
   {
@@ -99,7 +99,7 @@ const AgentsByCategory = () => {
                       <div className="mt-6 md:mt-12">
                         <a href="#" className="inline-flex items-center gap-2 text-xs font-bold text-[#1C2B28] uppercase tracking-wide hover:opacity-70 transition-opacity">
                           {cat.linkText}
-                          <ArrowRight className="w-3 h-3" />
+                          <Arrow direction="right" size="w-3 h-3" />
                         </a>
                       </div>
                     )}

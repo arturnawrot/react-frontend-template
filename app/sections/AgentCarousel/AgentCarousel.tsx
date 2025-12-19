@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Arrow from '~/components/Arrow/Arrow';
 
 const agents = [
   {
@@ -32,16 +33,6 @@ const agents = [
 // Set 2: The Main View
 // Set 3: Buffer for Next
 const extendedAgents = [...agents, ...agents, ...agents];
-
-const ArrowIcon = ({ direction }) => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-    {direction === 'left' ? (
-      <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-    ) : (
-      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-    )}
-  </svg>
-);
 
 const AgentCarousel = () => {
   // Start at the beginning of the middle set
@@ -147,7 +138,7 @@ const AgentCarousel = () => {
 
           <a href="#" className="group inline-flex items-center font-medium text-[#1a2e28] hover:opacity-70 transition-opacity mt-2">
             Find an Agent
-            <svg className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            <Arrow direction="right" size="w-4 h-4" className="ml-2 transition-transform group-hover:translate-x-1" />
           </a>
 
           {/* Desktop Arrows */}
@@ -159,9 +150,9 @@ const AgentCarousel = () => {
                 // Resume autoplay after 5 seconds of inactivity
                 setTimeout(() => setIsPaused(false), 5000);
               }}
-              className="w-10 h-10 flex items-center justify-center transition-colors hover:text-gray-500 text-[#1a2e28] border border-gray-200 rounded-full hover:bg-gray-50"
+              className="flex items-center justify-center transition-colors hover:opacity-70 text-[#1a2e28]"
             >
-              <ArrowIcon direction="left" />
+              <Arrow direction="left" variant="fill" size="w-6 h-6" />
             </button>
             <button 
               onClick={() => {
@@ -169,9 +160,9 @@ const AgentCarousel = () => {
                 handleNext();
                 setTimeout(() => setIsPaused(false), 5000);
               }}
-              className="w-10 h-10 flex items-center justify-center transition-colors hover:text-gray-500 text-[#1a2e28] border border-gray-200 rounded-full hover:bg-gray-50"
+              className="flex items-center justify-center transition-colors hover:opacity-70 text-[#1a2e28]"
             >
-              <ArrowIcon direction="right" />
+              <Arrow direction="right" variant="fill" size="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -225,9 +216,9 @@ const AgentCarousel = () => {
               handlePrev();
               setTimeout(() => setIsPaused(false), 5000);
             }}
-            className="w-12 h-12 flex items-center justify-center text-[#1a2e28] border border-gray-200 rounded-full bg-white"
+            className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
           >
-            <ArrowIcon direction="left" />
+            <Arrow direction="left" variant="fill" size="w-6 h-6" />
           </button>
           <button 
             onClick={() => {
@@ -235,9 +226,9 @@ const AgentCarousel = () => {
               handleNext();
               setTimeout(() => setIsPaused(false), 5000);
             }}
-            className="w-12 h-12 flex items-center justify-center text-[#1a2e28] border border-gray-200 rounded-full bg-white"
+            className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
           >
-            <ArrowIcon direction="right" />
+            <Arrow direction="right" variant="fill" size="w-6 h-6" />
           </button>
         </div>
 

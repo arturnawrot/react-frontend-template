@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import Arrow from '~/components/Arrow/Arrow';
 
 // --- Sub-Component: PropertyCard ---
 const PropertyCard = ({ image, title, details, agent }) => {
@@ -124,19 +125,15 @@ const TrackRecordSection = () => {
           <div className="hidden md:flex gap-4 ml-auto z-10">
             <button 
               onClick={() => scroll('left')}
-              className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 hover:bg-[#1a2e2a] hover:border-[#1a2e2a] hover:text-white text-[#1a2e2a] transition-all duration-300"
+              className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="transform rotate-90">
-                <path d="M12 24L0 0h24L12 24z" />
-              </svg>
+              <Arrow direction="up" variant="triangle" size={12} />
             </button>
             <button 
               onClick={() => scroll('right')}
-              className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 hover:bg-[#1a2e2a] hover:border-[#1a2e2a] hover:text-white text-[#1a2e2a] transition-all duration-300"
+              className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="transform -rotate-90">
-                <path d="M12 24L0 0h24L12 24z" />
-              </svg>
+              <Arrow direction="down" variant="triangle" size={12} />
             </button>
           </div>
         </div>
@@ -175,19 +172,15 @@ const TrackRecordSection = () => {
       <div className="flex md:hidden justify-center gap-4 px-6">
         <button 
           onClick={() => scroll('left')}
-          className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 bg-white text-[#1a2e2a]"
+          className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="transform rotate-90">
-            <path d="M12 24L0 0h24L12 24z" />
-          </svg>
+          <Arrow direction="up" variant="triangle" size={12} />
         </button>
         <button 
           onClick={() => scroll('right')}
-          className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 bg-white text-[#1a2e2a]"
+          className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="transform -rotate-90">
-            <path d="M12 24L0 0h24L12 24z" />
-          </svg>
+          <Arrow direction="down" variant="triangle" size={12} />
         </button>
       </div>
 

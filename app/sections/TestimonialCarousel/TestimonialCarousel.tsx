@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './TestimonialCarousel.module.scss';
+import Arrow from '~/components/Arrow/Arrow';
 
 export default function TestimonialCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -67,10 +67,10 @@ export default function TestimonialCarousel() {
         <div className="flex items-center justify-center gap-6 mt-12">
           <button
             onClick={prevSlide}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+            className="p-2 hover:opacity-70 transition-opacity"
             aria-label="Previous testimonial"
           >
-            <ChevronLeft className="w-6 h-6 text-gray-700" />
+            <Arrow direction="left" variant="chevron" size="w-6 h-6" className="text-gray-700" />
           </button>
 
           <div className="flex gap-2">
@@ -90,10 +90,10 @@ export default function TestimonialCarousel() {
 
           <button
             onClick={nextSlide}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+            className="p-2 hover:opacity-70 transition-opacity"
             aria-label="Next testimonial"
           >
-            <ChevronRight className="w-6 h-6 text-gray-700" />
+            <Arrow direction="right" variant="chevron" size="w-6 h-6" className="text-gray-700" />
           </button>
         </div>
       </div>

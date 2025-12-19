@@ -1,4 +1,5 @@
-import { Mail, Phone, Linkedin, ArrowRight, Check } from 'lucide-react';
+import { Mail, Phone, Linkedin, Check } from 'lucide-react';
+import Arrow from '~/components/Arrow/Arrow';
 
 interface AgentCardProps {
   name: string;
@@ -83,7 +84,7 @@ const AgentCard = ({
         {/* View Bio Link */}
         <a href="#" className="flex items-center gap-1 text-sm font-semibold text-[#1C2B28] hover:opacity-70 group mt-auto">
           View Bio
-          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          <Arrow direction="right" size="w-4 h-4" className="transition-transform group-hover:translate-x-1" />
         </a>
       </div>
     );
@@ -104,7 +105,7 @@ const AgentCard = ({
         <div className="flex items-center justify-between w-full mt-1">
            <a href="#" className="text-xs text-gray-600 hover:text-black flex items-center gap-1 font-medium group">
             View Agent Profile 
-            <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+            <Arrow direction="right" size="w-3 h-3" className="transition-transform group-hover:translate-x-1" />
           </a>
           {license && <span className="text-[10px] text-gray-500 uppercase tracking-wide ml-4">{license}</span>}
         </div>
