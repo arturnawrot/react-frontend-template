@@ -47,13 +47,14 @@ export default function BuyPage(_: Route.ComponentProps) {
     <Hero
       variant="full-width-color"
       headingSegments={[
-        { text: "Buy With Insight." },
-        { text: "Invest With Confidence.", color: "#DAE684" },
+        { text: "Buy With Insight.", breakOnMobile: true },
+        { text: "Invest With", color: "#DAE684", breakOnMobile: true },
+        { text: "Confidence.", color: "#DAE684" },
       ]}
       subheading="Approach every deal confidently, knowing you’re backed by analytical excellence, investment foresight, and personal care."
       ctaPrimaryLabel="Start Your Property Search"
       ctaSecondaryLabel="Schedule a Consultation"
-      belowContent={<div className="md:mb-20"></div>}
+      belowContent={<div className="md:mb-50"></div>}
     />
 
     {/* Header overlap (left as is per original design for Hero/Search) */}
@@ -120,9 +121,12 @@ export default function BuyPage(_: Route.ComponentProps) {
         </SplitSection>
 
         <InsightsSection/>
-        <TrackRecordSection/>
-        <PropertySearch/>
-        <AgentCarousel/>
+
+        <div className="tan-linear-background">
+          <TrackRecordSection/>
+          <PropertySearch/>
+          <AgentCarousel/>
+        </div>
     </div>
     
     <CTAFooter/>

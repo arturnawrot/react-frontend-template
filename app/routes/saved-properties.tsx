@@ -32,7 +32,7 @@ export default function SavedPropertiesPage(_: Route.ComponentProps) {
             ]}
             subheading="Revisit and manage your favorited listings so you're ready to take the next step?"
             ctaPrimaryLabel="Start the Conversation"
-            belowContent={<div className="md:mb-80"></div>}
+            belowContent={<div className="md:mb-110"></div>}
             />
             
             {/* Wrapper that spans both sections for perfect centering */}

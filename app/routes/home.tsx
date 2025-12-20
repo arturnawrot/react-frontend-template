@@ -30,7 +30,13 @@ const cardData: CardItem[] = [
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <>
-      <Hero/>
+      <Hero
+        headingSegments={[
+          { text: "Smart Moves.", breakOnMobile: true },
+          { text: "Strong Futures.", color: "#DAE684" },
+        ]} 
+        subheading="Advisory-led commercial real estate solutions across the Southeast. Rooted in partnership. Driven by performance. Informed by perspective." 
+      />
 
       <div className="flipped-m-background">
         <FlippedM/>

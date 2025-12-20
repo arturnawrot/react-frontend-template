@@ -103,7 +103,7 @@ const TrackRecordSection = () => {
   ];
 
   return (
-    <section className="w-full bg-[#fdfcf8] py-24">
+    <section className="w-full py-24">
       {/* 
         Container Logic:
         We don't put a container around the whole section because the slider needs to be full width.
