@@ -7,11 +7,16 @@ import AgentCarousel from "~/sections/AgentCarousel/AgentCarousel";
 import CTAFooter from "~/sections/CTAFooter/CTAFooter";
 import Footer from "~/sections/Footer/Footer";
 import FeaturedProperties from "~/sections/FeaturedProperties/FeaturedProperties";
-import SplitSection from "~/sections/SplitSection/SplitSection";
+import SplitSection, { 
+  SplitSectionHeader, 
+  SplitSectionBulletPoint,
+  SplitSectionBulletList,
+  SplitSectionLink,
+  SplitSectionContent
+} from "~/sections/SplitSection/SplitSection";
 import InsightsSection from "~/sections/InsightsSection/InsightsSection";
 import TrackRecordSection from "~/sections/TrackRecord/TrackRecord";
 import PropertySearch from "~/sections/PropertySearch/PropertySearch";
-import Arrow from "~/components/Arrow/Arrow";
 
 const cardData: CardItem[] = [
   {
@@ -88,36 +93,27 @@ export default function BuyPage(_: Route.ComponentProps) {
         </div>
 
         <SplitSection imageSrc="https://images.unsplash.com/photo-1593062096033-9a26b09da705">
-            <div className="space-y-6 md:pl-8">
-                <h2 className="text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
+            <SplitSectionContent>
+                <SplitSectionHeader>
                   Navigating Complex Transactions with Confidence
-                </h2>
+                </SplitSectionHeader>
                 
-                <ul className="space-y-2 text-gray-700 font-medium">
-                  <li className="flex items-center gap-3">
-                    <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
+                <SplitSectionBulletList spacing="tight">
+                  <SplitSectionBulletPoint>
                     1031 Exchange Advisory
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
+                  </SplitSectionBulletPoint>
+                  <SplitSectionBulletPoint>
                     Portfolio Structuring
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
+                  </SplitSectionBulletPoint>
+                  <SplitSectionBulletPoint>
                     Multi-Market Acquisition
-                  </li>
-                </ul>
+                  </SplitSectionBulletPoint>
+                </SplitSectionBulletList>
 
-                <div className="pt-4">
-                  <a 
-                    href="#" 
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5"
-                  >
-                    Learn About Our Process
-                    <Arrow direction="right" variant="fill" size={16} />
-                  </a>
-                </div>
-            </div>
+                <SplitSectionLink href="#">
+                  Learn About Our Process
+                </SplitSectionLink>
+            </SplitSectionContent>
         </SplitSection>
 
         <InsightsSection/>

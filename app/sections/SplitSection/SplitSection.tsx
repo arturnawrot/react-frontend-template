@@ -1,6 +1,13 @@
 import React from 'react';
 
-const SplitSection = ({ 
+interface SplitSectionProps {
+  imageSrc: string;
+  imageAlt?: string;
+  isReversed?: boolean;
+  children: React.ReactNode;
+}
+
+const SplitSection: React.FC<SplitSectionProps> = ({ 
   imageSrc, 
   imageAlt = "Section image", 
   isReversed = false, 
@@ -34,5 +41,12 @@ const SplitSection = ({
     </section>
   );
 };
+
+export { default as SplitSectionHeader } from './SplitSectionHeader';
+export { default as SplitSectionSubheader } from './SplitSectionSubheader';
+export { default as SplitSectionBulletPoint } from './SplitSectionBulletPoint';
+export { default as SplitSectionBulletList } from './SplitSectionBulletList';
+export { default as SplitSectionLink } from './SplitSectionLink';
+export { default as SplitSectionContent } from './SplitSectionContent';
 
 export default SplitSection;

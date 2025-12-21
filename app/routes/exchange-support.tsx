@@ -1,7 +1,12 @@
 import type { Route } from "./+types/exchange-support";
 
 import Hero from "~/sections/Hero/Hero";
-import SplitSection from "~/sections/SplitSection/SplitSection";
+import SplitSection, { 
+  SplitSectionHeader, 
+  SplitSectionBulletPoint,
+  SplitSectionBulletList,
+  SplitSectionContent
+} from "~/sections/SplitSection/SplitSection";
 import Footer from "~/sections/Footer/Footer";
 import FlippedM from "~/sections/FlippedM/FlippedM";
 import CardSection, { type CardItem } from "~/sections/CardSection/CardSection";
@@ -50,30 +55,27 @@ export default function ExchangeSupportPage(_: Route.ComponentProps) {
             />
 
             <SplitSection imageSrc="https://images.unsplash.com/photo-1506905925346-21bda4d32df4">
-                <div className="space-y-6 md:pl-8">
-                    <h2 className="text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
+                <SplitSectionContent>
+                    <SplitSectionHeader>
                         Success Isn't Just About 
                         <br />
                         Deferral. It's About 
                         <br />
                         Direction.
-                    </h2>
+                    </SplitSectionHeader>
                     
-                    <ul className="space-y-3 text-gray-700 font-medium">
-                        <li className="flex items-center gap-3">
-                            <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
+                    <SplitSectionBulletList spacing="normal">
+                        <SplitSectionBulletPoint>
                             Identify the right replacement property before the clock runs out
-                        </li>
-                        <li className="flex items-center gap-3">
-                            <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
+                        </SplitSectionBulletPoint>
+                        <SplitSectionBulletPoint>
                             Balance timing, yield, and growth goals
-                        </li>
-                        <li className="flex items-center gap-3">
-                            <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
+                        </SplitSectionBulletPoint>
+                        <SplitSectionBulletPoint>
                             Avoid 11th-hour, misaligned reinvestments
-                        </li>
-                    </ul>
-                </div>
+                        </SplitSectionBulletPoint>
+                    </SplitSectionBulletList>
+                </SplitSectionContent>
             </SplitSection>
 
             <FlippedM ctaText="Talk to a 1031 Specialist" ctaHref="/contact"/>
