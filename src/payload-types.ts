@@ -69,6 +69,8 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    pages: Page;
+    'css-styles': CssStyle;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +80,8 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    'css-styles': CssStylesSelect<false> | CssStylesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -161,6 +165,187 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  title: string;
+  /**
+   * URL slug for this page (e.g., "home", "about")
+   */
+  slug: string;
+  blocks: (
+    | {
+        variant: 'default' | 'full-width-color' | 'split' | 'agent';
+        headingSegments?:
+          | {
+              text: string;
+              /**
+               * Hex color code (e.g., #DAE684)
+               */
+              color?: string | null;
+              breakOnMobile?: boolean | null;
+              breakOnDesktop?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        subheading?: string | null;
+        ctaPrimaryLabel?: string | null;
+        ctaPrimaryLink?: string | null;
+        ctaSecondaryLabel?: string | null;
+        ctaSecondaryLink?: string | null;
+        /**
+         * Background image for hero section
+         */
+        backgroundImage?: (string | null) | Media;
+        /**
+         * Agent image (for agent variant)
+         */
+        agentImage?: (string | null) | Media;
+        agentEmail?: string | null;
+        agentPhone?: string | null;
+        /**
+         * LinkedIn profile URL
+         */
+        agentLinkedin?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'hero';
+      }
+    | {
+        /**
+         * Main heading text (use line breaks for multiple lines)
+         */
+        heading?: string | null;
+        subheading?: string | null;
+        bulletPoints?:
+          | {
+              title: string;
+              description: string;
+              linkText: string;
+              linkHref: string;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Main image displayed on the right side
+         */
+        image?: (string | null) | Media;
+        ctaText?: string | null;
+        ctaHref?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'flippedM';
+      }
+    | {
+        /**
+         * Select a CSS style to apply to this container (leave empty for no style)
+         */
+        cssStyle?: (string | null) | CssStyle;
+        /**
+         * Add one or more blocks to display inside this container
+         */
+        blocks?:
+          | (
+              | {
+                  variant: 'default' | 'full-width-color' | 'split' | 'agent';
+                  headingSegments?:
+                    | {
+                        text: string;
+                        /**
+                         * Hex color code (e.g., #DAE684)
+                         */
+                        color?: string | null;
+                        breakOnMobile?: boolean | null;
+                        breakOnDesktop?: boolean | null;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  subheading?: string | null;
+                  ctaPrimaryLabel?: string | null;
+                  ctaPrimaryLink?: string | null;
+                  ctaSecondaryLabel?: string | null;
+                  ctaSecondaryLink?: string | null;
+                  /**
+                   * Background image for hero section
+                   */
+                  backgroundImage?: (string | null) | Media;
+                  /**
+                   * Agent image (for agent variant)
+                   */
+                  agentImage?: (string | null) | Media;
+                  agentEmail?: string | null;
+                  agentPhone?: string | null;
+                  /**
+                   * LinkedIn profile URL
+                   */
+                  agentLinkedin?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'hero';
+                }
+              | {
+                  /**
+                   * Main heading text (use line breaks for multiple lines)
+                   */
+                  heading?: string | null;
+                  subheading?: string | null;
+                  bulletPoints?:
+                    | {
+                        title: string;
+                        description: string;
+                        linkText: string;
+                        linkHref: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  /**
+                   * Main image displayed on the right side
+                   */
+                  image?: (string | null) | Media;
+                  ctaText?: string | null;
+                  ctaHref?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'flippedM';
+                }
+            )[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'container';
+      }
+  )[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "css-styles".
+ */
+export interface CssStyle {
+  id: string;
+  /**
+   * Display name for this CSS style (e.g., "Sand Gradient")
+   */
+  name: string;
+  /**
+   * CSS class name (e.g., "sand-gradient-background")
+   */
+  cssClass: string;
+  /**
+   * The CSS code for this style. Include the class selector.
+   */
+  css: string;
+  /**
+   * Only active styles will appear in the Container block selector
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -190,6 +375,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: string | Page;
+      } | null)
+    | ({
+        relationTo: 'css-styles';
+        value: string | CssStyle;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -272,6 +465,135 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  blocks?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              variant?: T;
+              headingSegments?:
+                | T
+                | {
+                    text?: T;
+                    color?: T;
+                    breakOnMobile?: T;
+                    breakOnDesktop?: T;
+                    id?: T;
+                  };
+              subheading?: T;
+              ctaPrimaryLabel?: T;
+              ctaPrimaryLink?: T;
+              ctaSecondaryLabel?: T;
+              ctaSecondaryLink?: T;
+              backgroundImage?: T;
+              agentImage?: T;
+              agentEmail?: T;
+              agentPhone?: T;
+              agentLinkedin?: T;
+              id?: T;
+              blockName?: T;
+            };
+        flippedM?:
+          | T
+          | {
+              heading?: T;
+              subheading?: T;
+              bulletPoints?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    linkText?: T;
+                    linkHref?: T;
+                    id?: T;
+                  };
+              image?: T;
+              ctaText?: T;
+              ctaHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        container?:
+          | T
+          | {
+              cssStyle?: T;
+              blocks?:
+                | T
+                | {
+                    hero?:
+                      | T
+                      | {
+                          variant?: T;
+                          headingSegments?:
+                            | T
+                            | {
+                                text?: T;
+                                color?: T;
+                                breakOnMobile?: T;
+                                breakOnDesktop?: T;
+                                id?: T;
+                              };
+                          subheading?: T;
+                          ctaPrimaryLabel?: T;
+                          ctaPrimaryLink?: T;
+                          ctaSecondaryLabel?: T;
+                          ctaSecondaryLink?: T;
+                          backgroundImage?: T;
+                          agentImage?: T;
+                          agentEmail?: T;
+                          agentPhone?: T;
+                          agentLinkedin?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
+                    flippedM?:
+                      | T
+                      | {
+                          heading?: T;
+                          subheading?: T;
+                          bulletPoints?:
+                            | T
+                            | {
+                                title?: T;
+                                description?: T;
+                                linkText?: T;
+                                linkHref?: T;
+                                id?: T;
+                              };
+                          image?: T;
+                          ctaText?: T;
+                          ctaHref?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "css-styles_select".
+ */
+export interface CssStylesSelect<T extends boolean = true> {
+  name?: T;
+  cssClass?: T;
+  css?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

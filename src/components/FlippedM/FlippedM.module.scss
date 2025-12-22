@@ -1,0 +1,102 @@
+:root {
+    --flippedMHeadingSize: var(--display4);
+    --bulletPointHeadingSize: 24px;
+}
+    
+@media (min-width: 768px) {
+    :root {
+        --flippedMHeadingSize: var(--display2);
+        --bulletPointHeadingSize: var(--headline2);
+    }
+}
+  
+  .heading,
+  .subheading,
+  .bulletPointHeading,
+  .bulletPointLink {
+    color: var(--strong-green);
+  }
+  
+  .heading {
+    font-family: "Copernicus New Cond Trial";
+    font-weight: 300;
+    font-size: var(--flippedMHeadingSize);
+    line-height: var(--flippedMHeadingSize);
+  }
+  
+  .subheading {
+    font-family: "GT America Condensed";
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 30px;
+  }
+  
+  .bulletPointHeading {
+    font-family: "GT America Condensed";
+    font-weight: 500;
+    font-size: var(--bulletPointHeadingSize);
+    line-height: var(--bulletPointHeadingSize);
+    letter-spacing: 0px;
+  }
+  
+  .bulletPointsubheading {
+    font-size: 18px;
+    line-height: 27px;
+  }
+  
+  .bulletPointLink {
+    font-family: "GT America Condensed";
+    font-weight: 400;
+    font-size: var(--l);
+    letter-spacing: 0%;
+    line-height: 100%;
+  }
+  
+  /* ---------- "Grayed out" state ---------- */
+  
+  .bulletPointHeadingMuted,
+  .bulletPointsubheadingMuted,
+  .bulletPointLinkMuted {
+    color: rgba(28, 47, 41, 0.18); /* soft, washed-out green/gray */
+  }
+  
+  .bulletPointLinkMuted {
+    pointer-events: none;
+    cursor: default;
+  }
+  
+  /* ---------- Bullet dot & line ---------- */
+  
+  .bulletPointDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 9999px;
+    flex-shrink: 0;
+  }
+  
+  .bulletPointDotActive {
+    background-color: #000000;
+  }
+  
+  .bulletPointDotMuted {
+    background-color: rgba(28, 47, 41, 0.18);
+  }
+  
+  .bulletPointLineWrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  
+  .bulletPointLineBlackSegment {
+    width: 1px;
+    height: 50px; /* short black segment just under first dot */
+    background-color: #000000;
+  }
+  
+  .bulletPointLineMuted {
+    width: 1px;
+    flex-grow: 1;
+    background-color: rgba(28, 47, 41, 0.18);
+  }
+
