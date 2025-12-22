@@ -46,6 +46,30 @@ async function seed() {
 }`,
         active: true,
       },
+      {
+        name: '-mt-100',
+        cssClass: '-mt-100',
+        css: `.-mt-100 {
+  margin-top: -100px;
+}`,
+        active: true,
+      },
+      {
+        name: '-mb-300',
+        cssClass: '-mb-300',
+        css: `.-mb-300 {
+  margin-bottom: -300px;
+}`,
+        active: true,
+      },
+      {
+        name: 'linear-gradient-50white-50transparent',
+        cssClass: 'linear-gradient-50white-50transparent',
+        css: `.linear-gradient-50white-50transparent {
+  background: linear-gradient(to bottom, #ffffff 50%, transparent 50%);
+}`,
+        active: true,
+      },
     ]
 
     for (const styleData of cssStyles) {
@@ -70,7 +94,7 @@ async function seed() {
       }
     }
 
-    // Upload amazon_fc.png image to media collection
+    // Upload amazon_fc-1.png image to media collection
     let amazonImageId: string | null = null
     const existingImage = await payload.find({
       collection: 'media',
@@ -87,7 +111,7 @@ async function seed() {
       console.log('⏭️  Amazon FC image already exists in media')
     } else {
       try {
-        const imagePath = join(dirname_path, '..', 'public', 'img', 'amazon_fc.png')
+        const imagePath = join(dirname_path, '..', 'public', 'img', 'amazon_fc-1.png')
         
         const uploadedImage = await payload.create({
           collection: 'media',
@@ -98,30 +122,36 @@ async function seed() {
         })
 
         amazonImageId = uploadedImage.id
-        console.log('✅ Uploaded amazon_fc.png to media collection')
+        console.log('✅ Uploaded amazon_fc-1.png to media collection')
       } catch (error) {
-        console.error('❌ Error uploading amazon_fc.png:', error)
+        console.error('❌ Error uploading amazon_fc-1.png:', error)
         console.log('⚠️  Continuing without image...')
       }
     }
 
-    // Get Tan Linear Background CSS style (should have been created above)
-    let tanLinearStyleId: string | null = null
-    const tanLinearStyle = await payload.find({
-      collection: 'css-styles',
-      where: {
-        cssClass: {
-          equals: 'tan-linear-background',
+    // Get CSS style IDs (should have been created above)
+    const getStyleId = async (cssClass: string): Promise<string | null> => {
+      const style = await payload.find({
+        collection: 'css-styles',
+        where: {
+          cssClass: {
+            equals: cssClass,
+          },
         },
-      },
-      limit: 1,
-    })
+        limit: 1,
+      })
 
-    if (tanLinearStyle.docs.length > 0) {
-      tanLinearStyleId = tanLinearStyle.docs[0].id
-    } else {
-      console.error('❌ Tan Linear Background CSS style not found!')
+      if (style.docs.length > 0) {
+        return style.docs[0].id
+      } else {
+        console.error(`❌ CSS style not found: ${cssClass}`)
+        return null
+      }
     }
+
+    const tanLinearStyleId = await getStyleId('tan-linear-background')
+    const mb300StyleId = await getStyleId('-mb-300')
+    const linearGradientStyleId = await getStyleId('linear-gradient-50white-50transparent')
 
     // Check if page with slug 'home' already exists
     const existing = await payload.find({
@@ -157,7 +187,10 @@ async function seed() {
       },
       {
         blockType: 'container',
-        cssStyle: tanLinearStyleId,
+        cssStyles: [
+          ...(tanLinearStyleId ? [tanLinearStyleId] : []),
+          ...(mb300StyleId ? [mb300StyleId] : []),
+        ],
         blocks: [
           {
             blockType: 'flippedM',
@@ -188,6 +221,45 @@ async function seed() {
               },
             ],
             image: amazonImageId,
+          },
+        ],
+      },
+      {
+        blockType: 'container',
+        cssStyles: tanLinearStyleId ? [tanLinearStyleId] : [],
+        blocks: [
+          {
+            blockType: 'container',
+            cssStyles: linearGradientStyleId ? [linearGradientStyleId] : [],
+            blocks: [
+              {
+                blockType: 'cardSection',
+                title: 'Relationships Built for the Long Game',
+                description:
+                  'In every transaction and relationship we hold true to our guiding principles.',
+                buttonText: 'What Makes Us Different',
+                cards: [
+                  {
+                    title: 'Partnership',
+                    icon: 'fa-regular fa-handshake',
+                    description:
+                      "We build lasting relationships, offering fiduciary-level care and strategic guidance beyond the deal.",
+                  },
+                  {
+                    title: 'Performance',
+                    icon: 'fa-regular fa-handshake',
+                    description:
+                      "Our data-driven insights and disciplined approach deliver high-value, measurable results we're proud to stand behind.",
+                  },
+                  {
+                    title: 'Perspective',
+                    icon: 'fa-regular fa-handshake',
+                    description:
+                      'We take a holistic approach, ensuring real estate decisions align with broader wealth strategies and your highest priority values.',
+                  },
+                ],
+              },
+            ],
           },
         ],
       },

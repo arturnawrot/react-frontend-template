@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { Hero } from '../blocks/Hero'
 import { FlippedM } from '../blocks/FlippedM'
 import { Container } from '../blocks/Container'
+import { CardSection } from '../blocks/CardSection'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -34,7 +35,7 @@ export const Pages: CollectionConfig = {
       type: 'blocks',
       required: true,
       minRows: 1,
-      blocks: [Hero, FlippedM, Container],
+      blocks: [Hero, FlippedM, Container, CardSection],
     },
   ],
   timestamps: true,

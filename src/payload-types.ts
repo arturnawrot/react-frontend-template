@@ -239,9 +239,9 @@ export interface Page {
       }
     | {
         /**
-         * Select a CSS style to apply to this container (leave empty for no style)
+         * Select one or more CSS styles to apply to this container
          */
-        cssStyle?: (string | null) | CssStyle;
+        cssStyles?: (string | CssStyle)[] | null;
         /**
          * Add one or more blocks to display inside this container
          */
@@ -309,11 +309,335 @@ export interface Page {
                   blockName?: string | null;
                   blockType: 'flippedM';
                 }
+              | {
+                  title?: string | null;
+                  description?: string | null;
+                  buttonText?: string | null;
+                  buttonLink?: string | null;
+                  cards: {
+                    title: string;
+                    /**
+                     * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+                     */
+                    icon: string;
+                    description: string;
+                    id?: string | null;
+                  }[];
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'cardSection';
+                }
+              | {
+                  /**
+                   * Select one or more CSS styles to apply to this container
+                   */
+                  cssStyles?: (string | CssStyle)[] | null;
+                  /**
+                   * Add one or more blocks to display inside this container
+                   */
+                  blocks?:
+                    | (
+                        | {
+                            variant: 'default' | 'full-width-color' | 'split' | 'agent';
+                            headingSegments?:
+                              | {
+                                  text: string;
+                                  /**
+                                   * Hex color code (e.g., #DAE684)
+                                   */
+                                  color?: string | null;
+                                  breakOnMobile?: boolean | null;
+                                  breakOnDesktop?: boolean | null;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            subheading?: string | null;
+                            ctaPrimaryLabel?: string | null;
+                            ctaPrimaryLink?: string | null;
+                            ctaSecondaryLabel?: string | null;
+                            ctaSecondaryLink?: string | null;
+                            /**
+                             * Background image for hero section
+                             */
+                            backgroundImage?: (string | null) | Media;
+                            /**
+                             * Agent image (for agent variant)
+                             */
+                            agentImage?: (string | null) | Media;
+                            agentEmail?: string | null;
+                            agentPhone?: string | null;
+                            /**
+                             * LinkedIn profile URL
+                             */
+                            agentLinkedin?: string | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'hero';
+                          }
+                        | {
+                            /**
+                             * Main heading text (use line breaks for multiple lines)
+                             */
+                            heading?: string | null;
+                            subheading?: string | null;
+                            bulletPoints?:
+                              | {
+                                  title: string;
+                                  description: string;
+                                  linkText: string;
+                                  linkHref: string;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            /**
+                             * Main image displayed on the right side
+                             */
+                            image?: (string | null) | Media;
+                            ctaText?: string | null;
+                            ctaHref?: string | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'flippedM';
+                          }
+                        | {
+                            title?: string | null;
+                            description?: string | null;
+                            buttonText?: string | null;
+                            buttonLink?: string | null;
+                            cards: {
+                              title: string;
+                              /**
+                               * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+                               */
+                              icon: string;
+                              description: string;
+                              id?: string | null;
+                            }[];
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'cardSection';
+                          }
+                        | {
+                            /**
+                             * Select one or more CSS styles to apply to this container
+                             */
+                            cssStyles?: (string | CssStyle)[] | null;
+                            /**
+                             * Add one or more blocks to display inside this container
+                             */
+                            blocks?:
+                              | (
+                                  | {
+                                      variant: 'default' | 'full-width-color' | 'split' | 'agent';
+                                      headingSegments?:
+                                        | {
+                                            text: string;
+                                            /**
+                                             * Hex color code (e.g., #DAE684)
+                                             */
+                                            color?: string | null;
+                                            breakOnMobile?: boolean | null;
+                                            breakOnDesktop?: boolean | null;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      subheading?: string | null;
+                                      ctaPrimaryLabel?: string | null;
+                                      ctaPrimaryLink?: string | null;
+                                      ctaSecondaryLabel?: string | null;
+                                      ctaSecondaryLink?: string | null;
+                                      /**
+                                       * Background image for hero section
+                                       */
+                                      backgroundImage?: (string | null) | Media;
+                                      /**
+                                       * Agent image (for agent variant)
+                                       */
+                                      agentImage?: (string | null) | Media;
+                                      agentEmail?: string | null;
+                                      agentPhone?: string | null;
+                                      /**
+                                       * LinkedIn profile URL
+                                       */
+                                      agentLinkedin?: string | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'hero';
+                                    }
+                                  | {
+                                      /**
+                                       * Main heading text (use line breaks for multiple lines)
+                                       */
+                                      heading?: string | null;
+                                      subheading?: string | null;
+                                      bulletPoints?:
+                                        | {
+                                            title: string;
+                                            description: string;
+                                            linkText: string;
+                                            linkHref: string;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      /**
+                                       * Main image displayed on the right side
+                                       */
+                                      image?: (string | null) | Media;
+                                      ctaText?: string | null;
+                                      ctaHref?: string | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'flippedM';
+                                    }
+                                  | {
+                                      title?: string | null;
+                                      description?: string | null;
+                                      buttonText?: string | null;
+                                      buttonLink?: string | null;
+                                      cards: {
+                                        title: string;
+                                        /**
+                                         * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+                                         */
+                                        icon: string;
+                                        description: string;
+                                        id?: string | null;
+                                      }[];
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'cardSection';
+                                    }
+                                  | {
+                                      /**
+                                       * Select one or more CSS styles to apply to this container
+                                       */
+                                      cssStyles?: (string | CssStyle)[] | null;
+                                      /**
+                                       * Add one or more blocks to display inside this container
+                                       */
+                                      blocks?:
+                                        | (
+                                            | {
+                                                variant: 'default' | 'full-width-color' | 'split' | 'agent';
+                                                headingSegments?:
+                                                  | {
+                                                      text: string;
+                                                      /**
+                                                       * Hex color code (e.g., #DAE684)
+                                                       */
+                                                      color?: string | null;
+                                                      breakOnMobile?: boolean | null;
+                                                      breakOnDesktop?: boolean | null;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                subheading?: string | null;
+                                                ctaPrimaryLabel?: string | null;
+                                                ctaPrimaryLink?: string | null;
+                                                ctaSecondaryLabel?: string | null;
+                                                ctaSecondaryLink?: string | null;
+                                                /**
+                                                 * Background image for hero section
+                                                 */
+                                                backgroundImage?: (string | null) | Media;
+                                                /**
+                                                 * Agent image (for agent variant)
+                                                 */
+                                                agentImage?: (string | null) | Media;
+                                                agentEmail?: string | null;
+                                                agentPhone?: string | null;
+                                                /**
+                                                 * LinkedIn profile URL
+                                                 */
+                                                agentLinkedin?: string | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'hero';
+                                              }
+                                            | {
+                                                /**
+                                                 * Main heading text (use line breaks for multiple lines)
+                                                 */
+                                                heading?: string | null;
+                                                subheading?: string | null;
+                                                bulletPoints?:
+                                                  | {
+                                                      title: string;
+                                                      description: string;
+                                                      linkText: string;
+                                                      linkHref: string;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                /**
+                                                 * Main image displayed on the right side
+                                                 */
+                                                image?: (string | null) | Media;
+                                                ctaText?: string | null;
+                                                ctaHref?: string | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'flippedM';
+                                              }
+                                            | {
+                                                title?: string | null;
+                                                description?: string | null;
+                                                buttonText?: string | null;
+                                                buttonLink?: string | null;
+                                                cards: {
+                                                  title: string;
+                                                  /**
+                                                   * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+                                                   */
+                                                  icon: string;
+                                                  description: string;
+                                                  id?: string | null;
+                                                }[];
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'cardSection';
+                                              }
+                                          )[]
+                                        | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'container';
+                                    }
+                                )[]
+                              | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'container';
+                          }
+                      )[]
+                    | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'container';
+                }
             )[]
           | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'container';
+      }
+    | {
+        title?: string | null;
+        description?: string | null;
+        buttonText?: string | null;
+        buttonLink?: string | null;
+        cards: {
+          title: string;
+          /**
+           * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+           */
+          icon: string;
+          description: string;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'cardSection';
       }
   )[];
   updatedAt: string;
@@ -525,7 +849,7 @@ export interface PagesSelect<T extends boolean = true> {
         container?:
           | T
           | {
-              cssStyle?: T;
+              cssStyles?: T;
               blocks?:
                 | T
                 | {
@@ -575,6 +899,267 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    cardSection?:
+                      | T
+                      | {
+                          title?: T;
+                          description?: T;
+                          buttonText?: T;
+                          buttonLink?: T;
+                          cards?:
+                            | T
+                            | {
+                                title?: T;
+                                icon?: T;
+                                description?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
+                    container?:
+                      | T
+                      | {
+                          cssStyles?: T;
+                          blocks?:
+                            | T
+                            | {
+                                hero?:
+                                  | T
+                                  | {
+                                      variant?: T;
+                                      headingSegments?:
+                                        | T
+                                        | {
+                                            text?: T;
+                                            color?: T;
+                                            breakOnMobile?: T;
+                                            breakOnDesktop?: T;
+                                            id?: T;
+                                          };
+                                      subheading?: T;
+                                      ctaPrimaryLabel?: T;
+                                      ctaPrimaryLink?: T;
+                                      ctaSecondaryLabel?: T;
+                                      ctaSecondaryLink?: T;
+                                      backgroundImage?: T;
+                                      agentImage?: T;
+                                      agentEmail?: T;
+                                      agentPhone?: T;
+                                      agentLinkedin?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                flippedM?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      subheading?: T;
+                                      bulletPoints?:
+                                        | T
+                                        | {
+                                            title?: T;
+                                            description?: T;
+                                            linkText?: T;
+                                            linkHref?: T;
+                                            id?: T;
+                                          };
+                                      image?: T;
+                                      ctaText?: T;
+                                      ctaHref?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                cardSection?:
+                                  | T
+                                  | {
+                                      title?: T;
+                                      description?: T;
+                                      buttonText?: T;
+                                      buttonLink?: T;
+                                      cards?:
+                                        | T
+                                        | {
+                                            title?: T;
+                                            icon?: T;
+                                            description?: T;
+                                            id?: T;
+                                          };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                container?:
+                                  | T
+                                  | {
+                                      cssStyles?: T;
+                                      blocks?:
+                                        | T
+                                        | {
+                                            hero?:
+                                              | T
+                                              | {
+                                                  variant?: T;
+                                                  headingSegments?:
+                                                    | T
+                                                    | {
+                                                        text?: T;
+                                                        color?: T;
+                                                        breakOnMobile?: T;
+                                                        breakOnDesktop?: T;
+                                                        id?: T;
+                                                      };
+                                                  subheading?: T;
+                                                  ctaPrimaryLabel?: T;
+                                                  ctaPrimaryLink?: T;
+                                                  ctaSecondaryLabel?: T;
+                                                  ctaSecondaryLink?: T;
+                                                  backgroundImage?: T;
+                                                  agentImage?: T;
+                                                  agentEmail?: T;
+                                                  agentPhone?: T;
+                                                  agentLinkedin?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            flippedM?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  subheading?: T;
+                                                  bulletPoints?:
+                                                    | T
+                                                    | {
+                                                        title?: T;
+                                                        description?: T;
+                                                        linkText?: T;
+                                                        linkHref?: T;
+                                                        id?: T;
+                                                      };
+                                                  image?: T;
+                                                  ctaText?: T;
+                                                  ctaHref?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            cardSection?:
+                                              | T
+                                              | {
+                                                  title?: T;
+                                                  description?: T;
+                                                  buttonText?: T;
+                                                  buttonLink?: T;
+                                                  cards?:
+                                                    | T
+                                                    | {
+                                                        title?: T;
+                                                        icon?: T;
+                                                        description?: T;
+                                                        id?: T;
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            container?:
+                                              | T
+                                              | {
+                                                  cssStyles?: T;
+                                                  blocks?:
+                                                    | T
+                                                    | {
+                                                        hero?:
+                                                          | T
+                                                          | {
+                                                              variant?: T;
+                                                              headingSegments?:
+                                                                | T
+                                                                | {
+                                                                    text?: T;
+                                                                    color?: T;
+                                                                    breakOnMobile?: T;
+                                                                    breakOnDesktop?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              subheading?: T;
+                                                              ctaPrimaryLabel?: T;
+                                                              ctaPrimaryLink?: T;
+                                                              ctaSecondaryLabel?: T;
+                                                              ctaSecondaryLink?: T;
+                                                              backgroundImage?: T;
+                                                              agentImage?: T;
+                                                              agentEmail?: T;
+                                                              agentPhone?: T;
+                                                              agentLinkedin?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        flippedM?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              subheading?: T;
+                                                              bulletPoints?:
+                                                                | T
+                                                                | {
+                                                                    title?: T;
+                                                                    description?: T;
+                                                                    linkText?: T;
+                                                                    linkHref?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              image?: T;
+                                                              ctaText?: T;
+                                                              ctaHref?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        cardSection?:
+                                                          | T
+                                                          | {
+                                                              title?: T;
+                                                              description?: T;
+                                                              buttonText?: T;
+                                                              buttonLink?: T;
+                                                              cards?:
+                                                                | T
+                                                                | {
+                                                                    title?: T;
+                                                                    icon?: T;
+                                                                    description?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                          };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cardSection?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              cards?:
+                | T
+                | {
+                    title?: T;
+                    icon?: T;
+                    description?: T;
+                    id?: T;
                   };
               id?: T;
               blockName?: T;

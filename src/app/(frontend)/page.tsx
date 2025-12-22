@@ -1,9 +1,7 @@
 import { getPayload } from 'payload'
 import React from 'react'
 import config from '@/payload.config'
-import Hero from '@/components/Hero'
-import FlippedM from '@/components/FlippedM/FlippedM'
-import Container from '@/components/Container/Container'
+import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
 
 export default async function HomePage() {
@@ -31,20 +29,5 @@ export default async function HomePage() {
     )
   }
 
-  return (
-    <div className="w-full">
-      {page.blocks?.map((block, index) => {
-        if (block.blockType === 'hero') {
-          return <Hero key={index} block={block} />
-        }
-        if (block.blockType === 'flippedM') {
-          return <FlippedM key={index} block={block} />
-        }
-        if (block.blockType === 'container') {
-          return <Container key={index} block={block} />
-        }
-        return null
-      })}
-    </div>
-  )
+  return <div>{renderBlocks(page.blocks)}</div>
 }
