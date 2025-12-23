@@ -10,6 +10,8 @@ import TrackRecord from '@/components/TrackRecord/TrackRecord'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import type { Page } from '@/payload-types'
+import { buildoutApi } from '@/utils/buildout-api'
+import type { BuildoutProperty } from '@/utils/buildout-api'
 
 interface AgentPageProps {
   params: Promise<{ slug: string }>
@@ -66,6 +68,44 @@ export default async function AgentPage({ params }: AgentPageProps) {
   // Get first name for CTA footer
   const firstName = agent.firstName || 'Agent'
 
+  // Fetch featured properties if agent has featured property IDs and broker ID
+  let featuredProperties: BuildoutProperty[] = []
+  
+  // Handle featuredPropertyIds - it's a JSON field that can be null, number[], or corrupted
+  const featuredIds: number[] = (() => {
+    if (!agent.featuredPropertyIds) return []
+    if (typeof agent.featuredPropertyIds === 'number') {
+      // Corrupted value - ignore it
+      console.warn('Agent featuredPropertyIds is corrupted (number instead of array), ignoring')
+      return []
+    }
+    if (Array.isArray(agent.featuredPropertyIds)) {
+      return agent.featuredPropertyIds.filter((id): id is number => typeof id === 'number')
+    }
+    return []
+  })()
+  
+  if (featuredIds.length > 0 && agent.buildout_broker_id) {
+    try {
+      const brokerId = parseInt(agent.buildout_broker_id, 10)
+      if (!isNaN(brokerId)) {
+        // Fetch all properties for this broker (we'll filter to featured ones)
+        const propertiesResponse = await buildoutApi.getPropertiesByBrokerId(brokerId, {
+          limit: 100, // Get enough to find featured ones
+          skipCache: false,
+        })
+        
+        // Filter to only featured property IDs and maintain order
+        featuredProperties = featuredIds
+          .map((id) => propertiesResponse.properties.find((p) => p.id === id))
+          .filter((p): p is BuildoutProperty => p !== undefined)
+      }
+    } catch (error) {
+      console.error('Error fetching featured properties:', error)
+      // Continue without featured properties if there's an error
+    }
+  }
+
   return (
     <>
       <HeroWrapper block={heroBlock} />
@@ -81,7 +121,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
         about={agent.about || null}
       />
       <div className="tan-linear-background">
-        <FeaturedPropertiesAgent />
+        <FeaturedPropertiesAgent properties={featuredProperties} agentName={agent.fullName || `${agent.firstName} ${agent.lastName}`} />
         <TrackRecord />
       </div>
       <CTAFooter
