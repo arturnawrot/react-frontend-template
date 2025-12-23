@@ -1,0 +1,219 @@
+import type { Payload } from 'payload'
+import { join } from 'path'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const filename = fileURLToPath(import.meta.url)
+const dirname_path = dirname(filename)
+
+/**
+ * Seeds CSS styles that are common across all pages
+ */
+export async function seedCSSStyles(payload: Payload) {
+  const cssStyles = [
+    {
+      name: 'Sand Gradient',
+      cssClass: 'sand-gradient-background',
+      css: `.sand-gradient-background {
+  background: radial-gradient(97.87% 101.48% at 97.87% 11.48%, rgba(215, 209, 196, 0.7) 0%, rgba(215, 209, 196, 0.0121075) 72.23%, rgba(215, 209, 196, 0) 100%);
+}`,
+      active: true,
+    },
+    {
+      name: 'Tan Linear Background',
+      cssClass: 'tan-linear-background',
+      css: `.tan-linear-background {
+  background: linear-gradient(
+    360deg,
+    rgba(210, 167, 129, 0) 40%,
+    rgba(217, 161, 113, 0.1) 100%
+  );
+}`,
+      active: true,
+    },
+    {
+      name: 'Flipped M Background',
+      cssClass: 'flipped-m-background',
+      css: `.flipped-m-background {
+  background: linear-gradient(
+    0deg,
+    rgba(217, 161, 113, 0) 0%,
+    rgba(217, 161, 113, 0.1) 100%
+  );
+}`,
+      active: true,
+    },
+    {
+      name: '-mt-100',
+      cssClass: '-mt-100',
+      css: `.-mt-100 {
+  margin-top: -100px;
+}`,
+      active: true,
+    },
+    {
+      name: '-mb-300',
+      cssClass: '-mb-300',
+      css: `.-mb-300 {
+  margin-bottom: -300px;
+}`,
+      active: true,
+    },
+    {
+      name: 'linear-gradient-50white-50transparent',
+      cssClass: 'linear-gradient-50white-50transparent',
+      css: `.linear-gradient-50white-50transparent {
+  background: linear-gradient(to bottom, #ffffff 50%, transparent 50%);
+}`,
+      active: true,
+    },
+    {
+      name: 'background-50strong_green-50transparent',
+      cssClass: 'background-50strong_green-50transparent',
+      css: `.background-50strong_green-50transparent {
+  background: linear-gradient(to bottom, var(--strong-green) 50%, transparent 50%);
+}`,
+      active: true,
+    },
+  ]
+
+  for (const styleData of cssStyles) {
+    const existing = await payload.find({
+      collection: 'css-styles',
+      where: {
+        cssClass: {
+          equals: styleData.cssClass,
+        },
+      },
+      limit: 1,
+    })
+
+    if (existing.docs.length === 0) {
+      await payload.create({
+        collection: 'css-styles',
+        data: styleData,
+      })
+      console.log(`✅ Created CSS style: ${styleData.name}`)
+    } else {
+      console.log(`⏭️  CSS style already exists: ${styleData.name}`)
+    }
+  }
+}
+
+/**
+ * Gets a CSS style ID by class name
+ */
+export async function getStyleId(payload: Payload, cssClass: string): Promise<string | null> {
+  const style = await payload.find({
+    collection: 'css-styles',
+    where: {
+      cssClass: {
+        equals: cssClass,
+      },
+    },
+    limit: 1,
+  })
+
+  if (style.docs.length > 0) {
+    return style.docs[0].id
+  } else {
+    console.error(`❌ CSS style not found: ${cssClass}`)
+    return null
+  }
+}
+
+/**
+ * Seeds the navbar global
+ */
+export async function seedNavbar(payload: Payload) {
+  console.log('Seeding navbar...')
+  
+  const homePage = await payload.find({
+    collection: 'pages',
+    where: {
+      slug: {
+        equals: 'home',
+      },
+    },
+    limit: 1,
+  })
+
+  const homePageId = homePage.docs[0]?.id || null
+
+  const navbarData = {
+    upperLinks: [
+      {
+        label: 'Schedule',
+        linkType: 'custom' as const,
+        customUrl: '/schedule',
+      },
+      {
+        label: 'Contact Us',
+        linkType: 'custom' as const,
+        customUrl: '/contact',
+      },
+      {
+        label: 'Login',
+        linkType: 'custom' as const,
+        customUrl: '/login',
+      },
+    ],
+    mainLinks: [
+      {
+        label: 'Buy',
+        linkType: 'custom' as const,
+        customUrl: '/buy',
+      },
+      {
+        label: 'Lease',
+        linkType: 'custom' as const,
+        customUrl: '/lease',
+      },
+      {
+        label: 'Sell',
+        linkType: 'custom' as const,
+        customUrl: '/sell',
+      },
+      {
+        label: 'Our Agents',
+        linkType: 'custom' as const,
+        customUrl: '/agents',
+      },
+      {
+        label: 'Our Advantages',
+        linkType: 'custom' as const,
+        customUrl: '/advantages',
+      },
+      {
+        label: 'Our Services',
+        linkType: 'custom' as const,
+        customUrl: '/services',
+      },
+      {
+        label: 'Insights & Research',
+        linkType: 'custom' as const,
+        customUrl: '/insights',
+      },
+    ],
+  }
+
+  try {
+    await payload.updateGlobal({
+      slug: 'navbar',
+      data: navbarData,
+    })
+    console.log('✅ Navbar seeded successfully!')
+  } catch (error) {
+    console.log('Navbar global not found, creating...')
+    try {
+      await payload.updateGlobal({
+        slug: 'navbar',
+        data: navbarData,
+      })
+      console.log('✅ Navbar created and seeded successfully!')
+    } catch (createError) {
+      console.error('❌ Error creating navbar:', createError)
+    }
+  }
+}
+

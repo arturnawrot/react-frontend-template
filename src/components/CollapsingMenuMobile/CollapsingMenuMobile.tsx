@@ -4,16 +4,18 @@ import React from 'react'
 import { Search, X } from 'lucide-react'
 import {
   CollapsingMenuMobileLink,
-  MAIN_LINKS,
 } from '../NavbarLink/NavbarLink'
+import type { NavbarLink } from '../Navbar/Navbar'
 import styles from './CollapsingMenuMobile.module.scss'
 
 export default function CollapsingMenuMobile({
   open,
   onClose,
+  mainLinks = [],
 }: {
   open: boolean
   onClose: () => void
+  mainLinks?: NavbarLink[]
 }) {
   return (
     <>
@@ -44,8 +46,8 @@ export default function CollapsingMenuMobile({
         <div className="flex flex-col min-h-full py-8">
           {/* Navigation Links - Left Aligned */}
           <div className="flex flex-col items-start gap-8 text-2xl flex-1 justify-center">
-            {MAIN_LINKS.map((link) => (
-              <CollapsingMenuMobileLink key={link.href} href={link.href}>
+            {mainLinks.map((link, index) => (
+              <CollapsingMenuMobileLink key={`${link.href}-${index}`} href={link.href}>
                 {link.label}
               </CollapsingMenuMobileLink>
             ))}

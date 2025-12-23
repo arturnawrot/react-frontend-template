@@ -14,6 +14,8 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed.ts",
+    "seed:home": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/seed-home.ts",
+    "seed:buy": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/seed-buy.ts",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" pnpm exec playwright test",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"

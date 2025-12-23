@@ -5,16 +5,25 @@ import Logo from '../Logo/Logo'
 import {
   MainNavbarLink,
   UpperNavbarLink,
-  MAIN_LINKS,
-  UPPER_LINKS,
 } from '../NavbarLink/NavbarLink'
 import styles from './Navbar.module.scss'
 
-interface NavbarProps {
-  darkVariant?: boolean
+export interface NavbarLink {
+  label: string
+  href: string
 }
 
-export default function Navbar({ darkVariant = false }: NavbarProps) {
+interface NavbarProps {
+  darkVariant?: boolean
+  upperLinks?: NavbarLink[]
+  mainLinks?: NavbarLink[]
+}
+
+export default function Navbar({ 
+  darkVariant = false,
+  upperLinks = [],
+  mainLinks = [],
+}: NavbarProps) {
   return (
     <>
       {/* Desktop: Top Search Bar - Hidden on Mobile */}
@@ -31,8 +40,8 @@ export default function Navbar({ darkVariant = false }: NavbarProps) {
             </div>
           </div>
           <div className="flex gap-8 ml-8">
-            {UPPER_LINKS.map((link) => (
-              <UpperNavbarLink key={link.href} href={link.href}>
+            {upperLinks.map((link, index) => (
+              <UpperNavbarLink key={`${link.href}-${index}`} href={link.href}>
                 {link.label}
               </UpperNavbarLink>
             ))}
@@ -45,8 +54,8 @@ export default function Navbar({ darkVariant = false }: NavbarProps) {
         <div className="flex items-center justify-between px-8 py-4">
           <Logo darkVariant={darkVariant} />
           <div className="flex gap-8" id="mainNavbarLinks">
-            {MAIN_LINKS.map((link) => (
-              <MainNavbarLink key={link.href} href={link.href}>
+            {mainLinks.map((link, index) => (
+              <MainNavbarLink key={`${link.href}-${index}`} href={link.href}>
                 {link.label}
               </MainNavbarLink>
             ))}

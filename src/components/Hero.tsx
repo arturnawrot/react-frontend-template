@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { Menu, X, Mail, Phone, Linkedin } from 'lucide-react'
-import Navbar from './Navbar/Navbar'
+import Navbar, { type NavbarLink } from './Navbar/Navbar'
 import CollapsingMenuMobile from './CollapsingMenuMobile/CollapsingMenuMobile'
 import type { Page } from '@/payload-types'
 import styles from './Hero.module.scss'
@@ -18,6 +18,8 @@ type HeadingSegment = {
 
 type HeroProps = {
   block: HeroBlock
+  upperLinks?: NavbarLink[]
+  mainLinks?: NavbarLink[]
 }
 
 // Reusable Heading Component
@@ -33,39 +35,26 @@ const HeroHeader = ({
   useJustifyCenter?: boolean
 }) => {
   const containerAlign =
-    align === 'center'
-      ? 'items-center text-left md:text-center'
-      : 'items-start text-left'
+    align === 'center' ? 'items-center text-center' : 'items-start text-left'
 
   return (
-    <h1 className={`${className} flex justify-center md:block w-full md:w-auto max-w-full`} style={{ width: 'fit-content', maxWidth: '100%' }}>
+    <h1 className={className}>
       <div
-        className={`inline-block md:inline w-full md:w-auto max-w-full ${containerAlign} ${useJustifyCenter ? 'justify-center' : ''}`}
+        className={`
+          flex flex-col lg:flex-row lg:flex-wrap lg:gap-3 gap-0
+          ${containerAlign}
+          ${useJustifyCenter ? 'justify-center' : ''}
+        `}
       >
-        {segments.map((segment, idx) => {
-          const prevSegment = idx > 0 ? segments[idx - 1] : null
-          const shouldAddMobileSpace = idx > 0 && !prevSegment?.breakOnMobile
-          const shouldAddDesktopSpace = idx > 0 && !prevSegment?.breakOnDesktop
-
-          return (
-            <React.Fragment key={idx}>
-              {shouldAddMobileSpace && (
-                <span className="lg:hidden"> </span>
-              )}
-              {shouldAddDesktopSpace && (
-                <span className="hidden lg:inline"> </span>
-              )}
-              <span
-                className="whitespace-normal lg:whitespace-nowrap break-words inline-block"
-                style={segment.color ? { color: segment.color } : undefined}
-              >
-                {segment.text}
-              </span>
-              {segment.breakOnMobile && <br className="lg:hidden" />}
-              {segment.breakOnDesktop && <br className="hidden lg:block" />}
-            </React.Fragment>
-          )
-        })}
+        {segments.map((segment, idx) => (
+          <span
+            key={idx}
+            className={styles.unbreakable}
+            style={segment.color ? { color: segment.color } : undefined}
+          >
+            {segment.text}
+          </span>
+        ))}
       </div>
     </h1>
   )
@@ -94,7 +83,7 @@ const ActionButtons = ({
   if (!primaryLabel && !secondaryLabel) return null
 
   return (
-    <div className="mt-6 flex flex-col sm:flex-row gap-4">
+    <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
       {primaryLabel && (
         onPrimary ? (
           <button onClick={onPrimary} className={primaryClass}>
@@ -289,6 +278,8 @@ const SideBySideLayout = (
     agentLinkedin,
     menuOpen,
     setMenuOpen,
+    upperLinks,
+    mainLinks,
   } = props
 
   const containerBg = 'bg-[var(--strong-green)]'
@@ -296,13 +287,13 @@ const SideBySideLayout = (
   // Styling configuration - same for both split and agent variants
   const headingClass = `${styles.splitHeading} text-left mb-4 z-10 relative leading-tight`
   const subClass = `${styles.splitSubheading} text-white/90 font-light w-full md:max-w-xl text-left leading-relaxed`
-  const btnPrimaryClass = `bg-[#DAE684] text-[#0F231D] font-semibold hover:bg-[#cdd876] transition-colors rounded-full px-8 py-3 text-base w-full md:w-auto text-center`
-  const btnSecondaryClass = `border border-white text-white font-semibold hover:bg-white/10 transition-colors rounded-full px-8 py-3 text-base w-full md:w-auto text-center`
+  const btnPrimaryClass = 'bg-[#DAE684] text-[#0F231D] font-semibold hover:bg-[#cdd876] transition-colors rounded-full px-8 py-3 text-base w-full md:w-auto text-center'
+  const btnSecondaryClass = 'border border-white bg-[var(--strong-green)] text-white font-semibold hover:bg-white/10 transition-colors rounded-full px-8 py-3 text-base w-full md:w-auto flex items-center justify-center'
 
   return (
     <div className={`relative w-full ${containerBg}`}>
       <div className="absolute inset-x-0 top-0 z-30">
-        <Navbar />
+        <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
       </div>
 
       <div className="relative w-full flex flex-col md:flex-row">
@@ -376,6 +367,8 @@ const CenteredLayout = (
     finalImage,
     menuOpen,
     setMenuOpen,
+    upperLinks,
+    mainLinks,
   } = props
 
   // Styling configuration
@@ -385,15 +378,15 @@ const CenteredLayout = (
   `
 
   const headingClass = isFullWidthColor
-    ? `${styles.meybohmHeading} text-center mb-6`
-    : `text-white text-4xl md:text-7xl font-bold mb-6 ${styles.heroHeading} md:w-full`
+    ? `${styles.meybohmHeading} text-center mb-6 mt-0 md:mt-30`
+    : `text-white text-4xl md:text-7xl font-bold mb-6 ${styles.heroHeading} w-full`
 
   const subClass = isFullWidthColor
-    ? `${styles.meybohmSubheading} text-center`
-    : `${styles.heroSubheading} w-full md:max-w-[1200px] max-w-[800px]`
+    ? `${styles.meybohmSubheading} max-w-4xl mx-auto text-center`
+    : `${styles.heroSubheading} max-w-[1200px] max-[1150px]:max-w-[800px] max-[768px]:max-w-[400px]`
 
-  const btnPrimaryClass = `sale-button px-6 py-3 text-base w-full sm:w-auto shadow-md`
-  const btnSecondaryClass = `px-6 py-3 rounded-full border border-white/70 text-white w-full sm:w-auto hover:bg-white/10 transition text-base`
+  const btnPrimaryClass = 'sale-button px-6 py-3 text-base w-full sm:w-auto shadow-md'
+  const btnSecondaryClass = 'px-6 py-3 rounded-full border border-white/70 bg-[var(--strong-green)] text-white w-full sm:w-auto hover:bg-white/10 transition text-base flex items-center justify-center'
 
   return (
     <>
@@ -404,25 +397,12 @@ const CenteredLayout = (
         {!isFullWidthColor && <div className="absolute inset-0 bg-black/40" />}
 
         <div className="relative z-10 flex flex-col h-full pb-10">
-          <Navbar />
+          <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
 
-          <div
-            className={`md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 text-left md:text-center flex flex-col items-center ${isFullWidthColor ? 'gap-6' : ''}`}
-          >
-            <div className="mt-25 md:mt-0 lg:max-w-none md:w-auto flex flex-col items-center md:items-center">
-              <div className="md:w-auto md:flex flex-col items-center md:items-center">
-                <HeroHeader
-                  segments={segments}
-                  className={headingClass}
-                  align="center"
-                  useJustifyCenter={!isFullWidthColor}
-                />
+          <div className={`mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 text-center flex flex-col items-center ${isFullWidthColor ? 'gap-6' : ''}`}>
+            <HeroHeader segments={segments} className={headingClass} align="center" useJustifyCenter={!isFullWidthColor} />
 
-                {subheading && (
-                  <p className={`${subClass} text-left md:text-center max-w-[200px] md:w-auto md:max-w-[1200px]`}>{subheading}</p>
-                )}
-              </div>
-            </div>
+            {subheading && <p className={subClass}>{subheading}</p>}
 
             <ActionButtons
               primaryLabel={primaryCta}
@@ -434,8 +414,7 @@ const CenteredLayout = (
             />
           </div>
 
-          {/* Mobile Menu Trigger */}
-          <div className="md:hidden flex justify-center px-6 pt-25">
+          <div className="md:hidden flex justify-center mt-8 px-6">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="bg-[#DAE684] hover:bg-[#cdd876] text-[#0F231D] w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105"
@@ -450,7 +429,7 @@ const CenteredLayout = (
   )
 }
 
-export default function Hero({ block }: HeroProps) {
+export default function Hero({ block, upperLinks = [], mainLinks = [] }: HeroProps) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   // Prepare data (content, styling flags)
@@ -470,6 +449,8 @@ export default function Hero({ block }: HeroProps) {
           {...content}
           menuOpen={menuOpen}
           setMenuOpen={setMenuOpen}
+          upperLinks={upperLinks}
+          mainLinks={mainLinks}
         />
       ) : (
         <CenteredLayout
@@ -477,10 +458,12 @@ export default function Hero({ block }: HeroProps) {
           {...content}
           menuOpen={menuOpen}
           setMenuOpen={setMenuOpen}
+          upperLinks={upperLinks}
+          mainLinks={mainLinks}
         />
       )}
 
-      <CollapsingMenuMobile open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <CollapsingMenuMobile open={menuOpen} onClose={() => setMenuOpen(false)} mainLinks={mainLinks} />
     </div>
   )
 }

@@ -91,8 +91,12 @@ export interface Config {
     defaultIDType: string;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    navbar: Navbar;
+  };
+  globalsSelect: {
+    navbar: NavbarSelect<false> | NavbarSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -328,6 +332,139 @@ export interface Page {
                   blockType: 'cardSection';
                 }
               | {
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'propertySearchInput';
+                }
+              | {
+                  heading?: string | null;
+                  seeAllLink?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'featuredProperties';
+                }
+              | {
+                  testimonials?:
+                    | {
+                        quote: string;
+                        author: string;
+                        company?: string | null;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'testimonialCarousel';
+                }
+              | {
+                  image?: (string | null) | Media;
+                  imageAlt?: string | null;
+                  /**
+                   * Show image on the right side
+                   */
+                  isReversed?: boolean | null;
+                  header: string;
+                  bulletPoints?:
+                    | {
+                        text: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  linkText?: string | null;
+                  linkHref?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'splitSection';
+                }
+              | {
+                  heading?: string | null;
+                  linkText?: string | null;
+                  linkHref?: string | null;
+                  articles?:
+                    | {
+                        title: string;
+                        image?: (string | null) | Media;
+                        tags?:
+                          | {
+                              tag: string;
+                              id?: string | null;
+                            }[]
+                          | null;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'insightsSection';
+                }
+              | {
+                  heading?: string | null;
+                  properties?:
+                    | {
+                        title: string;
+                        image?: (string | null) | Media;
+                        address?: string | null;
+                        price?: string | null;
+                        size?: string | null;
+                        type?: string | null;
+                        agentName?: string | null;
+                        agentImage?: (string | null) | Media;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'trackRecordSection';
+                }
+              | {
+                  heading?: string | null;
+                  description?: string | null;
+                  buttonText?: string | null;
+                  propertiesCount?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'propertySearch';
+                }
+              | {
+                  preHeading?: string | null;
+                  heading?: string | null;
+                  description?: string | null;
+                  linkText?: string | null;
+                  linkHref?: string | null;
+                  agents?:
+                    | {
+                        name: string;
+                        role?: string | null;
+                        location?: string | null;
+                        image?: (string | null) | Media;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'agentCarousel';
+                }
+              | {
+                  heading?: string | null;
+                  subheading?: string | null;
+                  buttons?:
+                    | {
+                        label: string;
+                        href?: string | null;
+                        variant?: ('primary' | 'secondary') | null;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'ctaFooter';
+                }
+              | {
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'footer';
+                }
+              | {
                   /**
                    * Select one or more CSS styles to apply to this container
                    */
@@ -416,6 +553,139 @@ export interface Page {
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'cardSection';
+                          }
+                        | {
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'propertySearchInput';
+                          }
+                        | {
+                            heading?: string | null;
+                            seeAllLink?: string | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'featuredProperties';
+                          }
+                        | {
+                            testimonials?:
+                              | {
+                                  quote: string;
+                                  author: string;
+                                  company?: string | null;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'testimonialCarousel';
+                          }
+                        | {
+                            image?: (string | null) | Media;
+                            imageAlt?: string | null;
+                            /**
+                             * Show image on the right side
+                             */
+                            isReversed?: boolean | null;
+                            header: string;
+                            bulletPoints?:
+                              | {
+                                  text: string;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            linkText?: string | null;
+                            linkHref?: string | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'splitSection';
+                          }
+                        | {
+                            heading?: string | null;
+                            linkText?: string | null;
+                            linkHref?: string | null;
+                            articles?:
+                              | {
+                                  title: string;
+                                  image?: (string | null) | Media;
+                                  tags?:
+                                    | {
+                                        tag: string;
+                                        id?: string | null;
+                                      }[]
+                                    | null;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'insightsSection';
+                          }
+                        | {
+                            heading?: string | null;
+                            properties?:
+                              | {
+                                  title: string;
+                                  image?: (string | null) | Media;
+                                  address?: string | null;
+                                  price?: string | null;
+                                  size?: string | null;
+                                  type?: string | null;
+                                  agentName?: string | null;
+                                  agentImage?: (string | null) | Media;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'trackRecordSection';
+                          }
+                        | {
+                            heading?: string | null;
+                            description?: string | null;
+                            buttonText?: string | null;
+                            propertiesCount?: string | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'propertySearch';
+                          }
+                        | {
+                            preHeading?: string | null;
+                            heading?: string | null;
+                            description?: string | null;
+                            linkText?: string | null;
+                            linkHref?: string | null;
+                            agents?:
+                              | {
+                                  name: string;
+                                  role?: string | null;
+                                  location?: string | null;
+                                  image?: (string | null) | Media;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'agentCarousel';
+                          }
+                        | {
+                            heading?: string | null;
+                            subheading?: string | null;
+                            buttons?:
+                              | {
+                                  label: string;
+                                  href?: string | null;
+                                  variant?: ('primary' | 'secondary') | null;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'ctaFooter';
+                          }
+                        | {
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'footer';
                           }
                         | {
                             /**
@@ -508,6 +778,139 @@ export interface Page {
                                       blockType: 'cardSection';
                                     }
                                   | {
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'propertySearchInput';
+                                    }
+                                  | {
+                                      heading?: string | null;
+                                      seeAllLink?: string | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'featuredProperties';
+                                    }
+                                  | {
+                                      testimonials?:
+                                        | {
+                                            quote: string;
+                                            author: string;
+                                            company?: string | null;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'testimonialCarousel';
+                                    }
+                                  | {
+                                      image?: (string | null) | Media;
+                                      imageAlt?: string | null;
+                                      /**
+                                       * Show image on the right side
+                                       */
+                                      isReversed?: boolean | null;
+                                      header: string;
+                                      bulletPoints?:
+                                        | {
+                                            text: string;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      linkText?: string | null;
+                                      linkHref?: string | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'splitSection';
+                                    }
+                                  | {
+                                      heading?: string | null;
+                                      linkText?: string | null;
+                                      linkHref?: string | null;
+                                      articles?:
+                                        | {
+                                            title: string;
+                                            image?: (string | null) | Media;
+                                            tags?:
+                                              | {
+                                                  tag: string;
+                                                  id?: string | null;
+                                                }[]
+                                              | null;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'insightsSection';
+                                    }
+                                  | {
+                                      heading?: string | null;
+                                      properties?:
+                                        | {
+                                            title: string;
+                                            image?: (string | null) | Media;
+                                            address?: string | null;
+                                            price?: string | null;
+                                            size?: string | null;
+                                            type?: string | null;
+                                            agentName?: string | null;
+                                            agentImage?: (string | null) | Media;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'trackRecordSection';
+                                    }
+                                  | {
+                                      heading?: string | null;
+                                      description?: string | null;
+                                      buttonText?: string | null;
+                                      propertiesCount?: string | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'propertySearch';
+                                    }
+                                  | {
+                                      preHeading?: string | null;
+                                      heading?: string | null;
+                                      description?: string | null;
+                                      linkText?: string | null;
+                                      linkHref?: string | null;
+                                      agents?:
+                                        | {
+                                            name: string;
+                                            role?: string | null;
+                                            location?: string | null;
+                                            image?: (string | null) | Media;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'agentCarousel';
+                                    }
+                                  | {
+                                      heading?: string | null;
+                                      subheading?: string | null;
+                                      buttons?:
+                                        | {
+                                            label: string;
+                                            href?: string | null;
+                                            variant?: ('primary' | 'secondary') | null;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'ctaFooter';
+                                    }
+                                  | {
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'footer';
+                                    }
+                                  | {
                                       /**
                                        * Select one or more CSS styles to apply to this container
                                        */
@@ -597,6 +1000,139 @@ export interface Page {
                                                 blockName?: string | null;
                                                 blockType: 'cardSection';
                                               }
+                                            | {
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'propertySearchInput';
+                                              }
+                                            | {
+                                                heading?: string | null;
+                                                seeAllLink?: string | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'featuredProperties';
+                                              }
+                                            | {
+                                                testimonials?:
+                                                  | {
+                                                      quote: string;
+                                                      author: string;
+                                                      company?: string | null;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'testimonialCarousel';
+                                              }
+                                            | {
+                                                image?: (string | null) | Media;
+                                                imageAlt?: string | null;
+                                                /**
+                                                 * Show image on the right side
+                                                 */
+                                                isReversed?: boolean | null;
+                                                header: string;
+                                                bulletPoints?:
+                                                  | {
+                                                      text: string;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                linkText?: string | null;
+                                                linkHref?: string | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'splitSection';
+                                              }
+                                            | {
+                                                heading?: string | null;
+                                                linkText?: string | null;
+                                                linkHref?: string | null;
+                                                articles?:
+                                                  | {
+                                                      title: string;
+                                                      image?: (string | null) | Media;
+                                                      tags?:
+                                                        | {
+                                                            tag: string;
+                                                            id?: string | null;
+                                                          }[]
+                                                        | null;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'insightsSection';
+                                              }
+                                            | {
+                                                heading?: string | null;
+                                                properties?:
+                                                  | {
+                                                      title: string;
+                                                      image?: (string | null) | Media;
+                                                      address?: string | null;
+                                                      price?: string | null;
+                                                      size?: string | null;
+                                                      type?: string | null;
+                                                      agentName?: string | null;
+                                                      agentImage?: (string | null) | Media;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'trackRecordSection';
+                                              }
+                                            | {
+                                                heading?: string | null;
+                                                description?: string | null;
+                                                buttonText?: string | null;
+                                                propertiesCount?: string | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'propertySearch';
+                                              }
+                                            | {
+                                                preHeading?: string | null;
+                                                heading?: string | null;
+                                                description?: string | null;
+                                                linkText?: string | null;
+                                                linkHref?: string | null;
+                                                agents?:
+                                                  | {
+                                                      name: string;
+                                                      role?: string | null;
+                                                      location?: string | null;
+                                                      image?: (string | null) | Media;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'agentCarousel';
+                                              }
+                                            | {
+                                                heading?: string | null;
+                                                subheading?: string | null;
+                                                buttons?:
+                                                  | {
+                                                      label: string;
+                                                      href?: string | null;
+                                                      variant?: ('primary' | 'secondary') | null;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'ctaFooter';
+                                              }
+                                            | {
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'footer';
+                                              }
                                           )[]
                                         | null;
                                       id?: string | null;
@@ -638,6 +1174,139 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'cardSection';
+      }
+    | {
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'propertySearchInput';
+      }
+    | {
+        heading?: string | null;
+        seeAllLink?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'featuredProperties';
+      }
+    | {
+        testimonials?:
+          | {
+              quote: string;
+              author: string;
+              company?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'testimonialCarousel';
+      }
+    | {
+        image?: (string | null) | Media;
+        imageAlt?: string | null;
+        /**
+         * Show image on the right side
+         */
+        isReversed?: boolean | null;
+        header: string;
+        bulletPoints?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        linkText?: string | null;
+        linkHref?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'splitSection';
+      }
+    | {
+        heading?: string | null;
+        linkText?: string | null;
+        linkHref?: string | null;
+        articles?:
+          | {
+              title: string;
+              image?: (string | null) | Media;
+              tags?:
+                | {
+                    tag: string;
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'insightsSection';
+      }
+    | {
+        heading?: string | null;
+        properties?:
+          | {
+              title: string;
+              image?: (string | null) | Media;
+              address?: string | null;
+              price?: string | null;
+              size?: string | null;
+              type?: string | null;
+              agentName?: string | null;
+              agentImage?: (string | null) | Media;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'trackRecordSection';
+      }
+    | {
+        heading?: string | null;
+        description?: string | null;
+        buttonText?: string | null;
+        propertiesCount?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'propertySearch';
+      }
+    | {
+        preHeading?: string | null;
+        heading?: string | null;
+        description?: string | null;
+        linkText?: string | null;
+        linkHref?: string | null;
+        agents?:
+          | {
+              name: string;
+              role?: string | null;
+              location?: string | null;
+              image?: (string | null) | Media;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'agentCarousel';
+      }
+    | {
+        heading?: string | null;
+        subheading?: string | null;
+        buttons?:
+          | {
+              label: string;
+              href?: string | null;
+              variant?: ('primary' | 'secondary') | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'ctaFooter';
+      }
+    | {
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'footer';
       }
   )[];
   updatedAt: string;
@@ -917,6 +1586,146 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    propertySearchInput?:
+                      | T
+                      | {
+                          id?: T;
+                          blockName?: T;
+                        };
+                    featuredProperties?:
+                      | T
+                      | {
+                          heading?: T;
+                          seeAllLink?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
+                    testimonialCarousel?:
+                      | T
+                      | {
+                          testimonials?:
+                            | T
+                            | {
+                                quote?: T;
+                                author?: T;
+                                company?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
+                    splitSection?:
+                      | T
+                      | {
+                          image?: T;
+                          imageAlt?: T;
+                          isReversed?: T;
+                          header?: T;
+                          bulletPoints?:
+                            | T
+                            | {
+                                text?: T;
+                                id?: T;
+                              };
+                          linkText?: T;
+                          linkHref?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
+                    insightsSection?:
+                      | T
+                      | {
+                          heading?: T;
+                          linkText?: T;
+                          linkHref?: T;
+                          articles?:
+                            | T
+                            | {
+                                title?: T;
+                                image?: T;
+                                tags?:
+                                  | T
+                                  | {
+                                      tag?: T;
+                                      id?: T;
+                                    };
+                                id?: T;
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
+                    trackRecordSection?:
+                      | T
+                      | {
+                          heading?: T;
+                          properties?:
+                            | T
+                            | {
+                                title?: T;
+                                image?: T;
+                                address?: T;
+                                price?: T;
+                                size?: T;
+                                type?: T;
+                                agentName?: T;
+                                agentImage?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
+                    propertySearch?:
+                      | T
+                      | {
+                          heading?: T;
+                          description?: T;
+                          buttonText?: T;
+                          propertiesCount?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
+                    agentCarousel?:
+                      | T
+                      | {
+                          preHeading?: T;
+                          heading?: T;
+                          description?: T;
+                          linkText?: T;
+                          linkHref?: T;
+                          agents?:
+                            | T
+                            | {
+                                name?: T;
+                                role?: T;
+                                location?: T;
+                                image?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
+                    ctaFooter?:
+                      | T
+                      | {
+                          heading?: T;
+                          subheading?: T;
+                          buttons?:
+                            | T
+                            | {
+                                label?: T;
+                                href?: T;
+                                variant?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
+                    footer?:
+                      | T
+                      | {
+                          id?: T;
+                          blockName?: T;
+                        };
                     container?:
                       | T
                       | {
@@ -985,6 +1794,146 @@ export interface PagesSelect<T extends boolean = true> {
                                             description?: T;
                                             id?: T;
                                           };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                propertySearchInput?:
+                                  | T
+                                  | {
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                featuredProperties?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      seeAllLink?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                testimonialCarousel?:
+                                  | T
+                                  | {
+                                      testimonials?:
+                                        | T
+                                        | {
+                                            quote?: T;
+                                            author?: T;
+                                            company?: T;
+                                            id?: T;
+                                          };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                splitSection?:
+                                  | T
+                                  | {
+                                      image?: T;
+                                      imageAlt?: T;
+                                      isReversed?: T;
+                                      header?: T;
+                                      bulletPoints?:
+                                        | T
+                                        | {
+                                            text?: T;
+                                            id?: T;
+                                          };
+                                      linkText?: T;
+                                      linkHref?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                insightsSection?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      linkText?: T;
+                                      linkHref?: T;
+                                      articles?:
+                                        | T
+                                        | {
+                                            title?: T;
+                                            image?: T;
+                                            tags?:
+                                              | T
+                                              | {
+                                                  tag?: T;
+                                                  id?: T;
+                                                };
+                                            id?: T;
+                                          };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                trackRecordSection?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      properties?:
+                                        | T
+                                        | {
+                                            title?: T;
+                                            image?: T;
+                                            address?: T;
+                                            price?: T;
+                                            size?: T;
+                                            type?: T;
+                                            agentName?: T;
+                                            agentImage?: T;
+                                            id?: T;
+                                          };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                propertySearch?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      description?: T;
+                                      buttonText?: T;
+                                      propertiesCount?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                agentCarousel?:
+                                  | T
+                                  | {
+                                      preHeading?: T;
+                                      heading?: T;
+                                      description?: T;
+                                      linkText?: T;
+                                      linkHref?: T;
+                                      agents?:
+                                        | T
+                                        | {
+                                            name?: T;
+                                            role?: T;
+                                            location?: T;
+                                            image?: T;
+                                            id?: T;
+                                          };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                ctaFooter?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      subheading?: T;
+                                      buttons?:
+                                        | T
+                                        | {
+                                            label?: T;
+                                            href?: T;
+                                            variant?: T;
+                                            id?: T;
+                                          };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                footer?:
+                                  | T
+                                  | {
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -1059,6 +2008,146 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            propertySearchInput?:
+                                              | T
+                                              | {
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            featuredProperties?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  seeAllLink?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            testimonialCarousel?:
+                                              | T
+                                              | {
+                                                  testimonials?:
+                                                    | T
+                                                    | {
+                                                        quote?: T;
+                                                        author?: T;
+                                                        company?: T;
+                                                        id?: T;
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            splitSection?:
+                                              | T
+                                              | {
+                                                  image?: T;
+                                                  imageAlt?: T;
+                                                  isReversed?: T;
+                                                  header?: T;
+                                                  bulletPoints?:
+                                                    | T
+                                                    | {
+                                                        text?: T;
+                                                        id?: T;
+                                                      };
+                                                  linkText?: T;
+                                                  linkHref?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            insightsSection?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  linkText?: T;
+                                                  linkHref?: T;
+                                                  articles?:
+                                                    | T
+                                                    | {
+                                                        title?: T;
+                                                        image?: T;
+                                                        tags?:
+                                                          | T
+                                                          | {
+                                                              tag?: T;
+                                                              id?: T;
+                                                            };
+                                                        id?: T;
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            trackRecordSection?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  properties?:
+                                                    | T
+                                                    | {
+                                                        title?: T;
+                                                        image?: T;
+                                                        address?: T;
+                                                        price?: T;
+                                                        size?: T;
+                                                        type?: T;
+                                                        agentName?: T;
+                                                        agentImage?: T;
+                                                        id?: T;
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            propertySearch?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  description?: T;
+                                                  buttonText?: T;
+                                                  propertiesCount?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            agentCarousel?:
+                                              | T
+                                              | {
+                                                  preHeading?: T;
+                                                  heading?: T;
+                                                  description?: T;
+                                                  linkText?: T;
+                                                  linkHref?: T;
+                                                  agents?:
+                                                    | T
+                                                    | {
+                                                        name?: T;
+                                                        role?: T;
+                                                        location?: T;
+                                                        image?: T;
+                                                        id?: T;
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            ctaFooter?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  subheading?: T;
+                                                  buttons?:
+                                                    | T
+                                                    | {
+                                                        label?: T;
+                                                        href?: T;
+                                                        variant?: T;
+                                                        id?: T;
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            footer?:
+                                              | T
+                                              | {
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             container?:
                                               | T
                                               | {
@@ -1130,6 +2219,146 @@ export interface PagesSelect<T extends boolean = true> {
                                                               id?: T;
                                                               blockName?: T;
                                                             };
+                                                        propertySearchInput?:
+                                                          | T
+                                                          | {
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        featuredProperties?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              seeAllLink?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        testimonialCarousel?:
+                                                          | T
+                                                          | {
+                                                              testimonials?:
+                                                                | T
+                                                                | {
+                                                                    quote?: T;
+                                                                    author?: T;
+                                                                    company?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        splitSection?:
+                                                          | T
+                                                          | {
+                                                              image?: T;
+                                                              imageAlt?: T;
+                                                              isReversed?: T;
+                                                              header?: T;
+                                                              bulletPoints?:
+                                                                | T
+                                                                | {
+                                                                    text?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              linkText?: T;
+                                                              linkHref?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        insightsSection?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              linkText?: T;
+                                                              linkHref?: T;
+                                                              articles?:
+                                                                | T
+                                                                | {
+                                                                    title?: T;
+                                                                    image?: T;
+                                                                    tags?:
+                                                                      | T
+                                                                      | {
+                                                                          tag?: T;
+                                                                          id?: T;
+                                                                        };
+                                                                    id?: T;
+                                                                  };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        trackRecordSection?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              properties?:
+                                                                | T
+                                                                | {
+                                                                    title?: T;
+                                                                    image?: T;
+                                                                    address?: T;
+                                                                    price?: T;
+                                                                    size?: T;
+                                                                    type?: T;
+                                                                    agentName?: T;
+                                                                    agentImage?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        propertySearch?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              description?: T;
+                                                              buttonText?: T;
+                                                              propertiesCount?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        agentCarousel?:
+                                                          | T
+                                                          | {
+                                                              preHeading?: T;
+                                                              heading?: T;
+                                                              description?: T;
+                                                              linkText?: T;
+                                                              linkHref?: T;
+                                                              agents?:
+                                                                | T
+                                                                | {
+                                                                    name?: T;
+                                                                    role?: T;
+                                                                    location?: T;
+                                                                    image?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        ctaFooter?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              subheading?: T;
+                                                              buttons?:
+                                                                | T
+                                                                | {
+                                                                    label?: T;
+                                                                    href?: T;
+                                                                    variant?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        footer?:
+                                                          | T
+                                                          | {
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
                                                       };
                                                   id?: T;
                                                   blockName?: T;
@@ -1161,6 +2390,146 @@ export interface PagesSelect<T extends boolean = true> {
                     description?: T;
                     id?: T;
                   };
+              id?: T;
+              blockName?: T;
+            };
+        propertySearchInput?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
+        featuredProperties?:
+          | T
+          | {
+              heading?: T;
+              seeAllLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonialCarousel?:
+          | T
+          | {
+              testimonials?:
+                | T
+                | {
+                    quote?: T;
+                    author?: T;
+                    company?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        splitSection?:
+          | T
+          | {
+              image?: T;
+              imageAlt?: T;
+              isReversed?: T;
+              header?: T;
+              bulletPoints?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              linkText?: T;
+              linkHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        insightsSection?:
+          | T
+          | {
+              heading?: T;
+              linkText?: T;
+              linkHref?: T;
+              articles?:
+                | T
+                | {
+                    title?: T;
+                    image?: T;
+                    tags?:
+                      | T
+                      | {
+                          tag?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        trackRecordSection?:
+          | T
+          | {
+              heading?: T;
+              properties?:
+                | T
+                | {
+                    title?: T;
+                    image?: T;
+                    address?: T;
+                    price?: T;
+                    size?: T;
+                    type?: T;
+                    agentName?: T;
+                    agentImage?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        propertySearch?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              buttonText?: T;
+              propertiesCount?: T;
+              id?: T;
+              blockName?: T;
+            };
+        agentCarousel?:
+          | T
+          | {
+              preHeading?: T;
+              heading?: T;
+              description?: T;
+              linkText?: T;
+              linkHref?: T;
+              agents?:
+                | T
+                | {
+                    name?: T;
+                    role?: T;
+                    location?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        ctaFooter?:
+          | T
+          | {
+              heading?: T;
+              subheading?: T;
+              buttons?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        footer?:
+          | T
+          | {
               id?: T;
               blockName?: T;
             };
@@ -1219,6 +2588,86 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Configure the navigation bar links
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navbar".
+ */
+export interface Navbar {
+  id: string;
+  /**
+   * Links shown in the top bar (e.g., Schedule, Contact Us, Login)
+   */
+  upperLinks?:
+    | {
+        label: string;
+        /**
+         * Choose whether to link to an existing page or a custom URL
+         */
+        linkType: 'page' | 'custom';
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Links shown in the main navigation bar (e.g., Buy, Lease, Sell)
+   */
+  mainLinks?:
+    | {
+        label: string;
+        /**
+         * Choose whether to link to an existing page or a custom URL
+         */
+        linkType: 'page' | 'custom';
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /buy, https://example.com)
+         */
+        customUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navbar_select".
+ */
+export interface NavbarSelect<T extends boolean = true> {
+  upperLinks?:
+    | T
+    | {
+        label?: T;
+        linkType?: T;
+        page?: T;
+        customUrl?: T;
+        id?: T;
+      };
+  mainLinks?:
+    | T
+    | {
+        label?: T;
+        linkType?: T;
+        page?: T;
+        customUrl?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
