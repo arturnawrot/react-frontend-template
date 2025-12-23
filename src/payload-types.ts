@@ -1415,6 +1415,18 @@ export interface Agent {
    */
   buildout_broker_id?: string | null;
   /**
+   * Buildout property IDs marked as featured listings (max 4 allowed). Stored as JSON array of numbers.
+   */
+  featuredPropertyIds?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
    * Auto-generated full name
    */
   fullName?: string | null;
@@ -2670,6 +2682,7 @@ export interface AgentsSelect<T extends boolean = true> {
   phone?: T;
   linkedin?: T;
   buildout_broker_id?: T;
+  featuredPropertyIds?: T;
   fullName?: T;
   updatedAt?: T;
   createdAt?: T;

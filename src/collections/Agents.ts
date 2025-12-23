@@ -131,6 +131,24 @@ export const Agents: CollectionConfig = {
       },
     },
     {
+      name: 'featuredPropertyIds',
+      type: 'json',
+      required: false,
+      admin: {
+        description: 'Buildout property IDs marked as featured listings (max 4 allowed). Stored as JSON array of numbers.',
+        hidden: true, // Hidden from form, managed by dashboard component
+      },
+    },
+    {
+      name: 'propertiesDashboard',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/AgentPropertiesDashboard',
+        },
+      },
+    },
+    {
       name: 'fullName',
       type: 'text',
       admin: {
