@@ -9,6 +9,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { CSSStyles } from './collections/CSSStyles'
+import { Agents } from './collections/Agents'
 import { Navbar } from './globals/Navbar'
 
 const filename = fileURLToPath(import.meta.url)
@@ -21,7 +22,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Pages, CSSStyles],
+  collections: [Users, Media, Pages, CSSStyles, Agents],
   globals: [Navbar],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

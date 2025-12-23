@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     pages: Page;
     'css-styles': CssStyle;
+    agents: Agent;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     'css-styles': CssStylesSelect<false> | CssStylesSelect<true>;
+    agents: AgentsSelect<false> | AgentsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -1339,6 +1341,88 @@ export interface CssStyle {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agents".
+ */
+export interface Agent {
+  id: string;
+  firstName: string;
+  lastName: string;
+  /**
+   * URL slug (auto-generated from firstname-lastname)
+   */
+  slug: string;
+  /**
+   * Background image for hero section (used in agent page)
+   */
+  backgroundImage?: (string | null) | Media;
+  /**
+   * Card/thumbnail image (used in agent cards and listings)
+   */
+  cardImage?: (string | null) | Media;
+  /**
+   * Agent roles (e.g., "Buyer Rep", "Tenant Rep", "Dispositions")
+   */
+  roles?:
+    | {
+        role: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Agent specialties (e.g., "Land", "Retail", "STNL", "Industrial", "Office")
+   */
+  specialties?:
+    | {
+        specialty: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Locations the agent serves (e.g., "Augusta", "Savannah", "Statesboro")
+   */
+  servingLocations?:
+    | {
+        location: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * About section content for the agent
+   */
+  about?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  email?: string | null;
+  phone?: string | null;
+  /**
+   * LinkedIn profile URL
+   */
+  linkedin?: string | null;
+  /**
+   * Enter broker email address to automatically fetch Buildout broker ID
+   */
+  buildout_broker_id?: string | null;
+  /**
+   * Auto-generated full name
+   */
+  fullName?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1376,6 +1460,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'css-styles';
         value: string | CssStyle;
+      } | null)
+    | ({
+        relationTo: 'agents';
+        value: string | Agent;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -2546,6 +2634,43 @@ export interface CssStylesSelect<T extends boolean = true> {
   cssClass?: T;
   css?: T;
   active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agents_select".
+ */
+export interface AgentsSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  slug?: T;
+  backgroundImage?: T;
+  cardImage?: T;
+  roles?:
+    | T
+    | {
+        role?: T;
+        id?: T;
+      };
+  specialties?:
+    | T
+    | {
+        specialty?: T;
+        id?: T;
+      };
+  servingLocations?:
+    | T
+    | {
+        location?: T;
+        id?: T;
+      };
+  about?: T;
+  email?: T;
+  phone?: T;
+  linkedin?: T;
+  buildout_broker_id?: T;
+  fullName?: T;
   updatedAt?: T;
   createdAt?: T;
 }
