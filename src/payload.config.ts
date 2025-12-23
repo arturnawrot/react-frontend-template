@@ -21,6 +21,9 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      afterNavLinks: ['/components/ClearBuildoutCache'],
+    },
   },
   collections: [Users, Media, Pages, CSSStyles, Agents],
   globals: [Navbar],

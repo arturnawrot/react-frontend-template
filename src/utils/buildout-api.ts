@@ -6,8 +6,62 @@
 const BUILDOUT_API_BASE = 'https://buildout.com/api/v1'
 const BUILDOUT_API_KEY = process.env.BUILDOUT_API_KEY
 
+// Cache configuration
+const CACHE_TTL_SECONDS = parseInt(process.env.BUILDOUT_CACHE_TTL || '3600', 10) // Default: 1 hour
+const ENABLE_CACHE = process.env.BUILDOUT_CACHE_ENABLED !== 'false' // Default: enabled
+
 if (!BUILDOUT_API_KEY) {
   console.warn('BUILDOUT_API_KEY is not set in environment variables')
+}
+
+/**
+ * In-memory cache with TTL
+ */
+interface CacheEntry<T> {
+  data: T
+  expiresAt: number
+}
+
+class MemoryCache {
+  private cache = new Map<string, CacheEntry<any>>()
+
+  get<T>(key: string): T | null {
+    const entry = this.cache.get(key)
+    if (!entry) return null
+
+    if (Date.now() > entry.expiresAt) {
+      this.cache.delete(key)
+      return null
+    }
+
+    return entry.data as T
+  }
+
+  set<T>(key: string, data: T, ttlSeconds: number): void {
+    const expiresAt = Date.now() + ttlSeconds * 1000
+    this.cache.set(key, { data, expiresAt })
+  }
+
+  clear(): void {
+    this.cache.clear()
+  }
+
+  // Clean up expired entries periodically
+  cleanup(): void {
+    const now = Date.now()
+    for (const [key, entry] of this.cache.entries()) {
+      if (now > entry.expiresAt) {
+        this.cache.delete(key)
+      }
+    }
+  }
+}
+
+const memoryCache = new MemoryCache()
+
+// Clean up expired entries every 5 minutes
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => memoryCache.cleanup(), 5 * 60 * 1000)
 }
 
 /**
@@ -93,12 +147,36 @@ class BuildoutApiClient {
   }
 
   /**
-   * Generic GET request method
+   * Generate cache key from endpoint and params
+   */
+  private getCacheKey(endpoint: string, params?: Record<string, string | number | boolean>): string {
+    const paramString = params
+      ? Object.entries(params)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([key, value]) => `${key}=${value}`)
+          .join('&')
+      : ''
+    return `buildout:${endpoint}${paramString ? `?${paramString}` : ''}`
+  }
+
+  /**
+   * Generic GET request method with caching
    */
   private async get<T extends BuildoutResponse<any>>(
     endpoint: string,
-    params?: Record<string, string | number | boolean>
+    params?: Record<string, string | number | boolean>,
+    options?: { skipCache?: boolean }
   ): Promise<T> {
+    const cacheKey = this.getCacheKey(endpoint, params)
+
+    // Check cache first (unless skipCache is true)
+    if (ENABLE_CACHE && !options?.skipCache) {
+      const cached = memoryCache.get<T>(cacheKey)
+      if (cached !== null) {
+        return cached
+      }
+    }
+
     const url = new URL(`${this.baseUrl}${endpoint}`)
     
     if (params) {
@@ -114,6 +192,10 @@ class BuildoutApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
+      // Next.js fetch cache options (if available)
+      next: ENABLE_CACHE && !options?.skipCache
+        ? { revalidate: CACHE_TTL_SECONDS }
+        : undefined,
     })
 
     if (!response.ok) {
@@ -123,25 +205,40 @@ class BuildoutApiClient {
       )
     }
 
-    return response.json()
+    const data = await response.json()
+
+    // Store in memory cache
+    if (ENABLE_CACHE && !options?.skipCache) {
+      memoryCache.set(cacheKey, data, CACHE_TTL_SECONDS)
+    }
+
+    return data
   }
 
   /**
    * Find broker ID by email
    * @param email - Broker email address
+   * @param options - Optional cache control options
    * @returns Broker ID if found, null if not found
    * @throws Error if API key is not set or API call fails
    */
-  async findBrokerIdByEmail(email: string): Promise<number | null> {
+  async findBrokerIdByEmail(
+    email: string,
+    options?: { skipCache?: boolean }
+  ): Promise<number | null> {
     if (!BUILDOUT_API_KEY) {
       throw new Error('BUILDOUT_API_KEY environment variable is required')
     }
 
     try {
-      const response = await this.get<ListBrokersResponse>('/brokers.json', {
-        limit: '1',
-        email: email,
-      })
+      const response = await this.get<ListBrokersResponse>(
+        '/brokers.json',
+        {
+          limit: '1',
+          email: email,
+        },
+        options
+      )
 
       if (response.brokers && response.brokers.length > 0) {
         return response.brokers[0].id
@@ -157,14 +254,22 @@ class BuildoutApiClient {
   /**
    * Get broker by email (full broker object)
    * @param email - Broker email address
+   * @param options - Optional cache control options
    * @returns Broker object if found, null if not found
    */
-  async getBrokerByEmail(email: string): Promise<BuildoutBroker | null> {
+  async getBrokerByEmail(
+    email: string,
+    options?: { skipCache?: boolean }
+  ): Promise<BuildoutBroker | null> {
     try {
-      const response = await this.get<ListBrokersResponse>('/brokers.json', {
-        limit: 1,
-        email: email,
-      })
+      const response = await this.get<ListBrokersResponse>(
+        '/brokers.json',
+        {
+          limit: 1,
+          email: email,
+        },
+        options
+      )
 
       if (response.brokers && response.brokers.length > 0) {
         return response.brokers[0]
@@ -189,12 +294,19 @@ export const buildoutApi = {
     return _buildoutApiInstance
   },
   
-  async findBrokerIdByEmail(email: string): Promise<number | null> {
-    return this.getInstance().findBrokerIdByEmail(email)
+  async findBrokerIdByEmail(email: string, options?: { skipCache?: boolean }): Promise<number | null> {
+    return this.getInstance().findBrokerIdByEmail(email, options)
   },
   
-  async getBrokerByEmail(email: string): Promise<BuildoutBroker | null> {
-    return this.getInstance().getBrokerByEmail(email)
+  async getBrokerByEmail(email: string, options?: { skipCache?: boolean }): Promise<BuildoutBroker | null> {
+    return this.getInstance().getBrokerByEmail(email, options)
+  },
+
+  /**
+   * Clear the cache (useful for testing or manual cache invalidation)
+   */
+  clearCache(): void {
+    memoryCache.clear()
   },
 }
 
