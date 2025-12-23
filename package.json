@@ -17,8 +17,9 @@
     "seed:home": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/seed-home.ts",
     "seed:buy": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/seed-buy.ts",
     "test": "pnpm run test:int && pnpm run test:e2e",
-    "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" pnpm exec playwright test",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
+    "test:e2e": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec playwright test",
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
+    "test:cache": "cross-env NODE_OPTIONS=--no-deprecation tsx tests/manual/clear-cache-test.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",

@@ -4,7 +4,7 @@ import { buildoutApi } from '@/utils/buildout-api'
 export async function POST(request: Request) {
   try {
     // Clear the cache
-    buildoutApi.clearCache()
+    await buildoutApi.clearCache()
 
     return NextResponse.json({
       success: true,

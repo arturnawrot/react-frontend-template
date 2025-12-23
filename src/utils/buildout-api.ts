@@ -3,6 +3,9 @@
  * Documentation: https://buildout.com/api/v1/
  */
 
+import { unstable_cache } from 'next/cache'
+import { revalidateTag } from 'next/cache'
+
 const BUILDOUT_API_BASE = 'https://buildout.com/api/v1'
 const BUILDOUT_API_KEY = process.env.BUILDOUT_API_KEY
 
@@ -14,20 +17,29 @@ if (!BUILDOUT_API_KEY) {
   console.warn('BUILDOUT_API_KEY is not set in environment variables')
 }
 
-/**
- * In-memory cache with TTL
- */
-interface CacheEntry<T> {
-  data: T
-  expiresAt: number
+// Log cache configuration on module load (only once per process)
+declare global {
+  // eslint-disable-next-line no-var
+  var _buildoutCacheConfigLogged: boolean | undefined
 }
 
+if (!globalThis._buildoutCacheConfigLogged) {
+  console.log(`[Buildout API Cache] Configuration: ENABLE_CACHE=${ENABLE_CACHE}, TTL=${CACHE_TTL_SECONDS}s`)
+  globalThis._buildoutCacheConfigLogged = true
+}
+
+/**
+ * In-memory cache for tracking cache hits/misses (for debugging)
+ * Note: This is separate from the actual caching mechanism which uses Next.js unstable_cache
+ */
 class MemoryCache {
   private cache = new Map<string, CacheEntry<any>>()
 
   get<T>(key: string): T | null {
     const entry = this.cache.get(key)
-    if (!entry) return null
+    if (!entry) {
+      return null
+    }
 
     if (Date.now() > entry.expiresAt) {
       this.cache.delete(key)
@@ -46,6 +58,10 @@ class MemoryCache {
     this.cache.clear()
   }
 
+  size(): number {
+    return this.cache.size
+  }
+
   // Clean up expired entries periodically
   cleanup(): void {
     const now = Date.now()
@@ -57,12 +73,13 @@ class MemoryCache {
   }
 }
 
-const memoryCache = new MemoryCache()
-
-// Clean up expired entries every 5 minutes
-if (typeof setInterval !== 'undefined') {
-  setInterval(() => memoryCache.cleanup(), 5 * 60 * 1000)
+interface CacheEntry<T> {
+  data: T
+  expiresAt: number
 }
+
+// Track cache operations for debugging (this is ephemeral, resets on module reload)
+const cacheTracker = new MemoryCache()
 
 /**
  * Buildout API Response wrapper
@@ -413,7 +430,7 @@ class BuildoutApiClient {
   }
 
   /**
-   * Generic GET request method with caching
+   * Generic GET request method with caching using Next.js unstable_cache
    */
   private async get<T extends BuildoutResponse<any>>(
     endpoint: string,
@@ -422,14 +439,50 @@ class BuildoutApiClient {
   ): Promise<T> {
     const cacheKey = this.getCacheKey(endpoint, params)
 
-    // Check cache first (unless skipCache is true)
-    if (ENABLE_CACHE && !options?.skipCache) {
-      const cached = memoryCache.get<T>(cacheKey)
-      if (cached !== null) {
-        return cached
-      }
+    // If cache is disabled or skipCache is true, fetch directly
+    if (!ENABLE_CACHE || options?.skipCache) {
+      console.log(`[Buildout API Cache] SKIPPED: ${cacheKey} (ENABLE_CACHE=${ENABLE_CACHE}, skipCache=${options?.skipCache})`)
+      return this.fetchData<T>(endpoint, params)
     }
 
+    // Use Next.js unstable_cache for persistent caching across module reloads
+    // The function will only execute on cache miss; cached results are returned immediately
+    const cachedFetch = unstable_cache(
+      async () => {
+        console.log(`[Buildout API Cache] FETCHING (cache miss): ${cacheKey}`)
+        const data = await this.fetchData<T>(endpoint, params)
+        console.log(`[Buildout API Cache] STORED: ${cacheKey} (TTL: ${CACHE_TTL_SECONDS}s)`)
+        return data
+      },
+      [cacheKey], // Cache key parts - Next.js uses these to determine cache hits
+      {
+        tags: ['buildout-api'],
+        revalidate: CACHE_TTL_SECONDS,
+      }
+    )
+
+    // Check if we've seen this cache key in this process (for logging)
+    // Note: This is ephemeral and resets on module reload, but unstable_cache persists
+    const recentlyCached = cacheTracker.get<boolean>(cacheKey)
+    if (recentlyCached) {
+      console.log(`[Buildout API Cache] HIT (from Next.js cache): ${cacheKey}`)
+    } else {
+      console.log(`[Buildout API Cache] MISS (will check Next.js cache): ${cacheKey}`)
+      // Track that we've seen this key (for logging only)
+      cacheTracker.set(cacheKey, true, CACHE_TTL_SECONDS)
+    }
+
+    const data = await cachedFetch()
+    return data
+  }
+
+  /**
+   * Internal method to perform the actual fetch (without caching)
+   */
+  private async fetchData<T extends BuildoutResponse<any>>(
+    endpoint: string,
+    params?: Record<string, string | number | boolean>
+  ): Promise<T> {
     const url = new URL(`${this.baseUrl}${endpoint}`)
     
     if (params) {
@@ -445,10 +498,6 @@ class BuildoutApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
-      // Next.js fetch cache options (if available)
-      next: ENABLE_CACHE && !options?.skipCache
-        ? { revalidate: CACHE_TTL_SECONDS }
-        : undefined,
     })
 
     if (!response.ok) {
@@ -459,12 +508,6 @@ class BuildoutApiClient {
     }
 
     const data = await response.json()
-
-    // Store in memory cache
-    if (ENABLE_CACHE && !options?.skipCache) {
-      memoryCache.set(cacheKey, data, CACHE_TTL_SECONDS)
-    }
-
     return data
   }
 
@@ -619,9 +662,23 @@ export const buildoutApi = {
 
   /**
    * Clear the cache (useful for testing or manual cache invalidation)
+   * This revalidates all cache entries tagged with 'buildout-api'
    */
-  clearCache(): void {
-    memoryCache.clear()
+  async clearCache(): Promise<void> {
+    revalidateTag('buildout-api')
+    cacheTracker.clear()
+    console.log('[Buildout API Cache] CLEARED (revalidated tag: buildout-api)')
+  },
+
+  /**
+   * Get cache status (for debugging)
+   */
+  getCacheStatus(): { enabled: boolean; ttl: number; size: number } {
+    return {
+      enabled: ENABLE_CACHE,
+      ttl: CACHE_TTL_SECONDS,
+      size: cacheTracker.size(),
+    }
   },
 }
 
