@@ -81,6 +81,12 @@ interface CacheEntry<T> {
 // Track cache operations for debugging (this is ephemeral, resets on module reload)
 const cacheTracker = new MemoryCache()
 
+// Clean up expired entries from cacheTracker periodically (every 5 minutes)
+// Note: This only cleans up the ephemeral cacheTracker, not the actual Next.js cache
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => cacheTracker.cleanup(), 5 * 60 * 1000)
+}
+
 /**
  * Buildout API Response wrapper
  */

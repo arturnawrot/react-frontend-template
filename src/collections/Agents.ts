@@ -170,11 +170,24 @@ export const Agents: CollectionConfig = {
       },
     ],
     beforeChange: [
-      ({ data }) => {
+      ({ data, operation, originalDoc }) => {
         // Ensure fullName is set
         if (data.firstName && data.lastName) {
           data.fullName = `${data.firstName} ${data.lastName}`
         }
+
+        // Reset featured properties when buildout_broker_id changes
+        if (operation === 'update' && originalDoc) {
+          const oldBrokerId = originalDoc.buildout_broker_id
+          const newBrokerId = data.buildout_broker_id
+
+          // Check if broker ID has changed (including null/undefined cases)
+          if (oldBrokerId !== newBrokerId) {
+            // Reset featured property IDs to empty array
+            data.featuredPropertyIds = []
+          }
+        }
+
         return data
       },
     ],
