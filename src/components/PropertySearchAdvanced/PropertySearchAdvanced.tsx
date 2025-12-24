@@ -102,41 +102,16 @@ export default function PropertySearchAdvanced({
       setLoading(true)
       setError(null)
 
+      // Fetch a larger set of properties to filter client-side
+      // This ensures filters work even if API doesn't support them
       const params = new URLSearchParams({
-        limit: ITEMS_PER_PAGE.toString(),
-        offset: ((page - 1) * ITEMS_PER_PAGE).toString(),
+        limit: '1000', // Get more properties to filter client-side
+        offset: '0',
       })
 
-      if (searchQuery) {
-        params.append('search', searchQuery)
-      }
-
+      // Only send broker_id to API if specified (this one usually works)
       if (filters.brokerId) {
         params.append('brokerId', filters.brokerId.toString())
-      }
-
-      if (filters.propertyType) {
-        params.append('propertyType', filters.propertyType.toString())
-      }
-
-      if (filters.minPrice) {
-        params.append('minPrice', filters.minPrice.toString())
-      }
-
-      if (filters.maxPrice) {
-        params.append('maxPrice', filters.maxPrice.toString())
-      }
-
-      if (filters.saleOrLease && filters.saleOrLease !== 'both') {
-        params.append('saleOrLease', filters.saleOrLease)
-      }
-
-      if (filters.minCapRate) {
-        params.append('minCapRate', filters.minCapRate.toString())
-      }
-
-      if (filters.maxCapRate) {
-        params.append('maxCapRate', filters.maxCapRate.toString())
       }
 
       const response = await fetch(`/api/buildout/search-properties?${params.toString()}`)
@@ -152,93 +127,93 @@ export default function PropertySearchAdvanced({
         throw new Error(data.error || 'Failed to fetch properties')
       }
 
-      const transformedProperties = (data.properties || []).map((property: BuildoutProperty) => {
+      // Apply client-side filters on original properties before transforming
+      let filteredProperties: BuildoutProperty[] = data.properties || []
+
+      // Text search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        filteredProperties = filteredProperties.filter(property => 
+          (property.address || '').toLowerCase().includes(query) ||
+          (property.city || '').toLowerCase().includes(query) ||
+          (property.state || '').toLowerCase().includes(query) ||
+          (property.name || '').toLowerCase().includes(query) ||
+          (property.sale_listing_web_title || '').toLowerCase().includes(query) ||
+          (property.lease_listing_web_title || '').toLowerCase().includes(query)
+        )
+      }
+
+      // Property type filter
+      if (filters.propertyType) {
+        filteredProperties = filteredProperties.filter(property => 
+          property.property_type_id === filters.propertyType
+        )
+      }
+
+      // Price range filter
+      if (filters.minPrice || filters.maxPrice) {
+        filteredProperties = filteredProperties.filter(property => {
+          const price = property.sale_price_dollars
+          if (!price) return false // Skip properties without price
+          
+          if (filters.minPrice && price < filters.minPrice) return false
+          if (filters.maxPrice && price > filters.maxPrice) return false
+          return true
+        })
+      }
+
+      // Sale or Lease filter
+      if (filters.saleOrLease && filters.saleOrLease !== 'both') {
+        if (filters.saleOrLease === 'sale') {
+          filteredProperties = filteredProperties.filter(property => 
+            property.sale && property.sale_listing_published
+          )
+        } else if (filters.saleOrLease === 'lease') {
+          filteredProperties = filteredProperties.filter(property => 
+            property.lease && property.lease_listing_published
+          )
+        }
+      }
+
+      // Cap rate filter
+      if (filters.minCapRate !== null || filters.maxCapRate !== null) {
+        filteredProperties = filteredProperties.filter(property => {
+          const capRate = property.cap_rate_pct
+          if (capRate === null || capRate === undefined) return false
+          
+          if (filters.minCapRate !== null && capRate < filters.minCapRate) return false
+          if (filters.maxCapRate !== null && capRate > filters.maxCapRate) return false
+          return true
+        })
+      }
+
+      // Transform filtered properties
+      const transformedProperties = filteredProperties.map((property: BuildoutProperty) => {
         const broker = brokers.find(b => b.id === property.broker_id)
         const agentName = broker ? `${broker.first_name} ${broker.last_name}` : 'Agent'
         return transformPropertyToCard(property, agentName)
       })
 
+      // Filter out properties without valid coordinates
       const validProperties = transformedProperties.filter(
         (prop: PropertyCardData) =>
           prop.latitude && prop.longitude && !isNaN(prop.latitude) && !isNaN(prop.longitude)
       )
 
-      setProperties(validProperties)
-      setTotalCount(data.count || 0)
+      // Apply pagination
+      const totalFiltered = validProperties.length
+      const startIndex = (page - 1) * ITEMS_PER_PAGE
+      const endIndex = startIndex + ITEMS_PER_PAGE
+      const paginatedProperties = validProperties.slice(startIndex, endIndex)
+
+      setProperties(paginatedProperties)
+      setTotalCount(totalFiltered)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch properties'
       setError(errorMessage)
       console.error('Error fetching properties:', err)
     } finally {
       setLoading(false)
-    }
-  }, [searchQuery, filters, brokers])
-
-  // Fetch all properties for map (without pagination)
-  const fetchAllPropertiesForMap = useCallback(async () => {
-    try {
-      const params = new URLSearchParams({
-        limit: '1000', // Get more properties for map
-      })
-
-      if (searchQuery) {
-        params.append('search', searchQuery)
-      }
-
-      if (filters.brokerId) {
-        params.append('brokerId', filters.brokerId.toString())
-      }
-
-      if (filters.propertyType) {
-        params.append('propertyType', filters.propertyType.toString())
-      }
-
-      if (filters.minPrice) {
-        params.append('minPrice', filters.minPrice.toString())
-      }
-
-      if (filters.maxPrice) {
-        params.append('maxPrice', filters.maxPrice.toString())
-      }
-
-      if (filters.saleOrLease && filters.saleOrLease !== 'both') {
-        params.append('saleOrLease', filters.saleOrLease)
-      }
-
-      if (filters.minCapRate) {
-        params.append('minCapRate', filters.minCapRate.toString())
-      }
-
-      if (filters.maxCapRate) {
-        params.append('maxCapRate', filters.maxCapRate.toString())
-      }
-
-      const response = await fetch(`/api/buildout/search-properties?${params.toString()}`)
-
-      if (response.ok) {
-        const data = await response.json()
-        if (data.success) {
-          const transformedProperties = (data.properties || []).map((property: BuildoutProperty) => {
-            const broker = brokers.find(b => b.id === property.broker_id)
-            const agentName = broker ? `${broker.first_name} ${broker.last_name}` : 'Agent'
-            return transformPropertyToCard(property, agentName)
-          })
-
-          const validProperties = transformedProperties.filter(
-            (prop: PropertyCardData) =>
-              prop.latitude && prop.longitude && !isNaN(prop.latitude) && !isNaN(prop.longitude)
-          )
-
-          setAllProperties(validProperties)
-          
-          // Calculate most saturated area
-          if (validProperties.length > 0) {
-            calculateMapCenter(validProperties)
-          }
-        }
-      }
-    } catch (err) {
-      console.error('Error fetching all properties for map:', err)
     }
   }, [searchQuery, filters, brokers])
 
@@ -276,6 +251,101 @@ export default function PropertySearchAdvanced({
       setMapZoom(11)
     }
   }, [])
+
+  // Fetch all properties for map (without pagination)
+  const fetchAllPropertiesForMap = useCallback(async () => {
+    try {
+      // Use the same fetch logic as fetchProperties but without pagination
+      const params = new URLSearchParams({
+        limit: '1000',
+        offset: '0',
+      })
+
+      if (filters.brokerId) {
+        params.append('brokerId', filters.brokerId.toString())
+      }
+
+      const response = await fetch(`/api/buildout/search-properties?${params.toString()}`)
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          // Apply the same client-side filters
+          let filteredProperties: BuildoutProperty[] = data.properties || []
+
+          if (searchQuery) {
+            const query = searchQuery.toLowerCase()
+            filteredProperties = filteredProperties.filter(property => 
+              (property.address || '').toLowerCase().includes(query) ||
+              (property.city || '').toLowerCase().includes(query) ||
+              (property.state || '').toLowerCase().includes(query) ||
+              (property.name || '').toLowerCase().includes(query) ||
+              (property.sale_listing_web_title || '').toLowerCase().includes(query) ||
+              (property.lease_listing_web_title || '').toLowerCase().includes(query)
+            )
+          }
+
+          if (filters.propertyType) {
+            filteredProperties = filteredProperties.filter(property => 
+              property.property_type_id === filters.propertyType
+            )
+          }
+
+          if (filters.minPrice || filters.maxPrice) {
+            filteredProperties = filteredProperties.filter(property => {
+              const price = property.sale_price_dollars
+              if (!price) return false
+              if (filters.minPrice && price < filters.minPrice) return false
+              if (filters.maxPrice && price > filters.maxPrice) return false
+              return true
+            })
+          }
+
+          if (filters.saleOrLease && filters.saleOrLease !== 'both') {
+            if (filters.saleOrLease === 'sale') {
+              filteredProperties = filteredProperties.filter(property => 
+                property.sale && property.sale_listing_published
+              )
+            } else if (filters.saleOrLease === 'lease') {
+              filteredProperties = filteredProperties.filter(property => 
+                property.lease && property.lease_listing_published
+              )
+            }
+          }
+
+          if (filters.minCapRate !== null || filters.maxCapRate !== null) {
+            filteredProperties = filteredProperties.filter(property => {
+              const capRate = property.cap_rate_pct
+              if (capRate === null || capRate === undefined) return false
+              if (filters.minCapRate !== null && capRate < filters.minCapRate) return false
+              if (filters.maxCapRate !== null && capRate > filters.maxCapRate) return false
+              return true
+            })
+          }
+
+          const transformedProperties = filteredProperties.map((property: BuildoutProperty) => {
+            const broker = brokers.find(b => b.id === property.broker_id)
+            const agentName = broker ? `${broker.first_name} ${broker.last_name}` : 'Agent'
+            return transformPropertyToCard(property, agentName)
+          })
+
+          const validProperties = transformedProperties.filter(
+            (prop: PropertyCardData) =>
+              prop.latitude && prop.longitude && !isNaN(prop.latitude) && !isNaN(prop.longitude)
+          )
+
+          setAllProperties(validProperties)
+          
+          // Calculate most saturated area
+          if (validProperties.length > 0) {
+            calculateMapCenter(validProperties)
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching all properties for map:', err)
+    }
+  }, [searchQuery, filters, brokers, calculateMapCenter])
 
   // Fetch properties when filters or search change
   useEffect(() => {
