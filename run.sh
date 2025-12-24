@@ -41,7 +41,7 @@ function npm {
 }
 
 function run_dev {
-  docker compose up mongo payload -d
+  docker compose up mongo payload --build --force-recreate -d
 }
 
 function run_prod {
