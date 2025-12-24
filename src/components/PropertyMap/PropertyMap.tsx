@@ -8,6 +8,8 @@ interface PropertyMapProps {
   onBoundsChange?: (bounds: any, visible: PropertyCardData[]) => void
   mapType?: 'map' | 'satellite'
   onMapTypeChange?: (type: 'map' | 'satellite') => void
+  center?: [number, number]
+  zoom?: number
 }
 
 // Internal map component that uses Leaflet (only rendered on client)
@@ -15,6 +17,8 @@ function LeafletMap({
   properties,
   onBoundsChange,
   mapType = 'map',
+  center: propCenter,
+  zoom: propZoom,
 }: PropertyMapProps) {
   const [mounted, setMounted] = useState(false)
   const [hoveredProperty, setHoveredProperty] = useState<PropertyCardData | null>(null)
@@ -134,13 +138,15 @@ function LeafletMap({
   }, [mounted, hoveredProperty])
 
 
-  // Calculate center from properties or use default
-  const center: [number, number] = properties.length > 0
+  // Use provided center/zoom or calculate from properties or use default
+  const center: [number, number] = propCenter || (properties.length > 0
     ? [
         properties.reduce((sum, p) => sum + (p.latitude || 0), 0) / properties.length,
         properties.reduce((sum, p) => sum + (p.longitude || 0), 0) / properties.length,
       ]
-    : [33.5, -81.7] // Default to Aiken, SC area
+    : [33.5, -81.7]) // Default to Aiken, SC area
+  
+  const zoom = propZoom || 11
 
   const handleMarkerHover = (property: PropertyCardData, event: any) => {
     // Clear any pending hide timeout
@@ -357,7 +363,8 @@ function LeafletMap({
     <div className="relative w-full h-full" ref={mapContainerRef}>
       <MapContainer
         center={center}
-        zoom={11}
+        zoom={zoom}
+        key={`${center[0]}-${center[1]}-${zoom}`} // Force re-render when center/zoom changes
         style={{ height: '100%', width: '100%' }}
         className="rounded-3xl"
       >

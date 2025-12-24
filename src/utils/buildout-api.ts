@@ -725,6 +725,91 @@ class BuildoutApiClient {
   }
 
   /**
+   * Get all brokers
+   * @param options - Optional cache control and pagination options
+   * @returns Brokers response with count, message, and brokers array
+   * @throws Error if API key is not set or API call fails
+   */
+  async getAllBrokers(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+    }
+  ): Promise<ListBrokersResponse> {
+    if (!BUILDOUT_API_KEY) {
+      throw new Error('BUILDOUT_API_KEY environment variable is required')
+    }
+
+    try {
+      const params: Record<string, string | number | boolean> = {}
+      
+      if (options?.limit !== undefined) {
+        params.limit = options.limit
+      }
+
+      const response = await this.get<ListBrokersResponse>(
+        '/brokers.json',
+        params,
+        options
+      )
+
+      return response
+    } catch (error) {
+      console.error('Error fetching brokers from Buildout API:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Search properties with filters and pagination
+   * @param options - Filter and pagination options
+   * @returns Properties response with count, message, and properties array
+   * @throws Error if API key is not set or API call fails
+   */
+  async searchProperties(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+      offset?: number
+      [key: string]: string | number | boolean | undefined
+    }
+  ): Promise<ListPropertiesResponse> {
+    if (!BUILDOUT_API_KEY) {
+      throw new Error('BUILDOUT_API_KEY environment variable is required')
+    }
+
+    try {
+      const params: Record<string, string | number | boolean> = {}
+      
+      if (options?.limit !== undefined) {
+        params.limit = options.limit
+      }
+      
+      if (options?.offset !== undefined) {
+        params.offset = options.offset
+      }
+
+      // Add all other filter options (excluding skipCache, limit, offset)
+      Object.entries(options || {}).forEach(([key, value]) => {
+        if (key !== 'skipCache' && key !== 'limit' && key !== 'offset' && value !== undefined) {
+          params[key] = value
+        }
+      })
+
+      const response = await this.get<ListPropertiesResponse>(
+        '/properties.json',
+        params,
+        { skipCache: options?.skipCache }
+      )
+
+      return response
+    } catch (error) {
+      console.error('Error searching properties from Buildout API:', error)
+      throw error
+    }
+  }
+
+  /**
    * Internal method to fetch all properties (without caching the combined result)
    * This is called by getAllProperties and can also be called directly if skipCache is true
    * Made public so it can be called from the cached function
@@ -867,6 +952,36 @@ export const buildoutApi = {
     }
   ): Promise<ListPropertiesResponse> {
     return this.getInstance().getAllProperties(options)
+  },
+
+  /**
+   * Get all brokers
+   * @param options - Optional cache control and pagination options
+   * @returns Brokers response with count, message, and brokers array
+   */
+  async getAllBrokers(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+    }
+  ): Promise<ListBrokersResponse> {
+    return this.getInstance().getAllBrokers(options)
+  },
+
+  /**
+   * Search properties with filters and pagination
+   * @param options - Filter and pagination options
+   * @returns Properties response with count, message, and properties array
+   */
+  async searchProperties(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+      offset?: number
+      [key: string]: string | number | boolean | undefined
+    }
+  ): Promise<ListPropertiesResponse> {
+    return this.getInstance().searchProperties(options)
   },
 
   /**
