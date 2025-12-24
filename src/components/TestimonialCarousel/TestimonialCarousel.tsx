@@ -60,7 +60,7 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
               <div key={index} className="w-full flex-shrink-0 px-4">
                 <div className="text-center">
                   <p className="text-3xl md:text-4xl font-serif text-[#1a2e2a] mb-8">
-                    "{testimonial.quote}"
+                    &quot;{testimonial.quote}&quot;
                   </p>
                   <p className="text-lg text-gray-600">
                     -{testimonial.author}{testimonial.company ? ` | ${testimonial.company}` : ''}

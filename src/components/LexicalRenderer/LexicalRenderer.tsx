@@ -52,12 +52,31 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
 
     // Heading
     if (node.type === 'heading') {
-      const Tag = `h${node.tag}` as keyof JSX.IntrinsicElements
-      return (
-        <Tag key={`heading-${index}`} className="font-serif mb-4">
-          {node.children?.map((child: any, i: number) => renderNode(child, i))}
-        </Tag>
-      )
+      const headingTag = node.tag as 1 | 2 | 3 | 4 | 5 | 6
+      const HeadingComponent = `h${headingTag}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+      
+      const headingProps = {
+        key: `heading-${index}`,
+        className: 'font-serif mb-4',
+        children: node.children?.map((child: any, i: number) => renderNode(child, i))
+      }
+      
+      switch (HeadingComponent) {
+        case 'h1':
+          return <h1 {...headingProps} />
+        case 'h2':
+          return <h2 {...headingProps} />
+        case 'h3':
+          return <h3 {...headingProps} />
+        case 'h4':
+          return <h4 {...headingProps} />
+        case 'h5':
+          return <h5 {...headingProps} />
+        case 'h6':
+          return <h6 {...headingProps} />
+        default:
+          return <h2 {...headingProps} />
+      }
     }
 
     // List

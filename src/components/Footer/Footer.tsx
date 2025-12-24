@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 export default function Footer() {
   return (
@@ -12,25 +13,25 @@ export default function Footer() {
             
             {/* Column 1 */}
             <div className="flex flex-col gap-3">
-              <a href="/buy" className="hover:text-[#dce567] transition w-fit outline-none border-none">Buy</a>
-              <a href="/lease" className="hover:text-[#dce567] transition w-fit outline-none border-none">Lease</a>
-              <a href="/sell" className="hover:text-[#dce567] transition w-fit outline-none border-none">Sell</a>
-              <a href="/insights" className="hover:text-[#dce567] transition w-fit outline-none border-none">Insights & Research</a>
+              <Link href="/buy" className="hover:text-[#dce567] transition w-fit outline-none border-none">Buy</Link>
+              <Link href="/lease" className="hover:text-[#dce567] transition w-fit outline-none border-none">Lease</Link>
+              <Link href="/sell" className="hover:text-[#dce567] transition w-fit outline-none border-none">Sell</Link>
+              <Link href="/insights" className="hover:text-[#dce567] transition w-fit outline-none border-none">Insights & Research</Link>
             </div>
 
             {/* Column 2 */}
             <div className="flex flex-col gap-3">
-              <a href="/agents" className="hover:text-[#dce567] transition w-fit outline-none border-none">Our Agents</a>
-              <a href="/advantages" className="hover:text-[#dce567] transition w-fit outline-none border-none">Our Advantage</a>
-              <a href="/services" className="hover:text-[#dce567] transition w-fit outline-none border-none">Our Services</a>
-              <a href="/company" className="hover:text-[#dce567] transition w-fit outline-none border-none">Our Company</a>
+              <Link href="/agents" className="hover:text-[#dce567] transition w-fit outline-none border-none">Our Agents</Link>
+              <Link href="/advantages" className="hover:text-[#dce567] transition w-fit outline-none border-none">Our Advantage</Link>
+              <Link href="/services" className="hover:text-[#dce567] transition w-fit outline-none border-none">Our Services</Link>
+              <Link href="/company" className="hover:text-[#dce567] transition w-fit outline-none border-none">Our Company</Link>
             </div>
 
             {/* Column 3 */}
             <div className="flex flex-col gap-3">
-              <a href="/login" className="hover:text-[#dce567] transition w-fit outline-none border-none">Account Login</a>
-              <a href="/contact" className="hover:text-[#dce567] transition w-fit outline-none border-none">Contact Us</a>
-              <a href="/schedule" className="hover:text-[#dce567] transition w-fit outline-none border-none">Schedule a Tour / Consultation</a>
+              <Link href="/login" className="hover:text-[#dce567] transition w-fit outline-none border-none">Account Login</Link>
+              <Link href="/contact" className="hover:text-[#dce567] transition w-fit outline-none border-none">Contact Us</Link>
+              <Link href="/schedule" className="hover:text-[#dce567] transition w-fit outline-none border-none">Schedule a Tour / Consultation</Link>
             </div>
 
             {/* Column 4 - Addresses */}

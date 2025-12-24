@@ -32,7 +32,7 @@ export async function seedBuyPage(payload: Payload) {
       console.log('⏭️  Amazon FC image already exists in media')
     } else {
       try {
-        const imagePath = join(dirname_path, '..', '..', 'public', 'img', 'amazon_fc-1.png')
+        const imagePath = join(dirname_path, '..', '..', 'public', 'img', 'amazon_fc.png')
         
         const uploadedImage = await payload.create({
           collection: 'media',
@@ -69,8 +69,8 @@ export async function seedBuyPage(payload: Payload) {
 
     const pageBlocks = [
       {
-        blockType: 'hero',
-        variant: 'full-width-color',
+        blockType: 'hero' as const,
+        variant: 'full-width-color' as const,
         headingSegments: [
           {
             text: 'Buy With Insight.',
@@ -89,29 +89,29 @@ export async function seedBuyPage(payload: Payload) {
         ctaSecondaryLabel: 'Schedule a Consultation',
       },
       {
-        blockType: 'container',
+        blockType: 'container' as const,
         cssStyles: background50StrongGreenId ? [background50StrongGreenId] : [],
         blocks: [
           {
-            blockType: 'propertySearchInput',
+            blockType: 'propertySearchInput' as const,
           },
         ],
       },
       {
-        blockType: 'featuredProperties',
+        blockType: 'featuredProperties' as const,
         heading: 'Featured Properties',
         seeAllLink: '/property-search',
       },
       {
-        blockType: 'container',
+        blockType: 'container' as const,
         cssStyles: tanLinearStyleId ? [tanLinearStyleId] : [],
         blocks: [
           {
-            blockType: 'container',
+            blockType: 'container' as const,
             cssStyles: linearGradientStyleId ? [linearGradientStyleId] : [],
             blocks: [
               {
-                blockType: 'cardSection',
+                blockType: 'cardSection' as const,
                 title: 'Relationships Built for the Long Game',
                 description: 'In every transaction and relationship we hold true to our guiding principles.',
                 buttonText: 'What Makes Us Different',
@@ -146,7 +146,7 @@ export async function seedBuyPage(payload: Payload) {
             ],
           },
           {
-            blockType: 'testimonialCarousel',
+            blockType: 'testimonialCarousel' as const,
             testimonials: [
               {
                 quote: "...The Meybohm team helped us expand into three cities and we couldn't trust anyone else.",
@@ -166,7 +166,7 @@ export async function seedBuyPage(payload: Payload) {
             ],
           },
           {
-            blockType: 'splitSection',
+            blockType: 'splitSection' as const,
             header: 'Navigating Complex Transactions with Confidence',
             bulletPoints: [
               { text: '1031 Exchange Advisory' },
@@ -178,7 +178,7 @@ export async function seedBuyPage(payload: Payload) {
             image: amazonImageId,
           },
           {
-            blockType: 'insightsSection',
+            blockType: 'insightsSection' as const,
             heading: 'Insights That Shape Smart Investments',
             linkText: 'Explore More Insights',
             linkHref: '#',
@@ -201,11 +201,11 @@ export async function seedBuyPage(payload: Payload) {
             ],
           },
           {
-            blockType: 'container',
+            blockType: 'container' as const,
             cssStyles: tanLinearStyleId ? [tanLinearStyleId] : [],
             blocks: [
               {
-                blockType: 'trackRecordSection',
+                blockType: 'trackRecordSection' as const,
                 heading: 'Proven Track Record',
                 properties: [
                   {
@@ -224,14 +224,14 @@ export async function seedBuyPage(payload: Payload) {
                 ],
               },
               {
-                blockType: 'propertySearch',
+                blockType: 'propertySearch' as const,
                 heading: 'Local Insight. National Scale.',
                 description: 'Headquartered in the Southeast, our brokers and partners support commercial activity across state lines and sector boundaries.',
                 buttonText: 'Explore Properties by Market',
                 propertiesCount: '99 Properties For Sale in or near Aiken',
               },
               {
-                blockType: 'agentCarousel',
+                blockType: 'agentCarousel' as const,
                 preHeading: 'Meet Our Agents',
                 heading: 'Experience that Performs',
                 description: "We're proud to bring a wealth of knowledge and relational capital to every deal and partnership.",
@@ -257,7 +257,7 @@ export async function seedBuyPage(payload: Payload) {
         ],
       },
       {
-        blockType: 'ctaFooter',
+        blockType: 'ctaFooter' as const,
         heading: 'Ready to make your next move?',
         buttons: [
           { label: 'Schedule a Consultation', variant: 'primary' as const },
@@ -266,7 +266,7 @@ export async function seedBuyPage(payload: Payload) {
         ],
       },
       {
-        blockType: 'footer',
+        blockType: 'footer' as const,
       },
     ]
 

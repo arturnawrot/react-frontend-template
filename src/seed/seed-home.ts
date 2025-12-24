@@ -32,7 +32,7 @@ export async function seedHomePage(payload: Payload) {
       console.log('⏭️  Amazon FC image already exists in media')
     } else {
       try {
-        const imagePath = join(dirname_path, '..', '..', 'public', 'img', 'amazon_fc-1.png')
+        const imagePath = join(dirname_path, '..', '..', 'public', 'img', 'amazon_fc.png')
         
         const uploadedImage = await payload.create({
           collection: 'media',
@@ -69,8 +69,8 @@ export async function seedHomePage(payload: Payload) {
 
     const pageBlocks = [
       {
-        blockType: 'hero',
-        variant: 'default',
+        blockType: 'hero' as const,
+        variant: 'default' as const,
         headingSegments: [
           {
             text: 'Smart Moves.',
@@ -88,14 +88,14 @@ export async function seedHomePage(payload: Payload) {
           'Advisory-led commercial real estate solutions across the Southeast. Rooted in partnership. Driven by performance. Informed by perspective.',
       },
       {
-        blockType: 'container',
+        blockType: 'container' as const,
         cssStyles: [
           ...(tanLinearStyleId ? [tanLinearStyleId] : []),
           ...(mb300StyleId ? [mb300StyleId] : []),
         ],
         blocks: [
           {
-            blockType: 'flippedM',
+            blockType: 'flippedM' as const,
             heading: 'Built on more than \ntransactions.',
             subheading:
               "We advise with the same care we'd want for our own portfolio. Whether you're investing, expanding, or exiting - we're built for your next move.",
@@ -127,15 +127,15 @@ export async function seedHomePage(payload: Payload) {
         ],
       },
       {
-        blockType: 'container',
+        blockType: 'container' as const,
         cssStyles: tanLinearStyleId ? [tanLinearStyleId] : [],
         blocks: [
           {
-            blockType: 'container',
+            blockType: 'container' as const,
             cssStyles: linearGradientStyleId ? [linearGradientStyleId] : [],
             blocks: [
               {
-                blockType: 'cardSection',
+                blockType: 'cardSection' as const,
                 title: 'Relationships Built for the Long Game',
                 description:
                   'In every transaction and relationship we hold true to our guiding principles.',

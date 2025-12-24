@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import PropertyCard from '../PropertyCard/PropertyCard'
 import Arrow from '../Arrow/Arrow'
 import type { BuildoutProperty } from '@/utils/buildout-api'
@@ -86,12 +87,12 @@ const FeaturedPropertiesAgent: React.FC<FeaturedPropertiesAgentProps> = ({ prope
           <h2 className="text-4xl md:text-5xl font-serif leading-tight">Featured Properties</h2>
         </div>
 
-        <a
+        <Link
           href="/property-search"
           className="inline-flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:underline"
         >
           See All Listings <Arrow direction="right" size={16} />
-        </a>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

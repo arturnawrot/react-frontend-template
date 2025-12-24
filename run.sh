@@ -31,21 +31,29 @@ function payload {
   _dc payload "${@}"
 }
 
+function payload-production {
+  _dc payload-production "${@}"
+}
+
+
 function npm {
   node npm "${@}"
 }
 
 function run_dev {
-  docker compose up node -d
-  npm run dev
+  docker compose up mongo payload -d
 }
 
 function run_prod {
-  docker compose up web --build --force-recreate -d
+  docker compose up mongo payload-production --build --force-recreate -d
 }
 
 function seed {
   payload pnpm seed
+}
+
+function seed-production {
+  payload-production pnpm seed
 }
 
 TIMEFORMAT=$'\nTask completed in %3lR'

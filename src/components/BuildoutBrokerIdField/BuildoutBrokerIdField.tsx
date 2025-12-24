@@ -5,15 +5,15 @@ import { useField } from '@payloadcms/ui'
 import type { TextFieldClientComponent } from 'payload'
 
 const BuildoutBrokerIdField: TextFieldClientComponent = (props) => {
-  const { field, path, value: valueProp } = props
+  const { field, path } = props
   
   // Use useField hook to get the setValue function and current value
   const { value: fieldValue, setValue: setFieldValue } = useField<string>({
     path,
   })
 
-  // Use prop value if available, otherwise use field value from hook
-  const currentValue = valueProp ?? fieldValue ?? ''
+  // Use field value from hook
+  const currentValue = fieldValue ?? ''
   const setValue = setFieldValue
 
   const [email, setEmail] = useState<string>('')
@@ -117,12 +117,28 @@ const BuildoutBrokerIdField: TextFieldClientComponent = (props) => {
     }
   }
 
+  // Convert label to string (handles StaticLabel i18n objects)
+  const labelText = typeof field.label === 'string' 
+    ? field.label 
+    : (field.label && typeof field.label === 'object' 
+        ? Object.values(field.label)[0] || 'Buildout Broker ID'
+        : 'Buildout Broker ID')
+  
+  // Convert description to string if needed
+  const descriptionText = field.admin?.description 
+    ? (typeof field.admin.description === 'string' 
+        ? field.admin.description 
+        : (typeof field.admin.description === 'object' 
+            ? Object.values(field.admin.description)[0] || ''
+            : ''))
+    : null
+
   return (
     <div className="field-type buildout-broker-id-field">
       <div className="field-label">
-        <label htmlFor={`field-${path}`}>{field.label || 'Buildout Broker ID'}</label>
-        {field.admin?.description && (
-          <div className="field-description">{field.admin.description}</div>
+        <label htmlFor={`field-${path}`}>{labelText}</label>
+        {descriptionText && (
+          <div className="field-description">{descriptionText}</div>
         )}
       </div>
 

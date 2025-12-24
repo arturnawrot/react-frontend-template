@@ -1,10 +1,12 @@
+import Link from 'next/link'
+
 interface LogoProps {
   darkVariant?: boolean
 }
 
 export default function Logo({ darkVariant = false }: LogoProps) {
   return (
-    <a href="/">
+    <Link href="/">
       {/* Normal logo - always visible on desktop, visible on mobile when darkVariant is false */}
       <img
         src="/img/logo.png"
@@ -19,7 +21,7 @@ export default function Logo({ darkVariant = false }: LogoProps) {
           className="h-8 md:hidden"
         />
       )}
-    </a>
+    </Link>
   )
 }
 

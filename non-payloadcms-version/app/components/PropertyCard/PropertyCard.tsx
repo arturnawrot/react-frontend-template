@@ -1,7 +1,28 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
 
-const PropertyCard = ({ property, variant = 'vertical' }) => {
+interface PropertyBadge {
+  text: string;
+  color: string;
+}
+
+interface Property {
+  image: string;
+  badges: PropertyBadge[];
+  address: string;
+  cityStateZip: string;
+  price: string;
+  sqft: string;
+  type: string;
+  agent: string;
+}
+
+interface PropertyCardProps {
+  property: Property;
+  variant?: 'vertical' | 'horizontal';
+}
+
+const PropertyCard = ({ property, variant = 'vertical' }: PropertyCardProps) => {
   const isVertical = variant === 'vertical';
 
   return (

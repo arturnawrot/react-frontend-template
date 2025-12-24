@@ -1,7 +1,14 @@
 import React from 'react';
 import Arrow from 'non-payloadcms-version/app/components/Arrow/Arrow';
 
-const ArticleCard = ({ imageSrc, title, tags = [], link = "#" }) => {
+interface ArticleCardProps {
+  imageSrc: string;
+  title: string;
+  tags?: string[];
+  link?: string;
+}
+
+const ArticleCard = ({ imageSrc, title, tags = [], link = "#" }: ArticleCardProps) => {
   return (
     <div className="w-[300px] md:w-[400px] shrink-0 snap-start">
       {/* Image Container */}

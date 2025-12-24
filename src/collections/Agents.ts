@@ -161,7 +161,7 @@ export const Agents: CollectionConfig = {
     beforeValidate: [
       ({ data }) => {
         // Auto-generate slug from firstName-lastName
-        if (data.firstName && data.lastName) {
+        if (data && data.firstName && data.lastName) {
           const firstName = data.firstName.toLowerCase().trim()
           const lastName = data.lastName.toLowerCase().trim()
           data.slug = `${firstName}-${lastName}`
