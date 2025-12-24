@@ -4,7 +4,7 @@ services:
   payload:
     image: node:18-alpine
     ports:
-      - '80:3000'
+      - '8080:3000'
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
@@ -16,13 +16,35 @@ services:
     env_file:
       - .env
 
-  # Ensure your DATABASE_URL uses 'mongo' as the hostname ie. mongodb://mongo/my-db-name
+  payload-production:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '80:3000'
+    depends_on:
+      - mongo
+      # - postgres
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+
+  # Ensure your DATABASE_URL uses 'mongo' as the hostname with authentication
+  # Format: mongodb://MONGO_USERNAME:MONGO_PASSWORD@mongo:27017/MONGO_DATABASE?authSource=admin
   mongo:
     image: mongo:latest
     ports:
       - '27017:27017'
     command:
       - --storageEngine=wiredTiger
+      - --auth
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
     volumes:
       - data:/data/db
     logging:

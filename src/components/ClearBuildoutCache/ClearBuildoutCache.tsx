@@ -41,15 +41,16 @@ export function ClearBuildoutCache() {
 
   return (
     <div style={{ padding: '12px 16px', borderTop: '1px solid var(--theme-elevation-100)' }}>
-      <Button
-        onClick={handleClearCache}
-        disabled={isClearing}
-        buttonStyle="secondary"
-        size="small"
-        style={{ width: '100%' }}
-      >
-        {isClearing ? 'Clearing...' : 'Clear Buildout Cache'}
-      </Button>
+      <div style={{ width: '100%' }}>
+        <Button
+          onClick={handleClearCache}
+          disabled={isClearing}
+          buttonStyle="secondary"
+          size="small"
+        >
+          {isClearing ? 'Clearing...' : 'Clear Buildout Cache'}
+        </Button>
+      </div>
       {message && (
         <div
           style={{

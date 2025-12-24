@@ -12,6 +12,32 @@
 
   --strong-green: #1C2F29;
   --sale-green: #DAE684;
+
+  /* FlippedM component variables */
+  --flippedMHeadingSize: var(--display4);
+  --bulletPointHeadingSize: 24px;
+
+  /* Hero component variables */
+  --hero-font-size: 64px;
+  --hero-subheading-font-size: 20px;
+  --meybohm-heading: clamp(44px, 6.5vw, 72px);
+  --meybohm-subheading: clamp(16px, 2vw, 22px);
+  --split-heading: clamp(32px, 5.8vw, 68px);
+  --split-subheading: clamp(15px, 2.4vw, 22px);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --flippedMHeadingSize: var(--display2);
+    --bulletPointHeadingSize: var(--headline2);
+
+    --hero-font-size: 128px;
+    --hero-subheading-font-size: 24px;
+    --meybohm-heading: 64px;
+    --meybohm-subheading: 22px;
+    --split-heading: clamp(40px, 5vw, 72px);
+    --split-subheading: clamp(16px, 2vw, 22px);
+  }
 }
 
 @font-face {

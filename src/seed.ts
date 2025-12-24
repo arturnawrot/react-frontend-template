@@ -4,6 +4,7 @@ import config from './payload.config'
 import { seedCSSStyles, seedNavbar } from './seed-utils'
 import { seedHomePage } from './seed/seed-home'
 import { seedBuyPage } from './seed/seed-buy'
+import { seedJordanCollier } from './seed/seed-jordan-collier'
 
 async function seed() {
   const payload = await getPayload({ config })
@@ -19,6 +20,9 @@ async function seed() {
     // Seed all pages
     await seedHomePage(payload)
     await seedBuyPage(payload)
+
+    // Seed agents
+    await seedJordanCollier(payload)
 
     console.log('✅ All pages seeded successfully!')
     process.exit(0)

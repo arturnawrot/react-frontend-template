@@ -3,7 +3,12 @@ import { Search, X } from "lucide-react";
 import { CollapsingMenuMobileLink, MAIN_LINKS } from "../NavbarLink/NavbarLink";
 import styles from '../../../.react-router/types/non-payloadcms-version/app/components/CollapsingMenuMobile/CollapsingMenuMobile.module.scss';
 
-export default function CollapsingMenuMobile({ open, onClose }) {
+interface CollapsingMenuMobileProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export default function CollapsingMenuMobile({ open, onClose }: CollapsingMenuMobileProps) {
   return (
     <>
       {/* Backdrop: click to close */}

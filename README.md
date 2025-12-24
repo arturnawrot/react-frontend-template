@@ -17,7 +17,7 @@ After you click the `Deploy` button above, you'll want to have standalone copy o
 ### Development
 
 1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+2. `cd my-project && cp .env.example .env` to copy the example environment variables. Update the MongoDB credentials (`MONGO_USERNAME`, `MONGO_PASSWORD`, `MONGO_DATABASE`) and `DATABASE_URL` in your `.env` file. If you're using Payload Cloud, you'll need to add the `DATABASE_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
 
 3. `pnpm install && pnpm dev` to install dependencies and start the dev server
 4. open `http://localhost:3000` to open the app in your browser
@@ -30,9 +30,15 @@ If you prefer to use Docker for local development instead of a local MongoDB ins
 
 To do so, follow these steps:
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+1. Copy `.env.example` to `.env`: `cp .env.example .env`
+2. Update the MongoDB credentials in your `.env` file:
+   - Set `MONGO_USERNAME` (default: `admin`)
+   - Set `MONGO_PASSWORD` to a secure password
+   - Set `MONGO_DATABASE` (default: `payload`)
+   - Update `DATABASE_URL` to match your credentials: `mongodb://MONGO_USERNAME:MONGO_PASSWORD@mongo:27017/MONGO_DATABASE?authSource=admin`
+3. Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+
+**Note**: MongoDB authentication is enabled. The `DATABASE_URL` must include the username and password, and use `mongo` as the hostname when connecting from within Docker containers.
 
 ## How it works
 

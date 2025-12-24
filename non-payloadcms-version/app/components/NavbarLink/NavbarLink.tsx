@@ -1,6 +1,14 @@
+import React from 'react';
 import styles from '../../../.react-router/types/non-payloadcms-version/app/components/NavbarLink/NavbarLink.module.scss';
 
-export function NavbarLink({ href = "#", children, className = "", isExternal = false }) {
+interface NavbarLinkProps {
+  href?: string;
+  children: React.ReactNode;
+  className?: string;
+  isExternal?: boolean;
+}
+
+export function NavbarLink({ href = "#", children, className = "", isExternal = false }: NavbarLinkProps) {
     const externalProps = isExternal
       ? { target: "_blank", rel: "noopener noreferrer" }
       : {};
@@ -15,7 +23,12 @@ export function NavbarLink({ href = "#", children, className = "", isExternal = 
     );
 }
 
-export function MainNavbarLink({ href, children }) {
+interface MainNavbarLinkProps {
+  href: string;
+  children: React.ReactNode;
+}
+
+export function MainNavbarLink({ href, children }: MainNavbarLinkProps) {
     return (
         <NavbarLink href={href} className={styles.mainNavbarLink}>
             {children}
@@ -23,7 +36,12 @@ export function MainNavbarLink({ href, children }) {
     );
 }
 
-export function UpperNavbarLink({ href, children }) {
+interface UpperNavbarLinkProps {
+  href: string;
+  children: React.ReactNode;
+}
+
+export function UpperNavbarLink({ href, children }: UpperNavbarLinkProps) {
     return (
         <NavbarLink href={href} className={styles.upperNavbarLink}>
             {children}
@@ -31,7 +49,12 @@ export function UpperNavbarLink({ href, children }) {
     );
 }
 
-export function CollapsingMenuMobileLink({ href, children }) {
+interface CollapsingMenuMobileLinkProps {
+  href: string;
+  children: React.ReactNode;
+}
+
+export function CollapsingMenuMobileLink({ href, children }: CollapsingMenuMobileLinkProps) {
     return (
         <NavbarLink href={href} className={`${styles.mainNavbarLink} text-left w-full hover:text-opacity-80 transition px-8`}>
             {children}
