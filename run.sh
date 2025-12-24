@@ -19,14 +19,6 @@ function _dc {
 }
 
 # ---- node/npm helpers ----
-function node {
-  _dc node "${@}"
-}
-
-function web {
-  _dc web "${@}"
-}
-
 function payload {
   _dc payload "${@}"
 }

@@ -152,10 +152,10 @@ export default function PropertySearch({ block }: PropertySearchProps) {
           </div>
 
           {/* RIGHT COLUMN: Property List */}
-          <div className="flex flex-col w-full lg:w-1/2 lg:h-[600px] overflow-y-auto">
+          <div className="flex flex-col w-full lg:w-1/2 h-[600px] lg:h-[600px]">
             
-            {/* List Toolbar */}
-            <div className="flex flex-wrap gap-2 justify-between items-center mb-4 pb-2">
+            {/* List Toolbar - Above property cards container */}
+            <div className="flex flex-wrap gap-2 justify-between items-center mb-4 pb-2 flex-shrink-0">
               <h2 className="text-lg font-medium text-stone-800">
                 {propertiesCountText}
               </h2>
@@ -169,8 +169,8 @@ export default function PropertySearch({ block }: PropertySearchProps) {
               </div>
             </div>
 
-            {/* Cards Stack */}
-            <div className="flex flex-col gap-4">
+            {/* Cards Stack - Scrollable container */}
+            <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
               {loading ? (
                 <p className="text-stone-600">Loading properties...</p>
               ) : error ? (
