@@ -82,7 +82,17 @@ export default function PropertySearch({ block }: PropertySearchProps) {
   const handleBoundsChange = React.useCallback((bounds: any, visible: PropertyCardData[]) => {
     // Show up to 4 properties from the visible area
     const limited = visible.slice(0, 4)
-    setVisibleProperties(limited)
+    
+    // Only update if the visible properties have actually changed
+    setVisibleProperties(prev => {
+      // Compare by IDs to avoid unnecessary updates
+      const prevIds = prev.map(p => p.id).sort().join(',')
+      const newIds = limited.map(p => p.id).sort().join(',')
+      if (prevIds === newIds) {
+        return prev // Return previous state if nothing changed
+      }
+      return limited
+    })
   }, [])
 
   // Display properties count
