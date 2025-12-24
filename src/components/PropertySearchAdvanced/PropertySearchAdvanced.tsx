@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { Search, ChevronDown, List, Grid, Share2, RotateCcw } from 'lucide-react'
 import PropertyCard from '../PropertyCard/PropertyCard'
@@ -38,22 +39,47 @@ export default function PropertySearchAdvanced({
   backgroundColor, 
   backgroundExtendPx = 200 
 }: PropertySearchAdvancedProps) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filters, setFilters] = useState<FilterState>({
-    brokerId: null,
-    propertyType: null,
-    minPrice: null,
-    maxPrice: null,
-    saleOrLease: null,
-    minCapRate: null,
-    maxCapRate: null,
-  })
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+  
+  // Initialize state from URL params
+  const getInitialState = useCallback(() => {
+    const search = searchParams.get('search') || ''
+    const brokerId = searchParams.get('brokerId') ? parseInt(searchParams.get('brokerId')!, 10) : null
+    const propertyType = searchParams.get('propertyType') ? parseInt(searchParams.get('propertyType')!, 10) : null
+    const minPrice = searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!, 10) : null
+    const maxPrice = searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!, 10) : null
+    const saleOrLease = searchParams.get('saleOrLease') as 'sale' | 'lease' | 'both' | null || null
+    const minCapRate = searchParams.get('minCapRate') ? parseFloat(searchParams.get('minCapRate')!) : null
+    const maxCapRate = searchParams.get('maxCapRate') ? parseFloat(searchParams.get('maxCapRate')!) : null
+    const page = searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : 1
+
+    return {
+      search,
+      filters: {
+        brokerId: brokerId && !isNaN(brokerId) ? brokerId : null,
+        propertyType: propertyType && !isNaN(propertyType) ? propertyType : null,
+        minPrice: minPrice && !isNaN(minPrice) ? minPrice : null,
+        maxPrice: maxPrice && !isNaN(maxPrice) ? maxPrice : null,
+        saleOrLease: saleOrLease || null,
+        minCapRate: minCapRate && !isNaN(minCapRate) ? minCapRate : null,
+        maxCapRate: maxCapRate && !isNaN(maxCapRate) ? maxCapRate : null,
+      },
+      page: page && !isNaN(page) && page > 0 ? page : 1,
+    }
+  }, [searchParams])
+
+  const initialState = getInitialState()
+  
+  const [searchQuery, setSearchQuery] = useState(initialState.search)
+  const [filters, setFilters] = useState<FilterState>(initialState.filters)
   const [properties, setProperties] = useState<PropertyCardData[]>([])
   const [allProperties, setAllProperties] = useState<PropertyCardData[]>([]) // All filtered properties for map
   const [brokers, setBrokers] = useState<BuildoutBroker[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(initialState.page)
   const [totalCount, setTotalCount] = useState(0)
   const [mapType, setMapType] = useState<'map' | 'satellite'>('map')
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null)
@@ -62,6 +88,52 @@ export default function PropertySearchAdvanced({
   // Refs for dropdowns
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const isInitialMount = useRef(true)
+  
+  // Update URL params when filters/search/page change
+  const updateURL = useCallback((newSearch: string, newFilters: FilterState, newPage: number) => {
+    const params = new URLSearchParams()
+    
+    if (newSearch) {
+      params.set('search', newSearch)
+    }
+    
+    if (newFilters.brokerId) {
+      params.set('brokerId', newFilters.brokerId.toString())
+    }
+    
+    if (newFilters.propertyType) {
+      params.set('propertyType', newFilters.propertyType.toString())
+    }
+    
+    if (newFilters.minPrice) {
+      params.set('minPrice', newFilters.minPrice.toString())
+    }
+    
+    if (newFilters.maxPrice) {
+      params.set('maxPrice', newFilters.maxPrice.toString())
+    }
+    
+    if (newFilters.saleOrLease && newFilters.saleOrLease !== 'both') {
+      params.set('saleOrLease', newFilters.saleOrLease)
+    }
+    
+    if (newFilters.minCapRate !== null) {
+      params.set('minCapRate', newFilters.minCapRate.toString())
+    }
+    
+    if (newFilters.maxCapRate !== null) {
+      params.set('maxCapRate', newFilters.maxCapRate.toString())
+    }
+    
+    if (newPage > 1) {
+      params.set('page', newPage.toString())
+    }
+    
+    // Update URL without adding to history (replace instead of push)
+    const newURL = params.toString() ? `${pathname}?${params.toString()}` : pathname
+    router.replace(newURL, { scroll: false })
+  }, [router])
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -347,6 +419,15 @@ export default function PropertySearchAdvanced({
     }
   }, [searchQuery, filters, brokers, calculateMapCenter])
 
+  // Update URL when filters/search/page change (skip initial mount)
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+    updateURL(searchQuery, filters, currentPage)
+  }, [searchQuery, filters, currentPage, updateURL])
+
   // Fetch properties when filters or search change
   useEffect(() => {
     setCurrentPage(1)
@@ -375,6 +456,8 @@ export default function PropertySearchAdvanced({
       minCapRate: null,
       maxCapRate: null,
     })
+    setCurrentPage(1)
+    // URL will be updated by the useEffect that watches these state changes
   }
 
   // Property types (simplified - you may want to fetch these from API)
