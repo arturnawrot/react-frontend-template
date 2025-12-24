@@ -81,6 +81,81 @@ interface CacheEntry<T> {
 // Track cache operations for debugging (this is ephemeral, resets on module reload)
 const cacheTracker = new MemoryCache()
 
+// In-memory cache for API responses (fallback when unstable_cache doesn't work)
+// This persists across requests within the same process
+const responseCache = new MemoryCache()
+
+// Module-level fetch function that doesn't capture 'this'
+// This is needed for unstable_cache to work properly
+async function fetchBuildoutData<T>(
+  baseUrl: string,
+  endpoint: string,
+  params?: Record<string, string | number | boolean>
+): Promise<T> {
+  const url = new URL(`${baseUrl}${endpoint}`)
+  
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        url.searchParams.append(key, String(value))
+      }
+    })
+  }
+
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(
+      `Buildout API error: ${response.status} ${response.statusText}. ${errorText}`
+    )
+  }
+
+  const data = await response.json()
+  return data
+}
+
+// Store cached functions to reuse the same function reference for the same cache key
+// This is critical for unstable_cache to work properly
+const cachedFunctionStore = new Map<string, () => Promise<any>>()
+
+// Get or create a cached function for a given cache key
+function getCachedFunction<T>(
+  cacheKey: string,
+  baseUrl: string,
+  endpoint: string,
+  params?: Record<string, string | number | boolean>
+): () => Promise<T> {
+  // Reuse existing cached function if it exists
+  if (cachedFunctionStore.has(cacheKey)) {
+    return cachedFunctionStore.get(cacheKey)! as () => Promise<T>
+  }
+
+  // Create new cached function and store it
+  const paramsKey = params ? JSON.stringify(params) : ''
+  const cachedFn = unstable_cache(
+    async () => {
+      console.log(`[Buildout API Cache] FETCHING (cache miss): ${cacheKey}`)
+      const data = await fetchBuildoutData<T>(baseUrl, endpoint, params)
+      console.log(`[Buildout API Cache] STORED: ${cacheKey} (TTL: ${CACHE_TTL_SECONDS}s)`)
+      return data
+    },
+    [cacheKey, baseUrl, endpoint, paramsKey],
+    {
+      tags: ['buildout-api'],
+      revalidate: CACHE_TTL_SECONDS,
+    }
+  )
+
+  cachedFunctionStore.set(cacheKey, cachedFn)
+  return cachedFn
+}
+
 // Clean up expired entries from cacheTracker periodically (every 5 minutes)
 // Note: This only cleans up the ephemeral cacheTracker, not the actual Next.js cache
 if (typeof setInterval !== 'undefined') {
@@ -444,41 +519,37 @@ class BuildoutApiClient {
     options?: { skipCache?: boolean }
   ): Promise<T> {
     const cacheKey = this.getCacheKey(endpoint, params)
+    const baseUrl = this.baseUrl // Capture baseUrl to avoid 'this' in closure
 
     // If cache is disabled or skipCache is true, fetch directly
     if (!ENABLE_CACHE || options?.skipCache) {
       console.log(`[Buildout API Cache] SKIPPED: ${cacheKey} (ENABLE_CACHE=${ENABLE_CACHE}, skipCache=${options?.skipCache})`)
-      return this.fetchData<T>(endpoint, params)
+      return fetchBuildoutData<T>(baseUrl, endpoint, params)
     }
 
-    // Use Next.js unstable_cache for persistent caching across module reloads
-    // The function will only execute on cache miss; cached results are returned immediately
-    const cachedFetch = unstable_cache(
-      async () => {
-        console.log(`[Buildout API Cache] FETCHING (cache miss): ${cacheKey}`)
-        const data = await this.fetchData<T>(endpoint, params)
-        console.log(`[Buildout API Cache] STORED: ${cacheKey} (TTL: ${CACHE_TTL_SECONDS}s)`)
-        return data
-      },
-      [cacheKey], // Cache key parts - Next.js uses these to determine cache hits
-      {
-        tags: ['buildout-api'],
-        revalidate: CACHE_TTL_SECONDS,
-      }
-    )
-
-    // Check if we've seen this cache key in this process (for logging)
-    // Note: This is ephemeral and resets on module reload, but unstable_cache persists
-    const recentlyCached = cacheTracker.get<boolean>(cacheKey)
-    if (recentlyCached) {
-      console.log(`[Buildout API Cache] HIT (from Next.js cache): ${cacheKey}`)
-    } else {
-      console.log(`[Buildout API Cache] MISS (will check Next.js cache): ${cacheKey}`)
-      // Track that we've seen this key (for logging only)
-      cacheTracker.set(cacheKey, true, CACHE_TTL_SECONDS)
+    // Check in-memory cache first (fastest, works across requests in same process)
+    // This is the primary cache since unstable_cache doesn't work reliably in API routes
+    const cachedResponse = responseCache.get<T>(cacheKey)
+    if (cachedResponse) {
+      console.log(`[Buildout API Cache] HIT (from memory cache): ${cacheKey}`)
+      return cachedResponse
     }
 
-    const data = await cachedFetch()
+    // If not in memory cache, fetch fresh data
+    // Note: We're not using unstable_cache here because it doesn't work reliably
+    // The in-memory cache (responseCache) is our primary caching mechanism
+    console.log(`[Buildout API Cache] MISS (will fetch): ${cacheKey}`)
+    
+    // Track that we've seen this key (for logging)
+    cacheTracker.set(cacheKey, true, CACHE_TTL_SECONDS)
+    
+    // Fetch fresh data from API
+    const data = await fetchBuildoutData<T>(baseUrl, endpoint, params)
+    
+    // Store in in-memory cache for faster subsequent access
+    responseCache.set(cacheKey, data, CACHE_TTL_SECONDS)
+    console.log(`[Buildout API Cache] STORED (in memory): ${cacheKey} (TTL: ${CACHE_TTL_SECONDS}s)`)
+    
     return data
   }
 
@@ -628,6 +699,121 @@ class BuildoutApiClient {
       throw error
     }
   }
+
+  /**
+   * Get all properties with pagination
+   * Makes multiple requests based on total count and limit
+   * @param options - Optional cache control, pagination, and filter options
+   * @returns Combined properties response with all properties
+   * @throws Error if API key is not set or API call fails
+   */
+  async getAllProperties(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+      brokerId?: number
+      [key: string]: string | number | boolean | undefined
+    }
+  ): Promise<ListPropertiesResponse> {
+    if (!BUILDOUT_API_KEY) {
+      throw new Error('BUILDOUT_API_KEY environment variable is required')
+    }
+
+    // Note: We don't cache the combined result because it exceeds Next.js 2MB cache limit
+    // Individual page requests are cached, so subsequent calls will be fast
+    return this._getAllPropertiesInternal(options)
+  }
+
+  /**
+   * Internal method to fetch all properties (without caching the combined result)
+   * This is called by getAllProperties and can also be called directly if skipCache is true
+   * Made public so it can be called from the cached function
+   */
+  async _getAllPropertiesInternal(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+      brokerId?: number
+      [key: string]: string | number | boolean | undefined
+    }
+  ): Promise<ListPropertiesResponse> {
+    try {
+      const limit = options?.limit ?? 10
+      const baseParams: Record<string, string | number | boolean> = {
+        limit,
+        offset: 0,
+      }
+
+      // Add optional filters (like broker_id)
+      if (options?.brokerId !== undefined) {
+        baseParams.broker_id = options.brokerId
+      }
+
+      // Add any other custom params (excluding skipCache and limit which are handled separately)
+      Object.entries(options || {}).forEach(([key, value]) => {
+        if (key !== 'skipCache' && key !== 'limit' && key !== 'brokerId' && value !== undefined) {
+          baseParams[key] = value
+        }
+      })
+
+      // First request to get total count
+      const firstResponse = await this.get<ListPropertiesResponse>(
+        '/properties.json',
+        baseParams,
+        options
+      )
+
+      const totalCount = firstResponse.count
+      const allProperties = [...firstResponse.properties]
+
+      // If we already have all properties, return early
+      if (allProperties.length >= totalCount) {
+        return {
+          ...firstResponse,
+          properties: allProperties,
+        }
+      }
+
+      // Calculate number of additional pages needed
+      const totalPages = Math.ceil(totalCount / limit)
+      const remainingPages = totalPages - 1
+
+      if (remainingPages > 0) {
+        // Create requests for remaining pages
+        const pagePromises = Array.from({ length: remainingPages }, (_, i) => {
+          const pageOffset = (i + 1) * limit
+          const pageParams = {
+            ...baseParams,
+            offset: pageOffset,
+          }
+
+          return this.get<ListPropertiesResponse>(
+            '/properties.json',
+            pageParams,
+            options
+          )
+        })
+
+        // Fetch all remaining pages in parallel
+        const pageResponses = await Promise.all(pagePromises)
+
+        // Combine all properties from all pages
+        pageResponses.forEach((response) => {
+          allProperties.push(...response.properties)
+        })
+      }
+
+      // Return combined response
+      return {
+        message: firstResponse.message,
+        properties: allProperties,
+        count: totalCount,
+      }
+    } catch (error) {
+      console.error('Error fetching all properties from Buildout API:', error)
+      throw error
+    }
+  }
 }
 
 // Export singleton instance (lazy initialization)
@@ -667,13 +853,45 @@ export const buildoutApi = {
   },
 
   /**
+   * Get all properties with pagination
+   * Makes multiple requests based on total count and limit
+   * @param options - Optional cache control, pagination, and filter options
+   * @returns Combined properties response with all properties
+   */
+  async getAllProperties(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+      brokerId?: number
+      [key: string]: string | number | boolean | undefined
+    }
+  ): Promise<ListPropertiesResponse> {
+    return this.getInstance().getAllProperties(options)
+  },
+
+  /**
    * Clear the cache (useful for testing or manual cache invalidation)
    * This revalidates all cache entries tagged with 'buildout-api'
    */
   async clearCache(): Promise<void> {
+    // Get cache sizes before clearing for logging
+    const responseCacheSize = responseCache.size()
+    const functionStoreSize = cachedFunctionStore.size
+    
+    // Revalidate Next.js cache tags (for unstable_cache if it was used)
     revalidateTag('buildout-api')
+    revalidateTag('buildout-api-all-properties')
+    
+    // Clear in-memory caches
     cacheTracker.clear()
-    console.log('[Buildout API Cache] CLEARED (revalidated tag: buildout-api)')
+    responseCache.clear()
+    
+    // Clear cached function store - this forces new functions to be created
+    // which will fetch fresh data on next call
+    cachedFunctionStore.clear()
+    
+    console.log(`[Buildout API Cache] CLEARED - Removed ${responseCacheSize} response cache entries and ${functionStoreSize} cached functions`)
+    console.log('[Buildout API Cache] All caches cleared (Next.js tags revalidated, memory caches cleared)')
   },
 
   /**

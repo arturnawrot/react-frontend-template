@@ -1,9 +1,21 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import { List, Grid, Share2 } from 'lucide-react'
 import type { Page } from '@/payload-types'
 import PropertyCard from '../PropertyCard/PropertyCard'
-import MapBackground from '../MapBackground/MapBackground'
+import type { BuildoutProperty } from '@/utils/buildout-api'
+import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
+
+// Dynamically import PropertyMap with SSR disabled to avoid window is not defined error
+const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center">
+      <p className="text-stone-600">Loading map...</p>
+    </div>
+  ),
+})
 
 type PropertySearchBlock = Extract<Page['blocks'][number], { blockType: 'propertySearch' }>
 
@@ -11,26 +23,75 @@ interface PropertySearchProps {
   block: PropertySearchBlock
 }
 
-// Mock properties data - in a real app, this would come from a properties collection
-const mockProperties = Array(4).fill({
-  address: "105 Lancaster St SW",
-  cityStateZip: "Aiken, SC 29801",
-  price: "$700,000",
-  sqft: "4,961 SF",
-  type: "Office Space",
-  agent: "Jane Smith",
-  image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-  badges: [
-    { text: "For Sale", color: "bg-[#CDDC39]" },
-    { text: "Price Reduction - 25k, July 1st", color: "bg-[#D4E157]" }
-  ]
-})
-
 export default function PropertySearch({ block }: PropertySearchProps) {
   const heading = block.heading || 'Local Insight. National Scale.'
   const description = block.description || 'Headquartered in the Southeast, our brokers and partners support commercial activity across state lines and sector boundaries.'
   const buttonText = block.buttonText || 'Explore Properties by Market'
-  const propertiesCount = block.propertiesCount || '99 Properties For Sale in or near Aiken'
+  
+  const [allProperties, setAllProperties] = useState<PropertyCardData[]>([])
+  const [visibleProperties, setVisibleProperties] = useState<PropertyCardData[]>([])
+  const [mapType, setMapType] = useState<'map' | 'satellite'>('map')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // Fetch all properties on mount
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await fetch('/api/buildout/all-properties')
+        
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to fetch properties')
+        }
+
+        const data = await response.json()
+        
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to fetch properties')
+        }
+
+        // Transform Buildout properties to PropertyCard format
+        const transformedProperties = (data.properties || []).map((property: BuildoutProperty) =>
+          transformPropertyToCard(property)
+        )
+
+        // Filter out properties without valid coordinates
+        const validProperties = transformedProperties.filter(
+          (prop: PropertyCardData) => 
+            prop.latitude && prop.longitude && 
+            !isNaN(prop.latitude) && !isNaN(prop.longitude)
+        )
+
+        setAllProperties(validProperties)
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch properties'
+        setError(errorMessage)
+        console.error('Error fetching properties:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProperties()
+  }, [])
+
+  // Handle map bounds change - filter properties and show 4
+  const handleBoundsChange = React.useCallback((bounds: any, visible: PropertyCardData[]) => {
+    // Show up to 4 properties from the visible area
+    const limited = visible.slice(0, 4)
+    setVisibleProperties(limited)
+  }, [])
+
+  // Display properties count
+  const propertiesCountText = useMemo(() => {
+    if (loading) return 'Loading properties...'
+    if (error) return 'Error loading properties'
+    const count = allProperties.length
+    return `${count} ${count === 1 ? 'Property' : 'Properties'} For Sale`
+  }, [allProperties.length, loading, error])
 
   return (
     <div className="p-4 md:p-8 font-sans text-stone-800 bg-transparent">
@@ -56,34 +117,37 @@ export default function PropertySearch({ block }: PropertySearchProps) {
 
       {/* Main Content (Equal Height Split) */}
       <div className="max-w-[1400px] mx-auto">
-        <div className="flex flex-col lg:flex-row gap-6 items-stretch">
+        <div className="flex flex-col lg:flex-row gap-6">
           
           {/* LEFT COLUMN: Map */}
-          <div className="w-full lg:w-1/2 relative min-h-[500px] lg:min-h-0">
+          <div className="w-full lg:w-1/2 relative h-[600px] lg:h-[600px] flex-shrink-0">
             <div className="absolute inset-0 bg-[#E5F0EC] rounded-3xl overflow-hidden border border-stone-200 shadow-inner">
-               <MapBackground />
-               
-               {/* Map Controls */}
-               <div className="absolute top-4 left-4 flex bg-white rounded-md shadow-md z-10 overflow-hidden">
-                  <button className="px-4 py-2 font-bold text-sm bg-white hover:bg-gray-50">Map</button>
-                  <button className="px-4 py-2 font-medium text-sm text-gray-500 bg-white border-l hover:bg-gray-50">Satellite</button>
-               </div>
-               
-               {/* Zoom Controls */}
-               <div className="absolute bottom-4 right-4 flex flex-col gap-1 z-10">
-                  <button className="w-8 h-8 bg-white rounded shadow flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50">+</button>
-                  <button className="w-8 h-8 bg-white rounded shadow flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50">-</button>
-               </div>
+              {loading ? (
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-stone-600">Loading map...</p>
+                </div>
+              ) : error ? (
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-red-600">Error: {error}</p>
+                </div>
+              ) : (
+                <PropertyMap
+                  properties={allProperties}
+                  onBoundsChange={handleBoundsChange}
+                  mapType={mapType}
+                  onMapTypeChange={setMapType}
+                />
+              )}
             </div>
           </div>
 
           {/* RIGHT COLUMN: Property List */}
-          <div className="flex flex-col w-full lg:w-1/2">
+          <div className="flex flex-col w-full lg:w-1/2 lg:h-[600px] overflow-y-auto">
             
             {/* List Toolbar */}
             <div className="flex flex-wrap gap-2 justify-between items-center mb-4 pb-2">
               <h2 className="text-lg font-medium text-stone-800">
-                {propertiesCount}
+                {propertiesCountText}
               </h2>
               <div className="flex gap-2 items-center">
                  <div className="hidden sm:flex bg-white rounded border border-stone-200 p-1">
@@ -97,9 +161,17 @@ export default function PropertySearch({ block }: PropertySearchProps) {
 
             {/* Cards Stack */}
             <div className="flex flex-col gap-4">
-              {mockProperties.map((prop, idx) => (
-                <PropertyCard key={idx} property={prop} variant="horizontal" />
-              ))}
+              {loading ? (
+                <p className="text-stone-600">Loading properties...</p>
+              ) : error ? (
+                <p className="text-red-600">Error: {error}</p>
+              ) : visibleProperties.length === 0 ? (
+                <p className="text-stone-600">Zoom in or move the map to see properties in this area</p>
+              ) : (
+                visibleProperties.map((prop) => (
+                  <PropertyCard key={prop.id} property={prop} variant="horizontal" />
+                ))
+              )}
             </div>
 
           </div>

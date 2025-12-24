@@ -20,10 +20,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
   const isVertical = variant === 'vertical'
 
   return (
-    <div className={`bg-white rounded-xl shadow-sm border-black/10 border hover:shadow-md transition-shadow flex overflow-hidden group ${isVertical ? 'flex-col' : 'flex-col sm:flex-row'}`}>
+    <div className={`bg-white rounded-xl shadow-sm border-black/10 border hover:shadow-md transition-shadow flex overflow-hidden group ${isVertical ? 'flex-col h-[280px]' : 'flex-col sm:flex-row h-[140px]'}`}>
       
       {/* Card Image */}
-      <div className={`relative flex-shrink-0 ${isVertical ? 'h-48 w-full' : 'w-full sm:w-[240px] h-52 sm:h-auto'}`}>
+      <div className={`relative flex-shrink-0 ${isVertical ? 'h-48 w-full' : 'w-full sm:w-[240px] h-[140px] sm:h-[140px]'}`}>
         <img 
           src={property.image} 
           alt="Property" 
