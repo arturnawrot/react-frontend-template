@@ -13,6 +13,9 @@ import type { Page } from '@/payload-types'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty } from '@/utils/buildout-api'
 
+// Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
+export const dynamic = 'force-dynamic'
+
 interface AgentPageProps {
   params: Promise<{ slug: string }>
 }

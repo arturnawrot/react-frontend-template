@@ -4,6 +4,9 @@ import config from '@/payload.config'
 import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
 
+// Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
+export const dynamic = 'force-dynamic'
+
 export default async function HomePage() {
   const payload = await getPayload({ config })
   

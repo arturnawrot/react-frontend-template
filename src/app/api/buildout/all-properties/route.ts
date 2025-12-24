@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { buildoutApi } from '@/utils/buildout-api'
 
+// Mark as dynamic since we use request.url
+export const dynamic = 'force-dynamic'
+
 // Enable caching for this route
 export const revalidate = 3600 // Revalidate every hour (same as CACHE_TTL_SECONDS)
 
