@@ -15,6 +15,7 @@ export const Hero: Block = {
         { label: 'Full Width Color', value: 'full-width-color' },
         { label: 'Split', value: 'split' },
         { label: 'Agent', value: 'agent' },
+        { label: 'Blog Feature', value: 'blog' },
       ],
       defaultValue: 'default',
       required: true,
@@ -55,32 +56,45 @@ export const Hero: Block = {
       name: 'subheading',
       type: 'textarea',
     },
+    // Standard CTAs (Hidden for Blog)
     {
       name: 'ctaPrimaryLabel',
       type: 'text',
       label: 'Primary CTA Label',
+      admin: {
+        condition: (data) => data.variant !== 'blog',
+      },
     },
     {
       name: 'ctaPrimaryLink',
       type: 'text',
       label: 'Primary CTA Link',
+      admin: {
+        condition: (data) => data.variant !== 'blog',
+      },
     },
     {
       name: 'ctaSecondaryLabel',
       type: 'text',
       label: 'Secondary CTA Label',
+      admin: {
+        condition: (data) => data.variant !== 'blog',
+      },
     },
     {
       name: 'ctaSecondaryLink',
       type: 'text',
       label: 'Secondary CTA Link',
+      admin: {
+        condition: (data) => data.variant !== 'blog',
+      },
     },
     {
       name: 'backgroundImage',
       type: 'upload',
       relationTo: 'media',
       admin: {
-        description: 'Background image for hero section',
+        description: 'Background image (or Featured image for Blog)',
       },
     },
     // Agent variant specific fields
@@ -115,6 +129,37 @@ export const Hero: Block = {
         description: 'LinkedIn profile URL',
       },
     },
+    // Blog variant specific fields
+    {
+      name: 'blogAuthor',
+      type: 'text',
+      label: 'Author Name',
+      admin: {
+        condition: (data) => data.variant === 'blog',
+      },
+    },
+    {
+      name: 'blogDate',
+      type: 'date',
+      label: 'Creation Date',
+      admin: {
+        condition: (data) => data.variant === 'blog',
+      },
+    },
+    {
+      name: 'blogTags',
+      type: 'array',
+      label: 'Category Labels / Tags',
+      admin: {
+        condition: (data) => data.variant === 'blog',
+      },
+      fields: [
+        {
+          name: 'tag',
+          type: 'text',
+          label: 'Label',
+        },
+      ],
+    },
   ],
 }
-

@@ -182,7 +182,7 @@ export interface Page {
   slug: string;
   blocks: (
     | {
-        variant: 'default' | 'full-width-color' | 'split' | 'agent';
+        variant: 'default' | 'full-width-color' | 'split' | 'agent' | 'blog';
         headingSegments?:
           | {
               text: string;
@@ -201,7 +201,7 @@ export interface Page {
         ctaSecondaryLabel?: string | null;
         ctaSecondaryLink?: string | null;
         /**
-         * Background image for hero section
+         * Background image (or Featured image for Blog)
          */
         backgroundImage?: (string | null) | Media;
         /**
@@ -214,6 +214,14 @@ export interface Page {
          * LinkedIn profile URL
          */
         agentLinkedin?: string | null;
+        blogAuthor?: string | null;
+        blogDate?: string | null;
+        blogTags?:
+          | {
+              tag?: string | null;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'hero';
@@ -254,7 +262,7 @@ export interface Page {
         blocks?:
           | (
               | {
-                  variant: 'default' | 'full-width-color' | 'split' | 'agent';
+                  variant: 'default' | 'full-width-color' | 'split' | 'agent' | 'blog';
                   headingSegments?:
                     | {
                         text: string;
@@ -273,7 +281,7 @@ export interface Page {
                   ctaSecondaryLabel?: string | null;
                   ctaSecondaryLink?: string | null;
                   /**
-                   * Background image for hero section
+                   * Background image (or Featured image for Blog)
                    */
                   backgroundImage?: (string | null) | Media;
                   /**
@@ -286,6 +294,14 @@ export interface Page {
                    * LinkedIn profile URL
                    */
                   agentLinkedin?: string | null;
+                  blogAuthor?: string | null;
+                  blogDate?: string | null;
+                  blogTags?:
+                    | {
+                        tag?: string | null;
+                        id?: string | null;
+                      }[]
+                    | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'hero';
@@ -477,7 +493,7 @@ export interface Page {
                   blocks?:
                     | (
                         | {
-                            variant: 'default' | 'full-width-color' | 'split' | 'agent';
+                            variant: 'default' | 'full-width-color' | 'split' | 'agent' | 'blog';
                             headingSegments?:
                               | {
                                   text: string;
@@ -496,7 +512,7 @@ export interface Page {
                             ctaSecondaryLabel?: string | null;
                             ctaSecondaryLink?: string | null;
                             /**
-                             * Background image for hero section
+                             * Background image (or Featured image for Blog)
                              */
                             backgroundImage?: (string | null) | Media;
                             /**
@@ -509,6 +525,14 @@ export interface Page {
                              * LinkedIn profile URL
                              */
                             agentLinkedin?: string | null;
+                            blogAuthor?: string | null;
+                            blogDate?: string | null;
+                            blogTags?:
+                              | {
+                                  tag?: string | null;
+                                  id?: string | null;
+                                }[]
+                              | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'hero';
@@ -700,7 +724,7 @@ export interface Page {
                             blocks?:
                               | (
                                   | {
-                                      variant: 'default' | 'full-width-color' | 'split' | 'agent';
+                                      variant: 'default' | 'full-width-color' | 'split' | 'agent' | 'blog';
                                       headingSegments?:
                                         | {
                                             text: string;
@@ -719,7 +743,7 @@ export interface Page {
                                       ctaSecondaryLabel?: string | null;
                                       ctaSecondaryLink?: string | null;
                                       /**
-                                       * Background image for hero section
+                                       * Background image (or Featured image for Blog)
                                        */
                                       backgroundImage?: (string | null) | Media;
                                       /**
@@ -732,6 +756,14 @@ export interface Page {
                                        * LinkedIn profile URL
                                        */
                                       agentLinkedin?: string | null;
+                                      blogAuthor?: string | null;
+                                      blogDate?: string | null;
+                                      blogTags?:
+                                        | {
+                                            tag?: string | null;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'hero';
@@ -923,7 +955,7 @@ export interface Page {
                                       blocks?:
                                         | (
                                             | {
-                                                variant: 'default' | 'full-width-color' | 'split' | 'agent';
+                                                variant: 'default' | 'full-width-color' | 'split' | 'agent' | 'blog';
                                                 headingSegments?:
                                                   | {
                                                       text: string;
@@ -942,7 +974,7 @@ export interface Page {
                                                 ctaSecondaryLabel?: string | null;
                                                 ctaSecondaryLink?: string | null;
                                                 /**
-                                                 * Background image for hero section
+                                                 * Background image (or Featured image for Blog)
                                                  */
                                                 backgroundImage?: (string | null) | Media;
                                                 /**
@@ -955,6 +987,14 @@ export interface Page {
                                                  * LinkedIn profile URL
                                                  */
                                                 agentLinkedin?: string | null;
+                                                blogAuthor?: string | null;
+                                                blogDate?: string | null;
+                                                blogTags?:
+                                                  | {
+                                                      tag?: string | null;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'hero';
@@ -1592,6 +1632,14 @@ export interface PagesSelect<T extends boolean = true> {
               agentEmail?: T;
               agentPhone?: T;
               agentLinkedin?: T;
+              blogAuthor?: T;
+              blogDate?: T;
+              blogTags?:
+                | T
+                | {
+                    tag?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };
@@ -1645,6 +1693,14 @@ export interface PagesSelect<T extends boolean = true> {
                           agentEmail?: T;
                           agentPhone?: T;
                           agentLinkedin?: T;
+                          blogAuthor?: T;
+                          blogDate?: T;
+                          blogTags?:
+                            | T
+                            | {
+                                tag?: T;
+                                id?: T;
+                              };
                           id?: T;
                           blockName?: T;
                         };
@@ -1856,6 +1912,14 @@ export interface PagesSelect<T extends boolean = true> {
                                       agentEmail?: T;
                                       agentPhone?: T;
                                       agentLinkedin?: T;
+                                      blogAuthor?: T;
+                                      blogDate?: T;
+                                      blogTags?:
+                                        | T
+                                        | {
+                                            tag?: T;
+                                            id?: T;
+                                          };
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -2067,6 +2131,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                   agentEmail?: T;
                                                   agentPhone?: T;
                                                   agentLinkedin?: T;
+                                                  blogAuthor?: T;
+                                                  blogDate?: T;
+                                                  blogTags?:
+                                                    | T
+                                                    | {
+                                                        tag?: T;
+                                                        id?: T;
+                                                      };
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -2278,6 +2350,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                               agentEmail?: T;
                                                               agentPhone?: T;
                                                               agentLinkedin?: T;
+                                                              blogAuthor?: T;
+                                                              blogDate?: T;
+                                                              blogTags?:
+                                                                | T
+                                                                | {
+                                                                    tag?: T;
+                                                                    id?: T;
+                                                                  };
                                                               id?: T;
                                                               blockName?: T;
                                                             };

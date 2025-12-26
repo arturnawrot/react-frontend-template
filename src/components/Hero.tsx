@@ -41,7 +41,7 @@ const HeroHeader = ({
     <h1 className={className}>
       <div
         className={`
-          flex flex-col lg:flex-row lg:flex-wrap lg:gap-3 gap-0
+          flex flex-col lg:flex-row lg:flex-wrap lg:gap-x-3 gap-y-0
           ${containerAlign}
           ${useJustifyCenter ? 'justify-center' : ''}
         `}
@@ -159,6 +159,7 @@ const resolveHeroContent = (block: HeroBlock) => {
   const isFullWidthColor = variant === 'full-width-color'
   const isSplit = variant === 'split'
   const isAgent = variant === 'agent'
+  const isBlog = variant === 'blog'
 
   // 1. Resolve Background
   const defaultBg = '/img/hero_section_background.png'
@@ -203,6 +204,7 @@ const resolveHeroContent = (block: HeroBlock) => {
         { text: 'Think Strategically', color: '#DAE684' },
       ]
     else if (isAgent) segments = [{ text: 'Agent Name' }]
+    else if (isBlog) segments = [{ text: 'Market Report' }, { text: '2025 Outlook' }]
     else
       segments = [
         { text: 'Smart Moves.' },
@@ -220,6 +222,7 @@ const resolveHeroContent = (block: HeroBlock) => {
       sub =
         'From investment acquisitions to site selection, we find opportunities that align with your best interests.'
     else if (isAgent) sub = 'Agent & Broker'
+    else if (isBlog) sub = 'Explore market reports and investment spotlights designed to guide confident decisions.'
     else
       sub =
         'Advisory-led commercial real estate solutions across the Southeast. Rooted in partnership. Driven by performance. Informed by perspective.'
@@ -250,10 +253,133 @@ const resolveHeroContent = (block: HeroBlock) => {
     isFullWidthColor,
     isSplit,
     isAgent,
+    isBlog,
     agentEmail: block.agentEmail || undefined,
     agentPhone: block.agentPhone || undefined,
     agentLinkedin: block.agentLinkedin || undefined,
+    // Blog specific
+    blogAuthor: block.blogAuthor,
+    blogDate: block.blogDate,
+    blogTags: block.blogTags,
   }
+}
+
+/**
+ * Blog Layout
+ * Matches the specific screenshot design: Left Text, Right Rounded Image, Breadcrumbs, Tags
+ */
+const BlogLayout = (
+  props: HeroProps & ReturnType<typeof resolveHeroContent> & { menuOpen: boolean; setMenuOpen: (v: boolean) => void },
+) => {
+  var {
+    segments,
+    subheading,
+    finalImage,
+    blogAuthor,
+    blogDate,
+    blogTags,
+    menuOpen,
+    setMenuOpen,
+    upperLinks,
+    mainLinks,
+  } = props
+
+  // Format date if present - using deterministic formatting to avoid hydration mismatch
+  const formattedDate = blogDate
+    ? (() => {
+        const date = new Date(blogDate)
+        const months = [
+          'January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'
+        ]
+        const month = months[date.getUTCMonth()]
+        const day = date.getUTCDate()
+        const year = date.getUTCFullYear()
+        return `${month} ${day}, ${year}`
+      })()
+    : ''
+
+  return (
+    <div className="relative w-full bg-[var(--strong-green)] text-white overflow-hidden min-h-screen lg:min-h-0">
+      <div className="absolute inset-x-0 top-0 z-30">
+        <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
+      </div>
+
+      <div className="container mx-auto px-6 pt-[120px] pb-16 lg:py-20 lg:pt-[180px]">
+        {/* Added items-center to fix vertical alignment of text relative to image */}
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          
+          {/* Left: Text Content */}
+          <div className="flex-1 flex flex-col justify-center w-full order-1 lg:order-1">
+            {/* Breadcrumbs */}
+            <div className="mb-6 text-xs font-bold tracking-[0.15em] uppercase text-white/60">
+              Home <span className="mx-2">›</span> Insights & Research <span className="mx-2">›</span> Article
+            </div>
+
+            {/* Heading */}
+            <div className="mb-8">
+               <HeroHeader 
+                  segments={segments} 
+                  className="text-5xl lg:text-7xl font-serif leading-[1.1] mb-6 text-left" 
+                  align="start" 
+                />
+            </div>
+
+            {/* Subheading */}
+            {subheading && (
+              <p className="text-xl text-white/90 font-light leading-relaxed max-w-lg mb-12">
+                {subheading}
+              </p>
+            )}
+
+            {/* Footer Metadata Row */}
+            <div className="mt-auto flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-t border-white/10 pt-8 lg:border-none lg:pt-0">
+              {/* Author & Date */}
+              <div className="flex flex-col gap-1">
+                {blogAuthor && <span className="font-bold text-base">{blogAuthor}</span>}
+                {formattedDate && <span className="text-white/60 text-sm">{formattedDate}</span>}
+              </div>
+
+              {/* Tags */}
+              {blogTags && blogTags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {blogTags.map((item, i) => (
+                    <span 
+                      key={i} 
+                      className="px-4 py-1.5 bg-[#F2F4E6] text-[#0F231D] text-xs font-bold uppercase tracking-wide rounded-md"
+                    >
+                      {item.tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right: Image - Fixed Square Size */}
+          <div className="relative w-full max-w-lg lg:max-w-xl aspect-square shrink-0 order-2 lg:order-2">
+            <div 
+              className="absolute inset-0 w-full h-full bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl"
+              style={{ backgroundImage: `url('${finalImage}')` }}
+            >
+              <div className="absolute inset-0 bg-black/10" aria-hidden />
+            </div>
+
+            {/* Mobile Menu Trigger (Centered in the square image on mobile) */}
+            <div className="lg:hidden absolute inset-0 flex items-center justify-center z-20">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="bg-[#DAE684] hover:bg-[#cdd876] text-[#0F231D] w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+                aria-label="Open Menu"
+              >
+                {menuOpen ? <X size={28} /> : <Menu size={28} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 /**
@@ -264,7 +390,6 @@ const SideBySideLayout = (
   props: HeroProps & ReturnType<typeof resolveHeroContent> & { menuOpen: boolean; setMenuOpen: (v: boolean) => void },
 ) => {
   const {
-    block,
     isAgent,
     segments,
     subheading,
@@ -443,7 +568,16 @@ export default function Hero({ block, upperLinks = [], mainLinks = [] }: HeroPro
       className="relative w-full overflow-x-hidden"
       style={{ backgroundColor: 'var(--strong-green)' }}
     >
-      {isSideBySide ? (
+      {content.isBlog ? (
+        <BlogLayout 
+          block={block}
+          {...content}
+          menuOpen={menuOpen}
+          setMenuOpen={setMenuOpen}
+          upperLinks={upperLinks}
+          mainLinks={mainLinks}
+        />
+      ) : isSideBySide ? (
         <SideBySideLayout
           block={block}
           {...content}
@@ -467,4 +601,3 @@ export default function Hero({ block, upperLinks = [], mainLinks = [] }: HeroPro
     </div>
   )
 }
-
