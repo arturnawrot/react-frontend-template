@@ -72,6 +72,8 @@ export interface Config {
     pages: Page;
     'css-styles': CssStyle;
     agents: Agent;
+    'blog-categories': BlogCategory;
+    blogs: Blog;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +86,8 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     'css-styles': CssStylesSelect<false> | CssStylesSelect<true>;
     agents: AgentsSelect<false> | AgentsSelect<true>;
+    'blog-categories': BlogCategoriesSelect<false> | BlogCategoriesSelect<true>;
+    blogs: BlogsSelect<false> | BlogsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -214,14 +218,15 @@ export interface Page {
          * LinkedIn profile URL
          */
         agentLinkedin?: string | null;
-        blogAuthor?: string | null;
+        /**
+         * Blog post author
+         */
+        blogAuthor?: (string | null) | User;
         blogDate?: string | null;
-        blogTags?:
-          | {
-              tag?: string | null;
-              id?: string | null;
-            }[]
-          | null;
+        /**
+         * Blog categories/tags
+         */
+        blogCategories?: (string | BlogCategory)[] | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'hero';
@@ -294,14 +299,15 @@ export interface Page {
                    * LinkedIn profile URL
                    */
                   agentLinkedin?: string | null;
-                  blogAuthor?: string | null;
+                  /**
+                   * Blog post author
+                   */
+                  blogAuthor?: (string | null) | User;
                   blogDate?: string | null;
-                  blogTags?:
-                    | {
-                        tag?: string | null;
-                        id?: string | null;
-                      }[]
-                    | null;
+                  /**
+                   * Blog categories/tags
+                   */
+                  blogCategories?: (string | BlogCategory)[] | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'hero';
@@ -525,14 +531,15 @@ export interface Page {
                              * LinkedIn profile URL
                              */
                             agentLinkedin?: string | null;
-                            blogAuthor?: string | null;
+                            /**
+                             * Blog post author
+                             */
+                            blogAuthor?: (string | null) | User;
                             blogDate?: string | null;
-                            blogTags?:
-                              | {
-                                  tag?: string | null;
-                                  id?: string | null;
-                                }[]
-                              | null;
+                            /**
+                             * Blog categories/tags
+                             */
+                            blogCategories?: (string | BlogCategory)[] | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'hero';
@@ -756,14 +763,15 @@ export interface Page {
                                        * LinkedIn profile URL
                                        */
                                       agentLinkedin?: string | null;
-                                      blogAuthor?: string | null;
+                                      /**
+                                       * Blog post author
+                                       */
+                                      blogAuthor?: (string | null) | User;
                                       blogDate?: string | null;
-                                      blogTags?:
-                                        | {
-                                            tag?: string | null;
-                                            id?: string | null;
-                                          }[]
-                                        | null;
+                                      /**
+                                       * Blog categories/tags
+                                       */
+                                      blogCategories?: (string | BlogCategory)[] | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'hero';
@@ -987,14 +995,15 @@ export interface Page {
                                                  * LinkedIn profile URL
                                                  */
                                                 agentLinkedin?: string | null;
-                                                blogAuthor?: string | null;
+                                                /**
+                                                 * Blog post author
+                                                 */
+                                                blogAuthor?: (string | null) | User;
                                                 blogDate?: string | null;
-                                                blogTags?:
-                                                  | {
-                                                      tag?: string | null;
-                                                      id?: string | null;
-                                                    }[]
-                                                  | null;
+                                                /**
+                                                 * Blog categories/tags
+                                                 */
+                                                blogCategories?: (string | BlogCategory)[] | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'hero';
@@ -1356,6 +1365,23 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-categories".
+ */
+export interface BlogCategory {
+  id: string;
+  /**
+   * Category name (e.g., "Retail", "Leasing Strategy")
+   */
+  name: string;
+  /**
+   * URL-friendly slug (auto-generated from name)
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "css-styles".
  */
 export interface CssStyle {
@@ -1475,6 +1501,59 @@ export interface Agent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs".
+ */
+export interface Blog {
+  id: string;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Short description/subtitle for the blog post (shown in hero)
+   */
+  description?: string | null;
+  /**
+   * Featured image displayed in the hero section
+   */
+  featuredImage: string | Media;
+  /**
+   * Blog post author
+   */
+  author: string | User;
+  /**
+   * Blog categories/tags
+   */
+  categories: (string | BlogCategory)[];
+  /**
+   * Main blog post content
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Manually selected related articles. If empty, articles with the same categories will be shown.
+   */
+  relatedArticles?: (string | Blog)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1516,6 +1595,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'agents';
         value: string | Agent;
+      } | null)
+    | ({
+        relationTo: 'blog-categories';
+        value: string | BlogCategory;
+      } | null)
+    | ({
+        relationTo: 'blogs';
+        value: string | Blog;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1634,12 +1721,7 @@ export interface PagesSelect<T extends boolean = true> {
               agentLinkedin?: T;
               blogAuthor?: T;
               blogDate?: T;
-              blogTags?:
-                | T
-                | {
-                    tag?: T;
-                    id?: T;
-                  };
+              blogCategories?: T;
               id?: T;
               blockName?: T;
             };
@@ -1695,12 +1777,7 @@ export interface PagesSelect<T extends boolean = true> {
                           agentLinkedin?: T;
                           blogAuthor?: T;
                           blogDate?: T;
-                          blogTags?:
-                            | T
-                            | {
-                                tag?: T;
-                                id?: T;
-                              };
+                          blogCategories?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -1914,12 +1991,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       agentLinkedin?: T;
                                       blogAuthor?: T;
                                       blogDate?: T;
-                                      blogTags?:
-                                        | T
-                                        | {
-                                            tag?: T;
-                                            id?: T;
-                                          };
+                                      blogCategories?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -2133,12 +2205,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   agentLinkedin?: T;
                                                   blogAuthor?: T;
                                                   blogDate?: T;
-                                                  blogTags?:
-                                                    | T
-                                                    | {
-                                                        tag?: T;
-                                                        id?: T;
-                                                      };
+                                                  blogCategories?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -2352,12 +2419,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               agentLinkedin?: T;
                                                               blogAuthor?: T;
                                                               blogDate?: T;
-                                                              blogTags?:
-                                                                | T
-                                                                | {
-                                                                    tag?: T;
-                                                                    id?: T;
-                                                                  };
+                                                              blogCategories?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -2764,6 +2826,33 @@ export interface AgentsSelect<T extends boolean = true> {
   buildout_broker_id?: T;
   featuredPropertyIds?: T;
   fullName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-categories_select".
+ */
+export interface BlogCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs_select".
+ */
+export interface BlogsSelect<T extends boolean = true> {
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  description?: T;
+  featuredImage?: T;
+  author?: T;
+  categories?: T;
+  content?: T;
+  relatedArticles?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -10,6 +10,8 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { CSSStyles } from './collections/CSSStyles'
 import { Agents } from './collections/Agents'
+import { BlogCategories } from './collections/BlogCategories'
+import { Blogs } from './collections/Blogs'
 import { Navbar } from './globals/Navbar'
 
 const filename = fileURLToPath(import.meta.url)
@@ -25,7 +27,7 @@ export default buildConfig({
       afterNavLinks: ['/components/ClearBuildoutCache'],
     },
   },
-  collections: [Users, Media, Pages, CSSStyles, Agents],
+  collections: [Users, Media, Pages, CSSStyles, Agents, BlogCategories, Blogs],
   globals: [Navbar],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

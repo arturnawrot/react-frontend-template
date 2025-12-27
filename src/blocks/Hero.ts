@@ -132,10 +132,12 @@ export const Hero: Block = {
     // Blog variant specific fields
     {
       name: 'blogAuthor',
-      type: 'text',
-      label: 'Author Name',
+      type: 'relationship',
+      relationTo: 'users',
+      label: 'Author',
       admin: {
         condition: (data) => data.variant === 'blog',
+        description: 'Blog post author',
       },
     },
     {
@@ -147,19 +149,15 @@ export const Hero: Block = {
       },
     },
     {
-      name: 'blogTags',
-      type: 'array',
-      label: 'Category Labels / Tags',
+      name: 'blogCategories',
+      type: 'relationship',
+      relationTo: 'blog-categories',
+      hasMany: true,
+      label: 'Categories / Tags',
       admin: {
         condition: (data) => data.variant === 'blog',
+        description: 'Blog categories/tags',
       },
-      fields: [
-        {
-          name: 'tag',
-          type: 'text',
-          label: 'Label',
-        },
-      ],
     },
   ],
 }

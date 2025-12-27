@@ -127,6 +127,75 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
       return <br key={`br-${index}`} />
     }
 
+    // Upload/Image node (Payload Lexical upload blocks)
+    if (node.type === 'upload' || node.type === 'image' || node.type === 'payloadUpload') {
+      // Try multiple possible structures for upload nodes
+      let uploadValue: any = null
+      
+      // Check various possible locations for the upload value
+      if (node.value) {
+        uploadValue = node.value
+      } else if (node.fields?.value) {
+        uploadValue = node.fields.value
+      } else if (node.relationTo === 'media' && node.id) {
+        // If it's just an ID, we'd need to fetch it, but for now try to use it
+        uploadValue = node.id
+      }
+
+      let imageUrl: string | null = null
+      let imageAlt: string = ''
+
+      // Handle different upload value structures
+      if (uploadValue) {
+        if (typeof uploadValue === 'string') {
+          // If it's a string, it might be a URL or an ID
+          // Check if it looks like a URL
+          if (uploadValue.startsWith('http') || uploadValue.startsWith('/')) {
+            imageUrl = uploadValue
+          }
+          // Otherwise it's likely an ID that needs to be resolved (would need depth in query)
+        } else if (typeof uploadValue === 'object' && uploadValue !== null) {
+          // Media object - extract URL and alt
+          imageUrl = uploadValue.url || uploadValue.filename || null
+          imageAlt = uploadValue.alt || uploadValue.name || ''
+        }
+      }
+
+      // Also check for direct properties on the node itself
+      if (!imageUrl) {
+        if (node.url) {
+          imageUrl = node.url
+        } else if (node.src) {
+          imageUrl = node.src
+        } else if (typeof node.media === 'object' && node.media !== null) {
+          // Check if media is populated
+          imageUrl = (node.media as any).url || (node.media as any).filename || null
+          imageAlt = (node.media as any).alt || (node.media as any).name || ''
+        }
+      }
+
+      if (!imageAlt) {
+        imageAlt = node.alt || node.caption || ''
+      }
+
+      if (imageUrl) {
+        return (
+          <figure key={`upload-${index}`} className="my-8">
+            <img
+              src={imageUrl}
+              alt={imageAlt || 'Blog image'}
+              className="w-full h-auto rounded-lg shadow-md"
+            />
+            {imageAlt && (
+              <figcaption className="mt-2 text-sm text-gray-600 italic text-center">
+                {imageAlt}
+              </figcaption>
+            )}
+          </figure>
+        )
+      }
+    }
+
     // Default: render children if they exist
     if (node.children && Array.isArray(node.children)) {
       return (

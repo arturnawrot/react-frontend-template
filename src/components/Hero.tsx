@@ -28,11 +28,13 @@ const HeroHeader = ({
   className,
   align = 'center',
   useJustifyCenter = false,
+  allowWrap = false,
 }: {
   segments: HeadingSegment[]
   className?: string
   align?: 'center' | 'start'
   useJustifyCenter?: boolean
+  allowWrap?: boolean
 }) => {
   const containerAlign =
     align === 'center' ? 'items-center text-center' : 'items-start text-left'
@@ -41,7 +43,7 @@ const HeroHeader = ({
     <h1 className={className}>
       <div
         className={`
-          flex flex-col lg:flex-row lg:flex-wrap lg:gap-x-3 gap-y-0
+          flex flex-col lg:flex-row flex-wrap lg:gap-x-3 gap-y-0 w-full
           ${containerAlign}
           ${useJustifyCenter ? 'justify-center' : ''}
         `}
@@ -49,8 +51,21 @@ const HeroHeader = ({
         {segments.map((segment, idx) => (
           <span
             key={idx}
-            className={styles.unbreakable}
-            style={segment.color ? { color: segment.color } : undefined}
+            className={
+              allowWrap || segment.breakOnMobile || segment.breakOnDesktop
+                ? ''
+                : styles.unbreakable
+            }
+            style={{
+              ...(segment.color ? { color: segment.color } : {}),
+              ...(allowWrap
+                ? {
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word',
+                    whiteSpace: 'normal',
+                  }
+                : {}),
+            }}
           >
             {segment.text}
           </span>
@@ -258,9 +273,19 @@ const resolveHeroContent = (block: HeroBlock) => {
     agentPhone: block.agentPhone || undefined,
     agentLinkedin: block.agentLinkedin || undefined,
     // Blog specific
-    blogAuthor: block.blogAuthor,
+    blogAuthor: block.blogAuthor
+      ? typeof block.blogAuthor === 'object' && block.blogAuthor !== null
+        ? (block.blogAuthor as any).email || (block.blogAuthor as any).name || 'Unknown Author'
+        : block.blogAuthor
+      : undefined,
     blogDate: block.blogDate,
-    blogTags: block.blogTags,
+    blogCategories: block.blogCategories
+      ? Array.isArray(block.blogCategories)
+        ? block.blogCategories.map((cat: any) =>
+            typeof cat === 'object' && cat !== null ? cat.name || cat : cat
+          )
+        : []
+      : [],
   }
 }
 
@@ -277,7 +302,7 @@ const BlogLayout = (
     finalImage,
     blogAuthor,
     blogDate,
-    blogTags,
+    blogCategories,
     menuOpen,
     setMenuOpen,
     upperLinks,
@@ -305,29 +330,30 @@ const BlogLayout = (
         <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
       </div>
 
-      <div className="container mx-auto px-6 pt-[120px] pb-16 lg:py-20 lg:pt-[180px]">
-        {/* Added items-center to fix vertical alignment of text relative to image */}
+      <div className="container mx-auto px-6 pt-[120px] pb-16 md:py-20 md:pt-[220px]">
+        {/* Center items vertically so left and right columns are aligned */}
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           
           {/* Left: Text Content */}
-          <div className="flex-1 flex flex-col justify-center w-full order-1 lg:order-1">
+          <div className="flex-1 flex flex-col justify-center w-full min-w-0 order-1 lg:order-1">
             {/* Breadcrumbs */}
             <div className="mb-6 text-xs font-bold tracking-[0.15em] uppercase text-white/60">
               Home <span className="mx-2">›</span> Insights & Research <span className="mx-2">›</span> Article
             </div>
 
             {/* Heading */}
-            <div className="mb-8">
+            <div className="mb-8 w-full">
                <HeroHeader 
                   segments={segments} 
-                  className="text-5xl lg:text-7xl font-serif leading-[1.1] mb-6 text-left" 
-                  align="start" 
+                  className="text-5xl lg:text-7xl font-serif leading-[1.1] mb-6 text-left w-full" 
+                  align="start"
+                  allowWrap={true}
                 />
             </div>
 
             {/* Subheading */}
             {subheading && (
-              <p className="text-xl text-white/90 font-light leading-relaxed max-w-lg mb-12">
+              <p className="text-xl text-white/90 font-light leading-relaxed mb-12">
                 {subheading}
               </p>
             )}
@@ -341,16 +367,21 @@ const BlogLayout = (
               </div>
 
               {/* Tags */}
-              {blogTags && blogTags.length > 0 && (
+              {blogCategories && blogCategories.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {blogTags.map((item, i) => (
-                    <span 
-                      key={i} 
-                      className="px-4 py-1.5 bg-[#F2F4E6] text-[#0F231D] text-xs font-bold uppercase tracking-wide rounded-md"
-                    >
-                      {item.tag}
-                    </span>
-                  ))}
+                  {blogCategories.map((category, i) => {
+                    const categoryName = typeof category === 'object' && category !== null
+                      ? (category as any).name || String(category)
+                      : String(category)
+                    return (
+                      <span 
+                        key={i} 
+                        className="px-4 py-1.5 bg-[#F2F4E6] text-[#0F231D] text-xs font-bold uppercase tracking-wide rounded-md"
+                      >
+                        {categoryName}
+                      </span>
+                    )
+                  })}
                 </div>
               )}
             </div>
