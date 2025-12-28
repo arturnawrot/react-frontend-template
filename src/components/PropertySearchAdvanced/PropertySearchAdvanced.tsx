@@ -33,13 +33,17 @@ interface FilterState {
 type PropertySearchAdvancedProps = {
   backgroundColor?: string
   backgroundExtendPx?: number
+  savedPropertiesMode?: boolean // If true, fetch saved properties instead of all properties
+  hideMap?: boolean // If true, hide the map and show grid-only layout
 }
 
 const ITEMS_PER_PAGE = 20
 
 export default function PropertySearchAdvanced({ 
   backgroundColor, 
-  backgroundExtendPx = 200 
+  backgroundExtendPx = 200,
+  savedPropertiesMode = false,
+  hideMap = false
 }: PropertySearchAdvancedProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -184,26 +188,51 @@ export default function PropertySearchAdvanced({
 
   // Shared function to fetch and filter properties (used by both list and map)
   const fetchAndFilterProperties = useCallback(async () => {
-    // Fetch a larger set of properties to filter client-side
-    // This ensures filters work even if API doesn't support them
-    const params = new URLSearchParams({
-      limit: '1000', // Get more properties to filter client-side
-      offset: '0',
-    })
+    let response: Response
+    let data: any
 
-    // Only send broker_id to API if specified (this one usually works)
-    if (filters.brokerId) {
-      params.append('brokerId', filters.brokerId.toString())
+    if (savedPropertiesMode) {
+      // Fetch saved property IDs from localStorage
+      if (typeof window === 'undefined') {
+        return []
+      }
+
+      const { getSavedPropertyIds } = await import('@/utils/saved-properties')
+      const savedIds = getSavedPropertyIds()
+
+      if (savedIds.length === 0) {
+        return []
+      }
+
+      // Fetch saved properties by IDs
+      const params = new URLSearchParams({
+        ids: savedIds.join(','),
+        limit: '1000',
+      })
+
+      response = await fetch(`/api/buildout/saved-properties?${params.toString()}`)
+    } else {
+      // Fetch a larger set of properties to filter client-side
+      // This ensures filters work even if API doesn't support them
+      const params = new URLSearchParams({
+        limit: '1000', // Get more properties to filter client-side
+        offset: '0',
+      })
+
+      // Only send broker_id to API if specified (this one usually works)
+      if (filters.brokerId) {
+        params.append('brokerId', filters.brokerId.toString())
+      }
+
+      response = await fetch(`/api/buildout/search-properties?${params.toString()}`)
     }
-
-    const response = await fetch(`/api/buildout/search-properties?${params.toString()}`)
 
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.error || 'Failed to fetch properties')
     }
 
-    const data = await response.json()
+    data = await response.json()
 
     if (!data.success) {
       throw new Error(data.error || 'Failed to fetch properties')
@@ -296,7 +325,7 @@ export default function PropertySearchAdvanced({
     )
 
     return validProperties
-  }, [searchQuery, filters, brokers])
+  }, [searchQuery, filters, brokers, savedPropertiesMode])
 
   // Calculate map center based on most saturated area
   const calculateMapCenter = useCallback((props: PropertyCardData[]) => {
@@ -575,7 +604,7 @@ export default function PropertySearchAdvanced({
               {/* Filter Dropdowns */}
               <div className="flex flex-wrap items-center gap-2 w-full xl:w-auto">
                 {/* Brokers */}
-                <div className="relative" ref={(el) => (dropdownRefs.current['brokers'] = el)}>
+                <div className="relative" ref={(el) => { dropdownRefs.current['brokers'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'brokers' ? null : 'brokers')}
                     className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
@@ -604,7 +633,7 @@ export default function PropertySearchAdvanced({
                 </div>
 
                 {/* Property Type */}
-                <div className="relative" ref={(el) => (dropdownRefs.current['propertyType'] = el)}>
+                <div className="relative" ref={(el) => { dropdownRefs.current['propertyType'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'propertyType' ? null : 'propertyType')}
                     className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
@@ -633,7 +662,7 @@ export default function PropertySearchAdvanced({
                 </div>
 
                 {/* Price Range */}
-                <div className="relative" ref={(el) => (dropdownRefs.current['priceRange'] = el)}>
+                <div className="relative" ref={(el) => { dropdownRefs.current['priceRange'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'priceRange' ? null : 'priceRange')}
                     className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
@@ -668,7 +697,7 @@ export default function PropertySearchAdvanced({
                 </div>
 
                 {/* Sale or Lease */}
-                <div className="relative" ref={(el) => (dropdownRefs.current['saleOrLease'] = el)}>
+                <div className="relative" ref={(el) => { dropdownRefs.current['saleOrLease'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'saleOrLease' ? null : 'saleOrLease')}
                     className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
@@ -700,7 +729,7 @@ export default function PropertySearchAdvanced({
                 </div>
 
                 {/* Cap Rate */}
-                <div className="relative" ref={(el) => (dropdownRefs.current['capRate'] = el)}>
+                <div className="relative" ref={(el) => { dropdownRefs.current['capRate'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'capRate' ? null : 'capRate')}
                     className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
@@ -735,7 +764,7 @@ export default function PropertySearchAdvanced({
                 </div>
 
                 {/* Square Footage */}
-                <div className="relative" ref={(el) => (dropdownRefs.current['squareFootage'] = el)}>
+                <div className="relative" ref={(el) => { dropdownRefs.current['squareFootage'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'squareFootage' ? null : 'squareFootage')}
                     className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
@@ -804,17 +833,19 @@ export default function PropertySearchAdvanced({
       <div className="px-4 md:px-8">
         <div className="max-w-[1400px] mx-auto py-6">
           
-          <div className="flex flex-col lg:flex-row gap-6 items-start">
+          <div className={`flex flex-col ${hideMap ? '' : 'lg:flex-row'} gap-6 items-start`}>
             
-            {/* Left Column: Property Grid (2 cards per row) */}
-            <div className="w-full lg:w-1/2 flex flex-col">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Left Column: Property Grid (2 cards per row when map shown, 4 when map hidden) */}
+            <div className={`w-full ${hideMap ? '' : 'lg:w-1/2'} flex flex-col`}>
+              <div className={`grid grid-cols-1 ${hideMap ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-2'} gap-6`}>
                 {loading ? (
-                  <div className="col-span-2 text-center py-8 text-stone-600">Loading properties...</div>
+                  <div className={`col-span-full text-center py-8 text-stone-600`}>Loading properties...</div>
                 ) : error ? (
-                  <div className="col-span-2 text-center py-8 text-red-600">{error}</div>
+                  <div className={`col-span-full text-center py-8 text-red-600`}>{error}</div>
                 ) : properties.length === 0 ? (
-                  <div className="col-span-2 text-center py-8 text-stone-600">No properties found</div>
+                  <div className={`col-span-full text-center py-8 text-stone-600`}>
+                    {savedPropertiesMode ? 'No saved properties found' : 'No properties found'}
+                  </div>
                 ) : (
                   properties.map((prop) => (
                     <PropertyCard key={prop.id} property={prop} variant="vertical" />
@@ -876,6 +907,7 @@ export default function PropertySearchAdvanced({
             </div>
 
             {/* Right Column: Map */}
+            {!hideMap && (
             <div className="w-full lg:w-1/2 relative min-h-[600px] lg:min-h-[600px] lg:sticky lg:top-6">
               <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-sm border border-stone-200">
                 {loading ? (
@@ -914,6 +946,7 @@ export default function PropertySearchAdvanced({
                 </div>
               </div>
             </div>
+            )}
 
           </div>
         </div>

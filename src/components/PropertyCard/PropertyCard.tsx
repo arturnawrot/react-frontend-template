@@ -1,9 +1,11 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Heart } from 'lucide-react'
+import { isPropertySaved, togglePropertySaved } from '@/utils/saved-properties'
 
 interface PropertyCardProps {
   property: {
+    id?: number
     image: string
     address: string
     cityStateZip: string
@@ -18,6 +20,22 @@ interface PropertyCardProps {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertical' }) => {
   const isVertical = variant === 'vertical'
+  const [isSaved, setIsSaved] = useState(false)
+
+  // Check if property is saved on mount and when property.id changes
+  useEffect(() => {
+    if (property.id) {
+      setIsSaved(isPropertySaved(property.id))
+    }
+  }, [property.id])
+
+  const handleHeartClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    if (property.id) {
+      const newSavedState = togglePropertySaved(property.id)
+      setIsSaved(newSavedState)
+    }
+  }
 
   return (
     <div className={`bg-white rounded-xl shadow-sm border-black/10 border hover:shadow-md transition-shadow flex overflow-hidden group ${isVertical ? 'flex-col h-[280px]' : 'flex-col sm:flex-row h-[140px]'}`}>
@@ -38,8 +56,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
             ))}
           </div>
         )}
-        <button className="absolute bottom-2 right-2 bg-white p-1.5 rounded-full shadow-md hover:bg-stone-50 transition-colors z-10">
-          <Heart size={14} className="text-stone-800" />
+        <button 
+          onClick={handleHeartClick}
+          className="absolute bottom-2 right-2 bg-white p-1.5 rounded-full shadow-md hover:bg-stone-50 transition-colors z-10"
+          aria-label={isSaved ? 'Remove from saved properties' : 'Save property'}
+        >
+          <Heart 
+            size={14} 
+            className={isSaved ? 'text-red-500 fill-red-500' : 'text-stone-800'} 
+          />
         </button>
       </div>
 
