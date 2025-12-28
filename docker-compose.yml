@@ -29,6 +29,8 @@ services:
       - .env
     environment:
       - NODE_ENV=production
+    volumes:
+      - ./media:/app/media
 
   # Ensure your DATABASE_URL uses 'mongo' as the hostname with authentication
   # Format: mongodb://MONGO_USERNAME:MONGO_PASSWORD@mongo:27017/MONGO_DATABASE?authSource=admin

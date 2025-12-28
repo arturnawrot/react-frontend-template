@@ -51,8 +51,12 @@ RUN adduser --system --uid 1001 nextjs
 # Remove this line if you do not have this folder
 COPY --from=builder /app/public ./public
 
+# Create media directory for uploaded files (volume mount will provide actual files)
+RUN mkdir -p media
+RUN chown nextjs:nodejs media
+
 # Set the correct permission for prerender cache
-RUN mkdir .next
+RUN mkdir -p .next
 RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
