@@ -76,7 +76,7 @@ export async function GET(request: Request) {
     // Since Buildout API doesn't support filtering by multiple IDs directly,
     // we need to fetch enough properties to find all saved ones.
     // Fetch in batches until we find all saved properties or reach a reasonable limit
-    let allSavedProperties: BuildoutProperty[] = []
+    const allSavedProperties: BuildoutProperty[] = []
     let currentOffset = 0
     const maxFetchLimit = 1000 // Maximum properties to fetch in total
     const batchSize = 100 // Fetch 100 at a time

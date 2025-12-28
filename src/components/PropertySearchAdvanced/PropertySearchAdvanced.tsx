@@ -189,7 +189,6 @@ export default function PropertySearchAdvanced({
   // Fetch all properties for map (lightweight, no pagination)
   const fetchAllPropertiesForMap = useCallback(async () => {
     let response: Response
-    let data: any
 
     if (savedPropertiesMode) {
       // Fetch saved property IDs from localStorage
@@ -252,7 +251,7 @@ export default function PropertySearchAdvanced({
       throw new Error(errorData.error || 'Failed to fetch properties')
     }
 
-    data = await response.json()
+    const data = await response.json()
 
     if (!data.success) {
       throw new Error(data.error || 'Failed to fetch properties')
@@ -329,7 +328,6 @@ export default function PropertySearchAdvanced({
       const offset = (page - 1) * ITEMS_PER_PAGE
 
       let response: Response
-      let data: any
 
       if (savedPropertiesMode) {
         // Fetch saved property IDs from localStorage
@@ -436,7 +434,7 @@ export default function PropertySearchAdvanced({
         throw new Error(errorData.error || 'Failed to fetch properties')
       }
 
-      data = await response.json()
+      const data = await response.json()
 
       if (!data.success) {
         throw new Error(data.error || 'Failed to fetch properties')

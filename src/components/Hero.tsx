@@ -296,7 +296,7 @@ const resolveHeroContent = (block: HeroBlock) => {
 const BlogLayout = (
   props: HeroProps & ReturnType<typeof resolveHeroContent> & { menuOpen: boolean; setMenuOpen: (v: boolean) => void },
 ) => {
-  var {
+  const {
     segments,
     subheading,
     finalImage,
