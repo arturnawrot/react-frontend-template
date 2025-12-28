@@ -1,8 +1,241 @@
 'use client'
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Search, ChevronDown } from 'lucide-react'
 
+// Property types matching PropertySearchAdvanced
+const propertyTypes = [
+  { id: 1, label: 'Office' },
+  { id: 2, label: 'Retail' },
+  { id: 3, label: 'Industrial' },
+  { id: 4, label: 'Land' },
+  { id: 5, label: 'Multi-Family' },
+]
+
+// Price ranges matching PropertySearchAdvanced
+const priceRanges = [
+  { min: null, max: 100000, label: 'Under $100k' },
+  { min: 100000, max: 500000, label: '$100k - $500k' },
+  { min: 500000, max: 1000000, label: '$500k - $1M' },
+  { min: 1000000, max: 5000000, label: '$1M - $5M' },
+  { min: 5000000, max: null, label: 'Over $5M' },
+]
+
+// Square footage ranges
+const squareFootageRanges = [
+  { min: null, max: 5000, label: 'Under 5,000 sq ft' },
+  { min: 5000, max: 10000, label: '5,000 - 10,000 sq ft' },
+  { min: 10000, max: 25000, label: '10,000 - 25,000 sq ft' },
+  { min: 25000, max: 50000, label: '25,000 - 50,000 sq ft' },
+  { min: 50000, max: null, label: 'Over 50,000 sq ft' },
+]
+
+type PriceRange = { min: number | null; max: number | null; label: string }
+type SquareFootageRange = { min: number | null; max: number | null; label: string }
+
+const STORAGE_KEYS = {
+  location: 'propertySearch_location',
+  propertyType: 'propertySearch_propertyType',
+  priceRange: 'propertySearch_priceRange',
+  squareFootage: 'propertySearch_squareFootage',
+}
+
 export default function PropertySearchInput() {
+  const router = useRouter()
+  const [location, setLocation] = useState('')
+  const [selectedPropertyType, setSelectedPropertyType] = useState<number | null>(null)
+  const [selectedPriceRange, setSelectedPriceRange] = useState<PriceRange | null>(null)
+  const [selectedSquareFootage, setSelectedSquareFootage] = useState<SquareFootageRange | null>(null)
+  
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const isInitialized = useRef(false)
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    if (typeof window === 'undefined' || isInitialized.current) return
+
+    try {
+      const savedLocation = localStorage.getItem(STORAGE_KEYS.location)
+      if (savedLocation) {
+        setLocation(savedLocation)
+      }
+
+      const savedPropertyType = localStorage.getItem(STORAGE_KEYS.propertyType)
+      if (savedPropertyType) {
+        const propertyTypeId = parseInt(savedPropertyType, 10)
+        if (!isNaN(propertyTypeId)) {
+          setSelectedPropertyType(propertyTypeId)
+        }
+      }
+
+      const savedPriceRange = localStorage.getItem(STORAGE_KEYS.priceRange)
+      if (savedPriceRange) {
+        try {
+          const priceRange = JSON.parse(savedPriceRange) as PriceRange
+          // Verify it matches one of our price ranges
+          const isValid = priceRanges.some(
+            range => range.min === priceRange.min && range.max === priceRange.max
+          )
+          if (isValid) {
+            setSelectedPriceRange(priceRange)
+          }
+        } catch (e) {
+          // Invalid JSON, ignore
+        }
+      }
+
+      const savedSquareFootage = localStorage.getItem(STORAGE_KEYS.squareFootage)
+      if (savedSquareFootage) {
+        try {
+          const squareFootage = JSON.parse(savedSquareFootage) as SquareFootageRange
+          // Verify it matches one of our square footage ranges
+          const isValid = squareFootageRanges.some(
+            range => range.min === squareFootage.min && range.max === squareFootage.max
+          )
+          if (isValid) {
+            setSelectedSquareFootage(squareFootage)
+          }
+        } catch (e) {
+          // Invalid JSON, ignore
+        }
+      }
+
+      isInitialized.current = true
+    } catch (error) {
+      console.error('Error loading from localStorage:', error)
+    }
+  }, [])
+
+  // Save to localStorage whenever values change
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isInitialized.current) return
+
+    try {
+      if (location) {
+        localStorage.setItem(STORAGE_KEYS.location, location)
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.location)
+      }
+    } catch (error) {
+      console.error('Error saving location to localStorage:', error)
+    }
+  }, [location])
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isInitialized.current) return
+
+    try {
+      if (selectedPropertyType !== null) {
+        localStorage.setItem(STORAGE_KEYS.propertyType, selectedPropertyType.toString())
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.propertyType)
+      }
+    } catch (error) {
+      console.error('Error saving propertyType to localStorage:', error)
+    }
+  }, [selectedPropertyType])
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isInitialized.current) return
+
+    try {
+      if (selectedPriceRange) {
+        localStorage.setItem(STORAGE_KEYS.priceRange, JSON.stringify(selectedPriceRange))
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.priceRange)
+      }
+    } catch (error) {
+      console.error('Error saving priceRange to localStorage:', error)
+    }
+  }, [selectedPriceRange])
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isInitialized.current) return
+
+    try {
+      if (selectedSquareFootage) {
+        localStorage.setItem(STORAGE_KEYS.squareFootage, JSON.stringify(selectedSquareFootage))
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.squareFootage)
+      }
+    } catch (error) {
+      console.error('Error saving squareFootage to localStorage:', error)
+    }
+  }, [selectedSquareFootage])
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openDropdown) {
+        const dropdown = dropdownRefs.current[openDropdown]
+        const target = event.target as Node
+        if (dropdown && !dropdown.contains(target)) {
+          setOpenDropdown(null)
+        }
+      }
+    }
+
+    // Use a slight delay to avoid closing immediately when opening
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside)
+    }, 0)
+
+    return () => {
+      clearTimeout(timeoutId)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [openDropdown])
+
+  const handleSearch = () => {
+    const params = new URLSearchParams()
+    
+    if (location.trim()) {
+      params.set('search', location.trim())
+    }
+    
+    if (selectedPropertyType) {
+      params.set('propertyType', selectedPropertyType.toString())
+    }
+    
+    if (selectedPriceRange) {
+      if (selectedPriceRange.min) {
+        params.set('minPrice', selectedPriceRange.min.toString())
+      }
+      if (selectedPriceRange.max) {
+        params.set('maxPrice', selectedPriceRange.max.toString())
+      }
+    }
+    
+    // Note: Square footage filtering would need to be implemented in PropertySearchAdvanced
+    // For now, we'll just navigate with the available filters
+    
+    const queryString = params.toString()
+    router.push(`/property-search${queryString ? `?${queryString}` : ''}`)
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch()
+    }
+  }
+
+  const getPropertyTypeLabel = () => {
+    if (!selectedPropertyType) return 'Select Property Type'
+    const type = propertyTypes.find(t => t.id === selectedPropertyType)
+    return type ? type.label : 'Select Property Type'
+  }
+
+  const getPriceRangeLabel = () => {
+    if (!selectedPriceRange) return 'Select Price Range'
+    return selectedPriceRange.label
+  }
+
+  const getSquareFootageLabel = () => {
+    if (!selectedSquareFootage) return 'Select Square Footage'
+    return selectedSquareFootage.label
+  }
+
   return (
     <div className="relative w-full font-sans">
       {/* Main Content Container */}
@@ -26,47 +259,164 @@ export default function PropertySearchInput() {
                   </label>
                   <input 
                       type="text" 
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      onKeyPress={handleKeyPress}
                       placeholder="Search by address, city, state, or zip" 
                       className="w-full text-stone-700 placeholder-stone-400 focus:outline-none bg-transparent text-sm md:text-base truncate pr-2"
                   />
               </div>
 
               {/* Field 2: Property Type */}
-              <div className="flex-shrink-0 px-4 md:px-6 py-3 text-left cursor-pointer hover:bg-stone-50 transition-colors lg:w-[200px]">
+              <div 
+                className="relative flex-shrink-0 px-4 md:px-6 py-3 text-left lg:w-[200px]"
+                ref={(el) => { dropdownRefs.current['propertyType'] = el }}
+              >
                   <label className="block text-[10px] font-bold tracking-[0.15em] text-stone-500 uppercase mb-1">
                     Property Type
                   </label>
-                  <div className="flex items-center justify-between">
-                      <span className="text-stone-400 text-sm md:text-base">Select Property Type</span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setOpenDropdown(openDropdown === 'propertyType' ? null : 'propertyType')
+                    }}
+                    className="w-full flex items-center justify-between hover:bg-stone-50 transition-colors rounded p-1 -ml-1"
+                  >
+                      <span className={`text-sm md:text-base ${selectedPropertyType ? 'text-stone-700' : 'text-stone-400'}`}>
+                        {getPropertyTypeLabel()}
+                      </span>
                       <ChevronDown size={14} className="text-stone-400" />
-                  </div>
+                  </button>
+                  {openDropdown === 'propertyType' && (
+                    <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-[100] min-w-[200px] max-h-[300px] overflow-y-auto border border-stone-200">
+                      <button
+                        onClick={() => {
+                          setSelectedPropertyType(null)
+                          setOpenDropdown(null)
+                        }}
+                        className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                      >
+                        All Types
+                      </button>
+                      {propertyTypes.map((type) => (
+                        <button
+                          key={type.id}
+                          onClick={() => {
+                            setSelectedPropertyType(type.id)
+                            setOpenDropdown(null)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          {type.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
               </div>
 
               {/* Field 3: Price Range */}
-               <div className="flex-shrink-0 px-4 md:px-6 py-3 text-left cursor-pointer hover:bg-stone-50 transition-colors lg:w-[180px]">
+              <div 
+                className="relative flex-shrink-0 px-4 md:px-6 py-3 text-left lg:w-[180px]"
+                ref={(el) => { dropdownRefs.current['priceRange'] = el }}
+              >
                   <label className="block text-[10px] font-bold tracking-[0.15em] text-stone-500 uppercase mb-1">
                     Price Range
                   </label>
-                   <div className="flex items-center justify-between">
-                      <span className="text-stone-400 text-sm md:text-base">Select Type</span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setOpenDropdown(openDropdown === 'priceRange' ? null : 'priceRange')
+                    }}
+                    className="w-full flex items-center justify-between hover:bg-stone-50 transition-colors rounded p-1 -ml-1"
+                  >
+                      <span className={`text-sm md:text-base ${selectedPriceRange ? 'text-stone-700' : 'text-stone-400'}`}>
+                        {getPriceRangeLabel()}
+                      </span>
                       <ChevronDown size={14} className="text-stone-400" />
-                  </div>
+                  </button>
+                  {openDropdown === 'priceRange' && (
+                    <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-[100] min-w-[180px] max-h-[300px] overflow-y-auto border border-stone-200">
+                      <button
+                        onClick={() => {
+                          setSelectedPriceRange(null)
+                          setOpenDropdown(null)
+                        }}
+                        className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                      >
+                        Any Price
+                      </button>
+                      {priceRanges.map((range, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setSelectedPriceRange(range)
+                            setOpenDropdown(null)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          {range.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
               </div>
 
                {/* Field 4: Square Footage & Button */}
                <div className="flex-shrink-0 pl-4 md:pl-6 pr-2 py-2 text-left flex flex-col lg:flex-row lg:items-center justify-between lg:w-[320px]">
-                  <div className="flex-grow cursor-pointer hover:bg-stone-50 transition-colors rounded p-1 -ml-1">
+                  <div 
+                    className="relative flex-grow"
+                    ref={(el) => { dropdownRefs.current['squareFootage'] = el }}
+                  >
                       <label className="block text-[10px] font-bold tracking-[0.15em] text-stone-500 uppercase mb-1">
                         Square Footage
                       </label>
-                       <div className="flex items-center justify-between lg:justify-start lg:gap-2">
-                          <span className="text-stone-400 text-sm md:text-base">Select Type</span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setOpenDropdown(openDropdown === 'squareFootage' ? null : 'squareFootage')
+                        }}
+                        className="w-full flex items-center justify-between lg:justify-start lg:gap-2 hover:bg-stone-50 transition-colors rounded p-1 -ml-1"
+                      >
+                          <span className={`text-sm md:text-base ${selectedSquareFootage ? 'text-stone-700' : 'text-stone-400'}`}>
+                            {getSquareFootageLabel()}
+                          </span>
                           <ChevronDown size={14} className="text-stone-400 lg:hidden" />
-                      </div>
+                      </button>
+                      {openDropdown === 'squareFootage' && (
+                        <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-[100] min-w-[200px] max-h-[300px] overflow-y-auto border border-stone-200">
+                          <button
+                            onClick={() => {
+                              setSelectedSquareFootage(null)
+                              setOpenDropdown(null)
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                          >
+                            Any Size
+                          </button>
+                          {squareFootageRanges.map((range, index) => (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                setSelectedSquareFootage(range)
+                                setOpenDropdown(null)
+                              }}
+                              className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                            >
+                              {range.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                   </div>
                   
                    {/* Search Button */}
-                   <button className="mt-4 lg:mt-0 bg-[#CDDC39] hover:bg-[#c3d135] text-[#1C2B28] rounded-full px-6 py-3 lg:py-3.5 flex items-center justify-center gap-2 font-medium transition-transform active:scale-95 shadow-sm min-w-fit">
+                   <button 
+                     onClick={handleSearch}
+                     className="mt-4 lg:mt-0 bg-[#CDDC39] hover:bg-[#c3d135] text-[#1C2B28] rounded-full px-6 py-3 lg:py-3.5 flex items-center justify-center gap-2 font-medium transition-transform active:scale-95 shadow-sm min-w-fit"
+                   >
                       Search <Search size={18} strokeWidth={2.5} />
                   </button>
               </div>

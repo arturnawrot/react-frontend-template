@@ -209,6 +209,7 @@ export default function PropertySearchAdvanced({
           (property.address || '').toLowerCase().includes(query) ||
           (property.city || '').toLowerCase().includes(query) ||
           (property.state || '').toLowerCase().includes(query) ||
+          (property.zip || '').toLowerCase().includes(query) ||
           (property.name || '').toLowerCase().includes(query) ||
           (property.sale_listing_web_title || '').toLowerCase().includes(query) ||
           (property.lease_listing_web_title || '').toLowerCase().includes(query)
@@ -351,6 +352,7 @@ export default function PropertySearchAdvanced({
               (property.address || '').toLowerCase().includes(query) ||
               (property.city || '').toLowerCase().includes(query) ||
               (property.state || '').toLowerCase().includes(query) ||
+              (property.zip || '').toLowerCase().includes(query) ||
               (property.name || '').toLowerCase().includes(query) ||
               (property.sale_listing_web_title || '').toLowerCase().includes(query) ||
               (property.lease_listing_web_title || '').toLowerCase().includes(query)
