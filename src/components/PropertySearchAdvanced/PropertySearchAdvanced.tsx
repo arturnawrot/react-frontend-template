@@ -26,6 +26,8 @@ interface FilterState {
   saleOrLease: 'sale' | 'lease' | 'both' | null
   minCapRate: number | null
   maxCapRate: number | null
+  minSquareFootage: number | null
+  maxSquareFootage: number | null
 }
 
 type PropertySearchAdvancedProps = {
@@ -53,6 +55,8 @@ export default function PropertySearchAdvanced({
     const saleOrLease = searchParams.get('saleOrLease') as 'sale' | 'lease' | 'both' | null || null
     const minCapRate = searchParams.get('minCapRate') ? parseFloat(searchParams.get('minCapRate')!) : null
     const maxCapRate = searchParams.get('maxCapRate') ? parseFloat(searchParams.get('maxCapRate')!) : null
+    const minSquareFootage = searchParams.get('minSquareFootage') ? parseInt(searchParams.get('minSquareFootage')!, 10) : null
+    const maxSquareFootage = searchParams.get('maxSquareFootage') ? parseInt(searchParams.get('maxSquareFootage')!, 10) : null
     const page = searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : 1
 
     return {
@@ -65,6 +69,8 @@ export default function PropertySearchAdvanced({
         saleOrLease: saleOrLease || null,
         minCapRate: minCapRate && !isNaN(minCapRate) ? minCapRate : null,
         maxCapRate: maxCapRate && !isNaN(maxCapRate) ? maxCapRate : null,
+        minSquareFootage: minSquareFootage && !isNaN(minSquareFootage) ? minSquareFootage : null,
+        maxSquareFootage: maxSquareFootage && !isNaN(maxSquareFootage) ? maxSquareFootage : null,
       },
       page: page && !isNaN(page) && page > 0 ? page : 1,
     }
@@ -124,6 +130,14 @@ export default function PropertySearchAdvanced({
     
     if (newFilters.maxCapRate !== null) {
       params.set('maxCapRate', newFilters.maxCapRate.toString())
+    }
+    
+    if (newFilters.minSquareFootage) {
+      params.set('minSquareFootage', newFilters.minSquareFootage.toString())
+    }
+    
+    if (newFilters.maxSquareFootage) {
+      params.set('maxSquareFootage', newFilters.maxSquareFootage.toString())
     }
     
     if (newPage > 1) {
@@ -252,6 +266,18 @@ export default function PropertySearchAdvanced({
         
         if (filters.minCapRate !== null && capRate < filters.minCapRate) return false
         if (filters.maxCapRate !== null && capRate > filters.maxCapRate) return false
+        return true
+      })
+    }
+
+    // Square footage filter
+    if (filters.minSquareFootage || filters.maxSquareFootage) {
+      filteredProperties = filteredProperties.filter(property => {
+        const squareFootage = property.building_size_sf
+        if (!squareFootage) return false // Skip properties without square footage
+        
+        if (filters.minSquareFootage && squareFootage < filters.minSquareFootage) return false
+        if (filters.maxSquareFootage && squareFootage > filters.maxSquareFootage) return false
         return true
       })
     }
@@ -422,6 +448,8 @@ export default function PropertySearchAdvanced({
       saleOrLease: null,
       minCapRate: null,
       maxCapRate: null,
+      minSquareFootage: null,
+      maxSquareFootage: null,
     })
     setCurrentPage(1)
     // URL will be updated by the useEffect that watches these state changes
@@ -449,6 +477,14 @@ export default function PropertySearchAdvanced({
     { min: 5, max: 7, label: '5% - 7%' },
     { min: 7, max: 10, label: '7% - 10%' },
     { min: 10, max: null, label: 'Over 10%' },
+  ]
+
+  const squareFootageRanges = [
+    { min: null, max: 5000, label: 'Under 5,000 sq ft' },
+    { min: 5000, max: 10000, label: '5,000 - 10,000 sq ft' },
+    { min: 10000, max: 25000, label: '10,000 - 25,000 sq ft' },
+    { min: 25000, max: 50000, label: '25,000 - 50,000 sq ft' },
+    { min: 50000, max: null, label: 'Over 50,000 sq ft' },
   ]
 
   const getFilterLabel = (filterKey: keyof FilterState) => {
@@ -485,6 +521,14 @@ export default function PropertySearchAdvanced({
           return min && max ? `${min} - ${max}` : min || max || 'Cap Rate'
         }
         return 'Cap Rate'
+      case 'minSquareFootage':
+      case 'maxSquareFootage':
+        if (filters.minSquareFootage || filters.maxSquareFootage) {
+          const min = filters.minSquareFootage ? `${(filters.minSquareFootage / 1000).toFixed(0)}k` : ''
+          const max = filters.maxSquareFootage ? `${(filters.maxSquareFootage / 1000).toFixed(0)}k` : ''
+          return min && max ? `${min} - ${max} sq ft` : min || max || 'Square Footage'
+        }
+        return 'Square Footage'
       default:
         return ''
     }
@@ -679,6 +723,41 @@ export default function PropertySearchAdvanced({
                           key={idx}
                           onClick={() => {
                             setFilters(prev => ({ ...prev, minCapRate: range.min, maxCapRate: range.max }))
+                            setOpenDropdown(null)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          {range.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Square Footage */}
+                <div className="relative" ref={(el) => (dropdownRefs.current['squareFootage'] = el)}>
+                  <button 
+                    onClick={() => setOpenDropdown(openDropdown === 'squareFootage' ? null : 'squareFootage')}
+                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
+                  >
+                    {getFilterLabel('minSquareFootage')} <ChevronDown size={14} className="opacity-70" />
+                  </button>
+                  {openDropdown === 'squareFootage' && (
+                    <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[200px]">
+                      <button
+                        onClick={() => {
+                          setFilters(prev => ({ ...prev, minSquareFootage: null, maxSquareFootage: null }))
+                          setOpenDropdown(null)
+                        }}
+                        className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                      >
+                        Any Size
+                      </button>
+                      {squareFootageRanges.map((range, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setFilters(prev => ({ ...prev, minSquareFootage: range.min, maxSquareFootage: range.max }))
                             setOpenDropdown(null)
                           }}
                           className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"

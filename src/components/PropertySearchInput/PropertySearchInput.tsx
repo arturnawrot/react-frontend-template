@@ -207,8 +207,14 @@ export default function PropertySearchInput() {
       }
     }
     
-    // Note: Square footage filtering would need to be implemented in PropertySearchAdvanced
-    // For now, we'll just navigate with the available filters
+    if (selectedSquareFootage) {
+      if (selectedSquareFootage.min) {
+        params.set('minSquareFootage', selectedSquareFootage.min.toString())
+      }
+      if (selectedSquareFootage.max) {
+        params.set('maxSquareFootage', selectedSquareFootage.max.toString())
+      }
+    }
     
     const queryString = params.toString()
     router.push(`/property-search${queryString ? `?${queryString}` : ''}`)
