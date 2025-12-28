@@ -460,81 +460,10 @@ export default function PropertySearchAdvanced({
       setProperties(validProperties)
       setTotalCount(data.count || 0)
       
-      // For map view, we need all properties (not just the paginated ones)
-      // Fetch all properties with same filters but higher limit for map
-      if (!hideMap && !savedPropertiesMode) {
-        // Fetch all properties for map with same filters but limit=1000
-        const mapParams = new URLSearchParams({
-          limit: '1000',
-          offset: '0',
-        })
-
-        // Apply same filters for map
-        if (filters.brokerId) {
-          mapParams.append('brokerId', filters.brokerId.toString())
-        }
-        if (filters.propertyType) {
-          mapParams.append('propertyType', filters.propertyType.toString())
-        }
-        if (filters.minPrice) {
-          mapParams.append('minPrice', filters.minPrice.toString())
-        }
-        if (filters.maxPrice) {
-          mapParams.append('maxPrice', filters.maxPrice.toString())
-        }
-        if (filters.saleOrLease && filters.saleOrLease !== 'both') {
-          mapParams.append('saleOrLease', filters.saleOrLease)
-        }
-        if (filters.minCapRate !== null) {
-          mapParams.append('minCapRate', filters.minCapRate.toString())
-        }
-        if (filters.maxCapRate !== null) {
-          mapParams.append('maxCapRate', filters.maxCapRate.toString())
-        }
-        if (filters.minSquareFootage) {
-          mapParams.append('minSquareFootage', filters.minSquareFootage.toString())
-        }
-        if (filters.maxSquareFootage) {
-          mapParams.append('maxSquareFootage', filters.maxSquareFootage.toString())
-        }
-        if (searchQuery) {
-          mapParams.append('search', searchQuery)
-        }
-
-        // Fetch all properties for map in background
-        fetch(`/api/buildout/search-properties?${mapParams.toString()}`)
-          .then(res => res.json())
-          .then(mapData => {
-            if (mapData.success) {
-              const mapProperties = (mapData.properties || []).map((property: LightweightProperty) => {
-                const broker = brokers.find(b => b.id === property.broker_id)
-                const agentName = broker ? `${broker.first_name} ${broker.last_name}` : 'Agent'
-                return transformLightweightPropertyToCard(property, agentName)
-              })
-              const validMapProperties = mapProperties.filter(
-                (prop: PropertyCardData) =>
-                  prop.latitude && prop.longitude && !isNaN(prop.latitude) && !isNaN(prop.longitude)
-              )
-              setAllProperties(validMapProperties)
-              if (validMapProperties.length > 0) {
-                calculateMapCenter(validMapProperties)
-              }
-            }
-          })
-          .catch(err => {
-            console.error('Error fetching map properties:', err)
-            // Fallback to using paginated properties for map
-            setAllProperties(validProperties)
-            if (validProperties.length > 0) {
-              calculateMapCenter(validProperties)
-            }
-          })
-      } else {
-        // No map or saved properties mode - use paginated data
-        setAllProperties(validProperties)
-        if (!hideMap && validProperties.length > 0) {
-          calculateMapCenter(validProperties)
-        }
+      // Use the same paginated properties for map (no separate request)
+      setAllProperties(validProperties)
+      if (!hideMap && validProperties.length > 0) {
+        calculateMapCenter(validProperties)
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch properties'
