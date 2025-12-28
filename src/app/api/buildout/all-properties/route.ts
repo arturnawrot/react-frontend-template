@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { buildoutApi } from '@/utils/buildout-api'
+import { buildoutApi, toLightweightProperty, type LightweightPropertiesResponse } from '@/utils/buildout-api'
 
 // Mark as dynamic since we use request.url
 export const dynamic = 'force-dynamic'
@@ -13,6 +13,7 @@ export async function GET(request: Request) {
     const limitParam = searchParams.get('limit')
     const brokerIdParam = searchParams.get('brokerId')
     const skipCacheParam = searchParams.get('skipCache')
+    const fullDataParam = searchParams.get('fullData') // If true, return full property objects
 
     const options: {
       skipCache?: boolean
@@ -42,10 +43,27 @@ export async function GET(request: Request) {
     // Individual page requests inside getAllProperties are cached, so subsequent calls will be fast
     const response = await buildoutApi.getAllProperties(options)
 
-    return NextResponse.json({
-      success: true,
-      ...response,
-    })
+    // Return lightweight properties by default (unless fullData=true)
+    if (fullDataParam === 'true') {
+      return NextResponse.json({
+        success: true,
+        ...response,
+      })
+    } else {
+      // Transform to lightweight format
+      const lightweightProperties = response.properties.map(toLightweightProperty)
+      
+      const lightweightResponse: LightweightPropertiesResponse = {
+        properties: lightweightProperties,
+        count: response.count,
+        message: response.message,
+      }
+
+      return NextResponse.json({
+        success: true,
+        ...lightweightResponse,
+      })
+    }
   } catch (error) {
     console.error('Error fetching all properties:', error)
     

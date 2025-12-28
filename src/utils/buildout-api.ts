@@ -483,6 +483,76 @@ export interface ListPropertiesResponse extends BuildoutResponse<BuildoutPropert
 }
 
 /**
+ * Lightweight property type for map/list views
+ * Contains only essential fields to reduce response size
+ */
+export interface LightweightProperty {
+  id: number
+  latitude: number
+  longitude: number
+  address: string
+  sale_price_dollars: number | null
+  photos: Array<{ url: string }> // Only first photo URL
+  // Keep minimal fields needed for filtering/display
+  city?: string
+  state?: string
+  zip?: string
+  name?: string
+  sale_listing_web_title?: string
+  lease_listing_web_title?: string
+  property_type_id?: number
+  sale?: boolean
+  sale_listing_published?: boolean
+  lease?: boolean
+  lease_listing_published?: boolean
+  cap_rate_pct?: number | null
+  building_size_sf?: number | null
+  created_at?: string
+  broker_id?: number
+}
+
+/**
+ * Transform full BuildoutProperty to lightweight format
+ * Removes large fields like full photo arrays, documents, descriptions, etc.
+ */
+export function toLightweightProperty(property: BuildoutProperty): LightweightProperty {
+  return {
+    id: property.id,
+    latitude: property.latitude,
+    longitude: property.longitude,
+    address: property.address,
+    sale_price_dollars: property.sale_price_dollars,
+    photos: property.photos && property.photos.length > 0
+      ? [{ url: property.photos[0].formats?.large || property.photos[0].url || '' }]
+      : [],
+    city: property.city,
+    state: property.state,
+    zip: property.zip,
+    name: property.name,
+    sale_listing_web_title: property.sale_listing_web_title,
+    lease_listing_web_title: property.lease_listing_web_title,
+    property_type_id: property.property_type_id,
+    sale: property.sale,
+    sale_listing_published: property.sale_listing_published,
+    lease: property.lease,
+    lease_listing_published: property.lease_listing_published,
+    cap_rate_pct: property.cap_rate_pct,
+    building_size_sf: property.building_size_sf,
+    created_at: property.created_at,
+    broker_id: property.broker_id,
+  }
+}
+
+/**
+ * Lightweight properties response
+ */
+export interface LightweightPropertiesResponse {
+  properties: LightweightProperty[]
+  count: number
+  message: string
+}
+
+/**
  * Generic HTTP client for Buildout API
  */
 class BuildoutApiClient {
@@ -813,12 +883,14 @@ class BuildoutApiClient {
    * Internal method to fetch all properties (without caching the combined result)
    * This is called by getAllProperties and can also be called directly if skipCache is true
    * Made public so it can be called from the cached function
+   * Supports all filter options like searchProperties
    */
   async _getAllPropertiesInternal(
     options?: {
       skipCache?: boolean
       limit?: number
       brokerId?: number
+      offset?: number
       [key: string]: string | number | boolean | undefined
     }
   ): Promise<ListPropertiesResponse> {
@@ -826,7 +898,7 @@ class BuildoutApiClient {
       const limit = options?.limit ?? 10
       const baseParams: Record<string, string | number | boolean> = {
         limit,
-        offset: 0,
+        offset: options?.offset ?? 0,
       }
 
       // Add optional filters (like broker_id)
@@ -834,9 +906,9 @@ class BuildoutApiClient {
         baseParams.broker_id = options.brokerId
       }
 
-      // Add any other custom params (excluding skipCache and limit which are handled separately)
+      // Add any other custom params (excluding skipCache, limit, offset, and brokerId which are handled separately)
       Object.entries(options || {}).forEach(([key, value]) => {
-        if (key !== 'skipCache' && key !== 'limit' && key !== 'brokerId' && value !== undefined) {
+        if (key !== 'skipCache' && key !== 'limit' && key !== 'offset' && key !== 'brokerId' && value !== undefined) {
           baseParams[key] = value
         }
       })

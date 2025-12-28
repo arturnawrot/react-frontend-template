@@ -10,7 +10,7 @@ import TestimonialCarousel from '@/components/TestimonialCarousel/TestimonialCar
 import SplitSection from '@/components/SplitSection/SplitSection'
 import InsightsSection from '@/components/InsightsSection/InsightsSection'
 import TrackRecordSection from '@/components/TrackRecordSection/TrackRecordSection'
-import PropertySearch from '@/components/PropertySearch/PropertySearch'
+import PropertySearchWrapper from '@/components/PropertySearch/PropertySearchWrapper'
 import AgentCarousel from '@/components/AgentCarousel/AgentCarousel'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
@@ -54,7 +54,7 @@ export function renderBlock(block: PageBlock, index: number): React.ReactNode {
     return <TrackRecordSection key={index} block={block} />
   }
   if (block.blockType === 'propertySearch') {
-    return <PropertySearch key={index} block={block} />
+    return <PropertySearchWrapper key={index} block={block} />
   }
   if (block.blockType === 'agentCarousel') {
     return <AgentCarousel key={index} block={block} />

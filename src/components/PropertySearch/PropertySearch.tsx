@@ -4,8 +4,8 @@ import dynamic from 'next/dynamic'
 import { List, Grid, Share2 } from 'lucide-react'
 import type { Page } from '@/payload-types'
 import PropertyCard from '../PropertyCard/PropertyCard'
-import type { BuildoutProperty } from '@/utils/buildout-api'
-import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
+import type { LightweightProperty } from '@/utils/buildout-api'
+import { transformLightweightPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 
 // Dynamically import PropertyMap with SSR disabled to avoid window is not defined error
 const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
@@ -21,29 +21,38 @@ type PropertySearchBlock = Extract<Page['blocks'][number], { blockType: 'propert
 
 interface PropertySearchProps {
   block: PropertySearchBlock
+  initialProperties?: PropertyCardData[]
 }
 
-export default function PropertySearch({ block }: PropertySearchProps) {
+export default function PropertySearch({ block, initialProperties }: PropertySearchProps) {
   const heading = block.heading || 'Local Insight. National Scale.'
   const description = block.description || 'Headquartered in the Southeast, our brokers and partners support commercial activity across state lines and sector boundaries.'
   const buttonText = block.buttonText || 'Explore Properties by Market'
   
-  const [allProperties, setAllProperties] = useState<PropertyCardData[]>([])
+  const [allProperties, setAllProperties] = useState<PropertyCardData[]>(initialProperties || [])
   const [visibleProperties, setVisibleProperties] = useState<PropertyCardData[]>([])
   const [mapType, setMapType] = useState<'map' | 'satellite'>('map')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!initialProperties) // Only show loading if no initial properties
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch all properties on mount
+  // Fetch properties on mount only if initialProperties not provided (fallback to client-side)
+  // Use search-properties endpoint with limit instead of all-properties to avoid fetching everything
   useEffect(() => {
+    // Skip fetch if initial properties were provided server-side
+    if (initialProperties && initialProperties.length > 0) {
+      return
+    }
+
     const fetchProperties = async () => {
       try {
         setLoading(true)
         setError(null)
-        const response = await fetch('/api/buildout/all-properties')
+        // Use search-properties endpoint with limit=1000 for map view
+        // This is more efficient than getAllProperties which tries to fetch everything
+        const response = await fetch('/api/buildout/search-properties?limit=1000&offset=0')
         
         if (!response.ok) {
-          const errorData = await response.json()
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
           throw new Error(errorData.error || 'Failed to fetch properties')
         }
 
@@ -53,9 +62,9 @@ export default function PropertySearch({ block }: PropertySearchProps) {
           throw new Error(data.error || 'Failed to fetch properties')
         }
 
-        // Transform Buildout properties to PropertyCard format
-        const transformedProperties = (data.properties || []).map((property: BuildoutProperty) =>
-          transformPropertyToCard(property)
+        // Transform lightweight properties to PropertyCard format
+        const transformedProperties = (data.properties || []).map((property: LightweightProperty) =>
+          transformLightweightPropertyToCard(property)
         )
 
         // Filter out properties without valid coordinates
@@ -76,7 +85,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
     }
 
     fetchProperties()
-  }, [])
+  }, [initialProperties])
 
   // Handle map bounds change - filter properties and show 4
   const handleBoundsChange = React.useCallback((bounds: any, visible: PropertyCardData[]) => {
