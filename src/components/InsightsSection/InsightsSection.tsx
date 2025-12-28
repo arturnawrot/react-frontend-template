@@ -36,13 +36,18 @@ export default function InsightsSection({ block }: InsightsSectionProps) {
         {/* LEFT SECTION: Fixed Content */}
         <div className="lg:col-span-4 flex flex-col justify-between z-10">
           <div>
-            <h1 className="text-5xl md:text-6xl font-serif text-[#1a2e2a] leading-[1.1] mb-8">
-              {heading.split(' ').map((word, i, arr) => (
-                <React.Fragment key={i}>
-                  {word}
-                  {i < arr.length - 1 && (i === 0 || i === 2) && <br />}
-                </React.Fragment>
-              ))}
+            <h1 className="text-5xl md:text-6xl font-serif text-[#1a2e2a] leading-[1.1] mb-8 whitespace-normal">
+              {heading.split(' ').map((word, i, arr) => {
+                // Add line breaks after word at index 0 and index 2
+                const shouldAddBreak = (i === 0 || i === 2) && i < arr.length - 1
+                
+                return (
+                  <React.Fragment key={i}>
+                    {word}
+                    {shouldAddBreak ? <br /> : i < arr.length - 1 ? ' ' : null}
+                  </React.Fragment>
+                )
+              })}
             </h1>
             
             <a href={linkHref} className="inline-flex items-center gap-2 font-bold uppercase tracking-wider text-xs md:text-sm text-[#1a2e2a] hover:opacity-70 transition-opacity">

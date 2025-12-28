@@ -5,13 +5,14 @@ import config from '@/payload.config'
 import type { Agent } from '@/payload-types'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import AboutAgent from '@/components/AboutAgent/AboutAgent'
-import FeaturedPropertiesAgent from '@/components/FeaturedPropertiesAgent/FeaturedPropertiesAgent'
+import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
 import TrackRecord from '@/components/TrackRecord/TrackRecord'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import type { Page } from '@/payload-types'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty } from '@/utils/buildout-api'
+import { transformBuildoutProperty } from '@/utils/transform-buildout-property'
 
 // Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
 export const dynamic = 'force-dynamic'
@@ -124,7 +125,11 @@ export default async function AgentPage({ params }: AgentPageProps) {
         about={agent.about || null}
       />
       <div className="tan-linear-background">
-        <FeaturedPropertiesAgent properties={featuredProperties} agentName={agent.fullName || `${agent.firstName} ${agent.lastName}`} />
+        <FeaturedProperties
+          properties={featuredProperties.map((prop) =>
+            transformBuildoutProperty(prop, agent.fullName || `${agent.firstName} ${agent.lastName}`)
+          )}
+        />
         <TrackRecord />
       </div>
       <CTAFooter
