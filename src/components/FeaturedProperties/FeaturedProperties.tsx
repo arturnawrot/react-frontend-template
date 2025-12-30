@@ -23,8 +23,28 @@ export default function FeaturedProperties({ block, properties, heading, seeAllL
   // Use provided properties or fall back to empty array (CMS block would need to provide properties)
   const displayProperties = properties || []
 
+  // Debug logging
+  console.log('[FeaturedProperties] Component rendered:', {
+    propertiesCount: displayProperties.length,
+    hasBlock: !!block,
+    setName: (block as any)?.featuredPropertySetName,
+    heading: displayHeading,
+  })
+
   // Don't render if no properties
   if (displayProperties.length === 0) {
+    // Show debug message in development
+    if (process.env.NODE_ENV === 'development' && (block as any)?.featuredPropertySetName) {
+      return (
+        <section className="max-w-[1400px] mx-auto px-4 py-16 md:py-24 font-sans text-[#1C2B28]">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-yellow-800">
+              <strong>Debug:</strong> FeaturedProperties block has set name &quot;{(block as any).featuredPropertySetName}&quot; but no properties were loaded. Check console for details.
+            </p>
+          </div>
+        </section>
+      )
+    }
     return null
   }
 

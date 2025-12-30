@@ -99,9 +99,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     navbar: Navbar;
+    featuredPropertiesSets: FeaturedPropertiesSet;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
+    featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -361,6 +363,10 @@ export interface Page {
                   blockType: 'propertySearchInput';
                 }
               | {
+                  /**
+                   * Select a featured properties set from the global sets. Leave empty to show no properties.
+                   */
+                  featuredPropertySetName?: string | null;
                   heading?: string | null;
                   seeAllLink?: string | null;
                   id?: string | null;
@@ -593,6 +599,10 @@ export interface Page {
                             blockType: 'propertySearchInput';
                           }
                         | {
+                            /**
+                             * Select a featured properties set from the global sets. Leave empty to show no properties.
+                             */
+                            featuredPropertySetName?: string | null;
                             heading?: string | null;
                             seeAllLink?: string | null;
                             id?: string | null;
@@ -825,6 +835,10 @@ export interface Page {
                                       blockType: 'propertySearchInput';
                                     }
                                   | {
+                                      /**
+                                       * Select a featured properties set from the global sets. Leave empty to show no properties.
+                                       */
+                                      featuredPropertySetName?: string | null;
                                       heading?: string | null;
                                       seeAllLink?: string | null;
                                       id?: string | null;
@@ -1057,6 +1071,10 @@ export interface Page {
                                                 blockType: 'propertySearchInput';
                                               }
                                             | {
+                                                /**
+                                                 * Select a featured properties set from the global sets. Leave empty to show no properties.
+                                                 */
+                                                featuredPropertySetName?: string | null;
                                                 heading?: string | null;
                                                 seeAllLink?: string | null;
                                                 id?: string | null;
@@ -1232,6 +1250,10 @@ export interface Page {
         blockType: 'propertySearchInput';
       }
     | {
+        /**
+         * Select a featured properties set from the global sets. Leave empty to show no properties.
+         */
+        featuredPropertySetName?: string | null;
         heading?: string | null;
         seeAllLink?: string | null;
         id?: string | null;
@@ -1481,7 +1503,11 @@ export interface Agent {
    */
   buildout_broker_id?: string | null;
   /**
-   * Buildout property IDs marked as featured listings (max 4 allowed). Stored as JSON array of numbers.
+   * Select a featured properties set from the global sets. Leave empty to use manually selected properties below.
+   */
+  featuredPropertySetName?: string | null;
+  /**
+   * Buildout property IDs marked as featured listings (max 4 allowed). Stored as JSON array of numbers. Only used if no featured property set is selected above.
    */
   featuredPropertyIds?:
     | {
@@ -1828,6 +1854,7 @@ export interface PagesSelect<T extends boolean = true> {
                     featuredProperties?:
                       | T
                       | {
+                          featuredPropertySetName?: T;
                           heading?: T;
                           seeAllLink?: T;
                           id?: T;
@@ -2042,6 +2069,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 featuredProperties?:
                                   | T
                                   | {
+                                      featuredPropertySetName?: T;
                                       heading?: T;
                                       seeAllLink?: T;
                                       id?: T;
@@ -2256,6 +2284,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             featuredProperties?:
                                               | T
                                               | {
+                                                  featuredPropertySetName?: T;
                                                   heading?: T;
                                                   seeAllLink?: T;
                                                   id?: T;
@@ -2470,6 +2499,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                         featuredProperties?:
                                                           | T
                                                           | {
+                                                              featuredPropertySetName?: T;
                                                               heading?: T;
                                                               seeAllLink?: T;
                                                               id?: T;
@@ -2644,6 +2674,7 @@ export interface PagesSelect<T extends boolean = true> {
         featuredProperties?:
           | T
           | {
+              featuredPropertySetName?: T;
               heading?: T;
               seeAllLink?: T;
               id?: T;
@@ -2824,6 +2855,7 @@ export interface AgentsSelect<T extends boolean = true> {
   phone?: T;
   linkedin?: T;
   buildout_broker_id?: T;
+  featuredPropertySetName?: T;
   featuredPropertyIds?: T;
   fullName?: T;
   updatedAt?: T;
@@ -2950,6 +2982,29 @@ export interface Navbar {
   createdAt?: string | null;
 }
 /**
+ * Create and manage sets of featured properties. Each set can contain up to 4 properties and can be assigned to agents.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featuredPropertiesSets".
+ */
+export interface FeaturedPropertiesSet {
+  id: string;
+  /**
+   * Sets of featured properties. Managed via the property selector below.
+   */
+  sets?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar_select".
  */
@@ -2972,6 +3027,16 @@ export interface NavbarSelect<T extends boolean = true> {
         customUrl?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featuredPropertiesSets_select".
+ */
+export interface FeaturedPropertiesSetsSelect<T extends boolean = true> {
+  sets?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

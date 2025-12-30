@@ -32,5 +32,7 @@ export default async function HomePage() {
     )
   }
 
-  return <div>{renderBlocks(page.blocks)}</div>
+  const blocks = await renderBlocks(page.blocks, payload)
+
+  return <div>{blocks}</div>
 }

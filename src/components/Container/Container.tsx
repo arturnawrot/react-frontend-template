@@ -1,11 +1,13 @@
 import React from 'react'
 import type { Page } from '@/payload-types'
+import type { Payload } from 'payload'
 import { renderBlocks } from '@/utils/renderBlocks'
 
 type ContainerBlock = Extract<Page['blocks'][number], { blockType: 'container' }>
 
 type ContainerProps = {
   block: ContainerBlock
+  payload?: Payload
 }
 
 // Helper function to get CSS class names and CSS code from CSS styles array
@@ -41,9 +43,11 @@ const getCSSStyles = (
   return { cssClasses, cssCode }
 }
 
-export default function Container({ block }: ContainerProps) {
+export default async function Container({ block, payload }: ContainerProps) {
   const { cssClasses, cssCode } = getCSSStyles(block.cssStyles)
   const combinedClasses = cssClasses.length > 0 ? cssClasses.join(' ') : undefined
+
+  const blocks = await renderBlocks(block.blocks, payload)
 
   return (
     <div className="relative">
@@ -56,7 +60,7 @@ export default function Container({ block }: ContainerProps) {
         />
       )}
       <div className={combinedClasses || undefined}>
-        {renderBlocks(block.blocks)}
+        {blocks}
       </div>
     </div>
   )

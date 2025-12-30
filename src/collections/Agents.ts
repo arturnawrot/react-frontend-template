@@ -131,11 +131,22 @@ export const Agents: CollectionConfig = {
       },
     },
     {
+      name: 'featuredPropertySetName',
+      type: 'text',
+      required: false,
+      admin: {
+        description: 'Select a featured properties set from the global sets. Leave empty to use manually selected properties below.',
+        components: {
+          Field: '/components/FeaturedPropertySetSelector/FeaturedPropertySetSelector',
+        },
+      },
+    },
+    {
       name: 'featuredPropertyIds',
       type: 'json',
       required: false,
       admin: {
-        description: 'Buildout property IDs marked as featured listings (max 4 allowed). Stored as JSON array of numbers.',
+        description: 'Buildout property IDs marked as featured listings (max 4 allowed). Stored as JSON array of numbers. Only used if no featured property set is selected above.',
         hidden: true, // Hidden from form, managed by dashboard component
       },
     },

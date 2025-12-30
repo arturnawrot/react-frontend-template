@@ -12,6 +12,7 @@ services:
     command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
     depends_on:
       - mongo
+      - redis
       # - postgres
     env_file:
       - .env
@@ -24,6 +25,7 @@ services:
       - '80:3000'
     depends_on:
       - mongo
+      - redis
       # - postgres
     env_file:
       - .env
@@ -36,8 +38,6 @@ services:
   # Format: mongodb://MONGO_USERNAME:MONGO_PASSWORD@mongo:27017/MONGO_DATABASE?authSource=admin
   mongo:
     image: mongo:latest
-    ports:
-      - '27017:27017'
     command:
       - --storageEngine=wiredTiger
       - --auth
@@ -52,6 +52,17 @@ services:
     logging:
       driver: none
 
+  # Redis for Buildout API cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    logging:
+      driver: none
+
   # Uncomment the following to use postgres
   # postgres:
   #   restart: always
@@ -63,5 +74,6 @@ services:
 
 volumes:
   data:
+  redis_data:
   # pgdata:
   node_modules:

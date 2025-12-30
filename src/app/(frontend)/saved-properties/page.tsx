@@ -27,7 +27,8 @@ export default async function SavedPropertiesPage() {
 
   // If page exists, render it with blocks, otherwise use default layout
   if (page && page.blocks && page.blocks.length > 0) {
-    return <div>{renderBlocks(page.blocks)}</div>
+    const blocks = await renderBlocks(page.blocks, payload)
+    return <div>{blocks}</div>
   }
 
   // Default layout with Hero and PropertySearchAdvanced (saved properties mode, no map)

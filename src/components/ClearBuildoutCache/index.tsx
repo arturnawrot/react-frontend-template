@@ -1,2 +1,2 @@
-export { ClearBuildoutCache as default } from './ClearBuildoutCache'
+export { default } from './ClearBuildoutCache'
 

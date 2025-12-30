@@ -32,6 +32,8 @@ export default async function BuyPage() {
     )
   }
 
-  return <div>{renderBlocks(page.blocks)}</div>
+  const blocks = await renderBlocks(page.blocks, payload)
+
+  return <div>{blocks}</div>
 }
 

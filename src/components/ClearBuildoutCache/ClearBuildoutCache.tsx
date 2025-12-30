@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Button } from '@payloadcms/ui'
 
-export function ClearBuildoutCache() {
+function ClearBuildoutCache() {
   const [isClearing, setIsClearing] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 

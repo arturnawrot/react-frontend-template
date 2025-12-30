@@ -3,176 +3,27 @@
  * Documentation: https://buildout.com/api/v1/
  */
 
-import { unstable_cache } from 'next/cache'
-import { revalidateTag } from 'next/cache'
+import { revalidateTag, revalidatePath } from 'next/cache'
+import { getRedisClient, CACHE_KEYS } from './redis'
 
 const BUILDOUT_API_BASE = 'https://buildout.com/api/v1'
 const BUILDOUT_API_KEY = process.env.BUILDOUT_API_KEY
-
-// Cache configuration
-const CACHE_TTL_SECONDS = parseInt(process.env.BUILDOUT_CACHE_TTL || '3600', 10) // Default: 1 hour
-const ENABLE_CACHE = process.env.BUILDOUT_CACHE_ENABLED !== 'false' // Default: enabled
+const CACHE_TTL_SECONDS = parseInt(process.env.BUILDOUT_CACHE_TTL || '3600', 10)
+const ENABLE_CACHE = process.env.BUILDOUT_CACHE_ENABLED !== 'false'
 
 if (!BUILDOUT_API_KEY) {
   console.warn('BUILDOUT_API_KEY is not set in environment variables')
 }
 
-// Log cache configuration on module load (only once per process)
-declare global {
-  // eslint-disable-next-line no-var
-  var _buildoutCacheConfigLogged: boolean | undefined
-}
+// ----------------------------------------------------------------------
+// Types & Interfaces
+// ----------------------------------------------------------------------
 
-if (!globalThis._buildoutCacheConfigLogged) {
-  console.log(`[Buildout API Cache] Configuration: ENABLE_CACHE=${ENABLE_CACHE}, TTL=${CACHE_TTL_SECONDS}s`)
-  globalThis._buildoutCacheConfigLogged = true
-}
-
-/**
- * In-memory cache for tracking cache hits/misses (for debugging)
- * Note: This is separate from the actual caching mechanism which uses Next.js unstable_cache
- */
-class MemoryCache {
-  private cache = new Map<string, CacheEntry<any>>()
-
-  get<T>(key: string): T | null {
-    const entry = this.cache.get(key)
-    if (!entry) {
-      return null
-    }
-
-    if (Date.now() > entry.expiresAt) {
-      this.cache.delete(key)
-      return null
-    }
-
-    return entry.data as T
-  }
-
-  set<T>(key: string, data: T, ttlSeconds: number): void {
-    const expiresAt = Date.now() + ttlSeconds * 1000
-    this.cache.set(key, { data, expiresAt })
-  }
-
-  clear(): void {
-    this.cache.clear()
-  }
-
-  size(): number {
-    return this.cache.size
-  }
-
-  // Clean up expired entries periodically
-  cleanup(): void {
-    const now = Date.now()
-    for (const [key, entry] of this.cache.entries()) {
-      if (now > entry.expiresAt) {
-        this.cache.delete(key)
-      }
-    }
-  }
-}
-
-interface CacheEntry<T> {
-  data: T
-  expiresAt: number
-}
-
-// Track cache operations for debugging (this is ephemeral, resets on module reload)
-const cacheTracker = new MemoryCache()
-
-// In-memory cache for API responses (fallback when unstable_cache doesn't work)
-// This persists across requests within the same process
-const responseCache = new MemoryCache()
-
-// Module-level fetch function that doesn't capture 'this'
-// This is needed for unstable_cache to work properly
-async function fetchBuildoutData<T>(
-  baseUrl: string,
-  endpoint: string,
-  params?: Record<string, string | number | boolean>
-): Promise<T> {
-  const url = new URL(`${baseUrl}${endpoint}`)
-  
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        url.searchParams.append(key, String(value))
-      }
-    })
-  }
-
-  const response = await fetch(url.toString(), {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (!response.ok) {
-    const errorText = await response.text()
-    throw new Error(
-      `Buildout API error: ${response.status} ${response.statusText}. ${errorText}`
-    )
-  }
-
-  const data = await response.json()
-  return data
-}
-
-// Store cached functions to reuse the same function reference for the same cache key
-// This is critical for unstable_cache to work properly
-const cachedFunctionStore = new Map<string, () => Promise<any>>()
-
-// Get or create a cached function for a given cache key
-function getCachedFunction<T>(
-  cacheKey: string,
-  baseUrl: string,
-  endpoint: string,
-  params?: Record<string, string | number | boolean>
-): () => Promise<T> {
-  // Reuse existing cached function if it exists
-  if (cachedFunctionStore.has(cacheKey)) {
-    return cachedFunctionStore.get(cacheKey)! as () => Promise<T>
-  }
-
-  // Create new cached function and store it
-  const paramsKey = params ? JSON.stringify(params) : ''
-  const cachedFn = unstable_cache(
-    async () => {
-      console.log(`[Buildout API Cache] FETCHING (cache miss): ${cacheKey}`)
-      const data = await fetchBuildoutData<T>(baseUrl, endpoint, params)
-      console.log(`[Buildout API Cache] STORED: ${cacheKey} (TTL: ${CACHE_TTL_SECONDS}s)`)
-      return data
-    },
-    [cacheKey, baseUrl, endpoint, paramsKey],
-    {
-      tags: ['buildout-api'],
-      revalidate: CACHE_TTL_SECONDS,
-    }
-  )
-
-  cachedFunctionStore.set(cacheKey, cachedFn)
-  return cachedFn
-}
-
-// Clean up expired entries from cacheTracker periodically (every 5 minutes)
-// Note: This only cleans up the ephemeral cacheTracker, not the actual Next.js cache
-if (typeof setInterval !== 'undefined') {
-  setInterval(() => cacheTracker.cleanup(), 5 * 60 * 1000)
-}
-
-/**
- * Buildout API Response wrapper
- */
-interface BuildoutResponse<T> {
+export interface BuildoutResponse<T> {
   message: string
   [key: string]: any
 }
 
-/**
- * Buildout Broker License
- */
 export interface BuildoutBrokerLicense {
   id: number
   number: string
@@ -180,9 +31,6 @@ export interface BuildoutBrokerLicense {
   expiration: string
 }
 
-/**
- * Buildout Broker model
- */
 export interface BuildoutBroker {
   id: number
   external_id: number | null
@@ -221,17 +69,11 @@ export interface BuildoutBroker {
   managing_director: boolean
 }
 
-/**
- * List Brokers Response
- */
 export interface ListBrokersResponse extends BuildoutResponse<BuildoutBroker> {
   brokers: BuildoutBroker[]
   count: number
 }
 
-/**
- * Buildout Property Document
- */
 export interface BuildoutPropertyDocument {
   id: number
   name: string
@@ -239,9 +81,6 @@ export interface BuildoutPropertyDocument {
   url: string
 }
 
-/**
- * Buildout Property Photo Formats
- */
 export interface BuildoutPropertyPhotoFormats {
   large: string
   medium: string
@@ -249,9 +88,6 @@ export interface BuildoutPropertyPhotoFormats {
   xlarge: string
 }
 
-/**
- * Buildout Property Photo
- */
 export interface BuildoutPropertyPhoto {
   description: string
   formats: BuildoutPropertyPhotoFormats
@@ -262,25 +98,16 @@ export interface BuildoutPropertyPhoto {
   url: string
 }
 
-/**
- * Buildout Property Comps
- */
 export interface BuildoutPropertyComps {
   lease: any[]
   sale: any[]
 }
 
-/**
- * Buildout Property Custom Fields
- */
 export interface BuildoutPropertyCustomFields {
   ricoh_tour_url?: string
   [key: string]: any
 }
 
-/**
- * Buildout Property model
- */
 export interface BuildoutProperty {
   additional_property_subtype_ids: number[]
   address: string
@@ -474,26 +301,18 @@ export interface BuildoutProperty {
   zoning: string
 }
 
-/**
- * List Properties Response
- */
 export interface ListPropertiesResponse extends BuildoutResponse<BuildoutProperty> {
   properties: BuildoutProperty[]
   count: number
 }
 
-/**
- * Lightweight property type for map/list views
- * Contains only essential fields to reduce response size
- */
 export interface LightweightProperty {
   id: number
   latitude: number
   longitude: number
   address: string
   sale_price_dollars: number | null
-  photos: Array<{ url: string }> // Only first photo URL
-  // Keep minimal fields needed for filtering/display
+  photos: Array<{ url: string }>
   city?: string
   state?: string
   zip?: string
@@ -511,10 +330,6 @@ export interface LightweightProperty {
   broker_id?: number
 }
 
-/**
- * Transform full BuildoutProperty to lightweight format
- * Removes large fields like full photo arrays, documents, descriptions, etc.
- */
 export function toLightweightProperty(property: BuildoutProperty): LightweightProperty {
   return {
     id: property.id,
@@ -543,478 +358,487 @@ export function toLightweightProperty(property: BuildoutProperty): LightweightPr
   }
 }
 
-/**
- * Lightweight properties response
- */
 export interface LightweightPropertiesResponse {
   properties: LightweightProperty[]
   count: number
   message: string
 }
 
+// ----------------------------------------------------------------------
+// Filters Logic
+// ----------------------------------------------------------------------
+
+export interface PropertyFilters {
+  propertyIds?: number[]
+  brokerId?: number
+  propertyType?: number
+  minPrice?: number
+  maxPrice?: number
+  saleOrLease?: 'sale' | 'lease' | string
+  minCapRate?: number
+  maxCapRate?: number
+  minSquareFootage?: number
+  maxSquareFootage?: number
+  search?: string
+}
+
+export function filterProperties(
+  properties: BuildoutProperty[],
+  filters: PropertyFilters
+): BuildoutProperty[] {
+  let filtered = properties
+
+  // Filter by property IDs (for saved properties)
+  if (filters.propertyIds && filters.propertyIds.length > 0) {
+    filtered = filtered.filter(p => filters.propertyIds!.includes(p.id))
+  }
+
+  // Filter by broker
+  if (filters.brokerId !== null && filters.brokerId !== undefined) {
+    filtered = filtered.filter(p => p.broker_id === filters.brokerId)
+  }
+
+  // Filter by property type
+  if (filters.propertyType !== null && filters.propertyType !== undefined) {
+    filtered = filtered.filter(p => p.property_type_id === filters.propertyType)
+  }
+
+  // Filter by price
+  if (filters.minPrice !== null && filters.minPrice !== undefined) {
+    filtered = filtered.filter(p => 
+      p.sale_price_dollars !== null && 
+      p.sale_price_dollars !== undefined && 
+      p.sale_price_dollars >= filters.minPrice!
+    )
+  }
+
+  if (filters.maxPrice !== null && filters.maxPrice !== undefined) {
+    filtered = filtered.filter(p => 
+      p.sale_price_dollars !== null && 
+      p.sale_price_dollars !== undefined && 
+      p.sale_price_dollars <= filters.maxPrice!
+    )
+  }
+
+  // Filter by sale/lease
+  if (filters.saleOrLease === 'sale') {
+    filtered = filtered.filter(p => 
+      p.sale === true && p.sale_listing_published === true
+    )
+  } else if (filters.saleOrLease === 'lease') {
+    filtered = filtered.filter(p => 
+      p.lease === true && p.lease_listing_published === true
+    )
+  }
+
+  // Filter by cap rate
+  if (filters.minCapRate !== null && filters.minCapRate !== undefined) {
+    filtered = filtered.filter(p => 
+      p.cap_rate_pct !== null && 
+      p.cap_rate_pct !== undefined && 
+      p.cap_rate_pct >= filters.minCapRate!
+    )
+  }
+
+  if (filters.maxCapRate !== null && filters.maxCapRate !== undefined) {
+    filtered = filtered.filter(p => 
+      p.cap_rate_pct !== null && 
+      p.cap_rate_pct !== undefined && 
+      p.cap_rate_pct <= filters.maxCapRate!
+    )
+  }
+
+  // Filter by square footage
+  if (filters.minSquareFootage !== null && filters.minSquareFootage !== undefined) {
+    filtered = filtered.filter(p => 
+      p.building_size_sf !== null && 
+      p.building_size_sf !== undefined && 
+      p.building_size_sf >= filters.minSquareFootage!
+    )
+  }
+
+  if (filters.maxSquareFootage !== null && filters.maxSquareFootage !== undefined) {
+    filtered = filtered.filter(p => 
+      p.building_size_sf !== null && 
+      p.building_size_sf !== undefined && 
+      p.building_size_sf <= filters.maxSquareFootage!
+    )
+  }
+
+  // Filter by text search
+  if (filters.search) {
+    const query = filters.search.toLowerCase()
+    filtered = filtered.filter(p => 
+      (p.address || '').toLowerCase().includes(query) ||
+      (p.city || '').toLowerCase().includes(query) ||
+      (p.state || '').toLowerCase().includes(query) ||
+      (p.zip || '').toLowerCase().includes(query) ||
+      (p.name || '').toLowerCase().includes(query) ||
+      (p.sale_listing_web_title || '').toLowerCase().includes(query) ||
+      (p.lease_listing_web_title || '').toLowerCase().includes(query)
+    )
+  }
+
+  return filtered
+}
+
+
+// ----------------------------------------------------------------------
+// Base Fetch Logic
+// ----------------------------------------------------------------------
+
+async function fetchFromBuildout<T>(
+  endpoint: string,
+  params?: Record<string, string | number | boolean>
+): Promise<T> {
+  if (!BUILDOUT_API_KEY) {
+    throw new Error('BUILDOUT_API_KEY environment variable is required')
+  }
+
+  const baseUrl = `${BUILDOUT_API_BASE}/${BUILDOUT_API_KEY}`
+  const url = new URL(`${baseUrl}${endpoint}`)
+
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        url.searchParams.append(key, String(value))
+      }
+    })
+  }
+
+  // console.log(`[Buildout API] Fetching: ${url.toString()}`)
+
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`Buildout API error: ${response.status} ${response.statusText}. ${errorText}`)
+  }
+
+  return response.json()
+}
+
+// ----------------------------------------------------------------------
+// Redis Cache (Shared across all serverless instances)
+// ----------------------------------------------------------------------
+
+interface CacheEntry<T> {
+  data: T
+  timestamp: number
+}
+
 /**
- * Generic HTTP client for Buildout API
+ * Get data from Redis cache
  */
+async function getFromRedisCache<T>(key: string): Promise<T | null> {
+  if (!ENABLE_CACHE) return null
+  
+  const redis = getRedisClient()
+  if (!redis) return null
+
+  try {
+    const cached = await redis.get(key)
+    if (!cached) return null
+
+    const entry: CacheEntry<T> = JSON.parse(cached)
+    const now = Date.now()
+    
+    // Check if cache is expired
+    if (now - entry.timestamp > CACHE_TTL_SECONDS * 1000) {
+      // Delete expired entry
+      await redis.del(key)
+      return null
+    }
+
+    return entry.data
+  } catch (error) {
+    console.error(`[Redis] Error getting cache for key ${key}:`, error)
+    return null
+  }
+}
+
+/**
+ * Set data in Redis cache
+ */
+async function setRedisCache<T>(key: string, data: T): Promise<void> {
+  if (!ENABLE_CACHE) return
+
+  const redis = getRedisClient()
+  if (!redis) return
+
+  try {
+    const entry: CacheEntry<T> = {
+      data,
+      timestamp: Date.now(),
+    }
+    
+    // Store with TTL (in seconds) for automatic expiration
+    await redis.setex(key, CACHE_TTL_SECONDS, JSON.stringify(entry))
+  } catch (error) {
+    console.error(`[Redis] Error setting cache for key ${key}:`, error)
+  }
+}
+
+/**
+ * Delete specific cache key from Redis
+ */
+async function deleteRedisCache(key: string): Promise<void> {
+  const redis = getRedisClient()
+  if (!redis) return
+
+  try {
+    await redis.del(key)
+  } catch (error) {
+    console.error(`[Redis] Error deleting cache for key ${key}:`, error)
+  }
+}
+
+/**
+ * Clear all buildout cache keys from Redis
+ */
+async function clearAllRedisCache(): Promise<void> {
+  const redis = getRedisClient()
+  if (!redis) return
+
+  try {
+    // Delete all buildout cache keys
+    const keys = await redis.keys('buildout:*')
+    if (keys.length > 0) {
+      await redis.del(...keys)
+      console.log(`[Redis] Deleted ${keys.length} cache keys`)
+    }
+  } catch (error) {
+    console.error('[Redis] Error clearing cache:', error)
+  }
+}
+
+// ----------------------------------------------------------------------
+// API Client
+// ----------------------------------------------------------------------
+
 class BuildoutApiClient {
-  private baseUrl: string
-
-  constructor() {
-    if (!BUILDOUT_API_KEY) {
-      console.warn('BUILDOUT_API_KEY is not set. Buildout API calls will fail.')
-      this.baseUrl = `${BUILDOUT_API_BASE}/`
-    } else {
-      this.baseUrl = `${BUILDOUT_API_BASE}/${BUILDOUT_API_KEY}`
-    }
-  }
 
   /**
-   * Generate cache key from endpoint and params
+   * Helper: fetches ALL items from a paginated Buildout endpoint.
+   * This handles the looping internally.
    */
-  private getCacheKey(endpoint: string, params?: Record<string, string | number | boolean>): string {
-    const paramString = params
-      ? Object.entries(params)
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([key, value]) => `${key}=${value}`)
-          .join('&')
-      : ''
-    return `buildout:${endpoint}${paramString ? `?${paramString}` : ''}`
-  }
-
-  /**
-   * Generic GET request method with caching using Next.js unstable_cache
-   */
-  private async get<T extends BuildoutResponse<any>>(
+  private async fetchAllFromEndpoint<TResponse extends { count: number; [key: string]: any }>(
     endpoint: string,
-    params?: Record<string, string | number | boolean>,
-    options?: { skipCache?: boolean }
-  ): Promise<T> {
-    const cacheKey = this.getCacheKey(endpoint, params)
-    const baseUrl = this.baseUrl // Capture baseUrl to avoid 'this' in closure
+    arrayKey: string
+  ): Promise<TResponse> {
+    const batchSize = 100 // Buildout max limit per request usually
+    let offset = 0
+    const allItems: any[] = []
+    
+    // 1. Initial Fetch
+    const firstResponse = await fetchFromBuildout<TResponse>(endpoint, { limit: batchSize, offset: 0 })
+    
+    // @ts-ignore - dynamic access
+    const firstBatch = firstResponse[arrayKey] as any[]
+    allItems.push(...firstBatch)
+    const totalCount = firstResponse.count
+    
+    // 2. Fetch remaining if necessary
+    if (allItems.length < totalCount) {
+      const promises: Promise<TResponse>[] = []
+      
+      for (offset = batchSize; offset < totalCount; offset += batchSize) {
+        promises.push(
+          fetchFromBuildout<TResponse>(endpoint, { limit: batchSize, offset })
+        )
+      }
 
-    // If cache is disabled or skipCache is true, fetch directly
-    if (!ENABLE_CACHE || options?.skipCache) {
-      console.log(`[Buildout API Cache] SKIPPED: ${cacheKey} (ENABLE_CACHE=${ENABLE_CACHE}, skipCache=${options?.skipCache})`)
-      return fetchBuildoutData<T>(baseUrl, endpoint, params)
-    }
-
-    // Check in-memory cache first (fastest, works across requests in same process)
-    // This is the primary cache since unstable_cache doesn't work reliably in API routes
-    const cachedResponse = responseCache.get<T>(cacheKey)
-    if (cachedResponse) {
-      console.log(`[Buildout API Cache] HIT (from memory cache): ${cacheKey}`)
-      return cachedResponse
-    }
-
-    // If not in memory cache, fetch fresh data
-    // Note: We're not using unstable_cache here because it doesn't work reliably
-    // The in-memory cache (responseCache) is our primary caching mechanism
-    console.log(`[Buildout API Cache] MISS (will fetch): ${cacheKey}`)
-    
-    // Track that we've seen this key (for logging)
-    cacheTracker.set(cacheKey, true, CACHE_TTL_SECONDS)
-    
-    // Fetch fresh data from API
-    const data = await fetchBuildoutData<T>(baseUrl, endpoint, params)
-    
-    // Store in in-memory cache for faster subsequent access
-    responseCache.set(cacheKey, data, CACHE_TTL_SECONDS)
-    console.log(`[Buildout API Cache] STORED (in memory): ${cacheKey} (TTL: ${CACHE_TTL_SECONDS}s)`)
-    
-    return data
-  }
-
-  /**
-   * Internal method to perform the actual fetch (without caching)
-   */
-  private async fetchData<T extends BuildoutResponse<any>>(
-    endpoint: string,
-    params?: Record<string, string | number | boolean>
-  ): Promise<T> {
-    const url = new URL(`${this.baseUrl}${endpoint}`)
-    
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          url.searchParams.append(key, String(value))
-        }
+      const responses = await Promise.all(promises)
+      responses.forEach((res) => {
+        // @ts-ignore
+        allItems.push(...res[arrayKey])
       })
     }
 
-    const response = await fetch(url.toString(), {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    // Return a constructed response matching the original type structure
+    return {
+      ...firstResponse,
+      count: allItems.length, // Ensure count matches actual retrieved
+      [arrayKey]: allItems
+    }
+  }
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(
-        `Buildout API error: ${response.status} ${response.statusText}. ${errorText}`
-      )
+  /**
+   * Get ALL properties.
+   * Uses Redis caching to share cache across all serverless instances.
+   */
+  async getAllProperties(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+      brokerId?: number
+      [key: string]: string | number | boolean | undefined
+    }
+  ): Promise<ListPropertiesResponse> {
+    if (!options?.skipCache) {
+      const cached = await getFromRedisCache<ListPropertiesResponse>(CACHE_KEYS.PROPERTIES)
+      if (cached) return cached
     }
 
-    const data = await response.json()
+    const data = await this.fetchAllFromEndpoint<ListPropertiesResponse>('/properties.json', 'properties')
+    
+    // Save to Redis cache
+    await setRedisCache(CACHE_KEYS.PROPERTIES, data)
+    
     return data
   }
 
   /**
-   * Find broker ID by email
-   * @param email - Broker email address
-   * @param options - Optional cache control options
-   * @returns Broker ID if found, null if not found
-   * @throws Error if API key is not set or API call fails
+   * Get ALL brokers.
+   * Uses Redis caching to share cache across all serverless instances.
+   */
+  async getAllBrokers(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+    }
+  ): Promise<ListBrokersResponse> {
+    if (!options?.skipCache) {
+      const cached = await getFromRedisCache<ListBrokersResponse>(CACHE_KEYS.BROKERS)
+      if (cached) return cached
+    }
+
+    const data = await this.fetchAllFromEndpoint<ListBrokersResponse>('/brokers.json', 'brokers')
+    
+    await setRedisCache(CACHE_KEYS.BROKERS, data)
+    
+    return data
+  }
+
+  /**
+   * Search properties.
+   * Allows parameters, but filters on the cached dataset in memory.
+   */
+  async searchProperties(
+    options?: {
+      skipCache?: boolean
+      limit?: number
+      offset?: number
+      [key: string]: string | number | boolean | undefined
+    }
+  ): Promise<ListPropertiesResponse> {
+    // 1. Get the full cached dataset (Handles the >2MB issue via in-memory cache)
+    const allData = await this.getAllProperties({ skipCache: options?.skipCache })
+    let filtered = allData.properties
+
+    // 2. Apply In-Memory Filtering
+    if (options) {
+      filtered = filtered.filter(p => {
+        for (const [key, value] of Object.entries(options)) {
+          // Skip pagination/cache keys
+          if (['limit', 'offset', 'skipCache'].includes(key)) continue
+          
+          if (value === undefined || value === null || value === '') continue
+
+          // Handle generic loose matching
+          // @ts-ignore - dynamic access
+          const propValue = p[key]
+
+          // Array matching (e.g. broker_ids)
+          if (Array.isArray(propValue)) {
+            if (!propValue.includes(value)) return false
+          }
+          // Boolean matching
+          else if (typeof propValue === 'boolean') {
+             if (String(propValue) !== String(value)) return false
+          }
+          // String/Number matching
+          else if (propValue != value) {
+            // loose equality for string vs number, strictly no match
+            return false
+          }
+        }
+        return true
+      })
+    }
+
+    // 3. Apply Pagination
+    const limit = options?.limit ?? 20 // default to 20 if not set, unlike getAll which is infinite
+    const offset = options?.offset ?? 0
+    const paginated = filtered.slice(offset, offset + limit)
+
+    return {
+      message: 'Filtered from cache',
+      count: filtered.length, // Count represents total MATCHING items
+      properties: paginated
+    }
+  }
+
+  /**
+   * Find broker ID by email using cached list
    */
   async findBrokerIdByEmail(
     email: string,
     options?: { skipCache?: boolean }
   ): Promise<number | null> {
-    if (!BUILDOUT_API_KEY) {
-      throw new Error('BUILDOUT_API_KEY environment variable is required')
-    }
-
-    try {
-      const response = await this.get<ListBrokersResponse>(
-        '/brokers.json',
-        {
-          limit: '1',
-          email: email,
-        },
-        options
-      )
-
-      if (response.brokers && response.brokers.length > 0) {
-        return response.brokers[0].id
-      }
-
-      return null
-    } catch (error) {
-      console.error('Error fetching broker from Buildout API:', error)
-      throw error
-    }
+    const data = await this.getAllBrokers({ skipCache: options?.skipCache })
+    const broker = data.brokers.find(b => b.email.toLowerCase() === email.toLowerCase())
+    return broker ? broker.id : null
   }
 
   /**
-   * Get broker by email (full broker object)
-   * @param email - Broker email address
-   * @param options - Optional cache control options
-   * @returns Broker object if found, null if not found
+   * Get broker by email using cached list
    */
   async getBrokerByEmail(
     email: string,
     options?: { skipCache?: boolean }
   ): Promise<BuildoutBroker | null> {
-    try {
-      const response = await this.get<ListBrokersResponse>(
-        '/brokers.json',
-        {
-          limit: 1,
-          email: email,
-        },
-        options
-      )
-
-      if (response.brokers && response.brokers.length > 0) {
-        return response.brokers[0]
-      }
-
-      return null
-    } catch (error) {
-      console.error('Error fetching broker from Buildout API:', error)
-      throw error
-    }
+    const data = await this.getAllBrokers({ skipCache: options?.skipCache })
+    return data.brokers.find(b => b.email.toLowerCase() === email.toLowerCase()) ?? null
   }
 
   /**
-   * Get properties by broker ID
-   * @param brokerId - Broker ID
-   * @param options - Optional cache control and pagination options
-   * @returns Properties response with count, message, and properties array
-   * @throws Error if API key is not set or API call fails
+   * Get properties by broker ID using cached list and search filter
    */
   async getPropertiesByBrokerId(
     brokerId: number,
-    options?: { 
-      skipCache?: boolean
-      limit?: number
-      offset?: number
-    }
-  ): Promise<ListPropertiesResponse> {
-    if (!BUILDOUT_API_KEY) {
-      throw new Error('BUILDOUT_API_KEY environment variable is required')
-    }
-
-    try {
-      const params: Record<string, string | number | boolean> = {
-        broker_id: brokerId,
-      }
-
-      if (options?.limit !== undefined) {
-        params.limit = options.limit
-      }
-
-      if (options?.offset !== undefined) {
-        params.offset = options.offset
-      }
-
-      const response = await this.get<ListPropertiesResponse>(
-        '/properties.json',
-        params,
-        options
-      )
-
-      return response
-    } catch (error) {
-      console.error('Error fetching properties from Buildout API:', error)
-      throw error
-    }
-  }
-
-  /**
-   * Get all properties with pagination
-   * Makes multiple requests based on total count and limit
-   * @param options - Optional cache control, pagination, and filter options
-   * @returns Combined properties response with all properties
-   * @throws Error if API key is not set or API call fails
-   */
-  async getAllProperties(
-    options?: {
-      skipCache?: boolean
-      limit?: number
-      brokerId?: number
-      [key: string]: string | number | boolean | undefined
-    }
-  ): Promise<ListPropertiesResponse> {
-    if (!BUILDOUT_API_KEY) {
-      throw new Error('BUILDOUT_API_KEY environment variable is required')
-    }
-
-    // Note: We don't cache the combined result because it exceeds Next.js 2MB cache limit
-    // Individual page requests are cached, so subsequent calls will be fast
-    return this._getAllPropertiesInternal(options)
-  }
-
-  /**
-   * Get all brokers
-   * @param options - Optional cache control and pagination options
-   * @returns Brokers response with count, message, and brokers array
-   * @throws Error if API key is not set or API call fails
-   */
-  async getAllBrokers(
-    options?: {
-      skipCache?: boolean
-      limit?: number
-    }
-  ): Promise<ListBrokersResponse> {
-    if (!BUILDOUT_API_KEY) {
-      throw new Error('BUILDOUT_API_KEY environment variable is required')
-    }
-
-    try {
-      const params: Record<string, string | number | boolean> = {}
-      
-      if (options?.limit !== undefined) {
-        params.limit = options.limit
-      }
-
-      const response = await this.get<ListBrokersResponse>(
-        '/brokers.json',
-        params,
-        options
-      )
-
-      return response
-    } catch (error) {
-      console.error('Error fetching brokers from Buildout API:', error)
-      throw error
-    }
-  }
-
-  /**
-   * Search properties with filters and pagination
-   * @param options - Filter and pagination options
-   * @returns Properties response with count, message, and properties array
-   * @throws Error if API key is not set or API call fails
-   */
-  async searchProperties(
     options?: {
       skipCache?: boolean
       limit?: number
       offset?: number
-      [key: string]: string | number | boolean | undefined
     }
   ): Promise<ListPropertiesResponse> {
-    if (!BUILDOUT_API_KEY) {
-      throw new Error('BUILDOUT_API_KEY environment variable is required')
-    }
-
-    try {
-      const params: Record<string, string | number | boolean> = {}
-      
-      if (options?.limit !== undefined) {
-        params.limit = options.limit
-      }
-      
-      if (options?.offset !== undefined) {
-        params.offset = options.offset
-      }
-
-      // Add all other filter options (excluding skipCache, limit, offset)
-      Object.entries(options || {}).forEach(([key, value]) => {
-        if (key !== 'skipCache' && key !== 'limit' && key !== 'offset' && value !== undefined) {
-          params[key] = value
-        }
-      })
-
-      const response = await this.get<ListPropertiesResponse>(
-        '/properties.json',
-        params,
-        { skipCache: options?.skipCache }
-      )
-
-      return response
-    } catch (error) {
-      console.error('Error searching properties from Buildout API:', error)
-      throw error
-    }
-  }
-
-  /**
-   * Internal method to fetch all properties (without caching the combined result)
-   * This is called by getAllProperties and can also be called directly if skipCache is true
-   * Made public so it can be called from the cached function
-   * Supports all filter options like searchProperties
-   */
-  async _getAllPropertiesInternal(
-    options?: {
-      skipCache?: boolean
-      limit?: number
-      brokerId?: number
-      offset?: number
-      [key: string]: string | number | boolean | undefined
-    }
-  ): Promise<ListPropertiesResponse> {
-    try {
-      const limit = options?.limit ?? 10
-      const baseParams: Record<string, string | number | boolean> = {
-        limit,
-        offset: options?.offset ?? 0,
-      }
-
-      // Add optional filters (like broker_id)
-      if (options?.brokerId !== undefined) {
-        baseParams.broker_id = options.brokerId
-      }
-
-      // Add any other custom params (excluding skipCache, limit, offset, and brokerId which are handled separately)
-      Object.entries(options || {}).forEach(([key, value]) => {
-        if (key !== 'skipCache' && key !== 'limit' && key !== 'offset' && key !== 'brokerId' && value !== undefined) {
-          baseParams[key] = value
-        }
-      })
-
-      // First request to get total count
-      const firstResponse = await this.get<ListPropertiesResponse>(
-        '/properties.json',
-        baseParams,
-        options
-      )
-
-      const totalCount = firstResponse.count
-      const allProperties = [...firstResponse.properties]
-
-      // If we already have all properties, return early
-      if (allProperties.length >= totalCount) {
-        return {
-          ...firstResponse,
-          properties: allProperties,
-        }
-      }
-
-      // Calculate number of additional pages needed
-      const totalPages = Math.ceil(totalCount / limit)
-      const remainingPages = totalPages - 1
-
-      if (remainingPages > 0) {
-        // Create requests for remaining pages
-        const pagePromises = Array.from({ length: remainingPages }, (_, i) => {
-          const pageOffset = (i + 1) * limit
-          const pageParams = {
-            ...baseParams,
-            offset: pageOffset,
-          }
-
-          return this.get<ListPropertiesResponse>(
-            '/properties.json',
-            pageParams,
-            options
-          )
-        })
-
-        // Fetch all remaining pages in parallel
-        const pageResponses = await Promise.all(pagePromises)
-
-        // Combine all properties from all pages
-        pageResponses.forEach((response) => {
-          allProperties.push(...response.properties)
-        })
-      }
-
-      // Return combined response
-      return {
-        message: firstResponse.message,
-        properties: allProperties,
-        count: totalCount,
-      }
-    } catch (error) {
-      console.error('Error fetching all properties from Buildout API:', error)
-      throw error
-    }
+    return this.searchProperties({
+      broker_id: brokerId,
+      ...options
+    })
   }
 }
 
-// Export singleton instance (lazy initialization)
-let _buildoutApiInstance: BuildoutApiClient | null = null
+// ----------------------------------------------------------------------
+// Export Singleton
+// ----------------------------------------------------------------------
+
+const instance = new BuildoutApiClient()
 
 export const buildoutApi = {
   getInstance(): BuildoutApiClient {
-    if (!_buildoutApiInstance) {
-      _buildoutApiInstance = new BuildoutApiClient()
-    }
-    return _buildoutApiInstance
-  },
-  
-  async findBrokerIdByEmail(email: string, options?: { skipCache?: boolean }): Promise<number | null> {
-    return this.getInstance().findBrokerIdByEmail(email, options)
-  },
-  
-  async getBrokerByEmail(email: string, options?: { skipCache?: boolean }): Promise<BuildoutBroker | null> {
-    return this.getInstance().getBrokerByEmail(email, options)
+    return instance
   },
 
-  /**
-   * Get properties by broker ID
-   * @param brokerId - Broker ID
-   * @param options - Optional cache control and pagination options
-   * @returns Properties response with count, message, and properties array
-   */
+  async findBrokerIdByEmail(email: string, options?: { skipCache?: boolean }): Promise<number | null> {
+    return instance.findBrokerIdByEmail(email, options)
+  },
+
+  async getBrokerByEmail(email: string, options?: { skipCache?: boolean }): Promise<BuildoutBroker | null> {
+    return instance.getBrokerByEmail(email, options)
+  },
+
   async getPropertiesByBrokerId(
     brokerId: number,
-    options?: { 
-      skipCache?: boolean
-      limit?: number
-      offset?: number
-    }
+    options?: { skipCache?: boolean; limit?: number; offset?: number }
   ): Promise<ListPropertiesResponse> {
-    return this.getInstance().getPropertiesByBrokerId(brokerId, options)
+    return instance.getPropertiesByBrokerId(brokerId, options)
   },
 
-  /**
-   * Get all properties with pagination
-   * Makes multiple requests based on total count and limit
-   * @param options - Optional cache control, pagination, and filter options
-   * @returns Combined properties response with all properties
-   */
   async getAllProperties(
     options?: {
       skipCache?: boolean
@@ -1023,28 +847,13 @@ export const buildoutApi = {
       [key: string]: string | number | boolean | undefined
     }
   ): Promise<ListPropertiesResponse> {
-    return this.getInstance().getAllProperties(options)
+    return instance.getAllProperties(options)
   },
 
-  /**
-   * Get all brokers
-   * @param options - Optional cache control and pagination options
-   * @returns Brokers response with count, message, and brokers array
-   */
-  async getAllBrokers(
-    options?: {
-      skipCache?: boolean
-      limit?: number
-    }
-  ): Promise<ListBrokersResponse> {
-    return this.getInstance().getAllBrokers(options)
+  async getAllBrokers(options?: { skipCache?: boolean; limit?: number }): Promise<ListBrokersResponse> {
+    return instance.getAllBrokers(options)
   },
 
-  /**
-   * Search properties with filters and pagination
-   * @param options - Filter and pagination options
-   * @returns Properties response with count, message, and properties array
-   */
   async searchProperties(
     options?: {
       skipCache?: boolean
@@ -1053,43 +862,48 @@ export const buildoutApi = {
       [key: string]: string | number | boolean | undefined
     }
   ): Promise<ListPropertiesResponse> {
-    return this.getInstance().searchProperties(options)
+    return instance.searchProperties(options)
   },
 
-  /**
-   * Clear the cache (useful for testing or manual cache invalidation)
-   * This revalidates all cache entries tagged with 'buildout-api'
-   */
   async clearCache(): Promise<void> {
-    // Get cache sizes before clearing for logging
-    const responseCacheSize = responseCache.size()
-    const functionStoreSize = cachedFunctionStore.size
+    // Clear Redis cache (all buildout keys)
+    await clearAllRedisCache()
     
-    // Revalidate Next.js cache tags (for unstable_cache if it was used)
+    // Clear Next.js route caches for all buildout API endpoints
+    // This ensures route-level caches are also purged
+    revalidatePath('/api/buildout/all-properties')
+    revalidatePath('/api/buildout/brokers')
+    revalidatePath('/api/buildout/search-properties')
+    revalidatePath('/api/buildout/saved-properties')
+    revalidatePath('/api/buildout/properties-by-broker-id')
+    revalidatePath('/api/buildout/validate-broker-email')
+    
+    // Clear Next.js cache tag just in case
     revalidateTag('buildout-api')
-    revalidateTag('buildout-api-all-properties')
     
-    // Clear in-memory caches
-    cacheTracker.clear()
-    responseCache.clear()
-    
-    // Clear cached function store - this forces new functions to be created
-    // which will fetch fresh data on next call
-    cachedFunctionStore.clear()
-    
-    console.log(`[Buildout API Cache] CLEARED - Removed ${responseCacheSize} response cache entries and ${functionStoreSize} cached functions`)
-    console.log('[Buildout API Cache] All caches cleared (Next.js tags revalidated, memory caches cleared)')
+    console.log('[Buildout API Cache] Cleared all caches (Redis + Next.js routes)')
   },
 
-  /**
-   * Get cache status (for debugging)
-   */
-  getCacheStatus(): { enabled: boolean; ttl: number; size: number } {
+  async getCacheStatus(): Promise<{ enabled: boolean; ttl: number; size: number; redisConnected: boolean }> {
+    const redis = getRedisClient()
+    let size = 0
+    
+    if (redis) {
+      try {
+        const cached = await getFromRedisCache<ListPropertiesResponse>(CACHE_KEYS.PROPERTIES)
+        if (cached) {
+          size = cached.properties?.length || 0
+        }
+      } catch (error) {
+        console.error('[Redis] Error getting cache status:', error)
+      }
+    }
+    
     return {
       enabled: ENABLE_CACHE,
       ttl: CACHE_TTL_SECONDS,
-      size: cacheTracker.size(),
+      size,
+      redisConnected: redis !== null,
     }
   },
 }
-

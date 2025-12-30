@@ -1,3 +1,4 @@
+
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
@@ -13,6 +14,7 @@ import { Agents } from './collections/Agents'
 import { BlogCategories } from './collections/BlogCategories'
 import { Blogs } from './collections/Blogs'
 import { Navbar } from './globals/Navbar'
+import { FeaturedPropertiesSets } from './globals/FeaturedPropertiesSets'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -28,7 +30,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, CSSStyles, Agents, BlogCategories, Blogs],
-  globals: [Navbar],
+  globals: [Navbar, FeaturedPropertiesSets],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
