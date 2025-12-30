@@ -7,7 +7,7 @@ const nextConfig = {
   // Exclude non-payloadcms-version from build
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   // Your Next.js config here
-  webpack: (webpackConfig) => {
+  webpack: (webpackConfig, { isServer, webpack }) => {
     // Exclude non-payloadcms-version directory from webpack processing
     webpackConfig.watchOptions = {
       ...webpackConfig.watchOptions,
@@ -19,6 +19,17 @@ const nextConfig = {
       '.js': ['.ts', '.tsx', '.js', '.jsx'],
       '.mjs': ['.mts', '.mjs'],
     }
+
+    // Fix for Payload CMS components with webpack
+    if (!isServer) {
+      webpackConfig.resolve.fallback = {
+        ...webpackConfig.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      }
+    }
+
 
     return webpackConfig
   },

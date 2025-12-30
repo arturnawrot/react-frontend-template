@@ -103,7 +103,7 @@ export async function GET(request: Request) {
     }
 
     // Apply filtering using shared filter function
-    let filteredProperties = filterProperties(allPropertiesResponse.properties, filters)
+    const filteredProperties = filterProperties(allPropertiesResponse.properties, filters)
 
     // Apply pagination to filtered results
     const totalFiltered = filteredProperties.length
