@@ -19,6 +19,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
   const payload = await getPayload({ config })
 
   // Fetch the blog by slug
+  // Use depth 3 to ensure uploads in Lexical content are fully populated
   const { docs } = await payload.find({
     collection: 'blogs',
     where: {
@@ -26,7 +27,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
         equals: slug,
       },
     },
-    depth: 2,
+    depth: 3,
     limit: 1,
   })
 

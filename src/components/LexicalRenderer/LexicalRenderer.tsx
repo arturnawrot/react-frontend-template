@@ -9,136 +9,198 @@ interface LexicalRendererProps {
 
 /**
  * Renders Lexical rich text content as HTML
- * This is a simple renderer that converts Lexical nodes to HTML
+ * This renderer converts Lexical nodes to React components
  */
 export default function LexicalRenderer({ content }: LexicalRendererProps) {
-  if (!content || !content.root || !content.root.children) {
+  // Handle null/undefined content
+  if (!content) {
+    return null
+  }
+
+  // Handle different content structures
+  let rootNode: any = null
+  if (content.root) {
+    rootNode = content.root
+  } else if (content.children) {
+    // Fallback for alternative structure
+    rootNode = { children: content.children }
+  } else {
+    return null
+  }
+
+  if (!rootNode.children || !Array.isArray(rootNode.children) || rootNode.children.length === 0) {
     return null
   }
 
   const renderNode = (node: any, index: number): React.ReactNode => {
     if (!node) return null
 
+    const nodeType = node.type || node.nodeType
+
     // Text node
-    if (node.type === 'text') {
-      let text: React.ReactNode = node.text || ''
-      
+    if (nodeType === 'text') {
+      const text = node.text || ''
+      if (!text) return null
+
+      let formattedText: React.ReactNode = text
+
       // Apply formatting (format is a bitmask)
-      if (node.format) {
+      if (node.format !== undefined && node.format !== null) {
         const format = node.format
-        
+
         // Build wrapper components - each format wraps the previous result
         // This creates nested components like <strong><em>text</em></strong>
-        if (format & 1) text = <strong key={`bold-${index}`}>{text}</strong> // Bold (bit 0)
-        if (format & 2) text = <em key={`italic-${index}`}>{text}</em> // Italic (bit 1) - wraps previous
-        if (format & 4) text = <s key={`strikethrough-${index}`}>{text}</s> // Strikethrough (bit 2)
-        if (format & 8) text = <u key={`underline-${index}`}>{text}</u> // Underline (bit 3)
-        if (format & 16) text = <code key={`code-${index}`} className="bg-gray-100 px-1 rounded">{text}</code> // Code (bit 4)
-        if (format & 32) text = <sub key={`subscript-${index}`}>{text}</sub> // Subscript (bit 5)
-        if (format & 64) text = <sup key={`superscript-${index}`}>{text}</sup> // Superscript (bit 6)
+        if (format & 1) formattedText = <strong key={`bold-${index}`}>{formattedText}</strong> // Bold (bit 0)
+        if (format & 2) formattedText = <em key={`italic-${index}`}>{formattedText}</em> // Italic (bit 1)
+        if (format & 4) formattedText = <s key={`strikethrough-${index}`}>{formattedText}</s> // Strikethrough (bit 2)
+        if (format & 8) formattedText = <u key={`underline-${index}`}>{formattedText}</u> // Underline (bit 3)
+        if (format & 16) formattedText = <code key={`code-${index}`} className="bg-gray-100 px-1 rounded">{formattedText}</code> // Code (bit 4)
+        if (format & 32) formattedText = <sub key={`subscript-${index}`}>{formattedText}</sub> // Subscript (bit 5)
+        if (format & 64) formattedText = <sup key={`superscript-${index}`}>{formattedText}</sup> // Superscript (bit 6)
       }
 
-      return text
+      return formattedText
     }
 
     // Paragraph
-    if (node.type === 'paragraph') {
+    if (nodeType === 'paragraph') {
+      const children = node.children?.map((child: any, i: number) => renderNode(child, i)).filter(Boolean)
+      
+      // Don't render empty paragraphs
+      if (!children || children.length === 0) {
+        return null
+      }
+
       return (
         <p key={`para-${index}`} className="text-lg leading-relaxed font-sans mb-6">
-          {node.children?.map((child: any, i: number) => renderNode(child, i))}
+          {children}
         </p>
       )
     }
 
     // Heading
-    if (node.type === 'heading') {
-      const headingTag = node.tag as 1 | 2 | 3 | 4 | 5 | 6
-      const HeadingComponent = `h${headingTag}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+    if (nodeType === 'heading') {
+      const headingTag = node.tag || node.headingTag || 2
+      const children = node.children?.map((child: any, i: number) => renderNode(child, i)).filter(Boolean)
       
+      if (!children || children.length === 0) {
+        return null
+      }
+
       const headingProps = {
         key: `heading-${index}`,
-        className: 'font-serif mb-4',
-        children: node.children?.map((child: any, i: number) => renderNode(child, i))
+        className: 'font-serif mb-4 mt-8',
+        children,
       }
-      
-      switch (HeadingComponent) {
-        case 'h1':
-          return <h1 {...headingProps} />
-        case 'h2':
-          return <h2 {...headingProps} />
-        case 'h3':
-          return <h3 {...headingProps} />
-        case 'h4':
-          return <h4 {...headingProps} />
-        case 'h5':
-          return <h5 {...headingProps} />
-        case 'h6':
-          return <h6 {...headingProps} />
+
+      switch (headingTag) {
+        case 1:
+          return <h1 {...headingProps} className="text-4xl font-serif mb-4 mt-8" />
+        case 2:
+          return <h2 {...headingProps} className="text-3xl font-serif mb-4 mt-8" />
+        case 3:
+          return <h3 {...headingProps} className="text-2xl font-serif mb-4 mt-8" />
+        case 4:
+          return <h4 {...headingProps} className="text-xl font-serif mb-4 mt-8" />
+        case 5:
+          return <h5 {...headingProps} className="text-lg font-serif mb-4 mt-8" />
+        case 6:
+          return <h6 {...headingProps} className="text-base font-serif mb-4 mt-8" />
         default:
-          return <h2 {...headingProps} />
+          return <h2 {...headingProps} className="text-3xl font-serif mb-4 mt-8" />
       }
     }
 
     // List
-    if (node.type === 'list') {
-      const Tag = node.listType === 'number' ? 'ol' : 'ul'
+    if (nodeType === 'list') {
+      const listType = node.listType || 'bullet'
+      const Tag = listType === 'number' ? 'ol' : 'ul'
+      const children = node.children?.map((child: any, i: number) => renderNode(child, i)).filter(Boolean)
+      
+      if (!children || children.length === 0) {
+        return null
+      }
+
       return (
-        <Tag key={`list-${index}`} className="mb-4 ml-6">
-          {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        <Tag key={`list-${index}`} className="mb-4 ml-6 list-disc">
+          {children}
         </Tag>
       )
     }
 
     // List item
-    if (node.type === 'listitem') {
+    if (nodeType === 'listitem') {
+      const children = node.children?.map((child: any, i: number) => renderNode(child, i)).filter(Boolean)
+      
+      if (!children || children.length === 0) {
+        return null
+      }
+
       return (
         <li key={`listitem-${index}`} className="mb-2">
-          {node.children?.map((child: any, i: number) => renderNode(child, i))}
+          {children}
         </li>
       )
     }
 
-    // Quote
-    if (node.type === 'quote') {
+    // Quote / Blockquote
+    if (nodeType === 'quote' || nodeType === 'blockquote') {
+      const children = node.children?.map((child: any, i: number) => renderNode(child, i)).filter(Boolean)
+      
+      if (!children || children.length === 0) {
+        return null
+      }
+
       return (
-        <blockquote key={`quote-${index}`} className="border-l-4 border-gray-300 pl-4 italic my-4">
-          {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        <blockquote key={`quote-${index}`} className="border-l-4 border-gray-300 pl-4 italic my-4 text-gray-700">
+          {children}
         </blockquote>
       )
     }
 
     // Link
-    if (node.type === 'link') {
+    if (nodeType === 'link') {
+      const url = node.url || node.href || '#'
+      const children = node.children?.map((child: any, i: number) => renderNode(child, i)).filter(Boolean)
+      
+      if (!children || children.length === 0) {
+        return null
+      }
+
       return (
         <a
           key={`link-${index}`}
-          href={node.url}
+          href={url}
           target={node.target || undefined}
           rel={node.target === '_blank' ? 'noopener noreferrer' : undefined}
           className="text-blue-600 hover:underline"
         >
-          {node.children?.map((child: any, i: number) => renderNode(child, i))}
+          {children}
         </a>
       )
     }
 
     // Line break
-    if (node.type === 'linebreak') {
+    if (nodeType === 'linebreak') {
       return <br key={`br-${index}`} />
     }
 
+    // Horizontal rule
+    if (nodeType === 'horizontalrule' || nodeType === 'hr') {
+      return <hr key={`hr-${index}`} className="my-8 border-gray-300" />
+    }
+
     // Upload/Image node (Payload Lexical upload blocks)
-    if (node.type === 'upload' || node.type === 'image' || node.type === 'payloadUpload') {
+    if (nodeType === 'upload' || nodeType === 'image' || nodeType === 'payloadUpload') {
       // Try multiple possible structures for upload nodes
       let uploadValue: any = null
-      
+
       // Check various possible locations for the upload value
       if (node.value) {
         uploadValue = node.value
       } else if (node.fields?.value) {
         uploadValue = node.fields.value
       } else if (node.relationTo === 'media' && node.id) {
-        // If it's just an ID, we'd need to fetch it, but for now try to use it
         uploadValue = node.id
       }
 
@@ -148,14 +210,10 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
       // Handle different upload value structures
       if (uploadValue) {
         if (typeof uploadValue === 'string') {
-          // If it's a string, it might be a URL or an ID
-          // Check if it looks like a URL
           if (uploadValue.startsWith('http') || uploadValue.startsWith('/')) {
             imageUrl = uploadValue
           }
-          // Otherwise it's likely an ID that needs to be resolved (would need depth in query)
         } else if (typeof uploadValue === 'object' && uploadValue !== null) {
-          // Media object - extract URL and alt
           imageUrl = uploadValue.url || uploadValue.filename || null
           imageAlt = uploadValue.alt || uploadValue.name || ''
         }
@@ -168,7 +226,6 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
         } else if (node.src) {
           imageUrl = node.src
         } else if (typeof node.media === 'object' && node.media !== null) {
-          // Check if media is populated
           imageUrl = (node.media as any).url || (node.media as any).filename || null
           imageAlt = (node.media as any).alt || (node.media as any).name || ''
         }
@@ -197,18 +254,28 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
     }
 
     // Default: render children if they exist
-    if (node.children && Array.isArray(node.children)) {
-      return (
-        <React.Fragment key={`fragment-${index}`}>
-          {node.children.map((child: any, i: number) => renderNode(child, i))}
-        </React.Fragment>
-      )
+    if (node.children && Array.isArray(node.children) && node.children.length > 0) {
+      const children = node.children.map((child: any, i: number) => renderNode(child, i)).filter(Boolean)
+      
+      if (children.length > 0) {
+        return (
+          <React.Fragment key={`fragment-${index}`}>
+            {children}
+          </React.Fragment>
+        )
+      }
     }
 
     return null
   }
 
-  const children = content.root.children.map((node: any, index: number) => renderNode(node, index))
+  const children = rootNode.children
+    .map((node: any, index: number) => renderNode(node, index))
+    .filter(Boolean)
+
+  if (children.length === 0) {
+    return null
+  }
 
   return <div className="space-y-6 text-[#1a2e2a]">{children}</div>
 }
