@@ -13,20 +13,11 @@ interface LexicalRendererProps {
  */
 export default function LexicalRenderer({ content }: LexicalRendererProps) {
   // Handle null/undefined content
-  if (!content) {
+  if (!content || !content.root) {
     return null
   }
 
-  // Handle different content structures
-  let rootNode: any = null
-  if (content.root) {
-    rootNode = content.root
-  } else if (content.children) {
-    // Fallback for alternative structure
-    rootNode = { children: content.children }
-  } else {
-    return null
-  }
+  const rootNode = content.root
 
   if (!rootNode.children || !Array.isArray(rootNode.children) || rootNode.children.length === 0) {
     return null
