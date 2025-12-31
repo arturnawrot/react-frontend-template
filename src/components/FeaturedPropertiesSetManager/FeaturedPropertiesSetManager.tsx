@@ -18,7 +18,6 @@ const FeaturedPropertiesSetManager: UIFieldClientComponent = () => {
   })
 
   const [currentSetIndex, setCurrentSetIndex] = useState<number | null>(null)
-  const [showAllProperties, setShowAllProperties] = useState<boolean>(true)
 
   // Initialize with empty array if needed
   const sets = Array.isArray(setsValue) ? setsValue : []
@@ -172,33 +171,13 @@ const FeaturedPropertiesSetManager: UIFieldClientComponent = () => {
       </div>
 
       {currentSetIndex !== null && sets[currentSetIndex] && (
-        <div>
-          <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={showAllProperties}
-                onChange={(e) => setShowAllProperties(e.target.checked)}
-                style={{
-                  width: '18px',
-                  height: '18px',
-                  accentColor: '#2563eb',
-                }}
-              />
-              <span style={{ fontSize: '14px', color: '#374151' }}>
-                Show all properties (not just broker-specific)
-              </span>
-            </label>
-          </div>
-
-          <PropertySelector
-            brokerId={null}
-            selectedPropertyIds={sets[currentSetIndex].propertyIds || []}
-            onSelectionChange={handleSetSelectionChange}
-            maxSelected={MAX_PROPERTIES_PER_SET}
-            showAllProperties={showAllProperties}
-          />
-        </div>
+        <PropertySelector
+          key={currentSetIndex}
+          brokerId={null}
+          selectedPropertyIds={sets[currentSetIndex].propertyIds || []}
+          onSelectionChange={handleSetSelectionChange}
+          maxSelected={MAX_PROPERTIES_PER_SET}
+        />
       )}
 
       {currentSetIndex === null && sets.length > 0 && (

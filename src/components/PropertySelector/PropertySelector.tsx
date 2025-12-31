@@ -1,18 +1,20 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import type { BuildoutProperty } from '@/utils/buildout-api'
+import React from 'react'
+import { usePropertySelector } from '@/hooks/usePropertySelector'
 
 const ITEMS_PER_PAGE = 5
 const MAX_SELECTED = 4
 
 interface PropertySelectorProps {
-  brokerId: number | null
+  brokerId: number | null // null means show all properties
   selectedPropertyIds: number[]
   onSelectionChange: (propertyIds: number[]) => void
   maxSelected?: number
   itemsPerPage?: number
-  showAllProperties?: boolean // If true, fetch all properties instead of broker-specific
+  selectionLabel?: string // Custom label for the checkbox (default: "Select")
+  title?: string // Optional title to display above the list
+  emptyMessage?: string // Custom message when no properties found
 }
 
 export default function PropertySelector({
@@ -21,158 +23,31 @@ export default function PropertySelector({
   onSelectionChange,
   maxSelected = MAX_SELECTED,
   itemsPerPage = ITEMS_PER_PAGE,
-  showAllProperties = false,
+  selectionLabel = 'Select',
+  title,
+  emptyMessage,
 }: PropertySelectorProps) {
-  const [properties, setProperties] = useState<BuildoutProperty[]>([])
-  const [totalCount, setTotalCount] = useState<number>(0)
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
-  const [saving, setSaving] = useState<boolean>(false)
-  const errorTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
-
-  // Fetch properties
-  useEffect(() => {
-    const fetchProperties = async () => {
-      if (!showAllProperties && !brokerId) return
-
-      setLoading(true)
-      setError(null)
-
-      try {
-        const offset = (currentPage - 1) * itemsPerPage
-        
-        let response: Response
-        if (showAllProperties) {
-          // Fetch all properties
-          const params = new URLSearchParams({
-            limit: itemsPerPage.toString(),
-            offset: offset.toString(),
-          })
-          response = await fetch(`/api/buildout/all-properties?${params.toString()}`)
-        } else {
-          // Fetch broker-specific properties
-          const params = new URLSearchParams({
-            brokerId: brokerId!.toString(),
-            limit: itemsPerPage.toString(),
-            offset: offset.toString(),
-          })
-          response = await fetch(`/api/buildout/properties-by-broker-id?${params.toString()}`)
-        }
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || 'Failed to fetch properties')
-        }
-
-        const data = await response.json()
-        
-        if (!data.success) {
-          throw new Error(data.error || 'Failed to fetch properties')
-        }
-
-        setProperties(data.properties || [])
-        setTotalCount(data.count || 0)
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch properties'
-        setError(errorMessage)
-        console.error('Error fetching properties:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchProperties()
-  }, [brokerId, currentPage, itemsPerPage, showAllProperties])
-
-  const totalPages = Math.ceil(totalCount / itemsPerPage)
-
-  const formatPrice = (price: number | null): string => {
-    if (!price) return 'Price on Request'
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
-
-  const formatAddress = (property: BuildoutProperty): string => {
-    const parts = [property.address, property.city, property.state, property.zip]
-    return parts.filter(Boolean).join(', ')
-  }
-
-  const getPropertyImage = (property: BuildoutProperty): string => {
-    if (property.photos && property.photos.length > 0) {
-      return property.photos[0].formats?.large || property.photos[0].url || ''
-    }
-    return ''
-  }
-
-  const isSelected = (propertyId: number): boolean => {
-    return selectedPropertyIds.includes(propertyId)
-  }
-
-  const toggleSelection = (propertyId: number) => {
-    if (saving) return
-
-    const currentlySelected = isSelected(propertyId)
-    let newSelectedIds: number[]
-
-    if (currentlySelected) {
-      // Remove from selection
-      newSelectedIds = selectedPropertyIds.filter((id) => id !== propertyId)
-    } else {
-      // Add to selection (check max limit)
-      if (selectedPropertyIds.length >= maxSelected) {
-        // Clear any existing timeout
-        if (errorTimeoutRef.current) {
-          clearTimeout(errorTimeoutRef.current)
-        }
-        setError(`Maximum ${maxSelected} properties allowed. Please uncheck another property first.`)
-        errorTimeoutRef.current = setTimeout(() => setError(null), 4000)
-        return
-      }
-      newSelectedIds = [...selectedPropertyIds, propertyId]
-    }
-
-    setSaving(true)
-    
-    // Clear any existing error timeout
-    if (errorTimeoutRef.current) {
-      clearTimeout(errorTimeoutRef.current)
-      errorTimeoutRef.current = null
-    }
-    setError(null)
-
-    try {
-      onSelectionChange(newSelectedIds)
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update selection'
-      setError(errorMessage)
-      console.error('Error updating selection:', err)
-      errorTimeoutRef.current = setTimeout(() => setError(null), 4000)
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (errorTimeoutRef.current) {
-        clearTimeout(errorTimeoutRef.current)
-      }
-    }
-  }, [])
-
-  if (!showAllProperties && !brokerId) {
-    return (
-      <div style={{ padding: '20px', color: '#6b7280' }}>
-        <p>No broker ID available. Please set the broker ID first.</p>
-      </div>
-    )
-  }
+  const {
+    properties,
+    totalCount,
+    currentPage,
+    totalPages,
+    loading,
+    error,
+    saving,
+    setCurrentPage,
+    toggleSelection,
+    isSelected,
+    formatPrice,
+    formatAddress,
+    getPropertyImage,
+  } = usePropertySelector({
+    brokerId,
+    itemsPerPage,
+    selectedPropertyIds,
+    onSelectionChange,
+    maxSelected,
+  })
 
   if (error && !loading) {
     return (
@@ -185,11 +60,16 @@ export default function PropertySelector({
   return (
     <div style={{ padding: '20px' }}>
       <div style={{ marginBottom: '24px' }}>
+        {title && (
+          <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '8px' }}>
+            {title}
+          </h2>
+        )}
         <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '4px' }}>
           Showing {properties.length} of {totalCount} properties
         </p>
         <p style={{ color: '#6b7280', fontSize: '12px', marginBottom: error ? '8px' : '0' }}>
-          {selectedPropertyIds.length} of {maxSelected} properties selected
+          {selectedPropertyIds.length} of {maxSelected} {selectionLabel === 'Featured' ? 'featured listings' : 'properties'} selected
           {selectedPropertyIds.length >= maxSelected && (
             <span style={{ color: '#dc2626', marginLeft: '8px', fontWeight: '500' }}>
               (Maximum reached)
@@ -209,7 +89,7 @@ export default function PropertySelector({
         </div>
       ) : properties.length === 0 ? (
         <div style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
-          No properties found.
+          {emptyMessage || 'No properties found.'}
         </div>
       ) : (
         <>
@@ -221,7 +101,7 @@ export default function PropertySelector({
                 ? formatPrice(property.sale_price_dollars)
                 : property.lease_listing_published
                 ? 'Lease Available'
-                : 'Price on Request'
+                : null
               const selected = isSelected(property.id)
 
               return (
@@ -290,11 +170,11 @@ export default function PropertySelector({
                               accentColor: '#2563eb',
                             }}
                           />
-                          <span>Select</span>
+                          <span>{selectionLabel}</span>
                         </label>
                         {selected && (
                           <span style={{ fontSize: '11px', color: '#2563eb', fontWeight: '600' }}>
-                            ✓ Selected
+                            ✓ {selectionLabel === 'Featured' ? 'Featured' : 'Selected'}
                           </span>
                         )}
                       </div>
@@ -347,7 +227,12 @@ export default function PropertySelector({
               }}
             >
               <button
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setCurrentPage(Math.max(1, currentPage - 1))
+                }}
                 disabled={currentPage === 1 || loading}
                 style={{
                   padding: '8px 16px',
@@ -367,7 +252,12 @@ export default function PropertySelector({
               </span>
 
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setCurrentPage(Math.min(totalPages, currentPage + 1))
+                }}
                 disabled={currentPage === totalPages || loading}
                 style={{
                   padding: '8px 16px',
