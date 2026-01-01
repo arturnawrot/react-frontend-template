@@ -1,7 +1,9 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Heart } from 'lucide-react'
 import { isPropertySaved, togglePropertySaved } from '@/utils/saved-properties'
+import { addressToSlug } from '@/utils/address-slug'
 
 interface PropertyCardProps {
   property: {
@@ -70,9 +72,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
 
       {/* Card Details */}
       <div className={`flex flex-col justify-center w-full ${isVertical ? 'p-3' : 'py-2 px-4'}`}>
-        <h3 className={`font-bold text-stone-900 mb-1 leading-tight ${isVertical ? 'text-lg' : 'text-xl font-serif'}`}>
-            {property.address}
-        </h3>
+        <Link 
+          href={`/property/${addressToSlug(property.address)}`}
+          className={`font-bold text-stone-900 mb-1 leading-tight hover:text-stone-700 transition-colors ${isVertical ? 'text-lg' : 'text-xl font-serif'}`}
+        >
+          {property.address}
+        </Link>
         <p className="text-stone-500 text-xs mb-2">{property.cityStateZip}</p>
         
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-stone-700 mb-3">

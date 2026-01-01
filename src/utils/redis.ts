@@ -74,6 +74,7 @@ export async function closeRedisClient(): Promise<void> {
 export const CACHE_KEYS = {
   PROPERTIES: 'buildout:properties',
   BROKERS: 'buildout:brokers',
+  PROPERTY_BY_ID: (id: number) => `buildout:property:${id}`,
 } as const
 
 /**

@@ -811,6 +811,32 @@ class BuildoutApiClient {
       ...options
     })
   }
+
+  /**
+   * Get a single property by ID.
+   * Uses Redis caching to share cache across all serverless instances.
+   * Server-side only.
+   */
+  async getPropertyById(
+    id: number,
+    options?: {
+      skipCache?: boolean
+    }
+  ): Promise<BuildoutProperty> {
+    const cacheKey = CACHE_KEYS.PROPERTY_BY_ID(id)
+    
+    if (!options?.skipCache) {
+      const cached = await getFromRedisCache<BuildoutProperty>(cacheKey)
+      if (cached) return cached
+    }
+
+    const data = await fetchFromBuildout<BuildoutProperty>(`/properties/${id}.json`)
+    
+    // Save to Redis cache
+    await setRedisCache(cacheKey, data)
+    
+    return data
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -863,6 +889,15 @@ export const buildoutApi = {
     }
   ): Promise<ListPropertiesResponse> {
     return instance.searchProperties(options)
+  },
+
+  async getPropertyById(
+    id: number,
+    options?: {
+      skipCache?: boolean
+    }
+  ): Promise<BuildoutProperty> {
+    return instance.getPropertyById(id, options)
   },
 
   async clearCache(): Promise<void> {
