@@ -5,7 +5,7 @@ import config from '@/payload.config'
 import PropertyDetails from '@/components/PropertyDetails/PropertyDetails'
 import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
 import Footer from '@/components/Footer/Footer'
-import Navbar from '@/components/Navbar/Navbar'
+import NavbarWrapper from '@/components/Navbar/NavbarWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty } from '@/utils/buildout-api'
 import { addressToSlug } from '@/utils/address-slug'
@@ -56,13 +56,13 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
   return (
     <>
         <div className="bg-transparent md:bg-[var(--strong-green)]">
-            <Navbar />
+            <NavbarWrapper darkVariant={true} />
         </div>
-      <PropertyDetails property={property} brokers={propertyBrokers} />
-      <div className="bg-[#D7D1C4]">
-        <FeaturedProperties properties={featuredProperties} />
-      </div>
-      <Footer />
+        <PropertyDetails property={property} brokers={propertyBrokers} />
+        {/* <div className="bg-[#D7D1C4]">
+            <FeaturedProperties properties={featuredProperties} />
+        </div> */}
+        <Footer />
     </>
   )
 }

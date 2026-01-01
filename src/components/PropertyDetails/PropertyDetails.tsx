@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { 
   Heart, 
   Download, 
@@ -8,6 +8,8 @@ import {
   Linkedin, 
   Instagram,
   Facebook,
+  X,
+  Maximize2,
 } from 'lucide-react'
 import Link from 'next/link'
 import Arrow from '../Arrow/Arrow'
@@ -80,6 +82,16 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   const limeGreen = "bg-[#dce676]"
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isSaved, setIsSaved] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const thumbnailContainerRef = useRef<HTMLDivElement>(null)
+  const thumbnailRefs = useRef<(HTMLDivElement | null)[]>([])
+  
+  // Drag to scroll state
+  const [isDragging, setIsDragging] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [scrollLeft, setScrollLeft] = useState(0)
+  const dragStartRef = useRef<{ x: number; y: number; time: number } | null>(null)
+  const clickedThumbnailRef = useRef<number | null>(null)
 
   // Get property images
   const images = property.photos && property.photos.length > 0 
@@ -133,16 +145,211 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   const pdfUrl = property.sale_pdf_url || property.lease_pdf_url || ''
 
   // Navigation handlers
-  const handlePreviousImage = () => {
+  const handlePreviousImage = useCallback(() => {
     if (images.length > 0) {
       setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
     }
-  }
+  }, [images.length])
 
-  const handleNextImage = () => {
+  const handleNextImage = useCallback(() => {
     if (images.length > 0) {
       setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
     }
+  }, [images.length])
+
+  // Scroll thumbnail into view when image changes
+  useEffect(() => {
+    if (thumbnailRefs.current[currentImageIndex] && thumbnailContainerRef.current) {
+      const thumbnail = thumbnailRefs.current[currentImageIndex]
+      const container = thumbnailContainerRef.current
+      
+      if (thumbnail) {
+        const containerRect = container.getBoundingClientRect()
+        const thumbnailRect = thumbnail.getBoundingClientRect()
+        
+        // Check if thumbnail is outside visible area
+        if (thumbnailRect.left < containerRect.left) {
+          container.scrollTo({
+            left: container.scrollLeft + (thumbnailRect.left - containerRect.left) - 16,
+            behavior: 'smooth'
+          })
+        } else if (thumbnailRect.right > containerRect.right) {
+          container.scrollTo({
+            left: container.scrollLeft + (thumbnailRect.right - containerRect.right) + 16,
+            behavior: 'smooth'
+          })
+        }
+      }
+    }
+  }, [currentImageIndex, images.length])
+
+  // Keyboard navigation for fullscreen
+  useEffect(() => {
+    if (!isFullscreen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsFullscreen(false)
+      } else if (e.key === 'ArrowLeft') {
+        handlePreviousImage()
+      } else if (e.key === 'ArrowRight') {
+        handleNextImage()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isFullscreen, handlePreviousImage, handleNextImage])
+
+  const openFullscreen = () => {
+    setIsFullscreen(true)
+  }
+
+  const closeFullscreen = () => {
+    setIsFullscreen(false)
+  }
+
+  // Drag to scroll handlers for thumbnail gallery
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!thumbnailContainerRef.current) return
+    const container = thumbnailContainerRef.current
+    setIsDragging(true)
+    setStartX(e.pageX - container.offsetLeft)
+    setScrollLeft(container.scrollLeft)
+    dragStartRef.current = { 
+      x: e.pageX, 
+      y: e.pageY,
+      time: Date.now()
+    }
+    clickedThumbnailRef.current = null
+    
+    // Find which thumbnail was clicked
+    const rect = container.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const thumbnails = container.querySelectorAll('[data-thumbnail-index]')
+    thumbnails.forEach((thumb, idx) => {
+      const thumbRect = thumb.getBoundingClientRect()
+      const containerRect = container.getBoundingClientRect()
+      const relativeLeft = thumbRect.left - containerRect.left + container.scrollLeft
+      if (x + container.scrollLeft >= relativeLeft && x + container.scrollLeft < relativeLeft + thumbRect.width) {
+        clickedThumbnailRef.current = idx
+      }
+    })
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !thumbnailContainerRef.current || !dragStartRef.current) return
+    
+    const container = thumbnailContainerRef.current
+    const x = e.pageX - container.offsetLeft
+    const walk = (x - startX) * 1.5 // Scroll speed multiplier
+    
+    // Check if user has moved enough to consider it a drag (not a click)
+    const deltaX = Math.abs(e.pageX - dragStartRef.current.x)
+    const deltaY = Math.abs(e.pageY - dragStartRef.current.y)
+    
+    // If moved more than 5px, it's a drag
+    if (deltaX > 5 || deltaY > 5) {
+      e.preventDefault()
+      container.scrollLeft = scrollLeft - walk
+      clickedThumbnailRef.current = null // Cancel click if dragging
+    }
+  }
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!isDragging) return
+    
+    setIsDragging(false)
+    
+    // Check if it was a click (not a drag)
+    if (dragStartRef.current) {
+      const deltaX = Math.abs(e.pageX - dragStartRef.current.x)
+      const deltaY = Math.abs(e.pageY - dragStartRef.current.y)
+      const deltaTime = Date.now() - dragStartRef.current.time
+      
+      // If moved less than 5px and took less than 300ms, it's a click
+      if (deltaX < 5 && deltaY < 5 && deltaTime < 300 && clickedThumbnailRef.current !== null) {
+        setCurrentImageIndex(clickedThumbnailRef.current)
+      }
+    }
+    
+    dragStartRef.current = null
+    clickedThumbnailRef.current = null
+  }
+
+  const handleMouseLeave = () => {
+    setIsDragging(false)
+    dragStartRef.current = null
+    clickedThumbnailRef.current = null
+  }
+
+  // Touch handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!thumbnailContainerRef.current) return
+    const container = thumbnailContainerRef.current
+    setIsDragging(true)
+    const touch = e.touches[0]
+    setStartX(touch.pageX - container.offsetLeft)
+    setScrollLeft(container.scrollLeft)
+    dragStartRef.current = { 
+      x: touch.pageX, 
+      y: touch.pageY,
+      time: Date.now()
+    }
+    clickedThumbnailRef.current = null
+    
+    // Find which thumbnail was touched
+    const rect = container.getBoundingClientRect()
+    const x = touch.clientX - rect.left
+    const thumbnails = container.querySelectorAll('[data-thumbnail-index]')
+    thumbnails.forEach((thumb, idx) => {
+      const thumbRect = thumb.getBoundingClientRect()
+      const containerRect = container.getBoundingClientRect()
+      const relativeLeft = thumbRect.left - containerRect.left + container.scrollLeft
+      if (x + container.scrollLeft >= relativeLeft && x + container.scrollLeft < relativeLeft + thumbRect.width) {
+        clickedThumbnailRef.current = idx
+      }
+    })
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || !thumbnailContainerRef.current || !dragStartRef.current) return
+    
+    const container = thumbnailContainerRef.current
+    const touch = e.touches[0]
+    const x = touch.pageX - container.offsetLeft
+    const walk = (x - startX) * 1.5
+    
+    // Check if user has moved enough to consider it a drag
+    const deltaX = Math.abs(touch.pageX - dragStartRef.current.x)
+    const deltaY = Math.abs(touch.pageY - dragStartRef.current.y)
+    
+    if (deltaX > 5 || deltaY > 5) {
+      container.scrollLeft = scrollLeft - walk
+      clickedThumbnailRef.current = null // Cancel click if dragging
+    }
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDragging) return
+    
+    setIsDragging(false)
+    
+    // Check if it was a tap (not a drag)
+    if (dragStartRef.current && e.changedTouches[0]) {
+      const touch = e.changedTouches[0]
+      const deltaX = Math.abs(touch.pageX - dragStartRef.current.x)
+      const deltaY = Math.abs(touch.pageY - dragStartRef.current.y)
+      const deltaTime = Date.now() - dragStartRef.current.time
+      
+      // If moved less than 5px and took less than 300ms, it's a tap
+      if (deltaX < 5 && deltaY < 5 && deltaTime < 300 && clickedThumbnailRef.current !== null) {
+        setCurrentImageIndex(clickedThumbnailRef.current)
+      }
+    }
+    
+    dragStartRef.current = null
+    clickedThumbnailRef.current = null
   }
 
   return (
@@ -177,7 +384,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
           
           {/* Main Image */}
           {images.length > 0 && (
-            <div className="relative w-full aspect-video bg-gray-200 rounded-sm overflow-hidden mb-4 group">
+            <div className="relative w-full aspect-video bg-gray-200 rounded-sm overflow-hidden mb-4 group cursor-pointer" onClick={openFullscreen}>
               <img 
                 src={images[currentImageIndex]} 
                 alt={`Property ${currentImageIndex + 1}`} 
@@ -185,7 +392,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
               />
               
               {/* Overlays */}
-              <div className="absolute top-4 left-4 flex gap-2">
+              <div className="absolute top-4 left-4 flex gap-2 z-10">
                 {property.sale && property.sale_listing_published && (
                   <span className={`${limeGreen} text-black text-xs font-bold px-3 py-1 rounded-full`}>
                     For Sale
@@ -202,40 +409,87 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
               {images.length > 1 && (
                 <>
                   <button 
-                    onClick={handlePreviousImage}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-1 rounded-full text-white"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handlePreviousImage()
+                    }}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-1 rounded-full text-white z-10"
                   >
                     <Arrow direction="left" variant="chevron" size="w-6 h-6" />
                   </button>
                   <button 
-                    onClick={handleNextImage}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-1 rounded-full text-white"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleNextImage()
+                    }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-1 rounded-full text-white z-10"
                   >
                     <Arrow direction="right" variant="chevron" size="w-6 h-6" />
                   </button>
                 </>
               )}
 
+              {/* Fullscreen Button */}
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation()
+                  openFullscreen()
+                }}
+                className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 p-2 rounded-full text-white z-10"
+                aria-label="View fullscreen"
+              >
+                <Maximize2 className="w-5 h-5" />
+              </button>
+
               {/* Favorite Button */}
               <button 
-                onClick={() => setIsSaved(!isSaved)}
-                className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsSaved(!isSaved)
+                }}
+                className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 z-10"
               >
                 <Heart className={`w-5 h-5 ${isSaved ? 'text-red-500 fill-red-500' : 'text-gray-600'}`} />
               </button>
             </div>
           )}
 
-          {/* Thumbnails */}
+          {/* Thumbnails - Scrollable with drag */}
           {images.length > 1 && (
-            <div className="grid grid-cols-4 gap-4 mb-12">
-              {images.slice(0, 4).map((img, idx) => (
+            <div 
+              ref={thumbnailContainerRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              className={`flex gap-4 mb-12 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 select-none ${
+                isDragging ? 'cursor-grabbing' : 'cursor-grab'
+              }`}
+              style={{ 
+                scrollbarWidth: 'thin',
+                WebkitUserSelect: 'none',
+                userSelect: 'none'
+              }}
+            >
+              {images.map((img, idx) => (
                 <div 
-                  key={idx} 
-                  onClick={() => setCurrentImageIndex(idx)}
-                  className={`aspect-video bg-gray-200 rounded-sm overflow-hidden cursor-pointer hover:opacity-80 ${currentImageIndex === idx ? 'ring-2 ring-gray-400' : ''}`}
+                  key={idx}
+                  data-thumbnail-index={idx}
+                  ref={(el) => { thumbnailRefs.current[idx] = el }}
+                  className={`flex-shrink-0 aspect-video bg-gray-200 rounded-sm overflow-hidden hover:opacity-80 transition-opacity ${
+                    currentImageIndex === idx ? 'ring-2 ring-gray-400' : ''
+                  }`}
+                  style={{ width: 'calc(25% - 12px)', minWidth: '120px', pointerEvents: isDragging ? 'none' : 'auto' }}
                 >
-                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                  <img 
+                    src={img} 
+                    alt={`Thumbnail ${idx + 1}`} 
+                    className="w-full h-full object-cover pointer-events-none"
+                    draggable={false}
+                  />
                 </div>
               ))}
             </div>
@@ -388,6 +642,86 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
 
         </div>
       </div>
+
+      {/* Fullscreen Image Modal */}
+      {isFullscreen && images.length > 0 && (
+        <div 
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+          onClick={closeFullscreen}
+        >
+          {/* Close Button */}
+          <button
+            onClick={closeFullscreen}
+            className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 p-2 rounded-full text-white z-10"
+            aria-label="Close fullscreen"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          {/* Image Counter */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-full text-sm z-10">
+            {currentImageIndex + 1} / {images.length}
+          </div>
+
+          {/* Main Image */}
+          <div 
+            className="relative w-full h-full flex items-center justify-center p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img 
+              src={images[currentImageIndex]} 
+              alt={`Property ${currentImageIndex + 1}`} 
+              className="max-w-full max-h-full object-contain"
+            />
+          </div>
+
+          {/* Navigation Arrows */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handlePreviousImage()
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-3 rounded-full text-white z-10"
+                aria-label="Previous image"
+              >
+                <Arrow direction="left" variant="chevron" size="w-8 h-8" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleNextImage()
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-3 rounded-full text-white z-10"
+                aria-label="Next image"
+              >
+                <Arrow direction="right" variant="chevron" size="w-8 h-8" />
+              </button>
+            </>
+          )}
+
+          {/* Thumbnail Strip at Bottom */}
+          {images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 max-w-[90vw] overflow-x-auto pb-2 z-10">
+              {images.map((img, idx) => (
+                <div
+                  key={idx}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setCurrentImageIndex(idx)
+                  }}
+                  className={`flex-shrink-0 w-20 h-20 bg-gray-200 rounded-sm overflow-hidden cursor-pointer hover:opacity-80 transition-opacity ${
+                    currentImageIndex === idx ? 'ring-2 ring-white' : 'opacity-60'
+                  }`}
+                >
+                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
