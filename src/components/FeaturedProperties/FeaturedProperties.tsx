@@ -49,7 +49,7 @@ export default function FeaturedProperties({ block, properties, heading, seeAllL
   }
 
   return (
-    <section className="max-w-[1400px] mx-auto px-4 py-16 md:py-24 font-sans text-[#1C2B28]">
+    <section className="max-w-[1400px] mx-auto px-4 py-10 md:py-10 font-sans text-[#1C2B28]">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
           <p className="text-sm font-semibold tracking-[0.08em] uppercase text-stone-500 mb-2">

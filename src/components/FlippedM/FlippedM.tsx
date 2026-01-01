@@ -106,11 +106,11 @@ const ProcessSection = ({
   return (
     <div className="relative w-full flex flex-col py-12 md:py-20 min-h-[1600px] max-w-[1500px] mx-auto md:px-15">
       {/* SVG Background */}
-      <div className="absolute inset-0 md:left-1/2 pointer-events-none">
+      <div className="absolute inset-0 md:left-1/2 pointer-events-none z-5">
         <img
           src="/svg/flipped-m.svg"
           alt=""
-          className="absolute top-0 left-[-15%] w-auto h-auto z-0 overflow-hidden"
+          className="absolute top-0 left-[-15%] w-auto h-auto overflow-hidden"
           style={{ maxWidth: 'none', maxHeight: 'none' }}
         />
       </div>

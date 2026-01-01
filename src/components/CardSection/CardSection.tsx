@@ -55,8 +55,8 @@ export default function CardSection({ block }: CardSectionProps) {
   const cards = block.cards || []
 
   return (
-    <div>
-      <div className="max-w-[1380px] mx-auto px-4">
+    <div className="relative z-10">
+      <div className="max-w-[1380px] mx-auto px-4 py-20">
         <div className="bg-white rounded-4xl border border-gray-200 shadow-xl shadow-black/20 py-20 px-15">
           <div className="text-center">
             <h2 className="display2">{title}</h2>
