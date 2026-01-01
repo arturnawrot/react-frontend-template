@@ -8,6 +8,17 @@ export const InsightsSection: Block = {
   },
   fields: [
     {
+      name: 'featuredArticleSetName',
+      type: 'text',
+      label: 'Featured Articles Set',
+      admin: {
+        description: 'Select a featured articles set from the global sets. Articles from the selected set will be displayed.',
+        components: {
+          Field: '/components/FeaturedArticleSetSelector/FeaturedArticleSetSelector',
+        },
+      },
+    },
+    {
       name: 'heading',
       type: 'text',
       label: 'Heading',
@@ -24,39 +35,6 @@ export const InsightsSection: Block = {
       type: 'text',
       label: 'Link URL',
       defaultValue: '#',
-    },
-    {
-      name: 'articles',
-      type: 'array',
-      label: 'Articles',
-      minRows: 1,
-      fields: [
-        {
-          name: 'title',
-          type: 'text',
-          required: true,
-          label: 'Title',
-        },
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          required: false,
-          label: 'Image',
-        },
-        {
-          name: 'tags',
-          type: 'array',
-          label: 'Tags',
-          fields: [
-            {
-              name: 'tag',
-              type: 'text',
-              required: true,
-            },
-          ],
-        },
-      ],
     },
   ],
 }

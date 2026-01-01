@@ -15,6 +15,7 @@ import { BlogCategories } from './collections/BlogCategories'
 import { Blogs } from './collections/Blogs'
 import { Navbar } from './globals/Navbar'
 import { FeaturedPropertiesSets } from './globals/FeaturedPropertiesSets'
+import { FeaturedArticles } from './globals/FeaturedArticles'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -30,7 +31,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, CSSStyles, Agents, BlogCategories, Blogs],
-  globals: [Navbar, FeaturedPropertiesSets],
+  globals: [Navbar, FeaturedPropertiesSets, FeaturedArticles],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

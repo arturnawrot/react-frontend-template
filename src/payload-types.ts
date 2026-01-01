@@ -100,10 +100,12 @@ export interface Config {
   globals: {
     navbar: Navbar;
     featuredPropertiesSets: FeaturedPropertiesSet;
+    featuredArticles: FeaturedArticle;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
     featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
+    featuredArticles: FeaturedArticlesSelect<false> | FeaturedArticlesSelect<true>;
   };
   locale: null;
   user: User & {
@@ -407,22 +409,13 @@ export interface Page {
                   blockType: 'splitSection';
                 }
               | {
+                  /**
+                   * Select a featured articles set from the global sets. Articles from the selected set will be displayed.
+                   */
+                  featuredArticleSetName?: string | null;
                   heading?: string | null;
                   linkText?: string | null;
                   linkHref?: string | null;
-                  articles?:
-                    | {
-                        title: string;
-                        image?: (string | null) | Media;
-                        tags?:
-                          | {
-                              tag: string;
-                              id?: string | null;
-                            }[]
-                          | null;
-                        id?: string | null;
-                      }[]
-                    | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'insightsSection';
@@ -643,22 +636,13 @@ export interface Page {
                             blockType: 'splitSection';
                           }
                         | {
+                            /**
+                             * Select a featured articles set from the global sets. Articles from the selected set will be displayed.
+                             */
+                            featuredArticleSetName?: string | null;
                             heading?: string | null;
                             linkText?: string | null;
                             linkHref?: string | null;
-                            articles?:
-                              | {
-                                  title: string;
-                                  image?: (string | null) | Media;
-                                  tags?:
-                                    | {
-                                        tag: string;
-                                        id?: string | null;
-                                      }[]
-                                    | null;
-                                  id?: string | null;
-                                }[]
-                              | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'insightsSection';
@@ -879,22 +863,13 @@ export interface Page {
                                       blockType: 'splitSection';
                                     }
                                   | {
+                                      /**
+                                       * Select a featured articles set from the global sets. Articles from the selected set will be displayed.
+                                       */
+                                      featuredArticleSetName?: string | null;
                                       heading?: string | null;
                                       linkText?: string | null;
                                       linkHref?: string | null;
-                                      articles?:
-                                        | {
-                                            title: string;
-                                            image?: (string | null) | Media;
-                                            tags?:
-                                              | {
-                                                  tag: string;
-                                                  id?: string | null;
-                                                }[]
-                                              | null;
-                                            id?: string | null;
-                                          }[]
-                                        | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'insightsSection';
@@ -1115,22 +1090,13 @@ export interface Page {
                                                 blockType: 'splitSection';
                                               }
                                             | {
+                                                /**
+                                                 * Select a featured articles set from the global sets. Articles from the selected set will be displayed.
+                                                 */
+                                                featuredArticleSetName?: string | null;
                                                 heading?: string | null;
                                                 linkText?: string | null;
                                                 linkHref?: string | null;
-                                                articles?:
-                                                  | {
-                                                      title: string;
-                                                      image?: (string | null) | Media;
-                                                      tags?:
-                                                        | {
-                                                            tag: string;
-                                                            id?: string | null;
-                                                          }[]
-                                                        | null;
-                                                      id?: string | null;
-                                                    }[]
-                                                  | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'insightsSection';
@@ -1294,22 +1260,13 @@ export interface Page {
         blockType: 'splitSection';
       }
     | {
+        /**
+         * Select a featured articles set from the global sets. Articles from the selected set will be displayed.
+         */
+        featuredArticleSetName?: string | null;
         heading?: string | null;
         linkText?: string | null;
         linkHref?: string | null;
-        articles?:
-          | {
-              title: string;
-              image?: (string | null) | Media;
-              tags?:
-                | {
-                    tag: string;
-                    id?: string | null;
-                  }[]
-                | null;
-              id?: string | null;
-            }[]
-          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'insightsSection';
@@ -1895,22 +1852,10 @@ export interface PagesSelect<T extends boolean = true> {
                     insightsSection?:
                       | T
                       | {
+                          featuredArticleSetName?: T;
                           heading?: T;
                           linkText?: T;
                           linkHref?: T;
-                          articles?:
-                            | T
-                            | {
-                                title?: T;
-                                image?: T;
-                                tags?:
-                                  | T
-                                  | {
-                                      tag?: T;
-                                      id?: T;
-                                    };
-                                id?: T;
-                              };
                           id?: T;
                           blockName?: T;
                         };
@@ -2110,22 +2055,10 @@ export interface PagesSelect<T extends boolean = true> {
                                 insightsSection?:
                                   | T
                                   | {
+                                      featuredArticleSetName?: T;
                                       heading?: T;
                                       linkText?: T;
                                       linkHref?: T;
-                                      articles?:
-                                        | T
-                                        | {
-                                            title?: T;
-                                            image?: T;
-                                            tags?:
-                                              | T
-                                              | {
-                                                  tag?: T;
-                                                  id?: T;
-                                                };
-                                            id?: T;
-                                          };
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -2325,22 +2258,10 @@ export interface PagesSelect<T extends boolean = true> {
                                             insightsSection?:
                                               | T
                                               | {
+                                                  featuredArticleSetName?: T;
                                                   heading?: T;
                                                   linkText?: T;
                                                   linkHref?: T;
-                                                  articles?:
-                                                    | T
-                                                    | {
-                                                        title?: T;
-                                                        image?: T;
-                                                        tags?:
-                                                          | T
-                                                          | {
-                                                              tag?: T;
-                                                              id?: T;
-                                                            };
-                                                        id?: T;
-                                                      };
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -2540,22 +2461,10 @@ export interface PagesSelect<T extends boolean = true> {
                                                         insightsSection?:
                                                           | T
                                                           | {
+                                                              featuredArticleSetName?: T;
                                                               heading?: T;
                                                               linkText?: T;
                                                               linkHref?: T;
-                                                              articles?:
-                                                                | T
-                                                                | {
-                                                                    title?: T;
-                                                                    image?: T;
-                                                                    tags?:
-                                                                      | T
-                                                                      | {
-                                                                          tag?: T;
-                                                                          id?: T;
-                                                                        };
-                                                                    id?: T;
-                                                                  };
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -2715,22 +2624,10 @@ export interface PagesSelect<T extends boolean = true> {
         insightsSection?:
           | T
           | {
+              featuredArticleSetName?: T;
               heading?: T;
               linkText?: T;
               linkHref?: T;
-              articles?:
-                | T
-                | {
-                    title?: T;
-                    image?: T;
-                    tags?:
-                      | T
-                      | {
-                          tag?: T;
-                          id?: T;
-                        };
-                    id?: T;
-                  };
               id?: T;
               blockName?: T;
             };
@@ -3005,6 +2902,30 @@ export interface FeaturedPropertiesSet {
   createdAt?: string | null;
 }
 /**
+ * Create and manage sets of featured articles. Each set can contain multiple blog articles and can be selected in InsightsSection blocks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featuredArticles".
+ */
+export interface FeaturedArticle {
+  id: string;
+  sets?:
+    | {
+        /**
+         * A unique name for this set (e.g., "Homepage Featured", "Category Highlights")
+         */
+        name: string;
+        /**
+         * Select blog articles to include in this set
+         */
+        articles?: (string | Blog)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar_select".
  */
@@ -3037,6 +2958,22 @@ export interface NavbarSelect<T extends boolean = true> {
  */
 export interface FeaturedPropertiesSetsSelect<T extends boolean = true> {
   sets?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featuredArticles_select".
+ */
+export interface FeaturedArticlesSelect<T extends boolean = true> {
+  sets?:
+    | T
+    | {
+        name?: T;
+        articles?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

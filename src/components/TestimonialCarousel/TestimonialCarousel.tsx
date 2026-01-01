@@ -43,7 +43,7 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
   }
 
   return (
-    <div className="max-w-[1050px] mx-auto px-4 py-20">
+    <div className="max-w-[1050px] mx-auto px-4 py-10">
       <div className="mx-auto p-8">
         <div className="text-center mb-8">
           <p className="text-sm tracking-widest text-gray-500 uppercase mb-4">

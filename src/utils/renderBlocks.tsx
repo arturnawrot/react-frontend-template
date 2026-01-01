@@ -179,7 +179,55 @@ export async function renderBlock(
     return <SplitSection key={index} block={block} />
   }
   if (block.blockType === 'insightsSection') {
-    return <InsightsSection key={index} block={block} />
+    // Fetch articles from the selected set if specified
+    type Article = {
+      title: string
+      image: string | { id: string; url?: string } | null
+      tags: Array<{ tag: string }>
+      slug: string
+    }
+    
+    let articles: Article[] = []
+
+    const setName = (block as any).featuredArticleSetName
+
+    if (setName && payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'featuredArticles',
+          depth: 2, // Populate relationships
+        })
+
+        if (global?.sets && Array.isArray(global.sets)) {
+          const set = global.sets.find((s: any) => s.name === setName)
+
+          if (set?.articles && Array.isArray(set.articles)) {
+            // Articles are already populated due to depth: 2
+            articles = set.articles.map((article: any): Article => {
+              // Map blog article to the format expected by InsightsSection
+              const image = article.featuredImage
+              const categories = Array.isArray(article.categories)
+                ? article.categories.map((cat: any) => ({
+                    tag: typeof cat === 'object' && cat !== null ? cat.name || cat.slug || '' : String(cat),
+                  }))
+                : []
+              const slug = article.slug || ''
+
+              return {
+                title: article.title || '',
+                image: image || null,
+                tags: categories,
+                slug: slug,
+              }
+            })
+          }
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching featured articles from set:', error)
+      }
+    }
+
+    return <InsightsSection key={index} block={block} articles={articles} />
   }
   if (block.blockType === 'trackRecordSection') {
     return <TrackRecordSection key={index} block={block} />

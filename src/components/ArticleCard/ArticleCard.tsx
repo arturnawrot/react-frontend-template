@@ -13,7 +13,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ imageSrc, title, tags = [], l
   return (
     <div className="w-[300px] md:w-[400px] shrink-0 snap-start">
       {/* Image Container */}
-      <div className="relative h-[280px] w-full rounded-2xl overflow-hidden mb-6 group cursor-pointer">
+      <a href={link} className="relative h-[280px] w-full rounded-2xl overflow-hidden mb-6 group cursor-pointer block">
         <img 
           src={imageSrc} 
           alt={title} 
@@ -29,7 +29,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ imageSrc, title, tags = [], l
             ))}
           </div>
         )}
-      </div>
+      </a>
 
       {/* Content */}
       <div className="pr-4">

@@ -7,11 +7,19 @@ import Arrow from '../Arrow/Arrow'
 
 type InsightsSectionBlock = Extract<Page['blocks'][number], { blockType: 'insightsSection' }>
 
-interface InsightsSectionProps {
-  block: InsightsSectionBlock
+interface Article {
+  title: string
+  image: string | { id: string; url?: string } | null
+  tags: Array<{ tag: string }>
+  slug?: string
 }
 
-export default function InsightsSection({ block }: InsightsSectionProps) {
+interface InsightsSectionProps {
+  block: InsightsSectionBlock
+  articles?: Article[]
+}
+
+export default function InsightsSection({ block, articles: propArticles }: InsightsSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const scroll = (direction: 'left' | 'right') => {
@@ -27,7 +35,8 @@ export default function InsightsSection({ block }: InsightsSectionProps) {
   const heading = block.heading || 'Insights That Shape Smart Investments'
   const linkText = block.linkText || 'Explore More Insights'
   const linkHref = block.linkHref || '#'
-  const articles = block.articles || []
+  // Use prop articles if provided, otherwise fall back to block articles (for backward compatibility)
+  const articles = propArticles || (block as any).articles || []
 
   return (
     <section className="w-full bg-[#dad6cc] py-20 overflow-x-hidden">
@@ -85,6 +94,7 @@ export default function InsightsSection({ block }: InsightsSectionProps) {
                 const image = typeof article.image === 'object' && article.image !== null ? article.image : null
                 const imageUrl = image?.url || ''
                 const tags = article.tags?.map(t => t.tag).filter(Boolean) || []
+                const link = article.slug ? `/blog/${article.slug}` : '#'
                 
                 return (
                   <ArticleCard 
@@ -92,6 +102,7 @@ export default function InsightsSection({ block }: InsightsSectionProps) {
                     imageSrc={imageUrl}
                     title={article.title}
                     tags={tags}
+                    link={link}
                   />
                 )
               })}
