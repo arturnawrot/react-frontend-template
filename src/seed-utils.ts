@@ -217,3 +217,149 @@ export async function seedNavbar(payload: Payload) {
   }
 }
 
+/**
+ * Seeds the footer global
+ */
+export async function seedFooter(payload: Payload) {
+  console.log('Seeding footer...')
+
+  const footerData = {
+    navigationColumns: [
+      // Column 1: Property Focus
+      {
+        links: [
+          {
+            label: 'Buy',
+            linkType: 'custom' as const,
+            customUrl: '/buy',
+          },
+          {
+            label: 'Lease',
+            linkType: 'custom' as const,
+            customUrl: '/lease',
+          },
+          {
+            label: 'Sell',
+            linkType: 'custom' as const,
+            customUrl: '/sell',
+          },
+          {
+            label: 'Insights & Research',
+            linkType: 'custom' as const,
+            customUrl: '/insights',
+          },
+        ],
+      },
+      // Column 2: Company Focus
+      {
+        links: [
+          {
+            label: 'Our Agents',
+            linkType: 'custom' as const,
+            customUrl: '/agents',
+          },
+          {
+            label: 'Our Advantage',
+            linkType: 'custom' as const,
+            customUrl: '/advantages',
+          },
+          {
+            label: 'Our Services',
+            linkType: 'custom' as const,
+            customUrl: '/services',
+          },
+          {
+            label: 'Our Company',
+            linkType: 'custom' as const,
+            customUrl: '/company',
+          },
+        ],
+      },
+      // Column 3: User Interaction
+      {
+        links: [
+          {
+            label: 'Account Login',
+            linkType: 'custom' as const,
+            customUrl: '/login',
+          },
+          {
+            label: 'Contact Us',
+            linkType: 'custom' as const,
+            customUrl: '/contact',
+          },
+          {
+            label: 'Schedule a Tour / Consultation',
+            linkType: 'custom' as const,
+            customUrl: '/schedule',
+          },
+        ],
+      },
+    ],
+    offices: [
+      // Augusta Office
+      {
+        label: 'Office',
+        address: '3519 Wheeler Road,\nAugusta, GA 30909',
+        phone: '706.736.0700',
+        fax: '706.736.5363',
+      },
+      // Aiken Office
+      {
+        label: 'Office',
+        address: '142 Laurens Street NW,\nAiken, SC 29801',
+        phone: '803.644.1770',
+        tollFree: '800.241.9726',
+      },
+    ],
+    socialMedia: {
+      facebook: '#',
+      linkedin: '#',
+    },
+    bottomBar: {
+      copyrightText: '© 2025 Real Estate Co. All rights reserved.',
+      policyLinks: [
+        {
+          label: 'Accessibility',
+          linkType: 'custom' as const,
+          customUrl: '#',
+        },
+        {
+          label: 'Privacy Policy',
+          linkType: 'custom' as const,
+          customUrl: '#',
+        },
+        {
+          label: 'Terms of Service',
+          linkType: 'custom' as const,
+          customUrl: '#',
+        },
+        {
+          label: 'Cookies Settings',
+          linkType: 'custom' as const,
+          customUrl: '#',
+        },
+      ],
+    },
+  }
+
+  try {
+    await payload.updateGlobal({
+      slug: 'footer',
+      data: footerData,
+    })
+    console.log('✅ Footer seeded successfully!')
+  } catch (error) {
+    console.log('Footer global not found, creating...')
+    try {
+      await payload.updateGlobal({
+        slug: 'footer',
+        data: footerData,
+      })
+      console.log('✅ Footer created and seeded successfully!')
+    } catch (createError) {
+      console.error('❌ Error creating footer:', createError)
+    }
+  }
+}
+

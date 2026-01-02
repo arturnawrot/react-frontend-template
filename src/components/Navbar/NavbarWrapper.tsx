@@ -11,3 +11,4 @@ export default async function NavbarWrapper({ darkVariant = false }: NavbarWrapp
   return <Navbar darkVariant={darkVariant} upperLinks={upperLinks} mainLinks={mainLinks} />
 }
 
+

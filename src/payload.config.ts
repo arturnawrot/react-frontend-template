@@ -14,6 +14,7 @@ import { Agents } from './collections/Agents'
 import { BlogCategories } from './collections/BlogCategories'
 import { Blogs } from './collections/Blogs'
 import { Navbar } from './globals/Navbar'
+import { Footer } from './globals/Footer'
 import { FeaturedPropertiesSets } from './globals/FeaturedPropertiesSets'
 import { FeaturedArticles } from './globals/FeaturedArticles'
 
@@ -31,7 +32,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, CSSStyles, Agents, BlogCategories, Blogs],
-  globals: [Navbar, FeaturedPropertiesSets, FeaturedArticles],
+  globals: [Navbar, Footer, FeaturedPropertiesSets, FeaturedArticles],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

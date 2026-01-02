@@ -15,16 +15,28 @@ interface PropertySearchWrapperProps {
  */
 export default async function PropertySearchWrapper({ block }: PropertySearchWrapperProps) {
   try {
-    // Fetch properties server-side with limit=1000 for map view
-    const response = await buildoutApi.searchProperties({
-      limit: 1000,
-      offset: 0,
+    // Fetch properties and brokers in parallel
+    const [propertiesResponse, brokersResponse] = await Promise.all([
+      buildoutApi.searchProperties({
+        limit: 1000,
+        offset: 0,
+      }),
+      buildoutApi.getAllBrokers(),
+    ])
+
+    // Create a map of broker_id to broker name for quick lookup
+    const brokerMap = new Map<number, string>()
+    brokersResponse.brokers.forEach((broker) => {
+      brokerMap.set(broker.id, `${broker.first_name} ${broker.last_name}`)
     })
 
-    // Transform lightweight properties to PropertyCard format
-    const transformedProperties = response.properties.map((property) =>
-      transformLightweightPropertyToCard(property)
-    )
+    // Transform lightweight properties to PropertyCard format with broker names
+    const transformedProperties = propertiesResponse.properties.map((property) => {
+      const agentName = property.broker_id && brokerMap.has(property.broker_id)
+        ? brokerMap.get(property.broker_id)!
+        : 'Agent'
+      return transformLightweightPropertyToCard(property, agentName)
+    })
 
     // Filter out properties without valid coordinates
     const initialProperties: PropertyCardData[] = transformedProperties.filter(

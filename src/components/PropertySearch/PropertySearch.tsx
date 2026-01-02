@@ -47,25 +47,46 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
       try {
         setLoading(true)
         setError(null)
-        // Use search-properties endpoint with limit=1000 for map view
-        // This is more efficient than getAllProperties which tries to fetch everything
-        const response = await fetch('/api/buildout/search-properties?limit=1000&offset=0')
+        // Fetch properties and brokers in parallel
+        const [propertiesResponse, brokersResponse] = await Promise.all([
+          fetch('/api/buildout/search-properties?limit=1000&offset=0'),
+          fetch('/api/buildout/brokers'),
+        ])
         
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        if (!propertiesResponse.ok) {
+          const errorData = await propertiesResponse.json().catch(() => ({ error: 'Unknown error' }))
           throw new Error(errorData.error || 'Failed to fetch properties')
         }
 
-        const data = await response.json()
+        const propertiesData = await propertiesResponse.json()
         
-        if (!data.success) {
-          throw new Error(data.error || 'Failed to fetch properties')
+        if (!propertiesData.success) {
+          throw new Error(propertiesData.error || 'Failed to fetch properties')
         }
 
-        // Transform lightweight properties to PropertyCard format
-        const transformedProperties = (data.properties || []).map((property: LightweightProperty) =>
-          transformLightweightPropertyToCard(property)
-        )
+        // Get brokers if available
+        let brokerMap = new Map<number, string>()
+        if (brokersResponse.ok) {
+          try {
+            const brokersData = await brokersResponse.json()
+            if (brokersData.success && brokersData.brokers) {
+              brokersData.brokers.forEach((broker: { id: number; first_name: string; last_name: string }) => {
+                brokerMap.set(broker.id, `${broker.first_name} ${broker.last_name}`)
+              })
+            }
+          } catch (e) {
+            // If brokers fetch fails, continue without broker names
+            console.warn('Failed to fetch brokers:', e)
+          }
+        }
+
+        // Transform lightweight properties to PropertyCard format with broker names
+        const transformedProperties = (propertiesData.properties || []).map((property: LightweightProperty) => {
+          const agentName = property.broker_id && brokerMap.has(property.broker_id)
+            ? brokerMap.get(property.broker_id)!
+            : 'Agent'
+          return transformLightweightPropertyToCard(property, agentName)
+        })
 
         // Filter out properties without valid coordinates
         const validProperties = transformedProperties.filter(
@@ -178,8 +199,8 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
               </div>
             </div>
 
-            {/* Cards Stack - Scrollable container */}
-            <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
+            {/* Cards Stack - Fixed height container, no scrolling */}
+            <div className="flex flex-col gap-2 flex-1 min-h-0 overflow-hidden">
               {loading ? (
                 <p className="text-stone-600">Loading properties...</p>
               ) : error ? (

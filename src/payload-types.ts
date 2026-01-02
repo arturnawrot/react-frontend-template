@@ -99,11 +99,13 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     navbar: Navbar;
+    footer: Footer;
     featuredPropertiesSets: FeaturedPropertiesSet;
     featuredArticles: FeaturedArticle;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
     featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
     featuredArticles: FeaturedArticlesSelect<false> | FeaturedArticlesSelect<true>;
   };
@@ -2879,6 +2881,85 @@ export interface Navbar {
   createdAt?: string | null;
 }
 /**
+ * Configure the footer links, contact information, and social media
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: string;
+  /**
+   * Link columns shown in the footer (e.g., Buy/Lease/Sell, Our Agents, etc.)
+   */
+  navigationColumns?:
+    | {
+        links: {
+          label: string;
+          /**
+           * Choose whether to link to an existing page or a custom URL
+           */
+          linkType: 'page' | 'custom';
+          /**
+           * Select a page to link to
+           */
+          page?: (string | null) | Page;
+          /**
+           * Enter a custom URL (e.g., /contact, https://example.com)
+           */
+          customUrl?: string | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Office contact information
+   */
+  offices?:
+    | {
+        /**
+         * Optional label for the office (e.g., "Augusta Office", "Aiken Office")
+         */
+        label?: string | null;
+        /**
+         * Street address (each line will be displayed separately)
+         */
+        address: string;
+        phone?: string | null;
+        fax?: string | null;
+        tollFree?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialMedia?: {
+    /**
+     * Leave empty to hide Facebook icon
+     */
+    facebook?: string | null;
+    /**
+     * Leave empty to hide LinkedIn icon
+     */
+    linkedin?: string | null;
+  };
+  bottomBar?: {
+    /**
+     * Copyright notice displayed in the bottom bar
+     */
+    copyrightText?: string | null;
+    policyLinks?:
+      | {
+          label: string;
+          linkType: 'page' | 'custom';
+          page?: (string | null) | Page;
+          customUrl?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Create and manage sets of featured properties. Each set can contain up to 4 properties and can be assigned to agents.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2947,6 +3028,59 @@ export interface NavbarSelect<T extends boolean = true> {
         page?: T;
         customUrl?: T;
         id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  navigationColumns?:
+    | T
+    | {
+        links?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  offices?:
+    | T
+    | {
+        label?: T;
+        address?: T;
+        phone?: T;
+        fax?: T;
+        tollFree?: T;
+        id?: T;
+      };
+  socialMedia?:
+    | T
+    | {
+        facebook?: T;
+        linkedin?: T;
+      };
+  bottomBar?:
+    | T
+    | {
+        copyrightText?: T;
+        policyLinks?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              id?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;

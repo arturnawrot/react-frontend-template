@@ -65,3 +65,4 @@ export async function getNavbarLinks(): Promise<{
   return { upperLinks, mainLinks }
 }
 
+

@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { getPayload } from 'payload'
 import config from './payload.config'
-import { seedCSSStyles, seedNavbar } from './seed-utils'
+import { seedCSSStyles, seedNavbar, seedFooter } from './seed-utils'
 import { seedHomePage } from './seed/seed-home'
 import { seedBuyPage } from './seed/seed-buy'
 import { seedJordanCollier } from './seed/seed-jordan-collier'
@@ -16,6 +16,9 @@ async function seed() {
 
     // Seed Navbar (idempotent)
     await seedNavbar(payload)
+
+    // Seed Footer (idempotent)
+    await seedFooter(payload)
 
     // Seed all pages
     await seedHomePage(payload)
