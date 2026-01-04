@@ -13,6 +13,8 @@ import { CSSStyles } from './collections/CSSStyles'
 import { Agents } from './collections/Agents'
 import { BlogCategories } from './collections/BlogCategories'
 import { Blogs } from './collections/Blogs'
+import { Jobs } from './collections/Jobs'
+import { JobApplications } from './collections/JobApplications'
 import { Navbar } from './globals/Navbar'
 import { Footer } from './globals/Footer'
 import { FeaturedPropertiesSets } from './globals/FeaturedPropertiesSets'
@@ -31,7 +33,7 @@ export default buildConfig({
       afterNavLinks: ['/components/ClearBuildoutCache'],
     },
   },
-  collections: [Users, Media, Pages, CSSStyles, Agents, BlogCategories, Blogs],
+  collections: [Users, Media, Pages, CSSStyles, Agents, BlogCategories, Blogs, Jobs, JobApplications],
   globals: [Navbar, Footer, FeaturedPropertiesSets, FeaturedArticles],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

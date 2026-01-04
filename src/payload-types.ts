@@ -74,6 +74,8 @@ export interface Config {
     agents: Agent;
     'blog-categories': BlogCategory;
     blogs: Blog;
+    jobs: Job;
+    'job-applications': JobApplication;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +90,8 @@ export interface Config {
     agents: AgentsSelect<false> | AgentsSelect<true>;
     'blog-categories': BlogCategoriesSelect<false> | BlogCategoriesSelect<true>;
     blogs: BlogsSelect<false> | BlogsSelect<true>;
+    jobs: JobsSelect<false> | JobsSelect<true>;
+    'job-applications': JobApplicationsSelect<false> | JobApplicationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -166,6 +170,9 @@ export interface User {
  */
 export interface Media {
   id: string;
+  /**
+   * Alternative text for the image/file
+   */
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -1539,6 +1546,102 @@ export interface Blog {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobs".
+ */
+export interface Job {
+  id: string;
+  /**
+   * Job title (e.g., "Investment Analyst")
+   */
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Department name (e.g., "Investments / Capital Markets")
+   */
+  department: string;
+  /**
+   * Job location (e.g., "Augusta, GA (3519 Wheeler Road)")
+   */
+  location: string;
+  /**
+   * Employment type
+   */
+  employmentType: 'full-time' | 'part-time' | 'contract' | 'temporary';
+  /**
+   * Who this position reports to (e.g., "Director of Capital Markets")
+   */
+  reportsTo?: string | null;
+  /**
+   * Full job description content
+   */
+  jobDescription: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Optional external URL for the "Apply Now" button. If empty, an internal application form will be shown.
+   */
+  applyUrl?: string | null;
+  /**
+   * Additional custom fields to display in job details
+   */
+  customFields?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "job-applications".
+ */
+export interface JobApplication {
+  id: string;
+  /**
+   * The job this application is for
+   */
+  job: string | Job;
+  firstName: string;
+  lastName: string;
+  /**
+   * Auto-generated from first and last name
+   */
+  fullName?: string | null;
+  email: string;
+  phone: string;
+  address: string;
+  /**
+   * Resume in PDF format
+   */
+  resume: string | Media;
+  /**
+   * Additional information from the applicant
+   */
+  additionalInfo?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1588,6 +1691,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'blogs';
         value: string | Blog;
+      } | null)
+    | ({
+        relationTo: 'jobs';
+        value: string | Job;
+      } | null)
+    | ({
+        relationTo: 'job-applications';
+        value: string | JobApplication;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -2784,6 +2895,47 @@ export interface BlogsSelect<T extends boolean = true> {
   categories?: T;
   content?: T;
   relatedArticles?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobs_select".
+ */
+export interface JobsSelect<T extends boolean = true> {
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  department?: T;
+  location?: T;
+  employmentType?: T;
+  reportsTo?: T;
+  jobDescription?: T;
+  applyUrl?: T;
+  customFields?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "job-applications_select".
+ */
+export interface JobApplicationsSelect<T extends boolean = true> {
+  job?: T;
+  firstName?: T;
+  lastName?: T;
+  fullName?: T;
+  email?: T;
+  phone?: T;
+  address?: T;
+  resume?: T;
+  additionalInfo?: T;
   updatedAt?: T;
   createdAt?: T;
 }
