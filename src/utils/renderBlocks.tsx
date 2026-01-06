@@ -236,7 +236,85 @@ export async function renderBlock(
     return <PropertySearchWrapper key={index} block={block} />
   }
   if (block.blockType === 'agentCarousel') {
-    return <AgentCarousel key={index} block={block} />
+    // Fetch agents from the selected set if specified
+    let agents: Array<{
+      name: string
+      role: string
+      location: string
+      image?: any
+    }> = []
+
+    const setName = (block as any).featuredAgentSetName
+    console.log('[renderBlocks] AgentCarousel block:', {
+      setName,
+      hasPayload: !!payload,
+      blockType: block.blockType,
+    })
+
+    if (setName && payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'featuredAgentsSets',
+          depth: 2, // Populate agent relationships
+        })
+
+        // Handle JSON field - it might be a string that needs parsing, or already an array
+        let sets: Array<{ name: string; agentIds: string[] }> = []
+        
+        if (global?.sets) {
+          if (typeof global.sets === 'string') {
+            // If it's a string, parse it
+            try {
+              sets = JSON.parse(global.sets)
+            } catch (e) {
+              console.error('[renderBlocks] Failed to parse sets JSON string:', e)
+            }
+          } else if (Array.isArray(global.sets)) {
+            // If it's already an array, use it directly
+            sets = global.sets as Array<{ name: string; agentIds: string[] }>
+          }
+        }
+        
+        const set = sets.find((s) => s.name === setName)
+        
+        if (set?.agentIds && Array.isArray(set.agentIds)) {
+          // Fetch agents by IDs
+          const agentResults = await Promise.all(
+            set.agentIds.map((agentId) =>
+              payload.findByID({
+                collection: 'agents',
+                id: agentId,
+                depth: 2, // Populate relationships and images
+              }).catch(() => null)
+            )
+          )
+
+          agents = agentResults
+            .filter((agent): agent is any => agent !== null)
+            .map((agent: any) => {
+              // Extract roles, specialties, and locations
+              const roles = (agent.roles || [])
+                .map((r: any) => (typeof r === 'object' && r !== null && 'name' in r ? r.name : null))
+                .filter((name: any): name is string => Boolean(name))
+              
+              const servingLocations = (agent.servingLocations || [])
+                .map((l: any) => (typeof l === 'object' && l !== null && 'name' in l ? l.name : null))
+                .filter((name: any): name is string => Boolean(name))
+
+              return {
+                name: agent.fullName || `${agent.firstName} ${agent.lastName}`,
+                role: roles.length > 0 ? roles.join(' & ') : 'Agent & Broker',
+                location: servingLocations.length > 0 ? servingLocations.join(', ') : '',
+                image: agent.cardImage || agent.backgroundImage,
+              }
+            })
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching featured agents from set:', error)
+      }
+    }
+
+    return <AgentCarousel key={index} block={{ ...block, agents } as any} />
   }
   if (block.blockType === 'ctaFooter') {
     return <CTAFooter key={index} block={block} />

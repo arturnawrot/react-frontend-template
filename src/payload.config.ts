@@ -11,6 +11,9 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { CSSStyles } from './collections/CSSStyles'
 import { Agents } from './collections/Agents'
+import { Roles } from './collections/Roles'
+import { Specialties } from './collections/Specialties'
+import { ServingLocations } from './collections/ServingLocations'
 import { BlogCategories } from './collections/BlogCategories'
 import { Blogs } from './collections/Blogs'
 import { Jobs } from './collections/Jobs'
@@ -18,6 +21,7 @@ import { JobApplications } from './collections/JobApplications'
 import { Navbar } from './globals/Navbar'
 import { Footer } from './globals/Footer'
 import { FeaturedPropertiesSets } from './globals/FeaturedPropertiesSets'
+import { FeaturedAgentsSets } from './globals/FeaturedAgentsSets'
 import { FeaturedArticles } from './globals/FeaturedArticles'
 
 const filename = fileURLToPath(import.meta.url)
@@ -33,8 +37,8 @@ export default buildConfig({
       afterNavLinks: ['/components/ClearBuildoutCache'],
     },
   },
-  collections: [Users, Media, Pages, CSSStyles, Agents, BlogCategories, Blogs, Jobs, JobApplications],
-  globals: [Navbar, Footer, FeaturedPropertiesSets, FeaturedArticles],
+  collections: [Users, Media, Pages, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
+  globals: [Navbar, Footer, FeaturedPropertiesSets, FeaturedAgentsSets, FeaturedArticles],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

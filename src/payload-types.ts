@@ -72,6 +72,9 @@ export interface Config {
     pages: Page;
     'css-styles': CssStyle;
     agents: Agent;
+    roles: Role;
+    specialties: Specialty;
+    'serving-locations': ServingLocation;
     'blog-categories': BlogCategory;
     blogs: Blog;
     jobs: Job;
@@ -88,6 +91,9 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     'css-styles': CssStylesSelect<false> | CssStylesSelect<true>;
     agents: AgentsSelect<false> | AgentsSelect<true>;
+    roles: RolesSelect<false> | RolesSelect<true>;
+    specialties: SpecialtiesSelect<false> | SpecialtiesSelect<true>;
+    'serving-locations': ServingLocationsSelect<false> | ServingLocationsSelect<true>;
     'blog-categories': BlogCategoriesSelect<false> | BlogCategoriesSelect<true>;
     blogs: BlogsSelect<false> | BlogsSelect<true>;
     jobs: JobsSelect<false> | JobsSelect<true>;
@@ -105,12 +111,14 @@ export interface Config {
     navbar: Navbar;
     footer: Footer;
     featuredPropertiesSets: FeaturedPropertiesSet;
+    featuredAgentsSets: FeaturedAgentsSet;
     featuredArticles: FeaturedArticle;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
+    featuredAgentsSets: FeaturedAgentsSetsSelect<false> | FeaturedAgentsSetsSelect<true>;
     featuredArticles: FeaturedArticlesSelect<false> | FeaturedArticlesSelect<true>;
   };
   locale: null;
@@ -463,15 +471,10 @@ export interface Page {
                   description?: string | null;
                   linkText?: string | null;
                   linkHref?: string | null;
-                  agents?:
-                    | {
-                        name: string;
-                        role?: string | null;
-                        location?: string | null;
-                        image?: (string | null) | Media;
-                        id?: string | null;
-                      }[]
-                    | null;
+                  /**
+                   * Select a featured agents set from the global sets. Defaults to "default" set.
+                   */
+                  featuredAgentSetName: string;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'agentCarousel';
@@ -690,15 +693,10 @@ export interface Page {
                             description?: string | null;
                             linkText?: string | null;
                             linkHref?: string | null;
-                            agents?:
-                              | {
-                                  name: string;
-                                  role?: string | null;
-                                  location?: string | null;
-                                  image?: (string | null) | Media;
-                                  id?: string | null;
-                                }[]
-                              | null;
+                            /**
+                             * Select a featured agents set from the global sets. Defaults to "default" set.
+                             */
+                            featuredAgentSetName: string;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'agentCarousel';
@@ -917,15 +915,10 @@ export interface Page {
                                       description?: string | null;
                                       linkText?: string | null;
                                       linkHref?: string | null;
-                                      agents?:
-                                        | {
-                                            name: string;
-                                            role?: string | null;
-                                            location?: string | null;
-                                            image?: (string | null) | Media;
-                                            id?: string | null;
-                                          }[]
-                                        | null;
+                                      /**
+                                       * Select a featured agents set from the global sets. Defaults to "default" set.
+                                       */
+                                      featuredAgentSetName: string;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'agentCarousel';
@@ -1144,15 +1137,10 @@ export interface Page {
                                                 description?: string | null;
                                                 linkText?: string | null;
                                                 linkHref?: string | null;
-                                                agents?:
-                                                  | {
-                                                      name: string;
-                                                      role?: string | null;
-                                                      location?: string | null;
-                                                      image?: (string | null) | Media;
-                                                      id?: string | null;
-                                                    }[]
-                                                  | null;
+                                                /**
+                                                 * Select a featured agents set from the global sets. Defaults to "default" set.
+                                                 */
+                                                featuredAgentSetName: string;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'agentCarousel';
@@ -1314,15 +1302,10 @@ export interface Page {
         description?: string | null;
         linkText?: string | null;
         linkHref?: string | null;
-        agents?:
-          | {
-              name: string;
-              role?: string | null;
-              location?: string | null;
-              image?: (string | null) | Media;
-              id?: string | null;
-            }[]
-          | null;
+        /**
+         * Select a featured agents set from the global sets. Defaults to "default" set.
+         */
+        featuredAgentSetName: string;
         id?: string | null;
         blockName?: string | null;
         blockType: 'agentCarousel';
@@ -1414,32 +1397,17 @@ export interface Agent {
    */
   cardImage?: (string | null) | Media;
   /**
-   * Agent roles (e.g., "Buyer Rep", "Tenant Rep", "Dispositions")
+   * Agent roles (reusable and filterable)
    */
-  roles?:
-    | {
-        role: string;
-        id?: string | null;
-      }[]
-    | null;
+  roles?: (string | Role)[] | null;
   /**
-   * Agent specialties (e.g., "Land", "Retail", "STNL", "Industrial", "Office")
+   * Agent specialties (reusable and filterable)
    */
-  specialties?:
-    | {
-        specialty: string;
-        id?: string | null;
-      }[]
-    | null;
+  specialties?: (string | Specialty)[] | null;
   /**
-   * Locations the agent serves (e.g., "Augusta", "Savannah", "Statesboro")
+   * Locations the agent serves (reusable and filterable)
    */
-  servingLocations?:
-    | {
-        location: string;
-        id?: string | null;
-      }[]
-    | null;
+  servingLocations?: (string | ServingLocation)[] | null;
   /**
    * About section content for the agent
    */
@@ -1488,6 +1456,60 @@ export interface Agent {
    * Auto-generated full name
    */
   fullName?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles".
+ */
+export interface Role {
+  id: string;
+  /**
+   * Role name (e.g., "Buyer Rep", "Tenant Rep", "Dispositions", "Agent & Broker")
+   */
+  name: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "specialties".
+ */
+export interface Specialty {
+  id: string;
+  /**
+   * Specialty name (e.g., "Land", "Retail", "STNL", "Industrial", "Office")
+   */
+  name: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "serving-locations".
+ */
+export interface ServingLocation {
+  id: string;
+  /**
+   * Location name (e.g., "Augusta", "Savannah", "Statesboro")
+   */
+  name: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -1683,6 +1705,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'agents';
         value: string | Agent;
+      } | null)
+    | ({
+        relationTo: 'roles';
+        value: string | Role;
+      } | null)
+    | ({
+        relationTo: 'specialties';
+        value: string | Specialty;
+      } | null)
+    | ({
+        relationTo: 'serving-locations';
+        value: string | ServingLocation;
       } | null)
     | ({
         relationTo: 'blog-categories';
@@ -2010,15 +2044,7 @@ export interface PagesSelect<T extends boolean = true> {
                           description?: T;
                           linkText?: T;
                           linkHref?: T;
-                          agents?:
-                            | T
-                            | {
-                                name?: T;
-                                role?: T;
-                                location?: T;
-                                image?: T;
-                                id?: T;
-                              };
+                          featuredAgentSetName?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -2213,15 +2239,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       description?: T;
                                       linkText?: T;
                                       linkHref?: T;
-                                      agents?:
-                                        | T
-                                        | {
-                                            name?: T;
-                                            role?: T;
-                                            location?: T;
-                                            image?: T;
-                                            id?: T;
-                                          };
+                                      featuredAgentSetName?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -2416,15 +2434,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   description?: T;
                                                   linkText?: T;
                                                   linkHref?: T;
-                                                  agents?:
-                                                    | T
-                                                    | {
-                                                        name?: T;
-                                                        role?: T;
-                                                        location?: T;
-                                                        image?: T;
-                                                        id?: T;
-                                                      };
+                                                  featuredAgentSetName?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -2619,15 +2629,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               description?: T;
                                                               linkText?: T;
                                                               linkHref?: T;
-                                                              agents?:
-                                                                | T
-                                                                | {
-                                                                    name?: T;
-                                                                    role?: T;
-                                                                    location?: T;
-                                                                    image?: T;
-                                                                    id?: T;
-                                                                  };
+                                                              featuredAgentSetName?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -2782,15 +2784,7 @@ export interface PagesSelect<T extends boolean = true> {
               description?: T;
               linkText?: T;
               linkHref?: T;
-              agents?:
-                | T
-                | {
-                    name?: T;
-                    role?: T;
-                    location?: T;
-                    image?: T;
-                    id?: T;
-                  };
+              featuredAgentSetName?: T;
               id?: T;
               blockName?: T;
             };
@@ -2842,24 +2836,9 @@ export interface AgentsSelect<T extends boolean = true> {
   slug?: T;
   backgroundImage?: T;
   cardImage?: T;
-  roles?:
-    | T
-    | {
-        role?: T;
-        id?: T;
-      };
-  specialties?:
-    | T
-    | {
-        specialty?: T;
-        id?: T;
-      };
-  servingLocations?:
-    | T
-    | {
-        location?: T;
-        id?: T;
-      };
+  roles?: T;
+  specialties?: T;
+  servingLocations?: T;
   about?: T;
   email?: T;
   phone?: T;
@@ -2868,6 +2847,39 @@ export interface AgentsSelect<T extends boolean = true> {
   featuredPropertySetName?: T;
   featuredPropertyIds?: T;
   fullName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles_select".
+ */
+export interface RolesSelect<T extends boolean = true> {
+  name?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "specialties_select".
+ */
+export interface SpecialtiesSelect<T extends boolean = true> {
+  name?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "serving-locations_select".
+ */
+export interface ServingLocationsSelect<T extends boolean = true> {
+  name?: T;
+  generateSlug?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3135,6 +3147,29 @@ export interface FeaturedPropertiesSet {
   createdAt?: string | null;
 }
 /**
+ * Create and manage sets of featured agents. Each set can contain any number of agents and can be assigned to agent carousel blocks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featuredAgentsSets".
+ */
+export interface FeaturedAgentsSet {
+  id: string;
+  /**
+   * Sets of featured agents. Managed via the agent selector below.
+   */
+  sets?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Create and manage sets of featured articles. Each set can contain multiple blog articles and can be selected in InsightsSection blocks.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3243,6 +3278,16 @@ export interface FooterSelect<T extends boolean = true> {
  * via the `definition` "featuredPropertiesSets_select".
  */
 export interface FeaturedPropertiesSetsSelect<T extends boolean = true> {
+  sets?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featuredAgentsSets_select".
+ */
+export interface FeaturedAgentsSetsSelect<T extends boolean = true> {
   sets?: T;
   updatedAt?: T;
   createdAt?: T;

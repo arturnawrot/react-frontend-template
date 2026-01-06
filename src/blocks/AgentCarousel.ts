@@ -38,36 +38,16 @@ export const AgentCarousel: Block = {
       defaultValue: '#',
     },
     {
-      name: 'agents',
-      type: 'array',
-      label: 'Agents',
-      minRows: 1,
-      fields: [
-        {
-          name: 'name',
-          type: 'text',
-          required: true,
-          label: 'Name',
+      name: 'featuredAgentSetName',
+      type: 'text',
+      required: true,
+      defaultValue: 'default',
+      admin: {
+        description: 'Select a featured agents set from the global sets. Defaults to "default" set.',
+        components: {
+          Field: '/components/FeaturedAgentSetSelector/FeaturedAgentSetSelector',
         },
-        {
-          name: 'role',
-          type: 'text',
-          label: 'Role',
-          defaultValue: 'Agent',
-        },
-        {
-          name: 'location',
-          type: 'text',
-          label: 'Location',
-        },
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          required: false,
-          label: 'Image',
-        },
-      ],
+      },
     },
   ],
 }

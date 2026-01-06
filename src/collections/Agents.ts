@@ -50,47 +50,32 @@ export const Agents: CollectionConfig = {
     },
     {
       name: 'roles',
-      type: 'array',
+      type: 'relationship',
+      relationTo: 'roles',
+      hasMany: true,
       required: false,
-      fields: [
-        {
-          name: 'role',
-          type: 'text',
-          required: true,
-        },
-      ],
       admin: {
-        description: 'Agent roles (e.g., "Buyer Rep", "Tenant Rep", "Dispositions")',
+        description: 'Agent roles (reusable and filterable)',
       },
     },
     {
       name: 'specialties',
-      type: 'array',
+      type: 'relationship',
+      relationTo: 'specialties',
+      hasMany: true,
       required: false,
-      fields: [
-        {
-          name: 'specialty',
-          type: 'text',
-          required: true,
-        },
-      ],
       admin: {
-        description: 'Agent specialties (e.g., "Land", "Retail", "STNL", "Industrial", "Office")',
+        description: 'Agent specialties (reusable and filterable)',
       },
     },
     {
       name: 'servingLocations',
-      type: 'array',
+      type: 'relationship',
+      relationTo: 'serving-locations',
+      hasMany: true,
       required: false,
-      fields: [
-        {
-          name: 'location',
-          type: 'text',
-          required: true,
-        },
-      ],
       admin: {
-        description: 'Locations the agent serves (e.g., "Augusta", "Savannah", "Statesboro")',
+        description: 'Locations the agent serves (reusable and filterable)',
       },
     },
     {

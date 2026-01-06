@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
 import config from '@/payload.config'
-import type { Agent } from '@/payload-types'
+import type { Agent, Role, Specialty, ServingLocation } from '@/payload-types'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import AboutAgent from '@/components/AboutAgent/AboutAgent'
 import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
@@ -34,7 +34,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
         equals: slug,
       },
     },
-    depth: 2, // Populate image relationship
+    depth: 2, // Populate image and relationship fields
     limit: 1,
   })
 
@@ -45,9 +45,41 @@ export default async function AgentPage({ params }: AgentPageProps) {
   }
 
   // Extract arrays from agent data
-  const roles = agent.roles?.map((r) => r.role).filter(Boolean) || []
-  const specialties = agent.specialties?.map((s) => s.specialty).filter(Boolean) || []
-  const servingLocations = agent.servingLocations?.map((l) => l.location).filter(Boolean) || []
+  // Handle roles - now relationships with 'name' field
+  const roles = (agent.roles || [])
+    .map((r) => {
+      // If it's a populated relationship object (Role), use the name
+      if (typeof r === 'object' && r !== null && 'name' in r) {
+        return (r as Role).name
+      }
+      // If it's just an ID string, return null (shouldn't happen with depth: 2)
+      return null
+    })
+    .filter((name): name is string => Boolean(name))
+  
+  // Handle specialties - now relationships with 'name' field
+  const specialties = (agent.specialties || [])
+    .map((s) => {
+      // If it's a populated relationship object (Specialty), use the name
+      if (typeof s === 'object' && s !== null && 'name' in s) {
+        return (s as Specialty).name
+      }
+      // If it's just an ID string, return null (shouldn't happen with depth: 2)
+      return null
+    })
+    .filter((name): name is string => Boolean(name))
+  
+  // Handle servingLocations - now relationships with 'name' field
+  const servingLocations = (agent.servingLocations || [])
+    .map((l) => {
+      // If it's a populated relationship object (ServingLocation), use the name
+      if (typeof l === 'object' && l !== null && 'name' in l) {
+        return (l as ServingLocation).name
+      }
+      // If it's just an ID string, return null (shouldn't happen with depth: 2)
+      return null
+    })
+    .filter((name): name is string => Boolean(name))
 
   // Create Hero block structure for agent variant
   // Use backgroundImage for the hero background
