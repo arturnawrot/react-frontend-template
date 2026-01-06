@@ -42,6 +42,31 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     property.broker_ids?.includes(broker.id)
   )
 
+  // Look up agent slugs for each broker
+  const payload = await getPayload({ config })
+  const brokerIdToAgentSlug: Record<number, string> = {}
+  
+  for (const broker of propertyBrokers) {
+    try {
+      const { docs } = await payload.find({
+        collection: 'agents',
+        where: {
+          buildout_broker_id: {
+            equals: String(broker.id),
+          },
+        },
+        limit: 1,
+      })
+      
+      if (docs.length > 0) {
+        const agent = docs[0] as { slug: string }
+        brokerIdToAgentSlug[broker.id] = agent.slug
+      }
+    } catch (error) {
+      console.error(`Error looking up agent for broker ${broker.id}:`, error)
+    }
+  }
+
   // Get agent name for featured properties
   const primaryBroker = propertyBrokers.length > 0 
     ? `${propertyBrokers[0].first_name} ${propertyBrokers[0].last_name}`
@@ -58,7 +83,11 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
         <div className="bg-transparent md:bg-[var(--strong-green)]">
             <NavbarWrapper darkVariant={true} />
         </div>
-        <PropertyDetails property={property} brokers={propertyBrokers} />
+        <PropertyDetails 
+          property={property} 
+          brokers={propertyBrokers}
+          brokerIdToAgentSlug={brokerIdToAgentSlug}
+        />
         {/* <div className="bg-[#D7D1C4]">
             <FeaturedProperties properties={featuredProperties} />
         </div> */}

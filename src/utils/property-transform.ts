@@ -1,4 +1,5 @@
 import type { BuildoutProperty, LightweightProperty } from './buildout-api'
+import { getPropertyTypeLabel } from './property-types'
 
 export interface PropertyCardData {
   id: number
@@ -44,7 +45,7 @@ export function transformPropertyToCard(
     : ''
   
   // Get property type
-  const type = property.property_type_label_override || property.property_type_id?.toString() || 'Property'
+  const type = property.property_type_label_override || getPropertyTypeLabel(property.property_type_id)
   
   // Get image
   const image = property.photos && property.photos.length > 0
@@ -112,7 +113,7 @@ export function transformLightweightPropertyToCard(
     : ''
   
   // Get property type
-  const type = property.property_type_id?.toString() || 'Property'
+  const type = getPropertyTypeLabel(property.property_type_id)
   
   // Get image from lightweight property (only first photo URL)
   const image = property.photos && property.photos.length > 0

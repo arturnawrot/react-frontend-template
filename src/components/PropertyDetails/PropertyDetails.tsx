@@ -12,12 +12,26 @@ import {
   Maximize2,
 } from 'lucide-react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import Arrow from '../Arrow/Arrow'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
+import { transformPropertyToCard } from '@/utils/property-transform'
+import { getPropertyTypeLabel } from '@/utils/property-types'
+
+// Dynamically import PropertyMap with SSR disabled
+const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center">
+      <p className="text-stone-600">Loading map...</p>
+    </div>
+  ),
+})
 
 interface PropertyDetailsProps {
   property: BuildoutProperty
   brokers?: BuildoutBroker[]
+  brokerIdToAgentSlug?: Record<number, string>
 }
 
 // Simple AgentCard component for PropertyDetails
@@ -28,7 +42,8 @@ const AgentCard = ({
   image, 
   email,
   phone,
-  linkedin
+  linkedin,
+  agentSlug
 }: {
   name: string
   role: string
@@ -37,6 +52,7 @@ const AgentCard = ({
   email?: string
   phone?: string
   linkedin?: string
+  agentSlug?: string
 }) => {
   return (
     <div className="flex gap-4 mb-6">
@@ -49,10 +65,20 @@ const AgentCard = ({
         <p className="text-xs text-gray-800 font-medium">{role}</p>
         
         <div className="flex items-center justify-between w-full mt-1">
-          <a href="#" className="text-xs text-gray-600 hover:text-black flex items-center gap-1 font-medium group">
-            View Agent Profile 
-            <Arrow direction="right" size="w-3 h-3" className="transition-transform group-hover:translate-x-1" />
-          </a>
+          {agentSlug ? (
+            <Link 
+              href={`/agents/${agentSlug}`}
+              className="text-xs text-gray-600 hover:text-black flex items-center gap-1 font-medium group"
+            >
+              View Agent Profile 
+              <Arrow direction="right" size="w-3 h-3" className="transition-transform group-hover:translate-x-1" />
+            </Link>
+          ) : (
+            <span className="text-xs text-gray-400 flex items-center gap-1 font-medium">
+              View Agent Profile 
+              <Arrow direction="right" size="w-3 h-3" />
+            </span>
+          )}
           {license && <span className="text-[10px] text-gray-500 uppercase tracking-wide ml-4">{license}</span>}
         </div>
 
@@ -78,7 +104,7 @@ const AgentCard = ({
   )
 }
 
-const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [] }) => {
+const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [], brokerIdToAgentSlug = {} }) => {
   const limeGreen = "bg-[#dce676]"
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isSaved, setIsSaved] = useState(false)
@@ -120,7 +146,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
     : 'N/A'
 
   // Get property type
-  const propertyType = property.property_type_label_override || 'Property'
+  const propertyType = property.property_type_label_override || getPropertyTypeLabel(property.property_type_id)
 
   // Get building class
   const buildingClass = property.building_class || 'N/A'
@@ -549,6 +575,27 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
               </p>
             </div>
           )}
+
+          {/* Map Section */}
+          {property.latitude && property.longitude && (
+            <div className="mb-10">
+              <h2 className="font-serif text-3xl text-gray-800 mb-4">Location</h2>
+              <div className="w-full h-[400px] rounded-sm overflow-hidden">
+                <PropertyMap
+                  properties={[
+                    transformPropertyToCard(
+                      property,
+                      propertyBrokers.length > 0
+                        ? `${propertyBrokers[0].first_name} ${propertyBrokers[0].last_name}`
+                        : 'Agent'
+                    ),
+                  ]}
+                  center={[property.latitude, property.longitude]}
+                  zoom={15}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* RIGHT COLUMN (Sidebar) */}
@@ -569,20 +616,24 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
           {/* Agent Cards */}
           {propertyBrokers.length > 0 && (
             <div className="mb-10">
-              {propertyBrokers.map((broker) => (
-                <AgentCard 
-                  key={broker.id}
-                  name={`${broker.first_name} ${broker.last_name}`}
-                  role={broker.job_title || 'Agent & Broker'}
-                  license={broker.licenses && broker.licenses.length > 0 
-                    ? `${broker.licenses[0].state} #${broker.licenses[0].number}`
-                    : undefined}
-                  image={broker.profile_photo_url || undefined}
-                  email={broker.email}
-                  phone={broker.phone_number || broker.cell_phone}
-                  linkedin={broker.linked_in_url || undefined}
-                />
-              ))}
+              {propertyBrokers.map((broker) => {
+                const agentSlug = brokerIdToAgentSlug[broker.id]
+                return (
+                  <AgentCard 
+                    key={broker.id}
+                    name={`${broker.first_name} ${broker.last_name}`}
+                    role={broker.job_title || 'Agent & Broker'}
+                    license={broker.licenses && broker.licenses.length > 0 
+                      ? `${broker.licenses[0].state} #${broker.licenses[0].number}`
+                      : undefined}
+                    image={broker.profile_photo_url || undefined}
+                    email={broker.email}
+                    phone={broker.phone_number || broker.cell_phone}
+                    linkedin={broker.linked_in_url || undefined}
+                    agentSlug={agentSlug}
+                  />
+                )
+              })}
             </div>
           )}
 
@@ -630,7 +681,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
           </div>
 
           {/* Social Share */}
-          <div className="flex items-center gap-6 mt-8">
+          <div className="flex items-center justify-between mt-8">
             <span className="text-sm font-medium text-gray-900">Share</span>
             <div className="flex gap-4 text-gray-800">
               <Linkedin className="w-6 h-6 cursor-pointer hover:text-black" />

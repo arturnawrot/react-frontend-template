@@ -1,4 +1,5 @@
 import type { BuildoutProperty } from '@/utils/buildout-api'
+import { getPropertyTypeLabel } from '@/utils/property-types'
 
 export interface TransformedProperty {
   id: number
@@ -42,7 +43,7 @@ export function transformBuildoutProperty(
     : ''
   
   // Get property type
-  const type = property.property_type_label_override || property.property_type_id?.toString() || 'Property'
+  const type = property.property_type_label_override || getPropertyTypeLabel(property.property_type_id)
   
   // Get image
   const image = property.photos && property.photos.length > 0

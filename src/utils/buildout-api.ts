@@ -19,6 +19,12 @@ if (!BUILDOUT_API_KEY) {
 // Types & Interfaces
 // ----------------------------------------------------------------------
 
+// Import PropertyType for use in this file
+import { PropertyType, getPropertyTypeLabel } from './property-types'
+
+// Re-export PropertyType and helper from client-safe module
+export { PropertyType, getPropertyTypeLabel }
+
 export interface BuildoutResponse<T> {
   message: string
   [key: string]: any
@@ -238,7 +244,7 @@ export interface BuildoutProperty {
   principal_reduction_yr_1: number | null
   property_comps: BuildoutPropertyComps
   property_subtype_id: number
-  property_type_id: number
+  property_type_id: PropertyType
   property_type_label_override: string
   property_use_id: number | null
   proposal: boolean
@@ -319,7 +325,7 @@ export interface LightweightProperty {
   name?: string
   sale_listing_web_title?: string
   lease_listing_web_title?: string
-  property_type_id?: number
+  property_type_id?: PropertyType
   sale?: boolean
   sale_listing_published?: boolean
   lease?: boolean
@@ -371,7 +377,7 @@ export interface LightweightPropertiesResponse {
 export interface PropertyFilters {
   propertyIds?: number[]
   brokerId?: number
-  propertyType?: number
+  propertyType?: PropertyType
   minPrice?: number
   maxPrice?: number
   saleOrLease?: 'sale' | 'lease' | string
