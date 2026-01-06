@@ -246,6 +246,30 @@ export default async function AgentPage({ params }: AgentPageProps) {
     }
   }
 
+  // Get agent photo from Buildout if available
+  let agentPhoto: string | null = null
+  if (agent.buildout_broker_id) {
+    try {
+      const brokerId = parseInt(agent.buildout_broker_id, 10)
+      if (!isNaN(brokerId)) {
+        const brokersResponse = await buildoutApi.getAllBrokers({ skipCache: false })
+        const broker = brokersResponse.brokers.find(b => b.id === brokerId)
+        agentPhoto = broker?.profile_photo_url || null
+      }
+    } catch (error) {
+      console.error('Error fetching broker photo:', error)
+    }
+  }
+
+  // Transform featured properties with agent name and photo
+  const transformedFeaturedProperties = featuredProperties.map((prop) =>
+    transformBuildoutProperty(
+      prop, 
+      agent.fullName || `${agent.firstName} ${agent.lastName}`,
+      agentPhoto
+    )
+  )
+
   return (
     <>
       <HeroWrapper block={heroBlock} />
@@ -262,9 +286,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
       />
       <div className="tan-linear-background">
         <FeaturedProperties
-          properties={featuredProperties.map((prop) =>
-            transformBuildoutProperty(prop, agent.fullName || `${agent.firstName} ${agent.lastName}`)
-          )}
+          properties={transformedFeaturedProperties}
         />
         <TrackRecord />
       </div>

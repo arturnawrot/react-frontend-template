@@ -9,6 +9,7 @@ export interface TransformedProperty {
   sqft: string
   type: string
   agent: string
+  agentImage?: string | null
   image: string
   badges?: Array<{ text: string; color: string }>
 }
@@ -18,7 +19,8 @@ export interface TransformedProperty {
  */
 export function transformBuildoutProperty(
   property: BuildoutProperty,
-  agentName: string
+  agentName: string,
+  agentImage?: string | null
 ): TransformedProperty {
   // Format address
   const address = property.address || property.name || 'Property'
@@ -73,6 +75,7 @@ export function transformBuildoutProperty(
     sqft,
     type,
     agent: agentName,
+    agentImage,
     image,
     badges: badges.length > 0 ? badges : undefined,
   }

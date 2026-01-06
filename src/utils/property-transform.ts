@@ -9,6 +9,7 @@ export interface PropertyCardData {
   sqft: string
   type: string
   agent: string
+  agentImage?: string | null
   image: string
   badges?: Array<{ text: string; color: string }>
   latitude: number
@@ -20,7 +21,8 @@ export interface PropertyCardData {
  */
 export function transformPropertyToCard(
   property: BuildoutProperty,
-  agentName: string = 'Agent'
+  agentName: string = 'Agent',
+  agentImage?: string | null
 ): PropertyCardData {
   // Format address
   const address = property.address || property.name || 'Property'
@@ -75,6 +77,7 @@ export function transformPropertyToCard(
     sqft,
     type,
     agent: agentName,
+    agentImage,
     image,
     badges: badges.length > 0 ? badges : undefined,
     latitude: property.latitude,
@@ -88,7 +91,8 @@ export function transformPropertyToCard(
  */
 export function transformLightweightPropertyToCard(
   property: LightweightProperty,
-  agentName: string = 'Agent'
+  agentName: string = 'Agent',
+  agentImage?: string | null
 ): PropertyCardData {
   // Format address
   const address = property.address || property.name || 'Property'
@@ -145,6 +149,7 @@ export function transformLightweightPropertyToCard(
     sqft,
     type,
     agent: agentName,
+    agentImage,
     image,
     badges: badges.length > 0 ? badges : undefined,
     latitude: property.latitude,

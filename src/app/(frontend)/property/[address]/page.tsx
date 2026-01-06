@@ -67,16 +67,19 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     }
   }
 
-  // Get agent name for featured properties
+  // Get agent name and photo for featured properties
   const primaryBroker = propertyBrokers.length > 0 
     ? `${propertyBrokers[0].first_name} ${propertyBrokers[0].last_name}`
     : 'Agent'
+  const primaryBrokerPhoto = propertyBrokers.length > 0 
+    ? propertyBrokers[0].profile_photo_url 
+    : null
 
   // Get featured properties (exclude current property)
   const featuredProperties = allProperties.properties
     .filter((p: BuildoutProperty) => p.id !== property.id)
     .slice(0, 4)
-    .map((p: BuildoutProperty) => transformBuildoutProperty(p, primaryBroker))
+    .map((p: BuildoutProperty) => transformBuildoutProperty(p, primaryBroker, primaryBrokerPhoto))
 
   return (
     <>

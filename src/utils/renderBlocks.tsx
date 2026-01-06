@@ -142,10 +142,32 @@ export async function renderBlock(
 
             console.log('[renderBlocks] Featured properties found:', featuredProperties.length)
 
-            // Transform properties
-            properties = featuredProperties.map((prop) =>
-              transformBuildoutProperty(prop, 'Featured Properties')
-            )
+            // Fetch brokers to get agent names and photos
+            let brokers: Array<{ id: number; first_name: string; last_name: string; profile_photo_url: string | null }> = []
+            try {
+              const brokersResponse = await buildoutApi.getAllBrokers({ skipCache: false })
+              brokers = brokersResponse.brokers.map(b => ({
+                id: b.id,
+                first_name: b.first_name,
+                last_name: b.last_name,
+                profile_photo_url: b.profile_photo_url,
+              }))
+            } catch (error) {
+              console.error('[renderBlocks] Error fetching brokers:', error)
+            }
+
+            // Transform properties with actual agent names and photos
+            properties = featuredProperties.map((prop) => {
+              // Get the first broker for this property
+              const brokerId = prop.broker_id || (prop.broker_ids && prop.broker_ids[0])
+              const broker = brokerId ? brokers.find(b => b.id === brokerId) : null
+              const agentName = broker 
+                ? `${broker.first_name} ${broker.last_name}`.trim()
+                : 'Agent'
+              const agentImage = broker?.profile_photo_url || null
+              
+              return transformBuildoutProperty(prop, agentName, agentImage)
+            })
 
             console.log('[renderBlocks] Properties transformed:', properties.length)
           } else {
