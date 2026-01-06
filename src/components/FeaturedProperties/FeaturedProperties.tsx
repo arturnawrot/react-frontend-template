@@ -13,12 +13,14 @@ interface FeaturedPropertiesProps {
   properties?: TransformedProperty[]
   heading?: string
   seeAllLink?: string
+  seeAllLinkText?: string
 }
 
-export default function FeaturedProperties({ block, properties, heading, seeAllLink }: FeaturedPropertiesProps) {
+export default function FeaturedProperties({ block, properties, heading, seeAllLink, seeAllLinkText }: FeaturedPropertiesProps) {
   // If block is provided, use block values; otherwise use direct props
   const displayHeading = heading || block?.heading || 'Featured Properties'
   const displaySeeAllLink = seeAllLink || block?.seeAllLink || '/property-search'
+  const displaySeeAllLinkText = seeAllLinkText || 'See All Listings'
   
   // Use provided properties or fall back to empty array (CMS block would need to provide properties)
   const displayProperties = properties || []
@@ -62,7 +64,7 @@ export default function FeaturedProperties({ block, properties, heading, seeAllL
           href={displaySeeAllLink}
           className="inline-flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:underline"
         >
-          See All Listings <Arrow direction="right" size={16} />
+          {displaySeeAllLinkText} <Arrow direction="right" size={16} />
         </Link>
       </div>
 

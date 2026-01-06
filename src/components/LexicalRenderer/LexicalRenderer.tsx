@@ -33,7 +33,16 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
       const text = node.text || ''
       if (!text) return null
 
-      let formattedText: React.ReactNode = text
+      // Split text by newlines and render with <br> tags
+      const textParts = text.split('\n')
+      let formattedText: React.ReactNode = textParts.length > 1 
+        ? textParts.map((part: string, partIndex: number) => (
+            <React.Fragment key={`text-part-${index}-${partIndex}`}>
+              {part}
+              {partIndex < textParts.length - 1 && <br />}
+            </React.Fragment>
+          ))
+        : text
 
       // Apply formatting (format is a bitmask)
       if (node.format !== undefined && node.format !== null) {
@@ -63,7 +72,7 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
       }
 
       return (
-        <p key={`para-${index}`} className="text-lg leading-relaxed font-sans mb-6">
+        <p key={`para-${index}`} className="text-lg leading-relaxed font-sans mb-6 whitespace-pre-line">
           {children}
         </p>
       )

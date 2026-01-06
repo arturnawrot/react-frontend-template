@@ -261,7 +261,8 @@ export default function PropertySearchAdvanced({
     let transformedProperties = (data.properties || []).map((property: LightweightProperty) => {
       const broker = brokers.find(b => b.id === property.broker_id)
       const agentName = broker ? `${broker.first_name} ${broker.last_name}` : 'Agent'
-      return transformLightweightPropertyToCard(property, agentName)
+      const agentImage = broker?.profile_photo_url || null
+      return transformLightweightPropertyToCard(property, agentName, agentImage)
     })
 
     // Apply client-side text search filter (more reliable than API text search)
@@ -445,7 +446,8 @@ export default function PropertySearchAdvanced({
       const transformedProperties = (data.properties || []).map((property: LightweightProperty) => {
         const broker = brokers.find(b => b.id === property.broker_id)
         const agentName = broker ? `${broker.first_name} ${broker.last_name}` : 'Agent'
-        return transformLightweightPropertyToCard(property, agentName)
+        const agentImage = broker?.profile_photo_url || null
+        return transformLightweightPropertyToCard(property, agentName, agentImage)
       })
 
       // Filter out properties without valid coordinates (this is the only client-side filtering we do)
@@ -684,9 +686,10 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['brokers'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'brokers' ? null : 'brokers')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
+                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[200px]"
                   >
-                    {getFilterLabel('brokerId')} <ChevronDown size={14} className="opacity-70" />
+                    <span className="truncate">{getFilterLabel('brokerId')}</span>
+                    <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
                   </button>
                   {openDropdown === 'brokers' && (
                     <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 max-h-60 overflow-y-auto min-w-[200px]">
@@ -713,9 +716,10 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['propertyType'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'propertyType' ? null : 'propertyType')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
+                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
                   >
-                    {getFilterLabel('propertyType')} <ChevronDown size={14} className="opacity-70" />
+                    <span className="truncate">{getFilterLabel('propertyType')}</span>
+                    <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
                   </button>
                   {openDropdown === 'propertyType' && (
                     <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[150px]">
@@ -742,9 +746,10 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['priceRange'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'priceRange' ? null : 'priceRange')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
+                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
                   >
-                    {getFilterLabel('minPrice')} <ChevronDown size={14} className="opacity-70" />
+                    <span className="truncate">{getFilterLabel('minPrice')}</span>
+                    <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
                   </button>
                   {openDropdown === 'priceRange' && (
                     <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[180px]">
@@ -777,9 +782,10 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['saleOrLease'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'saleOrLease' ? null : 'saleOrLease')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
+                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[150px]"
                   >
-                    {getFilterLabel('saleOrLease')} <ChevronDown size={14} className="opacity-70" />
+                    <span className="truncate">{getFilterLabel('saleOrLease')}</span>
+                    <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
                   </button>
                   {openDropdown === 'saleOrLease' && (
                     <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[150px]">
@@ -809,9 +815,10 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['capRate'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'capRate' ? null : 'capRate')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
+                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[150px]"
                   >
-                    {getFilterLabel('minCapRate')} <ChevronDown size={14} className="opacity-70" />
+                    <span className="truncate">{getFilterLabel('minCapRate')}</span>
+                    <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
                   </button>
                   {openDropdown === 'capRate' && (
                     <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[150px]">
@@ -844,9 +851,10 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['squareFootage'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'squareFootage' ? null : 'squareFootage')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
+                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
                   >
-                    {getFilterLabel('minSquareFootage')} <ChevronDown size={14} className="opacity-70" />
+                    <span className="truncate">{getFilterLabel('minSquareFootage')}</span>
+                    <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
                   </button>
                   {openDropdown === 'squareFootage' && (
                     <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[200px]">

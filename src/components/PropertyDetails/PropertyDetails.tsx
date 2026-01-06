@@ -109,7 +109,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isSaved, setIsSaved] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [imageTransition, setImageTransition] = useState(false)
   const thumbnailContainerRef = useRef<HTMLDivElement>(null)
+  const fullscreenThumbnailContainerRef = useRef<HTMLDivElement>(null)
   const thumbnailRefs = useRef<(HTMLDivElement | null)[]>([])
   
   // Drag to scroll state
@@ -127,7 +129,6 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   // Format address
   const address = property.address || property.name || 'Property'
   const cityStateZip = [property.city, property.state, property.zip].filter(Boolean).join(', ')
-  const fullAddress = cityStateZip ? `${address} | ${cityStateZip}` : address
 
   // Format price
   let price = 'Price on Request'
@@ -170,24 +171,35 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   // Get PDF URL
   const pdfUrl = property.sale_pdf_url || property.lease_pdf_url || ''
 
-  // Navigation handlers
+  // Navigation handlers with smooth transition
   const handlePreviousImage = useCallback(() => {
     if (images.length > 0) {
-      setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
+      setImageTransition(true)
+      setTimeout(() => {
+        setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
+        setTimeout(() => setImageTransition(false), 50)
+      }, 150)
     }
   }, [images.length])
 
   const handleNextImage = useCallback(() => {
     if (images.length > 0) {
-      setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
+      setImageTransition(true)
+      setTimeout(() => {
+        setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
+        setTimeout(() => setImageTransition(false), 50)
+      }, 150)
     }
   }, [images.length])
 
-  // Scroll thumbnail into view when image changes
+  // Scroll thumbnail into view when image changes (works for both regular and fullscreen)
   useEffect(() => {
-    if (thumbnailRefs.current[currentImageIndex] && thumbnailContainerRef.current) {
+    const container = isFullscreen 
+      ? fullscreenThumbnailContainerRef.current 
+      : thumbnailContainerRef.current
+    
+    if (thumbnailRefs.current[currentImageIndex] && container) {
       const thumbnail = thumbnailRefs.current[currentImageIndex]
-      const container = thumbnailContainerRef.current
       
       if (thumbnail) {
         const containerRect = container.getBoundingClientRect()
@@ -207,7 +219,23 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
         }
       }
     }
-  }, [currentImageIndex, images.length])
+  }, [currentImageIndex, images.length, isFullscreen])
+
+  // Prevent page scrolling when fullscreen gallery is open
+  useEffect(() => {
+    if (isFullscreen) {
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden'
+    } else {
+      // Restore body scroll
+      document.body.style.overflow = ''
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isFullscreen])
 
   // Keyboard navigation for fullscreen
   useEffect(() => {
@@ -395,7 +423,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
       <div className="flex flex-col md:flex-row justify-between items-start mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-1">{address}</h1>
-          <p className="text-lg text-gray-900 font-medium">{fullAddress}</p>
+          {cityStateZip && (
+            <p className="text-lg text-gray-900 font-medium">{cityStateZip}</p>
+          )}
         </div>
         <div className="mt-4 md:mt-0 text-right">
           <h2 className="text-3xl font-bold text-gray-900">{price}</h2>
@@ -716,13 +746,17 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
 
           {/* Main Image */}
           <div 
-            className="relative w-full h-full flex items-center justify-center p-8"
+            className="relative w-full h-full flex items-center justify-center px-8 pt-8"
+            style={{ paddingBottom: '140px' }}
             onClick={(e) => e.stopPropagation()}
           >
             <img 
+              key={currentImageIndex}
               src={images[currentImageIndex]} 
               alt={`Property ${currentImageIndex + 1}`} 
-              className="max-w-full max-h-full object-contain"
+              className={`max-w-full max-h-[calc(100vh-140px)] object-contain transition-opacity duration-300 ${
+                imageTransition ? 'opacity-0' : 'opacity-100'
+              }`}
             />
           </div>
 
@@ -754,13 +788,30 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
 
           {/* Thumbnail Strip at Bottom */}
           {images.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 max-w-[90vw] overflow-x-auto pb-2 z-10">
+            <div 
+              ref={fullscreenThumbnailContainerRef}
+              className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 max-w-[90vw] overflow-x-auto px-4 py-2 z-10 scrollbar-gallery"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(255, 255, 255, 0.3) transparent',
+              }}
+            >
               {images.map((img, idx) => (
                 <div
                   key={idx}
+                  ref={(el) => {
+                    thumbnailRefs.current[idx] = el
+                  }}
+                  data-thumbnail-index={idx}
                   onClick={(e) => {
                     e.stopPropagation()
-                    setCurrentImageIndex(idx)
+                    if (idx !== currentImageIndex) {
+                      setImageTransition(true)
+                      setTimeout(() => {
+                        setCurrentImageIndex(idx)
+                        setTimeout(() => setImageTransition(false), 50)
+                      }, 150)
+                    }
                   }}
                   className={`flex-shrink-0 w-20 h-20 bg-gray-200 rounded-sm overflow-hidden cursor-pointer hover:opacity-80 transition-opacity ${
                     currentImageIndex === idx ? 'ring-2 ring-white' : 'opacity-60'

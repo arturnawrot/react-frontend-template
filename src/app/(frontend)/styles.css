@@ -162,3 +162,22 @@ body {
 .leaflet-control-attribution {
   display: none;
 }
+
+/* Custom scrollbar for gallery thumbnail strip */
+.scrollbar-gallery::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollbar-gallery::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.scrollbar-gallery::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+}
+
+.scrollbar-gallery::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}

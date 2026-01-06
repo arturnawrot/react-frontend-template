@@ -270,6 +270,11 @@ export default async function AgentPage({ params }: AgentPageProps) {
     )
   )
 
+  // Build property search URL with broker filter
+  const propertySearchUrl = agent.buildout_broker_id
+    ? `/property-search?brokerId=${agent.buildout_broker_id}`
+    : '/property-search'
+
   return (
     <>
       <HeroWrapper block={heroBlock} />
@@ -287,6 +292,8 @@ export default async function AgentPage({ params }: AgentPageProps) {
       <div className="tan-linear-background">
         <FeaturedProperties
           properties={transformedFeaturedProperties}
+          seeAllLink={propertySearchUrl}
+          seeAllLinkText="See All Listings By This Agent"
         />
         <TrackRecord />
       </div>
