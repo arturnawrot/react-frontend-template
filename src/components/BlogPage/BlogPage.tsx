@@ -3,21 +3,18 @@ import { notFound } from 'next/navigation'
 import config from '@/payload.config'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
+import InvestmentSpotlightSidebar from '@/components/InvestmentSpotlightSidebar/InvestmentSpotlightSidebar'
 import type { Blog, Page } from '@/payload-types'
 import Link from 'next/link'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
-// Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
-export const dynamic = 'force-dynamic'
-
 interface BlogPageProps {
-  params: Promise<{ slug: string }>
+  slug: string
+  defaultType?: 'article' | 'market-report' | 'investment-spotlight'
 }
 
-export default async function BlogPage({ params }: BlogPageProps) {
-  const { slug } = await params
-
+export default async function BlogPage({ slug, defaultType = 'article' }: BlogPageProps) {
   const payload = await getPayload({ config })
 
   // Fetch the blog by slug
@@ -40,26 +37,37 @@ export default async function BlogPage({ params }: BlogPageProps) {
   }
 
   // Get related articles - if manually selected, use those; otherwise use same-category articles
+  // Filter by the same type as the current blog
+  const blogType = blog.type || defaultType
   let relatedArticlesData: Blog[] = []
   
   if (blog.relatedArticles && blog.relatedArticles.length > 0) {
-    // Use manually selected related articles
+    // Use manually selected related articles, but filter by type
     const relatedIds = blog.relatedArticles.map((rel: string | Blog) =>
       typeof rel === 'object' && rel !== null ? rel.id : rel
     )
     const { docs: relatedDocs } = await payload.find({
       collection: 'blogs',
       where: {
-        id: {
-          in: relatedIds,
-        },
+        and: [
+          {
+            id: {
+              in: relatedIds,
+            },
+          },
+          {
+            type: {
+              equals: blogType,
+            },
+          },
+        ],
       },
       depth: 1,
       limit: 10,
     })
     relatedArticlesData = relatedDocs as Blog[]
   } else if (blog.categories && Array.isArray(blog.categories) && blog.categories.length > 0) {
-    // If no manually selected articles, find articles with same categories
+    // If no manually selected articles, find articles with same categories AND same type
     const categoryIds = blog.categories.map((cat: string | { id: string }) =>
       typeof cat === 'object' && cat !== null ? cat.id : cat
     )
@@ -70,6 +78,11 @@ export default async function BlogPage({ params }: BlogPageProps) {
           {
             id: {
               not_equals: blog.id,
+            },
+          },
+          {
+            type: {
+              equals: blogType,
             },
           },
           {
@@ -84,6 +97,36 @@ export default async function BlogPage({ params }: BlogPageProps) {
     })
     relatedArticlesData = relatedDocs as Blog[]
   }
+
+  // Get type-specific label
+  const getRelatedLabel = (type: string) => {
+    switch (type) {
+      case 'market-report':
+        return 'Related Market Reports'
+      case 'investment-spotlight':
+        return 'Related Spotlights'
+      case 'article':
+      default:
+        return 'Related Articles'
+    }
+  }
+
+  const relatedLabel = getRelatedLabel(blogType)
+  
+  // Get browse all link text based on type
+  const getBrowseAllText = (type: string) => {
+    switch (type) {
+      case 'market-report':
+        return 'Browse All Market Reports'
+      case 'investment-spotlight':
+        return 'Browse All Spotlights'
+      case 'article':
+      default:
+        return 'Browse All Insights'
+    }
+  }
+
+  const browseAllText = getBrowseAllText(blogType)
 
   // Create hero block from blog data
   const heroBlock = {
@@ -111,15 +154,20 @@ export default async function BlogPage({ params }: BlogPageProps) {
       {/* Content Section */}
       <div className="container mx-auto px-6 py-16 lg:py-24">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
-          {/* Left Column - Related Articles */}
+          {/* Left Column - Related Articles / Sidebar */}
           <aside className="w-full lg:w-[350px] shrink-0">
+            {/* Investment Spotlight Sidebar */}
+            {blogType === 'investment-spotlight' && (
+              <InvestmentSpotlightSidebar blog={blog} />
+            )}
+
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-serif text-[#1a2e2a]">Related Articles</h2>
+              <h2 className="text-3xl font-serif text-[#1a2e2a]">{relatedLabel}</h2>
               <Link
                 href="/insights"
                 className="text-sm font-sans text-[#1a2e2a] hover:underline"
               >
-                Browse All Insights →
+                {browseAllText} →
               </Link>
             </div>
 
@@ -130,7 +178,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
                   const articleSlug = article.slug || ''
                   return (
                     <div key={article.id} className="border-b border-gray-200 pb-6 last:border-0">
-                      <Link href={`/blog/${articleSlug}`}>
+                      <Link href={`/${articleSlug}`}>
                         <h3 className="text-xl font-serif text-[#1a2e2a] mb-2 hover:underline">
                           {articleTitle}
                         </h3>

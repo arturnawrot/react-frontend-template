@@ -93,7 +93,7 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
                 const image = typeof article.image === 'object' && article.image !== null ? article.image : null
                 const imageUrl = image?.url || ''
                 const tags = article.tags?.map(t => t.tag).filter(Boolean) || []
-                const link = article.slug ? `/blog/${article.slug}` : '#'
+                const link = article.slug ? `/${article.slug}` : '#'
                 
                 return (
                   <ArticleCard 

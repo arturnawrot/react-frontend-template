@@ -1519,11 +1519,14 @@ export interface ServingLocation {
  */
 export interface Blog {
   id: string;
+  /**
+   * The type of blog post determines its URL structure and related content filtering.
+   */
+  type: 'article' | 'market-report' | 'investment-spotlight';
   title: string;
   /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   * URL-friendly slug. Auto-generated from title with type prefix.
    */
-  generateSlug?: boolean | null;
   slug: string;
   /**
    * Short description/subtitle for the blog post (shown in hero)
@@ -1560,9 +1563,33 @@ export interface Blog {
     [k: string]: unknown;
   };
   /**
-   * Manually selected related articles. If empty, articles with the same categories will be shown.
+   * Manually selected related articles. If empty, articles with the same categories and type will be shown.
    */
   relatedArticles?: (string | Blog)[] | null;
+  /**
+   * Property type (e.g., Medical Office)
+   */
+  propertyType?: string | null;
+  /**
+   * Property size (e.g., 18,000 SF (3 Buildings))
+   */
+  size?: string | null;
+  /**
+   * Market location (e.g., Columbia, SC)
+   */
+  market?: string | null;
+  /**
+   * Buyer type (e.g., 1031 Investor (Out of State))
+   */
+  buyerType?: string | null;
+  /**
+   * Close time (e.g., 37 days)
+   */
+  closeTime?: string | null;
+  /**
+   * Status (e.g., Closed Off-Market)
+   */
+  status?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2898,8 +2925,8 @@ export interface BlogCategoriesSelect<T extends boolean = true> {
  * via the `definition` "blogs_select".
  */
 export interface BlogsSelect<T extends boolean = true> {
+  type?: T;
   title?: T;
-  generateSlug?: T;
   slug?: T;
   description?: T;
   featuredImage?: T;
@@ -2907,6 +2934,12 @@ export interface BlogsSelect<T extends boolean = true> {
   categories?: T;
   content?: T;
   relatedArticles?: T;
+  propertyType?: T;
+  size?: T;
+  market?: T;
+  buyerType?: T;
+  closeTime?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

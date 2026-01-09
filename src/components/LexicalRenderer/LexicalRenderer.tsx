@@ -243,7 +243,7 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
               src={imageUrl}
               alt={imageAlt || 'Blog image'}
               fill
-              className="object-contain rounded-lg shadow-md"
+              className="object-contain"
               sizes="(max-width: 768px) 100vw, 80vw"
             />
             {imageAlt && (
