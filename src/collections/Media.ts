@@ -7,7 +7,7 @@ export const Media: CollectionConfig = {
   },
   hooks: {
     beforeChange: [
-      ({ data, operation, req }) => {
+      ({ data, operation, req: _req }) => {
         // Auto-generate alt text from filename if not provided during file upload
         if (operation === 'create' && data && !data.alt) {
           const filename = data.filename || 'Uploaded file'

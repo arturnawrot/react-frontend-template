@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { getPayload } from 'payload'
 import config from './payload.config'
-import { seedCSSStyles, seedNavbar, seedFooter } from './seed-utils'
+import { seedCSSStyles, seedNavbar, seedFooter } from './seed/seed-utils'
 import { seedHomePage } from './seed/seed-home'
 import { seedBuyPage } from './seed/seed-buy'
 import { seedBrokers } from './seed/seed-brokers'

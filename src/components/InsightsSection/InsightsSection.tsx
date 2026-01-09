@@ -1,7 +1,6 @@
 'use client'
 import React, { useRef } from 'react'
 import type { Page } from '@/payload-types'
-import type { Media } from '@/payload-types'
 import ArticleCard from '../ArticleCard/ArticleCard'
 import Arrow from '../Arrow/Arrow'
 
@@ -36,7 +35,7 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
   const linkText = block.linkText || 'Explore More Insights'
   const linkHref = block.linkHref || '#'
   // Use prop articles if provided, otherwise fall back to block articles (for backward compatibility)
-  const articles = propArticles || (block as any).articles || []
+  const articles: Article[] = propArticles || (block as { articles?: Article[] }).articles || []
 
   return (
     <section className="w-full bg-[#dad6cc] py-20 overflow-x-hidden">
@@ -90,7 +89,7 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
               className="flex gap-6 overflow-x-auto h-full pb-8 pr-6 lg:pr-40 scrollbar-hide snap-x"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {articles.map((article, index) => {
+              {articles.map((article: Article, index: number) => {
                 const image = typeof article.image === 'object' && article.image !== null ? article.image : null
                 const imageUrl = image?.url || ''
                 const tags = article.tags?.map(t => t.tag).filter(Boolean) || []

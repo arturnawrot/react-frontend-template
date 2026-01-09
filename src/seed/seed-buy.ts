@@ -2,7 +2,7 @@ import type { Payload } from 'payload'
 import { join } from 'path'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
-import { getStyleId } from '../seed-utils'
+import { getStyleId } from './seed-utils'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname_path = dirname(filename)
@@ -314,7 +314,7 @@ if (isMainModule) {
   import('dotenv/config').then(async () => {
     const { default: config } = await import('../payload.config')
     const { getPayload } = await import('payload')
-    const { seedCSSStyles, seedNavbar } = await import('../seed-utils')
+    const { seedCSSStyles, seedNavbar } = await import('./seed-utils')
     
     const payload = await getPayload({ config })
     

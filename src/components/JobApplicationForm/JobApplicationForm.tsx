@@ -10,7 +10,7 @@ interface JobApplicationFormProps {
 
 export default function JobApplicationForm({
   jobId,
-  jobTitle,
+  jobTitle: _jobTitle,
   onSuccess,
 }: JobApplicationFormProps) {
   const [formData, setFormData] = useState({
@@ -131,7 +131,7 @@ export default function JobApplicationForm({
       <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
         <p className="text-green-800 font-semibold mb-2">Application Submitted!</p>
         <p className="text-green-700 text-sm">
-          Thank you for your interest. We'll review your application and get back to you soon.
+          Thank you for your interest. We&apos;ll review your application and get back to you soon.
         </p>
       </div>
     )

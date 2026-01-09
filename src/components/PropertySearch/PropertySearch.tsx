@@ -4,8 +4,10 @@ import dynamic from 'next/dynamic'
 import { List, Grid, Share2 } from 'lucide-react'
 import type { Page } from '@/payload-types'
 import PropertyCard from '../PropertyCard/PropertyCard'
-import type { LightweightProperty } from '@/utils/buildout-api'
+import type { LightweightProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformLightweightPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
+import { createBrokerMaps, getAgentInfo } from '@/utils/broker-utils'
+import { filterValidCoordinates } from '@/utils/property-utils'
 
 // Dynamically import PropertyMap with SSR disabled to avoid window is not defined error
 const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
@@ -65,14 +67,14 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
         }
 
         // Get brokers if available
-        let brokerMap = new Map<number, string>()
+        let brokerMaps = createBrokerMaps([])
         if (brokersResponse.ok) {
           try {
             const brokersData = await brokersResponse.json()
             if (brokersData.success && brokersData.brokers) {
-              brokersData.brokers.forEach((broker: { id: number; first_name: string; last_name: string }) => {
-                brokerMap.set(broker.id, `${broker.first_name} ${broker.last_name}`)
-              })
+              // Type assertion needed for API response
+              const brokers = brokersData.brokers as BuildoutBroker[]
+              brokerMaps = createBrokerMaps(brokers)
             }
           } catch (e) {
             // If brokers fetch fails, continue without broker names
@@ -80,20 +82,14 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
           }
         }
 
-        // Transform lightweight properties to PropertyCard format with broker names
+        // Transform lightweight properties to PropertyCard format with broker names and images
         const transformedProperties = (propertiesData.properties || []).map((property: LightweightProperty) => {
-          const agentName = property.broker_id && brokerMap.has(property.broker_id)
-            ? brokerMap.get(property.broker_id)!
-            : 'Agent'
-          return transformLightweightPropertyToCard(property, agentName)
+          const { name: agentName, image: agentImage } = getAgentInfo(property.broker_id, brokerMaps)
+          return transformLightweightPropertyToCard(property, agentName, agentImage)
         })
 
         // Filter out properties without valid coordinates
-        const validProperties = transformedProperties.filter(
-          (prop: PropertyCardData) => 
-            prop.latitude && prop.longitude && 
-            !isNaN(prop.latitude) && !isNaN(prop.longitude)
-        )
+        const validProperties = filterValidCoordinates(transformedProperties)
 
         setAllProperties(validProperties)
       } catch (err) {
@@ -109,7 +105,14 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
   }, [initialProperties])
 
   // Handle map bounds change - filter properties and show 4
-  const handleBoundsChange = React.useCallback((bounds: any, visible: PropertyCardData[]) => {
+  interface LeafletBounds {
+    north: number
+    south: number
+    east: number
+    west: number
+  }
+
+  const handleBoundsChange = React.useCallback((bounds: LeafletBounds, visible: PropertyCardData[]) => {
     // Show up to 4 properties from the visible area
     const limited = visible.slice(0, 4)
     

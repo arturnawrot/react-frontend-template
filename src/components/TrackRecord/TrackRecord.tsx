@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useRef } from 'react'
+import Image from 'next/image'
 import Arrow from '../Arrow/Arrow'
 
 // --- Sub-Component: PropertyCard ---
@@ -16,10 +17,12 @@ const PropertyCard = ({ image, title, details, agent }: {
     <div className="relative w-[300px] md:w-[420px] h-[450px] md:h-[540px] shrink-0 snap-start group cursor-pointer overflow-hidden rounded-[2rem]">
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full">
-        <img
+        <Image
           src={image}
           alt={title}
-          className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+          fill
+          className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+          sizes="(max-width: 768px) 300px, 420px"
         />
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500" />
       </div>
@@ -50,11 +53,15 @@ const PropertyCard = ({ image, title, details, agent }: {
 
             {agent && (
               <div className="inline-flex items-center gap-3 bg-gray-100/80 rounded-full py-1.5 pl-1.5 pr-4 border border-gray-100">
-                <img
-                  src={agent.image}
-                  alt={agent.name}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
+                <div className="w-8 h-8 rounded-full relative overflow-hidden">
+                  <Image
+                    src={agent.image}
+                    alt={agent.name}
+                    fill
+                    className="object-cover"
+                    sizes="32px"
+                  />
+                </div>
                 <span className="text-[11px] font-bold uppercase tracking-wider text-gray-800">
                   {agent.name}
                 </span>

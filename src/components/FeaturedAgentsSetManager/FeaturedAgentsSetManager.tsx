@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useField } from '@payloadcms/ui'
 import type { UIFieldClientComponent } from 'payload'
 
@@ -225,7 +226,7 @@ const FeaturedAgentsSetManager: UIFieldClientComponent = () => {
       {currentSetIndex !== null && sets[currentSetIndex] && (
         <div style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '20px' }}>
           <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>
-            Select Agents for "{sets[currentSetIndex].name}"
+            Select Agents for &quot;{sets[currentSetIndex].name}&quot;
           </h3>
           <div style={{ 
             display: 'grid', 
@@ -261,12 +262,15 @@ const FeaturedAgentsSetManager: UIFieldClientComponent = () => {
                     backgroundColor: '#e5e7eb',
                     flexShrink: 0,
                     overflow: 'hidden',
+                    position: 'relative',
                   }}>
                     {agent.cardImage && typeof agent.cardImage === 'object' && (
-                      <img 
+                      <Image 
                         src={agent.cardImage.url || agent.cardImage.filename} 
                         alt={agent.fullName}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        sizes="40px"
                       />
                     )}
                   </div>

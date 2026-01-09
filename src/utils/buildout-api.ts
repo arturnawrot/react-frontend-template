@@ -27,7 +27,7 @@ export { PropertyType, getPropertyTypeLabel }
 
 export interface BuildoutResponse<T> {
   message: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface BuildoutBrokerLicense {
@@ -105,13 +105,13 @@ export interface BuildoutPropertyPhoto {
 }
 
 export interface BuildoutPropertyComps {
-  lease: any[]
-  sale: any[]
+  lease: unknown[]
+  sale: unknown[]
 }
 
 export interface BuildoutPropertyCustomFields {
   ricoh_tour_url?: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface BuildoutProperty {
@@ -471,18 +471,68 @@ export function filterProperties(
     )
   }
 
-  // Filter by text search
+  // Filter by text search - unified logic that handles both partial queries and full addresses
   if (filters.search) {
-    const query = filters.search.toLowerCase()
-    filtered = filtered.filter(p => 
-      (p.address || '').toLowerCase().includes(query) ||
-      (p.city || '').toLowerCase().includes(query) ||
-      (p.state || '').toLowerCase().includes(query) ||
-      (p.zip || '').toLowerCase().includes(query) ||
-      (p.name || '').toLowerCase().includes(query) ||
-      (p.sale_listing_web_title || '').toLowerCase().includes(query) ||
-      (p.lease_listing_web_title || '').toLowerCase().includes(query)
-    )
+    const query = filters.search.toLowerCase().trim()
+    
+    // Split query by commas to handle full addresses like "6316 San Juan Avenue, Jacksonville, FL, USA"
+    const queryParts = query.split(',').map(part => part.trim()).filter(Boolean)
+    
+    filtered = filtered.filter(p => {
+      // Build combined address string for matching
+      const fullAddressString = [
+        p.address,
+        p.city,
+        p.state,
+        p.zip,
+      ].filter(Boolean).join(', ').toLowerCase()
+      
+      // Check if full query matches the combined address string
+      if (fullAddressString.includes(query)) {
+        return true
+      }
+      
+      // Check if query matches individual fields (original behavior)
+      if (
+        (p.address || '').toLowerCase().includes(query) ||
+        (p.city || '').toLowerCase().includes(query) ||
+        (p.state || '').toLowerCase().includes(query) ||
+        (p.zip || '').toLowerCase().includes(query) ||
+        (p.name || '').toLowerCase().includes(query) ||
+        (p.sale_listing_web_title || '').toLowerCase().includes(query) ||
+        (p.lease_listing_web_title || '').toLowerCase().includes(query)
+      ) {
+        return true
+      }
+      
+      // If query has multiple parts (comma-separated), check if parts match corresponding fields
+      // This handles cases like "6316 San Juan Avenue, Jacksonville" where:
+      // - First part should match address
+      // - Second part should match city
+      if (queryParts.length > 1) {
+        const addressMatch = queryParts[0] && (p.address || '').toLowerCase().includes(queryParts[0])
+        const cityMatch = queryParts.length > 1 && queryParts[1] && (p.city || '').toLowerCase().includes(queryParts[1])
+        const stateMatch = queryParts.length > 2 && queryParts[2] && (p.state || '').toLowerCase().includes(queryParts[2])
+        const zipMatch = queryParts.length > 3 && queryParts[3] && (p.zip || '').toLowerCase().includes(queryParts[3])
+        
+        // Match if address part matches AND at least one other part matches
+        if (addressMatch && (cityMatch || stateMatch || zipMatch)) {
+          return true
+        }
+        
+        // Also match if any part matches any field (more flexible)
+        const allParts = queryParts.join(' ')
+        if (
+          (p.address || '').toLowerCase().includes(allParts) ||
+          (p.city || '').toLowerCase().includes(allParts) ||
+          fullAddressString.includes(allParts)
+        ) {
+          return true
+        }
+      }
+      
+      return false
+    })
   }
 
   return filtered
@@ -591,7 +641,7 @@ async function setRedisCache<T>(key: string, data: T): Promise<void> {
 /**
  * Delete specific cache key from Redis
  */
-async function deleteRedisCache(key: string): Promise<void> {
+async function _deleteRedisCache(key: string): Promise<void> {
   const redis = getRedisClient()
   if (!redis) return
 
@@ -631,19 +681,19 @@ class BuildoutApiClient {
    * Helper: fetches ALL items from a paginated Buildout endpoint.
    * This handles the looping internally.
    */
-  private async fetchAllFromEndpoint<TResponse extends { count: number; [key: string]: any }>(
+  private async fetchAllFromEndpoint<TResponse extends { count: number; [key: string]: unknown }>(
     endpoint: string,
     arrayKey: string
   ): Promise<TResponse> {
     const batchSize = 100 // Buildout max limit per request usually
     let offset = 0
-    const allItems: any[] = []
+    const allItems: unknown[] = []
     
     // 1. Initial Fetch
     const firstResponse = await fetchFromBuildout<TResponse>(endpoint, { limit: batchSize, offset: 0 })
     
-    // @ts-ignore - dynamic access
-    const firstBatch = firstResponse[arrayKey] as any[]
+    // Dynamic access to array key - safe because we know TResponse has this key
+    const firstBatch = (firstResponse as Record<string, unknown[]>)[arrayKey] as unknown[]
     allItems.push(...firstBatch)
     const totalCount = firstResponse.count
     

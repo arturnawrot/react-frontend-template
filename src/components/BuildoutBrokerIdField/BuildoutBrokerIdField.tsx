@@ -27,7 +27,8 @@ const BuildoutBrokerIdField: TextFieldClientComponent = (props) => {
     if (currentValue && currentValue !== brokerId) {
       setBrokerId(currentValue)
     }
-  }, [currentValue])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentValue]) // brokerId intentionally excluded to prevent infinite loop
 
   // Update field value when brokerId changes
   useEffect(() => {

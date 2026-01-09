@@ -89,7 +89,7 @@ const AgentPropertiesDashboard: UIFieldClientComponent = () => {
     } else {
       setBrokerId(null)
     }
-  }, [brokerIdValue, id])
+  }, [brokerIdValue, id, featuredPropertyIds, featuredFieldValue])
 
   if (!brokerId) {
     return (

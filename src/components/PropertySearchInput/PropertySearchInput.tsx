@@ -2,6 +2,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, ChevronDown } from 'lucide-react'
+import { buildFilterParams } from '@/utils/filter-params'
+import LocationSearchSuggestion, { type AddressSuggestion } from '@/components/LocationSearchSuggestion/LocationSearchSuggestion'
 
 // Property types matching PropertySearchAdvanced
 const propertyTypes = [
@@ -80,7 +82,7 @@ export default function PropertySearchInput() {
           if (isValid) {
             setSelectedPriceRange(priceRange)
           }
-        } catch (e) {
+        } catch (_e) {
           // Invalid JSON, ignore
         }
       }
@@ -96,7 +98,7 @@ export default function PropertySearchInput() {
           if (isValid) {
             setSelectedSquareFootage(squareFootage)
           }
-        } catch (e) {
+        } catch (_e) {
           // Invalid JSON, ignore
         }
       }
@@ -187,43 +189,48 @@ export default function PropertySearchInput() {
     }
   }, [openDropdown])
 
-  const handleSearch = () => {
-    const params = new URLSearchParams()
-    
-    if (location.trim()) {
-      params.set('search', location.trim())
-    }
-    
-    if (selectedPropertyType) {
-      params.set('propertyType', selectedPropertyType.toString())
-    }
-    
-    if (selectedPriceRange) {
-      if (selectedPriceRange.min) {
-        params.set('minPrice', selectedPriceRange.min.toString())
-      }
-      if (selectedPriceRange.max) {
-        params.set('maxPrice', selectedPriceRange.max.toString())
-      }
-    }
-    
-    if (selectedSquareFootage) {
-      if (selectedSquareFootage.min) {
-        params.set('minSquareFootage', selectedSquareFootage.min.toString())
-      }
-      if (selectedSquareFootage.max) {
-        params.set('maxSquareFootage', selectedSquareFootage.max.toString())
-      }
-    }
+  const handleSearch = (clearFilters = false) => {
+    const params = buildFilterParams(
+      {
+        search: location.trim() || undefined,
+        propertyType: clearFilters ? undefined : (selectedPropertyType || undefined),
+        minPrice: clearFilters ? undefined : (selectedPriceRange?.min || undefined),
+        maxPrice: clearFilters ? undefined : (selectedPriceRange?.max || undefined),
+        minSquareFootage: clearFilters ? undefined : (selectedSquareFootage?.min || undefined),
+        maxSquareFootage: clearFilters ? undefined : (selectedSquareFootage?.max || undefined),
+      },
+      { includeSearch: true, useSet: true } // useSet for URL navigation
+    )
     
     const queryString = params.toString()
     router.push(`/property-search${queryString ? `?${queryString}` : ''}`)
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch()
-    }
+  const handleLocationSuggestionSelect = (suggestion: AddressSuggestion) => {
+    // Clear all other filters
+    setSelectedPropertyType(null)
+    setSelectedPriceRange(null)
+    setSelectedSquareFootage(null)
+    
+    // Set location to the selected address
+    setLocation(suggestion.fullAddress)
+    
+    // Submit search with only the location (clear all other filters)
+    const params = buildFilterParams(
+      {
+        search: suggestion.fullAddress,
+        // All other filters are explicitly undefined to clear them
+        propertyType: undefined,
+        minPrice: undefined,
+        maxPrice: undefined,
+        minSquareFootage: undefined,
+        maxSquareFootage: undefined,
+      },
+      { includeSearch: true, useSet: true }
+    )
+    
+    const queryString = params.toString()
+    router.push(`/property-search${queryString ? `?${queryString}` : ''}`)
   }
 
   const getPropertyTypeLabel = () => {
@@ -260,16 +267,14 @@ export default function PropertySearchInput() {
               
               {/* Field 1: Location */}
               <div className="flex-grow px-4 md:px-6 py-3 text-left group cursor-text relative">
-                  <label className="block text-[10px] font-bold tracking-[0.15em] text-stone-500 uppercase mb-1">
-                    Location
-                  </label>
-                  <input 
-                      type="text" 
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder="Search by address, city, state, or zip" 
-                      className="w-full text-stone-700 placeholder-stone-400 focus:outline-none bg-transparent text-sm md:text-base truncate pr-2"
+                  <LocationSearchSuggestion
+                    value={location}
+                    onChange={setLocation}
+                    onSelect={handleLocationSuggestionSelect}
+                    placeholder="Search by address, city, state, or zip"
+                    label="Location"
+                    className="relative"
+                    inputClassName="truncate pr-2"
                   />
               </div>
 
@@ -420,7 +425,7 @@ export default function PropertySearchInput() {
                   
                    {/* Search Button */}
                    <button 
-                     onClick={handleSearch}
+                     onClick={() => handleSearch()}
                      className="mt-4 lg:mt-0 bg-[#CDDC39] hover:bg-[#c3d135] text-[#1C2B28] rounded-full px-6 py-3 lg:py-3.5 flex items-center justify-center gap-2 font-medium transition-transform active:scale-95 shadow-sm min-w-fit"
                    >
                       Search <Search size={18} strokeWidth={2.5} />

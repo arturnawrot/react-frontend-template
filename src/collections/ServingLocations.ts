@@ -27,3 +27,4 @@ export const ServingLocations: CollectionConfig = {
   timestamps: true,
 }
 
+

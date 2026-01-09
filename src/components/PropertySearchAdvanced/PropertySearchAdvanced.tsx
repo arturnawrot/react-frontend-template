@@ -2,11 +2,13 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { Search, ChevronDown, List, Grid, Share2, RotateCcw } from 'lucide-react'
+import { ChevronDown, List, Grid, Share2, RotateCcw } from 'lucide-react'
 import PropertyCard from '../PropertyCard/PropertyCard'
-import type { LightweightProperty } from '@/utils/buildout-api'
+import type { LightweightProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformLightweightPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
-import type { BuildoutBroker } from '@/utils/buildout-api'
+import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
+import { buildFilterParams as buildFilterParamsUtil } from '@/utils/filter-params'
+import LocationSearchSuggestion, { type AddressSuggestion } from '@/components/LocationSearchSuggestion/LocationSearchSuggestion'
 
 // Dynamically import PropertyMap with SSR disabled
 const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
@@ -151,7 +153,7 @@ export default function PropertySearchAdvanced({
     // Update URL without adding to history (replace instead of push)
     const newURL = params.toString() ? `${pathname}?${params.toString()}` : pathname
     router.replace(newURL, { scroll: false })
-  }, [router])
+  }, [router, pathname])
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -167,6 +169,25 @@ export default function PropertySearchAdvanced({
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [openDropdown])
+
+  // Helper function to build filter params from filter state
+  const buildFilterParams = useCallback((filters: FilterState, searchQuery?: string, includeSearch = false): URLSearchParams => {
+    return buildFilterParamsUtil(
+      {
+        search: searchQuery,
+        brokerId: filters.brokerId,
+        propertyType: filters.propertyType,
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        saleOrLease: filters.saleOrLease,
+        minCapRate: filters.minCapRate,
+        maxCapRate: filters.maxCapRate,
+        minSquareFootage: filters.minSquareFootage,
+        maxSquareFootage: filters.maxSquareFootage,
+      },
+      { includeSearch }
+    )
+  }, [])
 
   // Fetch brokers on mount
   useEffect(() => {
@@ -185,104 +206,6 @@ export default function PropertySearchAdvanced({
     }
     fetchBrokers()
   }, [])
-
-  // Fetch all properties for map (lightweight, no pagination)
-  const fetchAllPropertiesForMap = useCallback(async () => {
-    let response: Response
-
-    if (savedPropertiesMode) {
-      // Fetch saved property IDs from localStorage
-      if (typeof window === 'undefined') {
-        return []
-      }
-
-      const { getSavedPropertyIds } = await import('@/utils/saved-properties')
-      const savedIds = getSavedPropertyIds()
-
-      if (savedIds.length === 0) {
-        return []
-      }
-
-      // Fetch saved properties by IDs (lightweight, no pagination for map)
-      const params = new URLSearchParams({
-        ids: savedIds.join(','),
-        limit: '1000', // Get all saved properties for map
-        offset: '0',
-      })
-
-      response = await fetch(`/api/buildout/saved-properties?${params.toString()}`)
-    } else {
-      // Fetch all properties for map with filters applied server-side
-      // Note: Text search is done client-side for better partial matching
-      const params = new URLSearchParams({
-        limit: '1000', // Get all for map view
-        offset: '0',
-      })
-
-      // Send all filters to API for server-side filtering (except text search)
-      if (filters.brokerId) {
-        params.append('brokerId', filters.brokerId.toString())
-      }
-      if (filters.propertyType) {
-        params.append('propertyType', filters.propertyType.toString())
-      }
-      if (filters.minPrice) {
-        params.append('minPrice', filters.minPrice.toString())
-      }
-      if (filters.maxPrice) {
-        params.append('maxPrice', filters.maxPrice.toString())
-      }
-      if (filters.saleOrLease && filters.saleOrLease !== 'both') {
-        params.append('saleOrLease', filters.saleOrLease)
-      }
-      if (filters.minCapRate !== null) {
-        params.append('minCapRate', filters.minCapRate.toString())
-      }
-      if (filters.maxCapRate !== null) {
-        params.append('maxCapRate', filters.maxCapRate.toString())
-      }
-      // Text search is done client-side below
-
-      response = await fetch(`/api/buildout/search-properties?${params.toString()}`)
-    }
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.error || 'Failed to fetch properties')
-    }
-
-    const data = await response.json()
-
-    if (!data.success) {
-      throw new Error(data.error || 'Failed to fetch properties')
-    }
-
-    // Transform lightweight properties
-    let transformedProperties = (data.properties || []).map((property: LightweightProperty) => {
-      const broker = brokers.find(b => b.id === property.broker_id)
-      const agentName = broker ? `${broker.first_name} ${broker.last_name}` : 'Agent'
-      const agentImage = broker?.profile_photo_url || null
-      return transformLightweightPropertyToCard(property, agentName, agentImage)
-    })
-
-    // Apply client-side text search filter (more reliable than API text search)
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      transformedProperties = transformedProperties.filter((property: PropertyCardData) => 
-        (property.address || '').toLowerCase().includes(query) ||
-        (property.cityStateZip || '').toLowerCase().includes(query) ||
-        (property.type || '').toLowerCase().includes(query)
-      )
-    }
-
-    // Filter out properties without valid coordinates
-    const validProperties = transformedProperties.filter(
-      (prop: PropertyCardData) =>
-        prop.latitude && prop.longitude && !isNaN(prop.latitude) && !isNaN(prop.longitude)
-    )
-
-    return validProperties
-  }, [searchQuery, filters, brokers, savedPropertiesMode])
 
   // Calculate map center based on most saturated area
   const calculateMapCenter = useCallback((props: PropertyCardData[]) => {
@@ -347,87 +270,19 @@ export default function PropertySearchAdvanced({
         }
 
         // Fetch saved properties by IDs with pagination and filters
-        const params = new URLSearchParams({
-          ids: savedIds.join(','),
-          limit: ITEMS_PER_PAGE.toString(),
-          offset: offset.toString(),
-        })
+        const filterParams = buildFilterParams(filters, searchQuery, true) // Include search for list view
+        filterParams.append('ids', savedIds.join(','))
+        filterParams.append('limit', ITEMS_PER_PAGE.toString())
+        filterParams.append('offset', offset.toString())
 
-        // Send ALL filters to API for server-side filtering
-        if (filters.brokerId) {
-          params.append('brokerId', filters.brokerId.toString())
-        }
-        if (filters.propertyType) {
-          params.append('propertyType', filters.propertyType.toString())
-        }
-        if (filters.minPrice) {
-          params.append('minPrice', filters.minPrice.toString())
-        }
-        if (filters.maxPrice) {
-          params.append('maxPrice', filters.maxPrice.toString())
-        }
-        if (filters.saleOrLease && filters.saleOrLease !== 'both') {
-          params.append('saleOrLease', filters.saleOrLease)
-        }
-        if (filters.minCapRate !== null) {
-          params.append('minCapRate', filters.minCapRate.toString())
-        }
-        if (filters.maxCapRate !== null) {
-          params.append('maxCapRate', filters.maxCapRate.toString())
-        }
-        if (filters.minSquareFootage) {
-          params.append('minSquareFootage', filters.minSquareFootage.toString())
-        }
-        if (filters.maxSquareFootage) {
-          params.append('maxSquareFootage', filters.maxSquareFootage.toString())
-        }
-        // Text search is also done server-side
-        if (searchQuery) {
-          params.append('search', searchQuery)
-        }
-
-        response = await fetch(`/api/buildout/saved-properties?${params.toString()}`)
+        response = await fetch(`/api/buildout/saved-properties?${filterParams.toString()}`)
       } else {
         // ALL filtering is done server-side - use proper pagination for list view (20 per page)
-        const params = new URLSearchParams({
-          limit: ITEMS_PER_PAGE.toString(),
-          offset: offset.toString(),
-        })
+        const filterParams = buildFilterParams(filters, searchQuery, true) // Include search for list view
+        filterParams.append('limit', ITEMS_PER_PAGE.toString())
+        filterParams.append('offset', offset.toString())
 
-        // Send ALL filters to API for server-side filtering
-        if (filters.brokerId) {
-          params.append('brokerId', filters.brokerId.toString())
-        }
-        if (filters.propertyType) {
-          params.append('propertyType', filters.propertyType.toString())
-        }
-        if (filters.minPrice) {
-          params.append('minPrice', filters.minPrice.toString())
-        }
-        if (filters.maxPrice) {
-          params.append('maxPrice', filters.maxPrice.toString())
-        }
-        if (filters.saleOrLease && filters.saleOrLease !== 'both') {
-          params.append('saleOrLease', filters.saleOrLease)
-        }
-        if (filters.minCapRate !== null) {
-          params.append('minCapRate', filters.minCapRate.toString())
-        }
-        if (filters.maxCapRate !== null) {
-          params.append('maxCapRate', filters.maxCapRate.toString())
-        }
-        if (filters.minSquareFootage) {
-          params.append('minSquareFootage', filters.minSquareFootage.toString())
-        }
-        if (filters.maxSquareFootage) {
-          params.append('maxSquareFootage', filters.maxSquareFootage.toString())
-        }
-        // Text search is also done server-side
-        if (searchQuery) {
-          params.append('search', searchQuery)
-        }
-
-        response = await fetch(`/api/buildout/search-properties?${params.toString()}`)
+        response = await fetch(`/api/buildout/search-properties?${filterParams.toString()}`)
       }
 
       if (!response.ok) {
@@ -444,9 +299,7 @@ export default function PropertySearchAdvanced({
       // Transform lightweight properties for list view
       // ALL filtering is done server-side, so we just transform and use the results
       const transformedProperties = (data.properties || []).map((property: LightweightProperty) => {
-        const broker = brokers.find(b => b.id === property.broker_id)
-        const agentName = broker ? `${broker.first_name} ${broker.last_name}` : 'Agent'
-        const agentImage = broker?.profile_photo_url || null
+        const { name: agentName, image: agentImage } = getAgentInfoFromBrokers(property.broker_id, brokers)
         return transformLightweightPropertyToCard(property, agentName, agentImage)
       })
 
@@ -472,7 +325,7 @@ export default function PropertySearchAdvanced({
     } finally {
       setLoading(false)
     }
-  }, [searchQuery, filters, brokers, savedPropertiesMode, calculateMapCenter, hideMap])
+  }, [searchQuery, filters, brokers, savedPropertiesMode, calculateMapCenter, hideMap, buildFilterParams])
 
   // fetchAllPropertiesForMap is now handled by fetchProperties - no longer needed
 
@@ -488,13 +341,95 @@ export default function PropertySearchAdvanced({
   const prevFiltersRef = useRef<string>(JSON.stringify(filters))
   const prevSearchQueryRef = useRef<string>(searchQuery)
   const hasInitialFetchRef = useRef<boolean>(false)
+  const isUpdatingFromURLRef = useRef<boolean>(false)
+  const prevURLSearchRef = useRef<string>('')
 
-  // Update URL when filters/search/page change (skip initial mount)
+  // Sync state from URL params when they change externally (e.g., from navbar search)
+  useEffect(() => {
+    // Skip on initial mount (already handled by initialState)
+    if (isInitialMount.current) {
+      // Store initial URL search value
+      prevURLSearchRef.current = searchParams.get('search') || ''
+      return
+    }
+
+    // Read current URL params
+    const urlSearch = searchParams.get('search') || ''
+    
+    // Only sync if URL actually changed externally (not from our own updates)
+    const urlSearchChanged = urlSearch !== prevURLSearchRef.current
+    if (!urlSearchChanged) {
+      // URL didn't change externally, don't sync
+      return
+    }
+
+    // Update the ref to track the new URL value
+    prevURLSearchRef.current = urlSearch
+
+    const urlBrokerId = searchParams.get('brokerId') ? parseInt(searchParams.get('brokerId')!, 10) : null
+    const urlPropertyType = searchParams.get('propertyType') ? parseInt(searchParams.get('propertyType')!, 10) : null
+    const urlMinPrice = searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!, 10) : null
+    const urlMaxPrice = searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!, 10) : null
+    const urlSaleOrLease = searchParams.get('saleOrLease') as 'sale' | 'lease' | 'both' | null || null
+    const urlMinCapRate = searchParams.get('minCapRate') ? parseFloat(searchParams.get('minCapRate')!) : null
+    const urlMaxCapRate = searchParams.get('maxCapRate') ? parseFloat(searchParams.get('maxCapRate')!) : null
+    const urlMinSquareFootage = searchParams.get('minSquareFootage') ? parseInt(searchParams.get('minSquareFootage')!, 10) : null
+    const urlMaxSquareFootage = searchParams.get('maxSquareFootage') ? parseInt(searchParams.get('maxSquareFootage')!, 10) : null
+    const urlPage = searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : 1
+
+    const newFilters: FilterState = {
+      brokerId: urlBrokerId && !isNaN(urlBrokerId) ? urlBrokerId : null,
+      propertyType: urlPropertyType && !isNaN(urlPropertyType) ? urlPropertyType : null,
+      minPrice: urlMinPrice && !isNaN(urlMinPrice) ? urlMinPrice : null,
+      maxPrice: urlMaxPrice && !isNaN(urlMaxPrice) ? urlMaxPrice : null,
+      saleOrLease: urlSaleOrLease || null,
+      minCapRate: urlMinCapRate && !isNaN(urlMinCapRate) ? urlMinCapRate : null,
+      maxCapRate: urlMaxCapRate && !isNaN(urlMaxCapRate) ? urlMaxCapRate : null,
+      minSquareFootage: urlMinSquareFootage && !isNaN(urlMinSquareFootage) ? urlMinSquareFootage : null,
+      maxSquareFootage: urlMaxSquareFootage && !isNaN(urlMaxSquareFootage) ? urlMaxSquareFootage : null,
+    }
+    const newPage = urlPage && !isNaN(urlPage) && urlPage > 0 ? urlPage : 1
+
+    const searchChanged = urlSearch !== searchQuery
+    const filtersChanged = JSON.stringify(newFilters) !== JSON.stringify(filters)
+    const pageChanged = newPage !== currentPage
+
+    // Only update if URL params actually changed
+    if (searchChanged || filtersChanged || pageChanged) {
+      isUpdatingFromURLRef.current = true
+      
+      if (searchChanged) {
+        setSearchQuery(urlSearch)
+      }
+      
+      if (filtersChanged) {
+        setFilters(newFilters)
+      }
+      
+      if (pageChanged) {
+        setCurrentPage(newPage)
+      }
+      
+      // Reset flag after state updates
+      setTimeout(() => {
+        isUpdatingFromURLRef.current = false
+      }, 0)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]) // Intentionally only depend on searchParams to prevent input locking when user types
+
+  // Update URL when filters/search/page change (skip initial mount and external URL updates)
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false
       return
     }
+    
+    // Don't update URL if we're syncing from URL (to avoid loops)
+    if (isUpdatingFromURLRef.current) {
+      return
+    }
+    
     updateURL(searchQuery, filters, currentPage)
   }, [searchQuery, filters, currentPage, updateURL])
 
@@ -541,7 +476,7 @@ export default function PropertySearchAdvanced({
     }
   }, [currentPage, brokers.length])
 
-  const handleFilterChange = (key: keyof FilterState, value: any) => {
+  const handleFilterChange = (key: keyof FilterState, value: FilterState[keyof FilterState]) => {
     setFilters(prev => ({ ...prev, [key]: value }))
     setOpenDropdown(null)
   }
@@ -668,15 +603,34 @@ export default function PropertySearchAdvanced({
               
               {/* Search Input */}
               <div className="relative w-full xl:w-96">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search size={18} className="text-stone-500" />
-                </div>
-                <input 
-                  type="text" 
+                <LocationSearchSuggestion
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full pl-10 pr-4 py-3 border-none rounded bg-[#EBEBE8] text-stone-900 placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-[#CDDC39] text-sm font-medium" 
-                  placeholder="Search" 
+                  onChange={setSearchQuery}
+                  onSelect={(suggestion: AddressSuggestion) => {
+                    // Clear all other filters (same logic as PropertySearchInput)
+                    setFilters({
+                      brokerId: null,
+                      propertyType: null,
+                      minPrice: null,
+                      maxPrice: null,
+                      saleOrLease: null,
+                      minCapRate: null,
+                      maxCapRate: null,
+                      minSquareFootage: null,
+                      maxSquareFootage: null,
+                    })
+                    
+                    // Set search query to the selected address
+                    setSearchQuery(suggestion.fullAddress)
+                    
+                    // Reset to page 1
+                    setCurrentPage(1)
+                  }}
+                  placeholder="Search"
+                  showSearchIcon={true}
+                  searchIconClassName="text-stone-500"
+                  wrapperClassName=""
+                  inputClassName="block w-full pr-4 py-3 border-none rounded bg-[#EBEBE8] text-stone-900 placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-[#CDDC39] text-sm font-medium"
                 />
               </div>
 

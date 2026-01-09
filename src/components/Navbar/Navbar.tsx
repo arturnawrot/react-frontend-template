@@ -1,11 +1,14 @@
 'use client'
 
-import { Search } from 'lucide-react'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Logo from '../Logo/Logo'
 import {
   MainNavbarLink,
   UpperNavbarLink,
 } from '../NavbarLink/NavbarLink'
+import LocationSearchSuggestion, { type AddressSuggestion } from '../LocationSearchSuggestion/LocationSearchSuggestion'
+import { buildFilterParams } from '@/utils/filter-params'
 import styles from './Navbar.module.scss'
 
 export interface NavbarLink {
@@ -24,18 +27,39 @@ export default function Navbar({
   upperLinks = [],
   mainLinks = [],
 }: NavbarProps) {
+  const router = useRouter()
+  const [searchValue, setSearchValue] = useState('')
+
+  const handleSearchSelect = (suggestion: AddressSuggestion) => {
+    // Navigate to property search with the selected address
+    const params = buildFilterParams(
+      {
+        search: suggestion.fullAddress,
+      },
+      { includeSearch: true, useSet: true }
+    )
+    
+    const queryString = params.toString()
+    router.push(`/property-search${queryString ? `?${queryString}` : ''}`)
+    setSearchValue('') // Clear search after navigation
+  }
+
   return (
     <>
       {/* Desktop: Top Search Bar - Hidden on Mobile */}
       <div className="px-[5%] hidden md:block border-b-[0.5px] border-[#FAF9F7]">
         <div className="flex items-center justify-between px-8 py-4">
           <div className="flex-1 max-w-md">
-            <div className={`${styles.navbarSearchInput} relative`}>
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white opacity-70 w-5 h-5" />
-              <input
-                type="text"
+            <div className={`${styles.navbarSearchInput} relative z-50`}>
+              <LocationSearchSuggestion
+                value={searchValue}
+                onChange={setSearchValue}
+                onSelect={handleSearchSelect}
                 placeholder="Search..."
-                className="w-full bg-transparent text-white placeholder-white placeholder-opacity-70 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                showSearchIcon={true}
+                searchIconClassName="text-white opacity-70"
+                wrapperClassName=""
+                inputClassName="w-full bg-transparent text-white placeholder-white placeholder-opacity-70 rounded-full py-2 pr-4 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
               />
             </div>
           </div>

@@ -1,7 +1,9 @@
 import React from 'react'
 import type { Page } from '@/payload-types'
 import { buildoutApi } from '@/utils/buildout-api'
-import { transformLightweightPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
+import { transformLightweightPropertyToCard } from '@/utils/property-transform'
+import { createBrokerMaps, getAgentInfo } from '@/utils/broker-utils'
+import { filterValidCoordinates } from '@/utils/property-utils'
 import PropertySearch from './PropertySearch'
 
 type PropertySearchBlock = Extract<Page['blocks'][number], { blockType: 'propertySearch' }>
@@ -24,28 +26,17 @@ export default async function PropertySearchWrapper({ block }: PropertySearchWra
       buildoutApi.getAllBrokers(),
     ])
 
-    // Create a map of broker_id to broker name for quick lookup
-    const brokerMap = new Map<number, string>()
-    brokersResponse.brokers.forEach((broker) => {
-      brokerMap.set(broker.id, `${broker.first_name} ${broker.last_name}`)
-    })
+    // Create broker lookup maps
+    const brokerMaps = createBrokerMaps(brokersResponse.brokers)
 
-    // Transform lightweight properties to PropertyCard format with broker names
+    // Transform lightweight properties to PropertyCard format with broker names and images
     const transformedProperties = propertiesResponse.properties.map((property) => {
-      const agentName = property.broker_id && brokerMap.has(property.broker_id)
-        ? brokerMap.get(property.broker_id)!
-        : 'Agent'
-      return transformLightweightPropertyToCard(property, agentName)
+      const { name: agentName, image: agentImage } = getAgentInfo(property.broker_id, brokerMaps)
+      return transformLightweightPropertyToCard(property, agentName, agentImage)
     })
 
     // Filter out properties without valid coordinates
-    const initialProperties: PropertyCardData[] = transformedProperties.filter(
-      (prop) =>
-        prop.latitude &&
-        prop.longitude &&
-        !isNaN(prop.latitude) &&
-        !isNaN(prop.longitude)
-    )
+    const initialProperties = filterValidCoordinates(transformedProperties)
 
     return <PropertySearch block={block} initialProperties={initialProperties} />
   } catch (error) {

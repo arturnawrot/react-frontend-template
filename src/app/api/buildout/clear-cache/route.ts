@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { buildoutApi } from '@/utils/buildout-api'
 
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
   try {
     // Clear the cache
     await buildoutApi.clearCache()

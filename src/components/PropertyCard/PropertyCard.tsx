@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Heart } from 'lucide-react'
 import { isPropertySaved, togglePropertySaved } from '@/utils/saved-properties'
 import { addressToSlug } from '@/utils/address-slug'
@@ -45,11 +46,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
       
       {/* Card Image */}
       <div className={`relative flex-shrink-0 overflow-visible ${isVertical ? 'h-40 w-full' : 'w-full sm:w-[240px] h-[127px] sm:h-[127px]'}`}>
-        <div className="w-full h-full overflow-hidden rounded-t-xl sm:rounded-l-xl sm:rounded-t-none">
-          <img 
+        <div className="w-full h-full overflow-hidden rounded-t-xl relative">
+          <Image 
             src={property.image} 
             alt="Property" 
-            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+            fill
+            className="object-cover transform group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 640px) 100vw, 240px"
           />
         </div>
         {property.badges && property.badges.length > 0 && (
@@ -85,25 +88,27 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
           </Link>
           <p className="text-stone-500 text-xs mb-2">{property.cityStateZip}</p>
           
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-stone-700 mb-2">
-            <span>{property.price}</span>
+          <div className="flex items-center gap-x-2 text-xs font-semibold text-stone-700 mb-2 overflow-hidden">
+            <span className="whitespace-nowrap">{property.price}</span>
             {property.sqft && (
               <>
-                <span className="text-stone-300">|</span>
-                <span>{property.sqft}</span>
+                <span className="text-stone-300 flex-shrink-0">|</span>
+                <span className="whitespace-nowrap">{property.sqft}</span>
               </>
             )}
-            <span className="text-stone-300">|</span>
-            <span>{property.type}</span>
+            <span className="text-stone-300 flex-shrink-0">|</span>
+            <span className="truncate whitespace-nowrap min-w-0">{property.type}</span>
           </div>
         </div>
 
         <div className={`flex items-center gap-2 flex-shrink-0 ${isVertical ? 'pt-2 mt-1 border-t border-stone-100' : 'pt-1'}`}>
-          <div className="w-5 h-5 rounded-full bg-stone-200 overflow-hidden flex-shrink-0">
-             <img 
+          <div className="w-5 h-5 rounded-full bg-stone-200 overflow-hidden flex-shrink-0 relative">
+             <Image 
                src={property.agentImage || 'https://i.pravatar.cc/100?img=5'} 
                alt={property.agent} 
-               className="w-full h-full object-cover" 
+               fill
+               className="object-cover" 
+               sizes="20px"
              />
           </div>
           <span className="text-[10px] font-bold bg-stone-100 px-2.5 py-1.5 rounded-full text-stone-600 truncate min-w-0" title={property.agent}>

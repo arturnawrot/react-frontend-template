@@ -1,6 +1,6 @@
 import React from 'react'
+import Image from 'next/image'
 import type { Page } from '@/payload-types'
-import type { Media } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 
 type SplitSectionBlock = Extract<Page['blocks'][number], { blockType: 'splitSection' }>
@@ -30,11 +30,13 @@ export default function SplitSection({ block }: SplitSectionProps) {
       >
         {/* Image Column */}
         <div className="w-full md:w-1/2">
-          <div className="relative overflow-hidden rounded-2xl shadow-lg">
-            <img 
+          <div className="relative overflow-hidden rounded-2xl shadow-lg aspect-video">
+            <Image 
               src={imageUrl} 
               alt={imageAlt} 
-              className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700 ease-out" 
+              fill
+              className="object-cover transform hover:scale-105 transition-transform duration-700 ease-out" 
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
         </div>

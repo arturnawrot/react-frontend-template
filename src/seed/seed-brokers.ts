@@ -1,5 +1,5 @@
 import type { Payload } from 'payload'
-import { buildoutApi, type BuildoutBroker } from '../utils/buildout-api'
+import { buildoutApi } from '../utils/buildout-api'
 import { writeFile, unlink, mkdir } from 'fs/promises'
 import { join } from 'path'
 import { existsSync } from 'fs'
@@ -82,6 +82,18 @@ async function uploadImageFromUrl(
 }
 
 /**
+ * Generates a URL-friendly slug from a string
+ */
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+    .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
+}
+
+/**
  * Creates or finds a specialty record and returns its ID
  */
 async function getOrCreateSpecialty(payload: Payload, specialtyName: string): Promise<string | null> {
@@ -112,7 +124,9 @@ async function getOrCreateSpecialty(payload: Payload, specialtyName: string): Pr
       collection: 'specialties',
       data: {
         name,
+        slug: slugify(name),
       },
+      draft: false,
     })
     return created.id
   } catch (error) {
@@ -179,6 +193,7 @@ async function getOrCreateRole(payload: Payload, roleName: string): Promise<stri
       data: {
         name,
       },
+      draft: false,
     })
     return created.id
   } catch (error) {
@@ -255,7 +270,7 @@ async function getOrCreateServingLocation(payload: Payload, locationName: string
 /**
  * Converts buildout city/state to serving location relationship IDs
  */
-async function convertServingLocations(payload: Payload, city: string, state: string): Promise<string[]> {
+async function convertServingLocations(payload: Payload, city: string, _state: string): Promise<string[]> {
   const locationIds: string[] = []
   
   if (city && city.trim()) {

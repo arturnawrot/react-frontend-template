@@ -1,13 +1,22 @@
 'use client'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import type { Page } from '@/payload-types'
-import type { Media } from '@/payload-types'
+import Image from 'next/image'
+import type { Page, Media } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 
 type AgentCarouselBlock = Extract<Page['blocks'][number], { blockType: 'agentCarousel' }>
 
+interface Agent {
+  name: string
+  role: string
+  location: string
+  image?: Media | string | null
+}
+
 interface AgentCarouselProps {
-  block: AgentCarouselBlock
+  block: AgentCarouselBlock & {
+    agents?: Agent[] // Added by renderBlocks.tsx when fetching from featuredAgentSetName
+  }
 }
 
 export default function AgentCarousel({ block }: AgentCarouselProps) {
@@ -182,11 +191,15 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
                     key={index}
                     className="w-[280px] md:w-[340px] h-full relative rounded-2xl overflow-hidden shrink-0 group cursor-pointer"
                   >
-                    <img 
-                      src={imageUrl} 
-                      alt={agent.name} 
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+                    {imageUrl && (
+                      <Image
+                        src={imageUrl}
+                        alt={agent.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        sizes="(max-width: 768px) 280px, 340px"
+                      />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f1f1a] via-transparent to-transparent opacity-90" />
                     
                     <div className="absolute bottom-0 left-0 p-6 text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-500">

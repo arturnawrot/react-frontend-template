@@ -1,11 +1,31 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
 import type { PropertyCardData } from '@/utils/property-transform'
+import { filterValidCoordinates } from '@/utils/property-utils'
 import PropertyCard from '../PropertyCard/PropertyCard'
+
+interface LeafletBounds {
+  north: number
+  south: number
+  east: number
+  west: number
+}
+
+interface LeafletMapInstance {
+  getContainer: () => HTMLElement
+  latLngToContainerPoint: (latlng: { lat: number; lng: number }) => { x: number; y: number }
+}
+
+interface LeafletMarkerEvent {
+  target: {
+    _map: LeafletMapInstance
+  }
+  latlng: { lat: number; lng: number }
+}
 
 interface PropertyMapProps {
   properties: PropertyCardData[]
-  onBoundsChange?: (bounds: any, visible: PropertyCardData[]) => void
+  onBoundsChange?: (bounds: LeafletBounds, visible: PropertyCardData[]) => void
   mapType?: 'map' | 'satellite'
   onMapTypeChange?: (type: 'map' | 'satellite') => void
   center?: [number, number]
@@ -34,6 +54,7 @@ function LeafletMap({
   const lastHoveredPropertyRef = useRef<PropertyCardData | null>(null)
   const lastCardPositionRef = useRef<{ x: number; y: number } | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
+  const [mapReady, setMapReady] = useState(false)
 
   // Load Leaflet CSS and libraries only on client
   useEffect(() => {
@@ -60,7 +81,7 @@ function LeafletMap({
       const L = leaflet.default
       
       // Fix for default marker icons in Next.js
-      delete (L.Icon.Default.prototype as any)._getIconUrl
+      delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
         iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
@@ -148,7 +169,7 @@ function LeafletMap({
   
   const zoom = propZoom || 11
 
-  const handleMarkerHover = (property: PropertyCardData, event: any) => {
+  const handleMarkerHover = (property: PropertyCardData, event: LeafletMarkerEvent) => {
     // Clear any pending hide timeout
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current)
@@ -177,7 +198,7 @@ function LeafletMap({
     setCardPosition(newPosition)
   }
 
-  const handleMarkerLeave = (e?: any) => {
+  const handleMarkerLeave = (_e?: unknown) => {
     // Immediately set marker ref to false - periodic check will catch this
     isHoveringMarkerRef.current = false
     
@@ -245,9 +266,7 @@ function LeafletMap({
   }, [mounted])
 
   // Filter properties with valid coordinates
-  const validProperties = properties.filter(
-    p => p.latitude && p.longitude && !isNaN(p.latitude) && !isNaN(p.longitude)
-  )
+  const validProperties = filterValidCoordinates(properties)
 
   if (!mounted || !MapContainer || !TileLayer || !Marker || !L || !useMapHookRef.current) {
     return (
@@ -282,7 +301,7 @@ function LeafletMap({
     onBoundsChange 
   }: { 
     properties: PropertyCardData[]
-    onBoundsChange?: (bounds: any, visible: PropertyCardData[]) => void 
+    onBoundsChange?: (bounds: LeafletBounds, visible: PropertyCardData[]) => void 
   }) => {
     // Call useMap hook directly - this is valid because MapBoundsHandler is a component
     // and the hook is called unconditionally at the top level
@@ -311,7 +330,13 @@ function LeafletMap({
         })
         
         if (onBoundsChangeRef.current) {
-          onBoundsChangeRef.current(bounds, visible)
+          const leafletBounds: LeafletBounds = {
+            north: bounds.getNorth(),
+            south: bounds.getSouth(),
+            east: bounds.getEast(),
+            west: bounds.getWest(),
+          }
+          onBoundsChangeRef.current(leafletBounds, visible)
         }
       }
 
@@ -335,7 +360,7 @@ function LeafletMap({
     onLeave 
   }: { 
     property: PropertyCardData
-    onHover: (property: PropertyCardData, event: any) => void
+    onHover: (property: PropertyCardData, event: LeafletMarkerEvent) => void
     onLeave: () => void
   }) {
     const icon = createSmallIcon()
@@ -345,7 +370,7 @@ function LeafletMap({
         position={[property.latitude, property.longitude]}
         icon={icon}
         eventHandlers={{
-          mouseover: (e: any) => {
+          mouseover: (e: LeafletMarkerEvent) => {
             onHover(property, e)
           },
           mouseout: () => {
@@ -359,6 +384,35 @@ function LeafletMap({
     )
   }
 
+  // Component to handle map initialization
+  function MapInitializer() {
+    const useMap = useMapHookRef.current!
+    const map = useMap()
+    
+    useEffect(() => {
+      if (!map) return
+      
+      // Wait for map container to be ready
+      const container = map.getContainer()
+      if (!container) {
+        // If container doesn't exist yet, wait a bit
+        const timeout = setTimeout(() => setMapReady(true), 50)
+        return () => clearTimeout(timeout)
+      }
+      
+      // Wait for map to be fully initialized
+      map.whenReady(() => {
+        setMapReady(true)
+      })
+      
+      return () => {
+        setMapReady(false)
+      }
+    }, [map])
+    
+    return null
+  }
+
   return (
     <div className="relative w-full h-full" ref={mapContainerRef}>
       <MapContainer
@@ -368,25 +422,31 @@ function LeafletMap({
         style={{ height: '100%', width: '100%' }}
         className="rounded-3xl"
       >
-        <TileLayer
-          url={
-            mapType === 'satellite'
-              ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-              : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-          }
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
+        <MapInitializer />
         
-        {validProperties.map((property) => (
-          <PropertyMarker
-            key={property.id}
-            property={property}
-            onHover={handleMarkerHover}
-            onLeave={handleMarkerLeave}
-          />
-        ))}
+        {mapReady && (
+          <>
+            <TileLayer
+              url={
+                mapType === 'satellite'
+                  ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                  : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+              }
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            
+            {validProperties.map((property) => (
+              <PropertyMarker
+                key={property.id}
+                property={property}
+                onHover={handleMarkerHover}
+                onLeave={handleMarkerLeave}
+              />
+            ))}
 
-        <MapBoundsHandler properties={validProperties} onBoundsChange={onBoundsChange} />
+            <MapBoundsHandler properties={validProperties} onBoundsChange={onBoundsChange} />
+          </>
+        )}
       </MapContainer>
 
       {/* Property Card Overlay - Fixed position relative to viewport */}

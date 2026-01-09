@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import type { SerializedEditorState } from 'lexical'
 
 interface LexicalRendererProps {
@@ -237,11 +238,13 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
 
       if (imageUrl) {
         return (
-          <figure key={`upload-${index}`} className="my-8">
-            <img
+          <figure key={`upload-${index}`} className="my-8 relative w-full aspect-video">
+            <Image
               src={imageUrl}
               alt={imageAlt || 'Blog image'}
-              className="w-full h-auto rounded-lg shadow-md"
+              fill
+              className="object-contain rounded-lg shadow-md"
+              sizes="(max-width: 768px) 100vw, 80vw"
             />
             {imageAlt && (
               <figcaption className="mt-2 text-sm text-gray-600 italic text-center">

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { buildoutApi, toLightweightProperty, filterProperties, type LightweightPropertiesResponse, type PropertyFilters } from '@/utils/buildout-api'
+import { buildoutApi, toLightweightProperty, filterProperties, type PropertyFilters } from '@/utils/buildout-api'
 
 export const dynamic = 'force-dynamic'
 

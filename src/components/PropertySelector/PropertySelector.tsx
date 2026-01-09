@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { usePropertySelector } from '@/hooks/usePropertySelector'
 
 const ITEMS_PER_PAGE = 5
@@ -122,16 +123,17 @@ export default function PropertySelector({
                         height: '150px',
                         flexShrink: 0,
                         backgroundColor: '#f3f4f6',
+                        position: 'relative',
                       }}
                     >
-                      <img
+                      <Image
                         src={imageUrl}
                         alt={property.name || address}
+                        fill
                         style={{
-                          width: '100%',
-                          height: '100%',
                           objectFit: 'cover',
                         }}
+                        sizes="200px"
                       />
                     </div>
                   )}

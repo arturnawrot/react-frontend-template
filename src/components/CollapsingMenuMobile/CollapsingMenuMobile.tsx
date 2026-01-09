@@ -1,12 +1,14 @@
 'use client'
 
-import React from 'react'
-import { Search, X } from 'lucide-react'
+import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { X } from 'lucide-react'
 import {
   CollapsingMenuMobileLink,
 } from '../NavbarLink/NavbarLink'
 import type { NavbarLink } from '../Navbar/Navbar'
-import styles from './CollapsingMenuMobile.module.scss'
+import LocationSearchSuggestion, { type AddressSuggestion } from '../LocationSearchSuggestion/LocationSearchSuggestion'
+import { buildFilterParams } from '@/utils/filter-params'
 
 export default function CollapsingMenuMobile({
   open,
@@ -17,6 +19,24 @@ export default function CollapsingMenuMobile({
   onClose: () => void
   mainLinks?: NavbarLink[]
 }) {
+  const router = useRouter()
+  const [searchValue, setSearchValue] = useState('')
+
+  const handleSearchSelect = (suggestion: AddressSuggestion) => {
+    // Navigate to property search with the selected address
+    const params = buildFilterParams(
+      {
+        search: suggestion.fullAddress,
+      },
+      { includeSearch: true, useSet: true }
+    )
+    
+    const queryString = params.toString()
+    router.push(`/property-search${queryString ? `?${queryString}` : ''}`)
+    setSearchValue('') // Clear search after navigation
+    onClose() // Close mobile menu after navigation
+  }
+
   return (
     <>
       {/* Backdrop: click to close */}
@@ -54,11 +74,15 @@ export default function CollapsingMenuMobile({
 
             {/* Search Bar - Left Aligned */}
             <div className="relative w-full px-8 mt-4">
-              <Search className="absolute left-11 top-1/2 -translate-y-1/2 text-white/70 w-5 h-5" />
-              <input
-                type="text"
+              <LocationSearchSuggestion
+                value={searchValue}
+                onChange={setSearchValue}
+                onSelect={handleSearchSelect}
                 placeholder="Search..."
-                className="w-full bg-white/20 text-white placeholder-white/70 rounded-full py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-white/50"
+                showSearchIcon={true}
+                searchIconClassName="text-white/70"
+                wrapperClassName=""
+                inputClassName="w-full bg-white/20 text-white placeholder-white/70 rounded-full py-3 pr-4 pl-10 focus:outline-none focus:ring-2 focus:ring-white/50"
               />
             </div>
 

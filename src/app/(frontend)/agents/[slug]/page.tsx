@@ -108,7 +108,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
   let featuredProperties: BuildoutProperty[] = []
   
   // Priority 1: Check if agent uses a global featured properties set
-  if ((agent as any).featuredPropertySetName) {
+  if (agent.featuredPropertySetName) {
     try {
       const global = await payload.findGlobal({
         slug: 'featuredPropertiesSets',
@@ -131,10 +131,10 @@ export default async function AgentPage({ params }: AgentPageProps) {
         }
       }
       
-      const set = sets.find((s) => s.name === (agent as any).featuredPropertySetName)
+      const set = sets.find((s) => s.name === agent.featuredPropertySetName)
       
       if (set?.propertyIds && Array.isArray(set.propertyIds)) {
-        const propertyIds = set.propertyIds.filter((id: any): id is number => typeof id === 'number')
+        const propertyIds = set.propertyIds.filter((id: unknown): id is number => typeof id === 'number')
         
         if (propertyIds.length > 0) {
           // Fetch all properties to find the ones in the set

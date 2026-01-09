@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import type { Page } from '@/payload-types'
 import styles from './FlippedM.module.scss'
 
@@ -107,9 +108,11 @@ const ProcessSection = ({
     <div className="relative w-full flex flex-col py-12 md:py-20 min-h-[1600px] max-w-[1500px] mx-auto md:px-15">
       {/* SVG Background */}
       <div className="absolute inset-0 md:left-1/2 pointer-events-none z-5">
-        <img
+        <Image
           src="/svg/flipped-m.svg"
           alt=""
+          width={1200}
+          height={1600}
           className="absolute top-0 left-[-15%] w-auto h-auto overflow-hidden"
           style={{ maxWidth: 'none', maxHeight: 'none' }}
         />
@@ -156,11 +159,13 @@ const ProcessSection = ({
 
           {/* Right Column - Image */}
           <div className="hidden md:flex items-center justify-center">
-            <div className="relative w-full max-w-2xl">
-              <img
+            <div className="relative w-full max-w-2xl aspect-square">
+              <Image
                 src={image}
                 alt=""
-                className="w-full h-auto object-contain rounded-lg shadow-2xl"
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
           </div>

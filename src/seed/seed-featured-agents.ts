@@ -23,7 +23,7 @@ export async function seedFeaturedAgents(payload: Payload) {
     }
 
     // Get or create the global
-    let global = await payload.findGlobal({
+    const global = await payload.findGlobal({
       slug: 'featuredAgentsSets',
     })
 

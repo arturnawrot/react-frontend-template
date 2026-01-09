@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Image from 'next/image'
 import Arrow from '../Arrow/Arrow'
 
 interface ArticleCardProps {
@@ -14,10 +15,12 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ imageSrc, title, tags = [], l
     <div className="w-[300px] md:w-[400px] shrink-0 snap-start">
       {/* Image Container */}
       <a href={link} className="relative h-[280px] w-full rounded-2xl overflow-hidden mb-6 group cursor-pointer block">
-        <img 
+        <Image 
           src={imageSrc} 
           alt={title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          sizes="(max-width: 768px) 300px, 400px"
         />
         {/* Floating Tags */}
         {tags.length > 0 && (

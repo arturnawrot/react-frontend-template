@@ -12,6 +12,7 @@ import {
   Maximize2,
 } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import Arrow from '../Arrow/Arrow'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
@@ -56,8 +57,8 @@ const AgentCard = ({
 }) => {
   return (
     <div className="flex gap-4 mb-6">
-      <div className="w-24 h-24 bg-gray-300 rounded-sm flex-shrink-0 overflow-hidden">
-        {image && <img src={image} alt={name} className="w-full h-full object-cover" />}
+      <div className="w-24 h-24 bg-gray-300 rounded-sm flex-shrink-0 overflow-hidden relative">
+        {image && <Image src={image} alt={name} fill className="object-cover" sizes="96px" />}
       </div>
       
       <div className="flex flex-col justify-start">
@@ -441,10 +442,12 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
           {/* Main Image */}
           {images.length > 0 && (
             <div className="relative w-full aspect-video bg-gray-200 rounded-sm overflow-hidden mb-4 group cursor-pointer" onClick={openFullscreen}>
-              <img 
+              <Image 
                 src={images[currentImageIndex]} 
                 alt={`Property ${currentImageIndex + 1}`} 
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 66vw"
               />
               
               {/* Overlays */}
@@ -535,16 +538,18 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
                   key={idx}
                   data-thumbnail-index={idx}
                   ref={(el) => { thumbnailRefs.current[idx] = el }}
-                  className={`flex-shrink-0 aspect-video bg-gray-200 rounded-sm overflow-hidden hover:opacity-80 transition-opacity ${
+                  className={`relative flex-shrink-0 aspect-video bg-gray-200 rounded-sm overflow-hidden hover:opacity-80 transition-opacity ${
                     currentImageIndex === idx ? 'ring-2 ring-gray-400' : ''
                   }`}
                   style={{ width: 'calc(25% - 12px)', minWidth: '120px', pointerEvents: isDragging ? 'none' : 'auto' }}
                 >
-                  <img 
+                  <Image 
                     src={img} 
                     alt={`Thumbnail ${idx + 1}`} 
-                    className="w-full h-full object-cover pointer-events-none"
+                    fill
+                    className="object-cover pointer-events-none"
                     draggable={false}
+                    sizes="(max-width: 1024px) 25vw, 16vw"
                   />
                 </div>
               ))}
@@ -617,7 +622,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
                       property,
                       propertyBrokers.length > 0
                         ? `${propertyBrokers[0].first_name} ${propertyBrokers[0].last_name}`
-                        : 'Agent'
+                        : 'Agent',
+                      propertyBrokers.length > 0
+                        ? propertyBrokers[0].profile_photo_url || null
+                        : null
                     ),
                   ]}
                   center={[property.latitude, property.longitude]}
@@ -750,14 +758,18 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
             style={{ paddingBottom: '140px' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <img 
-              key={currentImageIndex}
-              src={images[currentImageIndex]} 
-              alt={`Property ${currentImageIndex + 1}`} 
-              className={`max-w-full max-h-[calc(100vh-140px)] object-contain transition-opacity duration-300 ${
-                imageTransition ? 'opacity-0' : 'opacity-100'
-              }`}
-            />
+            <div className="relative w-full h-full max-w-[90vw] max-h-[calc(100vh-140px)]">
+              <Image 
+                key={currentImageIndex}
+                src={images[currentImageIndex]} 
+                alt={`Property ${currentImageIndex + 1}`} 
+                fill
+                className={`object-contain transition-opacity duration-300 ${
+                  imageTransition ? 'opacity-0' : 'opacity-100'
+                }`}
+                sizes="100vw"
+              />
+            </div>
           </div>
 
           {/* Navigation Arrows */}
@@ -813,11 +825,11 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
                       }, 150)
                     }
                   }}
-                  className={`flex-shrink-0 w-20 h-20 bg-gray-200 rounded-sm overflow-hidden cursor-pointer hover:opacity-80 transition-opacity ${
+                  className={`relative flex-shrink-0 w-20 h-20 bg-gray-200 rounded-sm overflow-hidden cursor-pointer hover:opacity-80 transition-opacity ${
                     currentImageIndex === idx ? 'ring-2 ring-white' : 'opacity-60'
                   }`}
                 >
-                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                  <Image src={img} alt={`Thumbnail ${idx + 1}`} fill className="object-cover" sizes="80px" />
                 </div>
               ))}
             </div>

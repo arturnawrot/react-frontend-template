@@ -27,3 +27,4 @@ export const Specialties: CollectionConfig = {
   timestamps: true,
 }
 
+

@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation'
 import config from '@/payload.config'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
-import type { Blog, BlogCategory, User } from '@/payload-types'
+import type { Blog, Page } from '@/payload-types'
 import Link from 'next/link'
+
+type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
 // Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
 export const dynamic = 'force-dynamic'
@@ -42,7 +44,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
   
   if (blog.relatedArticles && blog.relatedArticles.length > 0) {
     // Use manually selected related articles
-    const relatedIds = blog.relatedArticles.map((rel: any) =>
+    const relatedIds = blog.relatedArticles.map((rel: string | Blog) =>
       typeof rel === 'object' && rel !== null ? rel.id : rel
     )
     const { docs: relatedDocs } = await payload.find({
@@ -58,7 +60,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
     relatedArticlesData = relatedDocs as Blog[]
   } else if (blog.categories && Array.isArray(blog.categories) && blog.categories.length > 0) {
     // If no manually selected articles, find articles with same categories
-    const categoryIds = blog.categories.map((cat: any) =>
+    const categoryIds = blog.categories.map((cat: string | { id: string }) =>
       typeof cat === 'object' && cat !== null ? cat.id : cat
     )
     const { docs: relatedDocs } = await payload.find({
@@ -104,7 +106,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <HeroWrapper block={heroBlock as any} />
+      <HeroWrapper block={heroBlock as HeroBlock} />
 
       {/* Content Section */}
       <div className="container mx-auto px-6 py-16 lg:py-24">
@@ -149,7 +151,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
           <article className="flex-1">
             <div className="prose prose-lg max-w-none">
               {blog.content ? (
-                <LexicalRenderer content={blog.content as any} />
+                <LexicalRenderer content={blog.content} />
               ) : (
                 <p className="text-gray-500 italic">No content available.</p>
               )}

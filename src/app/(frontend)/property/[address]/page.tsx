@@ -3,13 +3,11 @@ import { notFound } from 'next/navigation'
 import React from 'react'
 import config from '@/payload.config'
 import PropertyDetails from '@/components/PropertyDetails/PropertyDetails'
-import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
 import Footer from '@/components/Footer/Footer'
 import NavbarWrapper from '@/components/Navbar/NavbarWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty } from '@/utils/buildout-api'
 import { addressToSlug } from '@/utils/address-slug'
-import { transformBuildoutProperty } from '@/utils/transform-buildout-property'
 
 // Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
 export const dynamic = 'force-dynamic'
@@ -67,19 +65,6 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     }
   }
 
-  // Get agent name and photo for featured properties
-  const primaryBroker = propertyBrokers.length > 0 
-    ? `${propertyBrokers[0].first_name} ${propertyBrokers[0].last_name}`
-    : 'Agent'
-  const primaryBrokerPhoto = propertyBrokers.length > 0 
-    ? propertyBrokers[0].profile_photo_url 
-    : null
-
-  // Get featured properties (exclude current property)
-  const featuredProperties = allProperties.properties
-    .filter((p: BuildoutProperty) => p.id !== property.id)
-    .slice(0, 4)
-    .map((p: BuildoutProperty) => transformBuildoutProperty(p, primaryBroker, primaryBrokerPhoto))
 
   return (
     <>
@@ -91,9 +76,6 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           brokers={propertyBrokers}
           brokerIdToAgentSlug={brokerIdToAgentSlug}
         />
-        {/* <div className="bg-[#D7D1C4]">
-            <FeaturedProperties properties={featuredProperties} />
-        </div> */}
         <Footer />
     </>
   )

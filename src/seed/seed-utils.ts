@@ -1,10 +1,9 @@
 import type { Payload } from 'payload'
-import { join } from 'path'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 
 const filename = fileURLToPath(import.meta.url)
-const dirname_path = dirname(filename)
+const _dirname_path = dirname(filename)
 
 /**
  * Seeds CSS styles that are common across all pages
@@ -138,7 +137,7 @@ export async function seedNavbar(payload: Payload) {
     limit: 1,
   })
 
-  const homePageId = homePage.docs[0]?.id || null
+  const _homePageId = homePage.docs[0]?.id || null
 
   const navbarData = {
     upperLinks: [

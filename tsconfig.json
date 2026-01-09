@@ -40,6 +40,10 @@
   ],
   "exclude": [
     "node_modules",
-    "non-payloadcms-version"
+    "non-payloadcms-version",
+    "**/seed.ts",
+    "**/seed/**",
+    "src/seed.ts",
+    "src/seed/**/*"
   ],
 }
