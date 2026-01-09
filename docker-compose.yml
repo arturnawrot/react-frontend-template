@@ -55,8 +55,8 @@ services:
   # Redis for Buildout API cache
   redis:
     image: redis:7-alpine
-    ports:
-      - '6379:6379'
+    # ports:
+    #   - '6379:6379'
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
