@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
-import { List, Grid, Share2 } from 'lucide-react'
+import { List, Grid, Share2, Loader2 } from 'lucide-react'
 import type { Page } from '@/payload-types'
 import PropertyCard from '../PropertyCard/PropertyCard'
 import type { LightweightProperty, BuildoutBroker } from '@/utils/buildout-api'
@@ -23,86 +23,113 @@ type PropertySearchBlock = Extract<Page['blocks'][number], { blockType: 'propert
 
 interface PropertySearchProps {
   block: PropertySearchBlock
-  initialProperties?: PropertyCardData[]
 }
 
-export default function PropertySearch({ block, initialProperties }: PropertySearchProps) {
+const CHUNK_SIZE = 50
+
+export default function PropertySearch({ block }: PropertySearchProps) {
   const heading = block.heading || 'Local Insight. National Scale.'
   const description = block.description || 'Headquartered in the Southeast, our brokers and partners support commercial activity across state lines and sector boundaries.'
   const buttonText = block.buttonText || 'Explore Properties by Market'
   
-  const [allProperties, setAllProperties] = useState<PropertyCardData[]>(initialProperties || [])
+  const [allProperties, setAllProperties] = useState<PropertyCardData[]>([])
   const [visibleProperties, setVisibleProperties] = useState<PropertyCardData[]>([])
   const [mapType, setMapType] = useState<'map' | 'satellite'>('map')
-  const [loading, setLoading] = useState(!initialProperties) // Only show loading if no initial properties
+  const [loading, setLoading] = useState(true)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch properties on mount only if initialProperties not provided (fallback to client-side)
-  // Use search-properties endpoint with limit instead of all-properties to avoid fetching everything
+  // Fetch all properties in chunks of 50, updating incrementally
   useEffect(() => {
-    // Skip fetch if initial properties were provided server-side
-    if (initialProperties && initialProperties.length > 0) {
-      return
-    }
-
-    const fetchProperties = async () => {
+    const fetchAllProperties = async () => {
       try {
         setLoading(true)
         setError(null)
-        // Fetch properties and brokers in parallel
-        const [propertiesResponse, brokersResponse] = await Promise.all([
-          fetch('/api/buildout/search-properties?limit=1000&offset=0'),
-          fetch('/api/buildout/brokers'),
-        ])
-        
-        if (!propertiesResponse.ok) {
-          const errorData = await propertiesResponse.json().catch(() => ({ error: 'Unknown error' }))
-          throw new Error(errorData.error || 'Failed to fetch properties')
-        }
+        setIsInitialLoad(true)
 
-        const propertiesData = await propertiesResponse.json()
-        
-        if (!propertiesData.success) {
-          throw new Error(propertiesData.error || 'Failed to fetch properties')
-        }
-
-        // Get brokers if available
+        // First, fetch brokers (needed for transformation)
         let brokerMaps = createBrokerMaps([])
-        if (brokersResponse.ok) {
-          try {
+        try {
+          const brokersResponse = await fetch('/api/buildout/brokers')
+          if (brokersResponse.ok) {
             const brokersData = await brokersResponse.json()
             if (brokersData.success && brokersData.brokers) {
-              // Type assertion needed for API response
               const brokers = brokersData.brokers as BuildoutBroker[]
               brokerMaps = createBrokerMaps(brokers)
             }
-          } catch (e) {
-            // If brokers fetch fails, continue without broker names
-            console.warn('Failed to fetch brokers:', e)
+          }
+        } catch (e) {
+          console.warn('Failed to fetch brokers:', e)
+        }
+
+        // Fetch properties in chunks, updating state incrementally
+        let offset = 0
+        let hasMore = true
+        let isFirstChunk = true
+
+        while (hasMore) {
+          const response = await fetch(`/api/buildout/search-properties?limit=${CHUNK_SIZE}&offset=${offset}`)
+          
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+            throw new Error(errorData.error || 'Failed to fetch properties')
+          }
+
+          const data = await response.json()
+          
+          if (!data.success) {
+            throw new Error(data.error || 'Failed to fetch properties')
+          }
+
+          const properties = data.properties || []
+          
+          if (properties.length === 0) {
+            hasMore = false
+            break
+          }
+
+          // Transform lightweight properties to PropertyCard format with broker names and images
+          const transformedProperties = properties.map((property: LightweightProperty) => {
+            const { name: agentName, image: agentImage } = getAgentInfo(property.broker_id, brokerMaps)
+            return transformPropertyToCard(property, agentName, agentImage)
+          })
+
+          // Filter out properties without valid coordinates
+          const validProperties = filterValidCoordinates(transformedProperties)
+
+          // Update state incrementally - append new properties to existing ones
+          setAllProperties(prev => {
+            const newProperties = [...prev, ...validProperties]
+            return newProperties
+          })
+
+          // After first chunk, show the map immediately
+          if (isFirstChunk) {
+            setIsInitialLoad(false)
+            isFirstChunk = false
+          }
+
+          // If we got less than CHUNK_SIZE, we've reached the end
+          if (properties.length < CHUNK_SIZE) {
+            hasMore = false
+          } else {
+            offset += CHUNK_SIZE
           }
         }
 
-        // Transform lightweight properties to PropertyCard format with broker names and images
-        const transformedProperties = (propertiesData.properties || []).map((property: LightweightProperty) => {
-          const { name: agentName, image: agentImage } = getAgentInfo(property.broker_id, brokerMaps)
-          return transformPropertyToCard(property, agentName, agentImage)
-        })
-
-        // Filter out properties without valid coordinates
-        const validProperties = filterValidCoordinates(transformedProperties)
-
-        setAllProperties(validProperties)
+        // All chunks fetched, stop loading
+        setLoading(false)
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to fetch properties'
         setError(errorMessage)
         console.error('Error fetching properties:', err)
-      } finally {
         setLoading(false)
+        setIsInitialLoad(false)
       }
     }
 
-    fetchProperties()
-  }, [initialProperties])
+    fetchAllProperties()
+  }, [])
 
   // Handle map bounds change - filter properties and show 4
   interface LeafletBounds {
@@ -130,11 +157,10 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
 
   // Display properties count
   const propertiesCountText = useMemo(() => {
-    if (loading) return 'Loading properties...'
     if (error) return 'Error loading properties'
     const count = allProperties.length
     return `${count} ${count === 1 ? 'Property' : 'Properties'} For Sale`
-  }, [allProperties.length, loading, error])
+  }, [allProperties.length, error])
 
   return (
     <div className="p-4 md:p-8 font-sans text-stone-800 bg-transparent">
@@ -165,7 +191,7 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
           {/* LEFT COLUMN: Map */}
           <div className="w-full lg:w-1/2 relative h-[600px] lg:h-[600px] flex-shrink-0">
             <div className="absolute inset-0 bg-[#E5F0EC] rounded-3xl overflow-hidden border border-stone-200 shadow-inner">
-              {loading ? (
+              {isInitialLoad ? (
                 <div className="w-full h-full flex items-center justify-center">
                   <p className="text-stone-600">Loading map...</p>
                 </div>
@@ -189,9 +215,14 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
             
             {/* List Toolbar - Above property cards container */}
             <div className="flex flex-wrap gap-2 justify-between items-center mb-4 pb-2 flex-shrink-0">
-              <h2 className="text-lg font-medium text-stone-800">
-                {propertiesCountText}
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-medium text-stone-800">
+                  {propertiesCountText}
+                </h2>
+                {loading && (
+                  <Loader2 className="h-4 w-4 text-stone-600 animate-spin" />
+                )}
+              </div>
               <div className="flex gap-2 items-center">
                  <div className="hidden sm:flex bg-white rounded border border-stone-200 p-1">
                    <button className="p-1 hover:bg-stone-100 rounded text-stone-600"><List size={18} /></button>
@@ -204,7 +235,7 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
 
             {/* Cards Stack - Fixed height container, no scrolling */}
             <div className="flex flex-col gap-2 flex-1 min-h-0 overflow-hidden">
-              {loading ? (
+              {isInitialLoad ? (
                 <p className="text-stone-600">Loading properties...</p>
               ) : error ? (
                 <p className="text-red-600">Error: {error}</p>
