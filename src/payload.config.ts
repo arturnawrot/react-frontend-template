@@ -23,6 +23,7 @@ import { Footer } from './globals/Footer'
 import { FeaturedPropertiesSets } from './globals/FeaturedPropertiesSets'
 import { FeaturedAgentsSets } from './globals/FeaturedAgentsSets'
 import { FeaturedArticles } from './globals/FeaturedArticles'
+import { seedEndpoint } from './endpoints/seed'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -49,4 +50,5 @@ export default buildConfig({
   }),
   sharp,
   plugins: [],
+  endpoints: [seedEndpoint],
 })
