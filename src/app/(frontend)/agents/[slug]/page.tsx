@@ -12,7 +12,7 @@ import Footer from '@/components/Footer/Footer'
 import type { Page } from '@/payload-types'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty } from '@/utils/buildout-api'
-import { transformBuildoutProperty } from '@/utils/transform-buildout-property'
+import { transformPropertyToCard } from '@/utils/property-transform'
 
 // Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
 export const dynamic = 'force-dynamic'
@@ -263,7 +263,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
 
   // Transform featured properties with agent name and photo
   const transformedFeaturedProperties = featuredProperties.map((prop) =>
-    transformBuildoutProperty(
+    transformPropertyToCard(
       prop, 
       agent.fullName || `${agent.firstName} ${agent.lastName}`,
       agentPhoto

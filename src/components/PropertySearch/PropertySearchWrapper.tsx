@@ -1,7 +1,7 @@
 import React from 'react'
 import type { Page } from '@/payload-types'
 import { buildoutApi } from '@/utils/buildout-api'
-import { transformLightweightPropertyToCard } from '@/utils/property-transform'
+import { transformPropertyToCard } from '@/utils/property-transform'
 import { createBrokerMaps, getAgentInfo } from '@/utils/broker-utils'
 import { filterValidCoordinates } from '@/utils/property-utils'
 import PropertySearch from './PropertySearch'
@@ -32,7 +32,7 @@ export default async function PropertySearchWrapper({ block }: PropertySearchWra
     // Transform lightweight properties to PropertyCard format with broker names and images
     const transformedProperties = propertiesResponse.properties.map((property) => {
       const { name: agentName, image: agentImage } = getAgentInfo(property.broker_id, brokerMaps)
-      return transformLightweightPropertyToCard(property, agentName, agentImage)
+      return transformPropertyToCard(property, agentName, agentImage)
     })
 
     // Filter out properties without valid coordinates

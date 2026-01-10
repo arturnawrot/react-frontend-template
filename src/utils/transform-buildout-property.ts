@@ -1,20 +1,18 @@
-import type { BuildoutProperty } from '@/utils/buildout-api'
-import { getPropertyTypeLabel } from '@/utils/property-types'
+/**
+ * @deprecated This file is deprecated. Use transformPropertyToCard from '@/utils/property-transform' instead.
+ * This file is kept for backward compatibility only.
+ */
 
-export interface TransformedProperty {
-  id: number
-  address: string
-  cityStateZip: string
-  price: string
-  sqft: string
-  type: string
-  agent: string
-  agentImage?: string | null
-  image: string
-  badges?: Array<{ text: string; color: string }>
-}
+import type { BuildoutProperty } from '@/utils/buildout-api'
+import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 
 /**
+ * @deprecated Use PropertyCardData from '@/utils/property-transform' instead
+ */
+export type TransformedProperty = Omit<PropertyCardData, 'latitude' | 'longitude'>
+
+/**
+ * @deprecated Use transformPropertyToCard from '@/utils/property-transform' instead
  * Transforms a Buildout property to PropertyCard format
  */
 export function transformBuildoutProperty(
@@ -22,62 +20,9 @@ export function transformBuildoutProperty(
   agentName: string,
   agentImage?: string | null
 ): TransformedProperty {
-  // Format address
-  const address = property.address || property.name || 'Property'
-  const cityStateZip = [property.city, property.state, property.zip].filter(Boolean).join(', ')
-  
-  // Format price
-  let price = 'Price on Request'
-  if (property.sale_price_dollars) {
-    price = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(property.sale_price_dollars)
-  } else if (property.lease_listing_published) {
-    price = 'Lease Available'
-  }
-  
-  // Format square footage
-  const sqft = property.building_size_sf
-    ? `${property.building_size_sf.toLocaleString()} SF`
-    : ''
-  
-  // Get property type
-  const type = property.property_type_label_override || getPropertyTypeLabel(property.property_type_id)
-  
-  // Get image
-  const image = property.photos && property.photos.length > 0
-    ? property.photos[0].formats?.large || property.photos[0].url || ''
-    : ''
-  
-  // Build badges
-  const badges: Array<{ text: string; color: string }> = []
-  if (property.sale && property.sale_listing_published) {
-    badges.push({ text: 'For Sale', color: 'bg-[#CDDC39]' })
-  }
-  if (property.lease && property.lease_listing_published) {
-    badges.push({ text: 'For Lease', color: 'bg-[#D4E157]' })
-  }
-  // Check if it's a new listing (recently created)
-  const createdAt = new Date(property.created_at)
-  const daysSinceCreated = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24)
-  if (daysSinceCreated < 30) {
-    badges.push({ text: 'New Listing', color: 'bg-[#D4E157]' })
-  }
-  
-  return {
-    id: property.id,
-    address,
-    cityStateZip,
-    price,
-    sqft,
-    type,
-    agent: agentName,
-    agentImage,
-    image,
-    badges: badges.length > 0 ? badges : undefined,
-  }
+  const transformed = transformPropertyToCard(property, agentName, agentImage)
+  // Remove latitude/longitude for backward compatibility
+  const { latitude, longitude, ...rest } = transformed
+  return rest
 }
 

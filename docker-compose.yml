@@ -21,6 +21,7 @@ services:
     # Keep this line! It tells Docker what to name the image after building
     image: arturnawrot/meybohm-frontend:latest
     container_name: payload-production
+    restart: unless-stopped
     # You MUST uncomment this section so Docker knows how to build it
     build:
       context: .

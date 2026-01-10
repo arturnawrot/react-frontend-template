@@ -17,7 +17,8 @@ import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty } from '@/utils/buildout-api'
-import { transformBuildoutProperty } from '@/utils/transform-buildout-property'
+import { transformPropertyToCard } from '@/utils/property-transform'
+import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
 
 // Type for any block from a Page (also compatible with Container blocks)
 type PageBlock = Page['blocks'][number]
@@ -160,13 +161,9 @@ export async function renderBlock(
             properties = featuredProperties.map((prop) => {
               // Get the first broker for this property
               const brokerId = prop.broker_id || (prop.broker_ids && prop.broker_ids[0])
-              const broker = brokerId ? brokers.find(b => b.id === brokerId) : null
-              const agentName = broker 
-                ? `${broker.first_name} ${broker.last_name}`.trim()
-                : 'Agent'
-              const agentImage = broker?.profile_photo_url || null
+              const { name: agentName, image: agentImage } = getAgentInfoFromBrokers(brokerId, brokers)
               
-              return transformBuildoutProperty(prop, agentName, agentImage)
+              return transformPropertyToCard(prop, agentName, agentImage)
             })
 
             console.log('[renderBlocks] Properties transformed:', properties.length)
@@ -264,6 +261,7 @@ export async function renderBlock(
       role: string
       location: string
       image?: any
+      slug?: string
     }> = []
 
     const setName = (block as any).featuredAgentSetName
@@ -328,6 +326,7 @@ export async function renderBlock(
                 role: roles.length > 0 ? roles.join(' & ') : 'Agent & Broker',
                 location: servingLocations.length > 0 ? servingLocations.join(', ') : '',
                 image: agent.cardImage || agent.backgroundImage,
+                slug: agent.slug,
               }
             })
         }

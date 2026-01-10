@@ -3,14 +3,14 @@ import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import PropertyCard from '../PropertyCard/PropertyCard'
 import Arrow from '../Arrow/Arrow'
-import type { TransformedProperty } from '@/utils/transform-buildout-property'
+import type { PropertyCardData } from '@/utils/property-transform'
 
 type FeaturedPropertiesBlock = Extract<Page['blocks'][number], { blockType: 'featuredProperties' }>
 
 interface FeaturedPropertiesProps {
   // Support both CMS block and direct props
   block?: FeaturedPropertiesBlock
-  properties?: TransformedProperty[]
+  properties?: PropertyCardData[]
   heading?: string
   seeAllLink?: string
   seeAllLinkText?: string

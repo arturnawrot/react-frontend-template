@@ -211,3 +211,4 @@ export default async function BlogPage({ slug, defaultType = 'article' }: BlogPa
   )
 }
 
+

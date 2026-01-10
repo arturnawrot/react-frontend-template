@@ -5,7 +5,7 @@ import { List, Grid, Share2 } from 'lucide-react'
 import type { Page } from '@/payload-types'
 import PropertyCard from '../PropertyCard/PropertyCard'
 import type { LightweightProperty, BuildoutBroker } from '@/utils/buildout-api'
-import { transformLightweightPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
+import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { createBrokerMaps, getAgentInfo } from '@/utils/broker-utils'
 import { filterValidCoordinates } from '@/utils/property-utils'
 
@@ -85,7 +85,7 @@ export default function PropertySearch({ block, initialProperties }: PropertySea
         // Transform lightweight properties to PropertyCard format with broker names and images
         const transformedProperties = (propertiesData.properties || []).map((property: LightweightProperty) => {
           const { name: agentName, image: agentImage } = getAgentInfo(property.broker_id, brokerMaps)
-          return transformLightweightPropertyToCard(property, agentName, agentImage)
+          return transformPropertyToCard(property, agentName, agentImage)
         })
 
         // Filter out properties without valid coordinates

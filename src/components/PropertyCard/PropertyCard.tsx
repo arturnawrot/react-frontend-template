@@ -1,10 +1,11 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Heart } from 'lucide-react'
 import { isPropertySaved, togglePropertySaved } from '@/utils/saved-properties'
 import { addressToSlug } from '@/utils/address-slug'
+import { useAgentSlugMap } from '@/hooks/useAgentSlugMap'
 
 interface PropertyCardProps {
   property: {
@@ -17,6 +18,8 @@ interface PropertyCardProps {
     type: string
     agent: string
     agentImage?: string | null
+    agentSlug?: string | null
+    brokerId?: number | null
     badges?: Array<{ text: string; color: string }>
   }
   variant?: 'vertical' | 'horizontal'
@@ -25,6 +28,18 @@ interface PropertyCardProps {
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertical' }) => {
   const isVertical = variant === 'vertical'
   const [isSaved, setIsSaved] = useState(false)
+  const agentSlugMap = useAgentSlugMap()
+
+  // Get agent slug from brokerId if available, otherwise use provided agentSlug
+  const agentSlug = useMemo(() => {
+    if (property.agentSlug) {
+      return property.agentSlug
+    }
+    if (property.brokerId && agentSlugMap.has(property.brokerId)) {
+      return agentSlugMap.get(property.brokerId) || null
+    }
+    return null
+  }, [property.agentSlug, property.brokerId, agentSlugMap])
 
   // Check if property is saved on mount and when property.id changes
   useEffect(() => {
@@ -42,17 +57,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
   }
 
   return (
-    <div className={`bg-white rounded-xl shadow-sm border-black/10 border hover:shadow-md transition-shadow flex overflow-hidden group ${isVertical ? 'flex-col h-[300px]' : 'flex-col sm:flex-row h-[127px]'}`}>
+    <div className={`bg-white rounded-xl shadow-sm border-black/10 border hover:shadow-md transition-shadow flex overflow-hidden group ${isVertical ? 'flex-col h-[300px]' : 'flex-row h-[127px]'}`}>
       
       {/* Card Image */}
-      <div className={`relative flex-shrink-0 overflow-visible ${isVertical ? 'h-40 w-full' : 'w-full sm:w-[240px] h-[127px] sm:h-[127px]'}`}>
-        <div className="w-full h-full overflow-hidden rounded-t-xl relative">
+      <div className={`relative flex-shrink-0 overflow-visible ${isVertical ? 'h-40 w-full' : 'w-1/3 h-[127px]'}`}>
+        <div className={`w-full h-full overflow-hidden relative ${isVertical ? 'rounded-t-xl' : 'rounded-l-xl'}`}>
           <Image 
             src={property.image} 
             alt="Property" 
             fill
             className="object-cover transform group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 640px) 100vw, 240px"
+            sizes="33vw"
           />
         </div>
         {property.badges && property.badges.length > 0 && (
@@ -77,11 +92,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
       </div>
 
       {/* Card Details */}
-      <div className={`flex flex-col w-full min-h-0 flex-1 ${isVertical ? 'p-3 justify-between' : 'py-2 px-4 justify-center'}`}>
-        <div className="flex-shrink-0">
+      <div className={`flex flex-col w-full min-h-0 flex-1 min-w-0 ${isVertical ? 'p-3 justify-between' : 'py-2 px-4 justify-center'}`}>
+        <div className="flex-shrink-0 min-w-0">
           <Link 
             href={`/property/${addressToSlug(property.address)}`}
-            className={`font-bold text-stone-900 mb-1 leading-tight hover:text-stone-700 transition-colors truncate block ${isVertical ? 'text-lg' : 'text-xl font-serif'}`}
+            className={`font-bold text-stone-900 mb-1 leading-tight hover:text-stone-700 transition-colors truncate block min-w-0 ${isVertical ? 'text-lg' : 'text-xl font-serif'}`}
             title={property.address}
           >
             {property.address}
@@ -111,9 +126,20 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
                sizes="20px"
              />
           </div>
-          <span className="text-[10px] font-bold bg-stone-100 px-2.5 py-1.5 rounded-full text-stone-600 truncate min-w-0" title={property.agent}>
-            {property.agent}
-          </span>
+          {agentSlug ? (
+            <Link 
+              href={`/agents/${agentSlug}`}
+              onClick={(e) => e.stopPropagation()}
+              className="text-[10px] font-bold bg-stone-100 px-2.5 py-1.5 rounded-full text-stone-600 truncate min-w-0 hover:bg-stone-200 transition-colors"
+              title={property.agent}
+            >
+              {property.agent}
+            </Link>
+          ) : (
+            <span className="text-[10px] font-bold bg-stone-100 px-2.5 py-1.5 rounded-full text-stone-600 truncate min-w-0" title={property.agent}>
+              {property.agent}
+            </span>
+          )}
         </div>
       </div>
     </div>

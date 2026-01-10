@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 import { ChevronDown, List, Grid, Share2, RotateCcw } from 'lucide-react'
 import PropertyCard from '../PropertyCard/PropertyCard'
 import type { LightweightProperty, BuildoutBroker } from '@/utils/buildout-api'
-import { transformLightweightPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
+import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
 import { buildFilterParams as buildFilterParamsUtil } from '@/utils/filter-params'
 import LocationSearchSuggestion, { type AddressSuggestion } from '@/components/LocationSearchSuggestion/LocationSearchSuggestion'
@@ -300,7 +300,7 @@ export default function PropertySearchAdvanced({
       // ALL filtering is done server-side, so we just transform and use the results
       const transformedProperties = (data.properties || []).map((property: LightweightProperty) => {
         const { name: agentName, image: agentImage } = getAgentInfoFromBrokers(property.broker_id, brokers)
-        return transformLightweightPropertyToCard(property, agentName, agentImage)
+        return transformPropertyToCard(property, agentName, agentImage)
       })
 
       // Filter out properties without valid coordinates (this is the only client-side filtering we do)

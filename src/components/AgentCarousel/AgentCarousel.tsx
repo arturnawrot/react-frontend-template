@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import type { Page, Media } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 
@@ -11,6 +12,7 @@ interface Agent {
   role: string
   location: string
   image?: Media | string | null
+  slug?: string
 }
 
 interface AgentCarouselProps {
@@ -185,11 +187,14 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
               {extendedAgents.map((agent, index) => {
                 const image = typeof agent.image === 'object' && agent.image !== null ? agent.image : null
                 const imageUrl = image?.url || ''
+                const agentSlug = agent.slug
+                const agentHref = agentSlug ? `/agents/${agentSlug}` : '#'
                 
                 return (
-                  <div 
+                  <Link
                     key={index}
-                    className="w-[280px] md:w-[340px] h-full relative rounded-2xl overflow-hidden shrink-0 group cursor-pointer"
+                    href={agentHref}
+                    className="w-[280px] md:w-[340px] h-full relative rounded-2xl overflow-hidden shrink-0 group cursor-pointer block"
                   >
                     {imageUrl && (
                       <Image
@@ -202,13 +207,13 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f1f1a] via-transparent to-transparent opacity-90" />
                     
-                    <div className="absolute bottom-0 left-0 p-6 text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                    <div className="absolute bottom-0 left-0 p-6 text-white">
                       <h3 className="text-2xl font-bold mb-1">{agent.name}</h3>
-                      <p className="text-sm text-gray-200 tracking-wide uppercase text-[11px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75">
+                      <p className="text-sm text-gray-200 tracking-wide uppercase text-[11px]">
                         {agent.role} <span className="mx-1 opacity-60">|</span> {agent.location}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 )
               })}
             </div>
