@@ -48,6 +48,9 @@ ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Install su-exec for switching users
+RUN apk add --no-cache su-exec
+
 # Remove this line if you do not have this folder
 COPY --from=builder /app/public ./public
 
@@ -64,12 +67,20 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-USER nextjs
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Don't set USER here - entrypoint will handle user switching after fixing permissions
+# This allows the entrypoint to run as root to fix volume mount permissions
 
 EXPOSE 3000
 
 ENV PORT 3000
 
+# Use entrypoint to fix permissions before running as nextjs user
+ENTRYPOINT ["docker-entrypoint.sh"]
+
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD HOSTNAME="0.0.0.0" node server.js
+CMD ["sh", "-c", "HOSTNAME=\"0.0.0.0\" node server.js"]
