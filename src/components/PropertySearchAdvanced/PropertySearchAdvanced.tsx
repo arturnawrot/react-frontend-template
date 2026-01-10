@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { ChevronDown, List, Grid, Share2, RotateCcw } from 'lucide-react'
+import { ChevronDown, List, Grid, Share2, RotateCcw, Filter } from 'lucide-react'
 import PropertyCard from '../PropertyCard/PropertyCard'
 import type { LightweightProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
@@ -99,7 +99,10 @@ export default function PropertySearchAdvanced({
   
   // Refs for dropdowns
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const mobileFilterPanelRef = useRef<HTMLDivElement | null>(null)
+  const mobileFilterButtonRef = useRef<HTMLButtonElement | null>(null)
   const isInitialMount = useRef(true)
   
   // Update URL params when filters/search/page change
@@ -164,11 +167,20 @@ export default function PropertySearchAdvanced({
           setOpenDropdown(null)
         }
       }
+      // Close mobile filter panel when clicking outside
+      if (mobileFiltersOpen) {
+        const target = event.target as Node
+        const panel = mobileFilterPanelRef.current
+        const button = mobileFilterButtonRef.current
+        if (panel && button && !panel.contains(target) && !button.contains(target)) {
+          setMobileFiltersOpen(false)
+        }
+      }
     }
 
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [openDropdown])
+  }, [openDropdown, mobileFiltersOpen])
 
   // Helper function to build filter params from filter state
   const buildFilterParams = useCallback((filters: FilterState, searchQuery?: string, includeSearch = false): URLSearchParams => {
@@ -634,13 +646,13 @@ export default function PropertySearchAdvanced({
                 />
               </div>
 
-              {/* Filter Dropdowns */}
-              <div className="flex flex-wrap items-center gap-2 w-full xl:w-auto">
+              {/* Desktop: Filter Dropdowns - Always Visible */}
+              <div className="hidden xl:flex flex-wrap items-center gap-2 w-auto">
                 {/* Brokers */}
                 <div className="relative" ref={(el) => { dropdownRefs.current['brokers'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'brokers' ? null : 'brokers')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[200px]"
+                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[200px]"
                   >
                     <span className="truncate">{getFilterLabel('brokerId')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -670,7 +682,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['propertyType'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'propertyType' ? null : 'propertyType')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
+                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
                   >
                     <span className="truncate">{getFilterLabel('propertyType')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -700,7 +712,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['priceRange'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'priceRange' ? null : 'priceRange')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
+                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
                   >
                     <span className="truncate">{getFilterLabel('minPrice')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -736,7 +748,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['saleOrLease'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'saleOrLease' ? null : 'saleOrLease')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[150px]"
+                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[150px]"
                   >
                     <span className="truncate">{getFilterLabel('saleOrLease')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -769,7 +781,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['capRate'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'capRate' ? null : 'capRate')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[150px]"
+                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[150px]"
                   >
                     <span className="truncate">{getFilterLabel('minCapRate')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -805,7 +817,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['squareFootage'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'squareFootage' ? null : 'squareFootage')}
-                    className="flex items-center justify-between gap-2 bg-[#A8B2AD] hover:bg-[#EBEBE8] text-[#1C2B28] px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
+                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
                   >
                     <span className="truncate">{getFilterLabel('minSquareFootage')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -839,11 +851,263 @@ export default function PropertySearchAdvanced({
                  
                 <button 
                   onClick={handleResetFilters}
-                  className="whitespace-nowrap bg-transparent border border-stone-500 hover:border-white text-stone-400 hover:text-white px-6 py-3 rounded text-sm font-medium ml-auto xl:ml-2 transition-colors"
+                  className="whitespace-nowrap bg-transparent border border-white/30 hover:border-white text-white hover:text-white px-6 py-3 rounded text-sm font-medium ml-auto xl:ml-2 transition-colors"
                 >
                   Reset Filters
                 </button>
               </div>
+
+              {/* Mobile: Filter Button and Collapsible Panel */}
+              <div className="xl:hidden w-full flex items-center gap-2">
+                <button
+                  ref={mobileFilterButtonRef}
+                  onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+                  className="flex items-center justify-center gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors"
+                >
+                  <Filter size={18} />
+                  <span>Filters</span>
+                </button>
+                
+                <button 
+                  onClick={handleResetFilters}
+                  className="whitespace-nowrap bg-transparent border border-white/30 hover:border-white text-white hover:text-white px-4 py-3 rounded text-sm font-medium transition-colors"
+                >
+                  Reset
+                </button>
+              </div>
+
+              {/* Mobile: Collapsible Filter Panel */}
+              {mobileFiltersOpen && (
+                <div ref={mobileFilterPanelRef} className="xl:hidden w-full mt-4 p-4 bg-[#1C2B28] rounded-lg space-y-3">
+                  {/* Brokers */}
+                  <div className="relative" ref={(el) => { dropdownRefs.current['brokers-mobile'] = el }}>
+                    <button 
+                      onClick={() => setOpenDropdown(openDropdown === 'brokers-mobile' ? null : 'brokers-mobile')}
+                      className="flex items-center justify-between gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded text-sm font-semibold transition-colors w-full"
+                    >
+                      <span className="truncate">{getFilterLabel('brokerId')}</span>
+                      <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
+                    </button>
+                    {openDropdown === 'brokers-mobile' && (
+                      <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 max-h-60 overflow-y-auto min-w-[200px] w-full">
+                        <button
+                          onClick={() => {
+                            handleFilterChange('brokerId', null)
+                            setMobileFiltersOpen(false)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          All Brokers
+                        </button>
+                        {brokers.map((broker) => (
+                          <button
+                            key={broker.id}
+                            onClick={() => {
+                              handleFilterChange('brokerId', broker.id)
+                              setMobileFiltersOpen(false)
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                          >
+                            {broker.first_name} {broker.last_name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Property Type */}
+                  <div className="relative" ref={(el) => { dropdownRefs.current['propertyType-mobile'] = el }}>
+                    <button 
+                      onClick={() => setOpenDropdown(openDropdown === 'propertyType-mobile' ? null : 'propertyType-mobile')}
+                      className="flex items-center justify-between gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded text-sm font-semibold transition-colors w-full"
+                    >
+                      <span className="truncate">{getFilterLabel('propertyType')}</span>
+                      <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
+                    </button>
+                    {openDropdown === 'propertyType-mobile' && (
+                      <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[150px] w-full">
+                        <button
+                          onClick={() => {
+                            handleFilterChange('propertyType', null)
+                            setMobileFiltersOpen(false)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          All Types
+                        </button>
+                        {propertyTypes.map((type) => (
+                          <button
+                            key={type.id}
+                            onClick={() => {
+                              handleFilterChange('propertyType', type.id)
+                              setMobileFiltersOpen(false)
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                          >
+                            {type.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Price Range */}
+                  <div className="relative" ref={(el) => { dropdownRefs.current['priceRange-mobile'] = el }}>
+                    <button 
+                      onClick={() => setOpenDropdown(openDropdown === 'priceRange-mobile' ? null : 'priceRange-mobile')}
+                      className="flex items-center justify-between gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded text-sm font-semibold transition-colors w-full"
+                    >
+                      <span className="truncate">{getFilterLabel('minPrice')}</span>
+                      <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
+                    </button>
+                    {openDropdown === 'priceRange-mobile' && (
+                      <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[180px] w-full">
+                        <button
+                          onClick={() => {
+                            setFilters(prev => ({ ...prev, minPrice: null, maxPrice: null }))
+                            setOpenDropdown(null)
+                            setMobileFiltersOpen(false)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          All Prices
+                        </button>
+                        {priceRanges.map((range, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => {
+                              setFilters(prev => ({ ...prev, minPrice: range.min, maxPrice: range.max }))
+                              setOpenDropdown(null)
+                              setMobileFiltersOpen(false)
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                          >
+                            {range.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Sale or Lease */}
+                  <div className="relative" ref={(el) => { dropdownRefs.current['saleOrLease-mobile'] = el }}>
+                    <button 
+                      onClick={() => setOpenDropdown(openDropdown === 'saleOrLease-mobile' ? null : 'saleOrLease-mobile')}
+                      className="flex items-center justify-between gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded text-sm font-semibold transition-colors w-full"
+                    >
+                      <span className="truncate">{getFilterLabel('saleOrLease')}</span>
+                      <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
+                    </button>
+                    {openDropdown === 'saleOrLease-mobile' && (
+                      <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[150px] w-full">
+                        <button
+                          onClick={() => {
+                            handleFilterChange('saleOrLease', null)
+                            setMobileFiltersOpen(false)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          Both
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleFilterChange('saleOrLease', 'sale')
+                            setMobileFiltersOpen(false)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          For Sale
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleFilterChange('saleOrLease', 'lease')
+                            setMobileFiltersOpen(false)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          For Lease
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Cap Rate */}
+                  <div className="relative" ref={(el) => { dropdownRefs.current['capRate-mobile'] = el }}>
+                    <button 
+                      onClick={() => setOpenDropdown(openDropdown === 'capRate-mobile' ? null : 'capRate-mobile')}
+                      className="flex items-center justify-between gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded text-sm font-semibold transition-colors w-full"
+                    >
+                      <span className="truncate">{getFilterLabel('minCapRate')}</span>
+                      <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
+                    </button>
+                    {openDropdown === 'capRate-mobile' && (
+                      <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[150px] w-full">
+                        <button
+                          onClick={() => {
+                            setFilters(prev => ({ ...prev, minCapRate: null, maxCapRate: null }))
+                            setOpenDropdown(null)
+                            setMobileFiltersOpen(false)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          All Cap Rates
+                        </button>
+                        {capRateRanges.map((range, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => {
+                              setFilters(prev => ({ ...prev, minCapRate: range.min, maxCapRate: range.max }))
+                              setOpenDropdown(null)
+                              setMobileFiltersOpen(false)
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                          >
+                            {range.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Square Footage */}
+                  <div className="relative" ref={(el) => { dropdownRefs.current['squareFootage-mobile'] = el }}>
+                    <button 
+                      onClick={() => setOpenDropdown(openDropdown === 'squareFootage-mobile' ? null : 'squareFootage-mobile')}
+                      className="flex items-center justify-between gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded text-sm font-semibold transition-colors w-full"
+                    >
+                      <span className="truncate">{getFilterLabel('minSquareFootage')}</span>
+                      <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
+                    </button>
+                    {openDropdown === 'squareFootage-mobile' && (
+                      <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[200px] w-full">
+                        <button
+                          onClick={() => {
+                            setFilters(prev => ({ ...prev, minSquareFootage: null, maxSquareFootage: null }))
+                            setOpenDropdown(null)
+                            setMobileFiltersOpen(false)
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                        >
+                          Any Size
+                        </button>
+                        {squareFootageRanges.map((range, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => {
+                              setFilters(prev => ({ ...prev, minSquareFootage: range.min, maxSquareFootage: range.max }))
+                              setOpenDropdown(null)
+                              setMobileFiltersOpen(false)
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-stone-100 text-sm"
+                          >
+                            {range.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

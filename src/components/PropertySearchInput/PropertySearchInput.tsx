@@ -294,10 +294,10 @@ export default function PropertySearchInput() {
                     }}
                     className="w-full flex items-center justify-between hover:bg-stone-50 transition-colors rounded p-1 -ml-1"
                   >
-                      <span className={`text-sm md:text-base ${selectedPropertyType ? 'text-stone-700' : 'text-stone-400'}`}>
+                      <span className={`text-xs md:text-sm truncate flex-1 text-left ${selectedPropertyType ? 'text-stone-700' : 'text-stone-400'}`}>
                         {getPropertyTypeLabel()}
                       </span>
-                      <ChevronDown size={14} className="text-stone-400" />
+                      <ChevronDown size={14} className="text-stone-400 flex-shrink-0 ml-1" />
                   </button>
                   {openDropdown === 'propertyType' && (
                     <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-[100] min-w-[200px] max-h-[300px] overflow-y-auto border border-stone-200">
@@ -342,10 +342,10 @@ export default function PropertySearchInput() {
                     }}
                     className="w-full flex items-center justify-between hover:bg-stone-50 transition-colors rounded p-1 -ml-1"
                   >
-                      <span className={`text-sm md:text-base ${selectedPriceRange ? 'text-stone-700' : 'text-stone-400'}`}>
+                      <span className={`text-xs md:text-sm truncate flex-1 text-left ${selectedPriceRange ? 'text-stone-700' : 'text-stone-400'}`}>
                         {getPriceRangeLabel()}
                       </span>
-                      <ChevronDown size={14} className="text-stone-400" />
+                      <ChevronDown size={14} className="text-stone-400 flex-shrink-0 ml-1" />
                   </button>
                   {openDropdown === 'priceRange' && (
                     <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-[100] min-w-[180px] max-h-[300px] overflow-y-auto border border-stone-200">
@@ -391,10 +391,10 @@ export default function PropertySearchInput() {
                         }}
                         className="w-full flex items-center justify-between lg:justify-start lg:gap-2 hover:bg-stone-50 transition-colors rounded p-1 -ml-1"
                       >
-                          <span className={`text-sm md:text-base ${selectedSquareFootage ? 'text-stone-700' : 'text-stone-400'}`}>
+                          <span className={`text-xs md:text-sm truncate flex-1 text-left ${selectedSquareFootage ? 'text-stone-700' : 'text-stone-400'}`}>
                             {getSquareFootageLabel()}
                           </span>
-                          <ChevronDown size={14} className="text-stone-400 lg:hidden" />
+                          <ChevronDown size={14} className="text-stone-400 flex-shrink-0 ml-1 lg:hidden" />
                       </button>
                       {openDropdown === 'squareFootage' && (
                         <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-[100] min-w-[200px] max-h-[300px] overflow-y-auto border border-stone-200">
