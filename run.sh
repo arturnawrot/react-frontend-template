@@ -49,7 +49,7 @@ function fetch_latest_image {
 }
 
 function run_prod {
-  docker-compose up -d payload-production
+  docker compose up -d payload-production
 }
 
 function seed {
