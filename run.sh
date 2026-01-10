@@ -3,6 +3,9 @@
 set -o errexit
 set -o pipefail
 
+DOCKER_USERNAME=${1:-"arturnawrot"}
+IMAGE_NAME="${DOCKER_USERNAME}/meybohm-frontend:latest"
+
 # ---- config ----
 # docker compose subcommand: exec (default) or run
 DC="${DC:-exec}"
@@ -36,8 +39,17 @@ function run_dev {
   docker compose up mongo payload --build --force-recreate -d
 }
 
+function run_prod_build_local {
+  docker compose up -d --force-recreate --build payload-production
+}
+
+function fetch_latest_image {
+  git pull
+  docker pull arturnawrot/meybohm-frontend:latest
+}
+
 function run_prod {
-  docker compose up mongo payload-production --build --force-recreate -d
+  docker-compose up -d payload-production
 }
 
 function seed {
