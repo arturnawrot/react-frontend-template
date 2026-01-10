@@ -4,6 +4,18 @@
     font-size: 16px;
     line-height: 16px;
     color: #FAF9F7;
+    white-space: nowrap;
+
+    // Reduce font size near mobile breakpoint to prevent wrapping
+    @media (max-width: 1024px) {
+        font-size: 14px;
+        line-height: 14px;
+    }
+
+    @media (max-width: 900px) {
+        font-size: 13px;
+        line-height: 13px;
+    }
 }
 
 .upperNavbarLink {

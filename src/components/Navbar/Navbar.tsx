@@ -77,7 +77,7 @@ export default function Navbar({
       <div className="hidden md:block px-[5%]">
         <div className="flex items-center justify-between px-8 py-4">
           <Logo darkVariant={darkVariant} />
-          <div className="flex gap-8" id="mainNavbarLinks">
+          <div className="flex gap-2 md:gap-3 lg:gap-5 xl:gap-8 flex-nowrap" id="mainNavbarLinks">
             {mainLinks.map((link, index) => (
               <MainNavbarLink key={`${link.href}-${index}`} href={link.href}>
                 {link.label}
