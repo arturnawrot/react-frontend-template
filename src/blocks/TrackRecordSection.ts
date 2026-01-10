@@ -14,56 +14,15 @@ export const TrackRecordSection: Block = {
       defaultValue: 'Proven Track Record',
     },
     {
-      name: 'properties',
-      type: 'array',
-      label: 'Properties',
-      minRows: 1,
-      fields: [
-        {
-          name: 'title',
-          type: 'text',
-          required: true,
-          label: 'Title',
+      name: 'provenTrackRecordSetName',
+      type: 'text',
+      label: 'Proven Track Record Set',
+      admin: {
+        description: 'Select a proven track record set from the global sets. Items from the selected set will be displayed.',
+        components: {
+          Field: '/components/ProvenTrackRecordSetSelector/ProvenTrackRecordSetSelector',
         },
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          required: false,
-          label: 'Image',
-        },
-        {
-          name: 'address',
-          type: 'text',
-          label: 'Address',
-        },
-        {
-          name: 'price',
-          type: 'text',
-          label: 'Price',
-        },
-        {
-          name: 'size',
-          type: 'text',
-          label: 'Size',
-        },
-        {
-          name: 'type',
-          type: 'text',
-          label: 'Type',
-        },
-        {
-          name: 'agentName',
-          type: 'text',
-          label: 'Agent Name',
-        },
-        {
-          name: 'agentImage',
-          type: 'upload',
-          relationTo: 'media',
-          label: 'Agent Image',
-        },
-      ],
+      },
     },
   ],
 }

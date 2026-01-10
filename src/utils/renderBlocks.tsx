@@ -234,7 +234,70 @@ export async function renderBlock(
     return <InsightsSection key={index} block={block} articles={articles} />
   }
   if (block.blockType === 'trackRecordSection') {
-    return <TrackRecordSection key={index} block={block} />
+    // Fetch items from the selected set if specified
+    let items: Array<{
+      image: string
+      title: string
+      address?: string
+      price?: string
+      size?: string
+      propertyType?: string
+      agent?: { name: string; image?: string }
+      link?: string
+    }> = []
+
+    const setName = (block as any).provenTrackRecordSetName
+
+    if (setName && payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'provenTrackRecordSets',
+          depth: 2, // Populate relationships (agent, image)
+        })
+
+        if (global?.sets && Array.isArray(global.sets)) {
+          const set = global.sets.find((s: any) => s.name === setName)
+
+          if (set?.items && Array.isArray(set.items)) {
+            items = set.items.map((item: any) => {
+              const image = item.image
+              const imageUrl = typeof image === 'object' && image !== null ? image.url || '' : ''
+              
+              const agent = item.agent
+              let agentData: { name: string; image?: string } | undefined
+              
+              if (agent && typeof agent === 'object') {
+                const agentName = agent.fullName || `${agent.firstName || ''} ${agent.lastName || ''}`.trim()
+                const agentImage = agent.cardImage || agent.backgroundImage
+                const agentImageUrl = typeof agentImage === 'object' && agentImage !== null ? agentImage.url : undefined
+                
+                if (agentName) {
+                  agentData = {
+                    name: agentName,
+                    image: agentImageUrl,
+                  }
+                }
+              }
+
+              return {
+                image: imageUrl,
+                title: item.title || '',
+                address: item.address || undefined,
+                price: item.price || undefined,
+                size: item.size || undefined,
+                propertyType: item.propertyType || undefined,
+                agent: agentData,
+                link: item.link || undefined,
+              }
+            })
+          }
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching proven track record items from set:', error)
+      }
+    }
+
+    return <TrackRecordSection key={index} block={block} items={items} />
   }
   if (block.blockType === 'propertySearch') {
     return <PropertySearchWrapper key={index} block={block} />

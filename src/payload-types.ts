@@ -113,6 +113,7 @@ export interface Config {
     featuredPropertiesSets: FeaturedPropertiesSet;
     featuredAgentsSets: FeaturedAgentsSet;
     featuredArticles: FeaturedArticle;
+    provenTrackRecordSets: ProvenTrackRecordSet;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
@@ -120,6 +121,7 @@ export interface Config {
     featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
     featuredAgentsSets: FeaturedAgentsSetsSelect<false> | FeaturedAgentsSetsSelect<true>;
     featuredArticles: FeaturedArticlesSelect<false> | FeaturedArticlesSelect<true>;
+    provenTrackRecordSets: ProvenTrackRecordSetsSelect<false> | ProvenTrackRecordSetsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -439,19 +441,10 @@ export interface Page {
                 }
               | {
                   heading?: string | null;
-                  properties?:
-                    | {
-                        title: string;
-                        image?: (string | null) | Media;
-                        address?: string | null;
-                        price?: string | null;
-                        size?: string | null;
-                        type?: string | null;
-                        agentName?: string | null;
-                        agentImage?: (string | null) | Media;
-                        id?: string | null;
-                      }[]
-                    | null;
+                  /**
+                   * Select a proven track record set from the global sets. Items from the selected set will be displayed.
+                   */
+                  provenTrackRecordSetName?: string | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'trackRecordSection';
@@ -661,19 +654,10 @@ export interface Page {
                           }
                         | {
                             heading?: string | null;
-                            properties?:
-                              | {
-                                  title: string;
-                                  image?: (string | null) | Media;
-                                  address?: string | null;
-                                  price?: string | null;
-                                  size?: string | null;
-                                  type?: string | null;
-                                  agentName?: string | null;
-                                  agentImage?: (string | null) | Media;
-                                  id?: string | null;
-                                }[]
-                              | null;
+                            /**
+                             * Select a proven track record set from the global sets. Items from the selected set will be displayed.
+                             */
+                            provenTrackRecordSetName?: string | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'trackRecordSection';
@@ -883,19 +867,10 @@ export interface Page {
                                     }
                                   | {
                                       heading?: string | null;
-                                      properties?:
-                                        | {
-                                            title: string;
-                                            image?: (string | null) | Media;
-                                            address?: string | null;
-                                            price?: string | null;
-                                            size?: string | null;
-                                            type?: string | null;
-                                            agentName?: string | null;
-                                            agentImage?: (string | null) | Media;
-                                            id?: string | null;
-                                          }[]
-                                        | null;
+                                      /**
+                                       * Select a proven track record set from the global sets. Items from the selected set will be displayed.
+                                       */
+                                      provenTrackRecordSetName?: string | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'trackRecordSection';
@@ -1105,19 +1080,10 @@ export interface Page {
                                               }
                                             | {
                                                 heading?: string | null;
-                                                properties?:
-                                                  | {
-                                                      title: string;
-                                                      image?: (string | null) | Media;
-                                                      address?: string | null;
-                                                      price?: string | null;
-                                                      size?: string | null;
-                                                      type?: string | null;
-                                                      agentName?: string | null;
-                                                      agentImage?: (string | null) | Media;
-                                                      id?: string | null;
-                                                    }[]
-                                                  | null;
+                                                /**
+                                                 * Select a proven track record set from the global sets. Items from the selected set will be displayed.
+                                                 */
+                                                provenTrackRecordSetName?: string | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'trackRecordSection';
@@ -1270,19 +1236,10 @@ export interface Page {
       }
     | {
         heading?: string | null;
-        properties?:
-          | {
-              title: string;
-              image?: (string | null) | Media;
-              address?: string | null;
-              price?: string | null;
-              size?: string | null;
-              type?: string | null;
-              agentName?: string | null;
-              agentImage?: (string | null) | Media;
-              id?: string | null;
-            }[]
-          | null;
+        /**
+         * Select a proven track record set from the global sets. Items from the selected set will be displayed.
+         */
+        provenTrackRecordSetName?: string | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'trackRecordSection';
@@ -2037,19 +1994,7 @@ export interface PagesSelect<T extends boolean = true> {
                       | T
                       | {
                           heading?: T;
-                          properties?:
-                            | T
-                            | {
-                                title?: T;
-                                image?: T;
-                                address?: T;
-                                price?: T;
-                                size?: T;
-                                type?: T;
-                                agentName?: T;
-                                agentImage?: T;
-                                id?: T;
-                              };
+                          provenTrackRecordSetName?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -2232,19 +2177,7 @@ export interface PagesSelect<T extends boolean = true> {
                                   | T
                                   | {
                                       heading?: T;
-                                      properties?:
-                                        | T
-                                        | {
-                                            title?: T;
-                                            image?: T;
-                                            address?: T;
-                                            price?: T;
-                                            size?: T;
-                                            type?: T;
-                                            agentName?: T;
-                                            agentImage?: T;
-                                            id?: T;
-                                          };
+                                      provenTrackRecordSetName?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -2427,19 +2360,7 @@ export interface PagesSelect<T extends boolean = true> {
                                               | T
                                               | {
                                                   heading?: T;
-                                                  properties?:
-                                                    | T
-                                                    | {
-                                                        title?: T;
-                                                        image?: T;
-                                                        address?: T;
-                                                        price?: T;
-                                                        size?: T;
-                                                        type?: T;
-                                                        agentName?: T;
-                                                        agentImage?: T;
-                                                        id?: T;
-                                                      };
+                                                  provenTrackRecordSetName?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -2622,19 +2543,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                           | T
                                                           | {
                                                               heading?: T;
-                                                              properties?:
-                                                                | T
-                                                                | {
-                                                                    title?: T;
-                                                                    image?: T;
-                                                                    address?: T;
-                                                                    price?: T;
-                                                                    size?: T;
-                                                                    type?: T;
-                                                                    agentName?: T;
-                                                                    agentImage?: T;
-                                                                    id?: T;
-                                                                  };
+                                                              provenTrackRecordSetName?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -2777,19 +2686,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
-              properties?:
-                | T
-                | {
-                    title?: T;
-                    image?: T;
-                    address?: T;
-                    price?: T;
-                    size?: T;
-                    type?: T;
-                    agentName?: T;
-                    agentImage?: T;
-                    id?: T;
-                  };
+              provenTrackRecordSetName?: T;
               id?: T;
               blockName?: T;
             };
@@ -3227,6 +3124,54 @@ export interface FeaturedArticle {
   createdAt?: string | null;
 }
 /**
+ * Create and manage sets of proven track record items. Each set can be used in Track Record Section blocks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "provenTrackRecordSets".
+ */
+export interface ProvenTrackRecordSet {
+  id: string;
+  sets?:
+    | {
+        /**
+         * A unique name to identify this set (e.g., "Commercial Properties", "Residential Sales")
+         */
+        name: string;
+        items?:
+          | {
+              image: string | Media;
+              title: string;
+              address?: string | null;
+              /**
+               * Price display (e.g., "$700,000")
+               */
+              price?: string | null;
+              /**
+               * Property size (e.g., "4,961 SF")
+               */
+              size?: string | null;
+              /**
+               * Property type (e.g., "Office Space", "Retail")
+               */
+              propertyType?: string | null;
+              /**
+               * Select an agent from existing agents
+               */
+              agent?: (string | null) | Agent;
+              /**
+               * URL for redirect on click (e.g., "/property/123" or "https://example.com")
+               */
+              link?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar_select".
  */
@@ -3336,6 +3281,34 @@ export interface FeaturedArticlesSelect<T extends boolean = true> {
     | {
         name?: T;
         articles?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "provenTrackRecordSets_select".
+ */
+export interface ProvenTrackRecordSetsSelect<T extends boolean = true> {
+  sets?:
+    | T
+    | {
+        name?: T;
+        items?:
+          | T
+          | {
+              image?: T;
+              title?: T;
+              address?: T;
+              price?: T;
+              size?: T;
+              propertyType?: T;
+              agent?: T;
+              link?: T;
+              id?: T;
+            };
         id?: T;
       };
   updatedAt?: T;

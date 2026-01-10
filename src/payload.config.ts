@@ -23,6 +23,7 @@ import { Footer } from './globals/Footer'
 import { FeaturedPropertiesSets } from './globals/FeaturedPropertiesSets'
 import { FeaturedAgentsSets } from './globals/FeaturedAgentsSets'
 import { FeaturedArticles } from './globals/FeaturedArticles'
+import { ProvenTrackRecordSets } from './globals/ProvenTrackRecordSets'
 import { seedEndpoint } from './endpoints/seed'
 
 const filename = fileURLToPath(import.meta.url)
@@ -39,7 +40,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
-  globals: [Navbar, Footer, FeaturedPropertiesSets, FeaturedAgentsSets, FeaturedArticles],
+  globals: [Navbar, Footer, FeaturedPropertiesSets, FeaturedAgentsSets, FeaturedArticles, ProvenTrackRecordSets],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

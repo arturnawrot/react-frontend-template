@@ -1,13 +1,26 @@
 'use client'
 import React, { useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 
 type TrackRecordSectionBlock = Extract<Page['blocks'][number], { blockType: 'trackRecordSection' }>
 
+interface TrackRecordItem {
+  image: string
+  title: string
+  address?: string
+  price?: string
+  size?: string
+  propertyType?: string
+  agent?: { name: string; image?: string }
+  link?: string
+}
+
 interface TrackRecordSectionProps {
   block: TrackRecordSectionBlock
+  items?: TrackRecordItem[]
 }
 
 // Sub-Component: PropertyCard
@@ -15,16 +28,18 @@ const PropertyCard = ({
   image, 
   title, 
   details, 
-  agent 
+  agent,
+  link
 }: { 
   image: string
   title: string
-  details?: { address?: string; price?: string; size?: string; type?: string }
+  details?: { address?: string; price?: string; size?: string; propertyType?: string }
   agent?: { name?: string; image?: string }
+  link?: string
 }) => {
   const hasDetails = details && (details.address || details.price)
 
-  return (
+  const cardContent = (
     <div className="relative w-[300px] md:w-[420px] h-[450px] md:h-[540px] shrink-0 snap-start group cursor-pointer overflow-hidden rounded-[2rem]">
       
       {/* Background Image */}
@@ -60,7 +75,7 @@ const PropertyCard = ({
                 </h4>
               )}
               <p className="text-xs text-gray-500 font-medium">
-                {details.price} {details.size && <span className="mx-1 text-gray-300">|</span>} {details.size} {details.type && <span className="mx-1 text-gray-300">|</span>} {details.type}
+                {details.price} {details.size && <span className="mx-1 text-gray-300">|</span>} {details.size} {details.propertyType && <span className="mx-1 text-gray-300">|</span>} {details.propertyType}
               </p>
             </div>
 
@@ -81,9 +96,19 @@ const PropertyCard = ({
       </div>
     </div>
   )
+
+  if (link) {
+    return (
+      <Link href={link} className="block">
+        {cardContent}
+      </Link>
+    )
+  }
+
+  return cardContent
 }
 
-export default function TrackRecordSection({ block }: TrackRecordSectionProps) {
+export default function TrackRecordSection({ block, items = [] }: TrackRecordSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const scroll = (direction: 'left' | 'right') => {
@@ -97,7 +122,6 @@ export default function TrackRecordSection({ block }: TrackRecordSectionProps) {
   }
 
   const heading = block.heading || 'Proven Track Record'
-  const properties = block.properties || []
 
   return (
     <section className="w-full py-24">
@@ -141,30 +165,21 @@ export default function TrackRecordSection({ block }: TrackRecordSectionProps) {
           paddingRight: 'max(1.5rem, calc((100vw - 1600px) / 2 + 3rem))'
         }}
       >
-        {properties.map((prop, index) => {
-          const image = typeof prop.image === 'object' && prop.image !== null ? prop.image : null
-          const imageUrl = image?.url || ''
-          const agentImage = typeof prop.agentImage === 'object' && prop.agentImage !== null ? prop.agentImage : null
-          const agentImageUrl = agentImage?.url || ''
-          
-          return (
-            <PropertyCard 
-              key={index}
-              image={imageUrl}
-              title={prop.title}
-              details={prop.address || prop.price || prop.size || prop.type ? {
-                address: prop.address || undefined,
-                price: prop.price || undefined,
-                size: prop.size || undefined,
-                type: prop.type || undefined,
-              } : undefined}
-              agent={prop.agentName ? {
-                name: prop.agentName,
-                image: agentImageUrl || undefined,
-              } : undefined}
-            />
-          )
-        })}
+        {items.map((item, index) => (
+          <PropertyCard 
+            key={index}
+            image={item.image}
+            title={item.title}
+            details={item.address || item.price || item.size || item.propertyType ? {
+              address: item.address,
+              price: item.price,
+              size: item.size,
+              propertyType: item.propertyType,
+            } : undefined}
+            agent={item.agent}
+            link={item.link}
+          />
+        ))}
       </div>
 
       {/* Mobile Arrows (Bottom Center) */}
