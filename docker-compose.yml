@@ -18,19 +18,19 @@ services:
       - .env
 
   payload-production:
-    # Use image from Docker Hub instead of building locally
-    # Replace YOUR_DOCKER_USERNAME with your actual Docker Hub username
+    # Keep this line! It tells Docker what to name the image after building
     image: arturnawrot/meybohm-frontend:latest
-    # Uncomment below to build locally instead
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
+    container_name: payload-production
+    # You MUST uncomment this section so Docker knows how to build it
+    build:
+      context: .
+      dockerfile: Dockerfile
+      
     ports:
       - '80:3000'
     depends_on:
       - mongo
       - redis
-      # - postgres
     env_file:
       - .env
     environment:

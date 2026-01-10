@@ -192,6 +192,7 @@ async function getOrCreateRole(payload: Payload, roleName: string): Promise<stri
       collection: 'roles',
       data: {
         name,
+        slug: slugify(name),
       },
       draft: false,
     })
@@ -258,6 +259,7 @@ async function getOrCreateServingLocation(payload: Payload, locationName: string
       collection: 'serving-locations',
       data: {
         name,
+        slug: slugify(name),
       },
     })
     return created.id

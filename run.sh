@@ -40,7 +40,7 @@ function run_dev {
 }
 
 function run_prod_build_local {
-  docker compose up -d --force-recreate --build payload-production
+  docker compose up payload-production --build --force-recreate -d
 }
 
 function fetch_latest_image {

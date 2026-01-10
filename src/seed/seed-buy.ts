@@ -237,6 +237,7 @@ export async function seedBuyPage(payload: Payload) {
                 description: "We're proud to bring a wealth of knowledge and relational capital to every deal and partnership.",
                 linkText: 'Find an Agent',
                 linkHref: '#',
+                featuredAgentSetName: 'default',
                 agents: [
                   {
                     name: 'Jane Smith',
