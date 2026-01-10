@@ -184,6 +184,12 @@ const resolveHeroContent = (block: HeroBlock) => {
       : typeof block.backgroundImage === 'string'
         ? block.backgroundImage
         : undefined
+  const backgroundVideoUrl =
+    typeof block.backgroundVideo === 'object' && block.backgroundVideo?.url
+      ? block.backgroundVideo.url
+      : typeof block.backgroundVideo === 'string'
+        ? block.backgroundVideo
+        : undefined
   const agentImageUrl =
     typeof block.agentImage === 'object' && block.agentImage?.url
       ? block.agentImage.url
@@ -265,6 +271,7 @@ const resolveHeroContent = (block: HeroBlock) => {
     secondaryCta,
     secondaryCtaLink: block.ctaSecondaryLink || undefined,
     finalImage,
+    backgroundVideoUrl,
     isFullWidthColor,
     isSplit,
     isAgent,
@@ -521,16 +528,69 @@ const CenteredLayout = (
     secondaryCta,
     secondaryCtaLink,
     finalImage,
+    backgroundVideoUrl,
     menuOpen,
     setMenuOpen,
     upperLinks,
     mainLinks,
   } = props
 
+  const [videoReady, setVideoReady] = useState(false)
+  const [videoError, setVideoError] = useState(false)
+  const videoRef = React.useRef<HTMLVideoElement>(null)
+
+  // Check if video should be used (only for default variant, not full-width-color)
+  const useVideo = !isFullWidthColor && backgroundVideoUrl && !videoError
+
+  // Handle video load - use loadeddata event for faster, more reliable detection
+  React.useEffect(() => {
+    if (useVideo && videoRef.current) {
+      const video = videoRef.current
+      
+      const handleLoadedData = () => {
+        // Video has loaded enough data to start playing
+        setVideoReady(true)
+      }
+
+      const handleCanPlayThrough = () => {
+        // Video can play through without buffering
+        setVideoReady(true)
+      }
+
+      const handleError = () => {
+        setVideoError(true)
+        setVideoReady(false)
+      }
+
+      // Check if video element is supported (canPlayType returns '' if not supported)
+      const canPlayMp4 = video.canPlayType('video/mp4')
+      const canPlayWebm = video.canPlayType('video/webm')
+      
+      if (canPlayMp4 === '' && canPlayWebm === '') {
+        // Browser doesn't support video formats
+        setVideoError(true)
+      } else {
+        // Use loadeddata for faster initial display, canplaythrough as backup
+        video.addEventListener('loadeddata', handleLoadedData, { once: true })
+        video.addEventListener('canplaythrough', handleCanPlayThrough, { once: true })
+        video.addEventListener('error', handleError)
+        
+        // Try to load the video
+        video.load()
+      }
+
+      return () => {
+        video.removeEventListener('loadeddata', handleLoadedData)
+        video.removeEventListener('canplaythrough', handleCanPlayThrough)
+        video.removeEventListener('error', handleError)
+      }
+    }
+  }, [useVideo])
+
   // Styling configuration
   const wrapperClass = `
-    relative w-full
-    ${isFullWidthColor ? 'bg-[var(--strong-green)]' : 'bg-cover bg-center bg-no-repeat md:h-[700px] md:min-h-[700px]'}
+    relative w-full overflow-hidden
+    ${isFullWidthColor ? 'bg-[var(--strong-green)]' : 'md:h-[700px] md:min-h-[700px]'}
   `
 
   const headingClass = isFullWidthColor
@@ -546,10 +606,34 @@ const CenteredLayout = (
 
   return (
     <>
-      <div
-        className={wrapperClass}
-        style={finalImage ? { backgroundImage: `url('${finalImage}')` } : undefined}
-      >
+      <div className={wrapperClass}>
+        {/* Background Image - shown until video is ready or as fallback */}
+        {finalImage && (!useVideo || !videoReady) && (
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url('${finalImage}')` }}
+          />
+        )}
+
+        {/* Background Video - always rendered but hidden until ready */}
+        {useVideo && (
+          <video
+            ref={videoRef}
+            className={`absolute inset-0 w-full h-full object-cover ${
+              videoReady ? 'opacity-100' : 'opacity-0'
+            }`}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+          >
+            <source src={backgroundVideoUrl} type="video/mp4" />
+            <source src={backgroundVideoUrl} type="video/webm" />
+          </video>
+        )}
+
         {!isFullWidthColor && <div className="absolute inset-0 bg-black/40" />}
 
         <div className="relative z-10 flex flex-col h-full pb-10">

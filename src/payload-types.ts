@@ -228,9 +228,13 @@ export interface Page {
         ctaSecondaryLabel?: string | null;
         ctaSecondaryLink?: string | null;
         /**
-         * Background image (or Featured image for Blog)
+         * Background image (or Featured image for Blog). Used as fallback for video.
          */
         backgroundImage?: (string | null) | Media;
+        /**
+         * Background video (only used for Default variant). Upload or select a video file (MP4, WebM recommended). The background image will be shown until the video loads or if the browser doesn't support video.
+         */
+        backgroundVideo?: (string | null) | Media;
         /**
          * Agent image (for agent variant)
          */
@@ -309,9 +313,13 @@ export interface Page {
                   ctaSecondaryLabel?: string | null;
                   ctaSecondaryLink?: string | null;
                   /**
-                   * Background image (or Featured image for Blog)
+                   * Background image (or Featured image for Blog). Used as fallback for video.
                    */
                   backgroundImage?: (string | null) | Media;
+                  /**
+                   * Background video (only used for Default variant). Upload or select a video file (MP4, WebM recommended). The background image will be shown until the video loads or if the browser doesn't support video.
+                   */
+                  backgroundVideo?: (string | null) | Media;
                   /**
                    * Agent image (for agent variant)
                    */
@@ -522,9 +530,13 @@ export interface Page {
                             ctaSecondaryLabel?: string | null;
                             ctaSecondaryLink?: string | null;
                             /**
-                             * Background image (or Featured image for Blog)
+                             * Background image (or Featured image for Blog). Used as fallback for video.
                              */
                             backgroundImage?: (string | null) | Media;
+                            /**
+                             * Background video (only used for Default variant). Upload or select a video file (MP4, WebM recommended). The background image will be shown until the video loads or if the browser doesn't support video.
+                             */
+                            backgroundVideo?: (string | null) | Media;
                             /**
                              * Agent image (for agent variant)
                              */
@@ -735,9 +747,13 @@ export interface Page {
                                       ctaSecondaryLabel?: string | null;
                                       ctaSecondaryLink?: string | null;
                                       /**
-                                       * Background image (or Featured image for Blog)
+                                       * Background image (or Featured image for Blog). Used as fallback for video.
                                        */
                                       backgroundImage?: (string | null) | Media;
+                                      /**
+                                       * Background video (only used for Default variant). Upload or select a video file (MP4, WebM recommended). The background image will be shown until the video loads or if the browser doesn't support video.
+                                       */
+                                      backgroundVideo?: (string | null) | Media;
                                       /**
                                        * Agent image (for agent variant)
                                        */
@@ -948,9 +964,13 @@ export interface Page {
                                                 ctaSecondaryLabel?: string | null;
                                                 ctaSecondaryLink?: string | null;
                                                 /**
-                                                 * Background image (or Featured image for Blog)
+                                                 * Background image (or Featured image for Blog). Used as fallback for video.
                                                  */
                                                 backgroundImage?: (string | null) | Media;
+                                                /**
+                                                 * Background video (only used for Default variant). Upload or select a video file (MP4, WebM recommended). The background image will be shown until the video loads or if the browser doesn't support video.
+                                                 */
+                                                backgroundVideo?: (string | null) | Media;
                                                 /**
                                                  * Agent image (for agent variant)
                                                  */
@@ -1829,6 +1849,7 @@ export interface PagesSelect<T extends boolean = true> {
               ctaSecondaryLabel?: T;
               ctaSecondaryLink?: T;
               backgroundImage?: T;
+              backgroundVideo?: T;
               agentImage?: T;
               agentEmail?: T;
               agentPhone?: T;
@@ -1885,6 +1906,7 @@ export interface PagesSelect<T extends boolean = true> {
                           ctaSecondaryLabel?: T;
                           ctaSecondaryLink?: T;
                           backgroundImage?: T;
+                          backgroundVideo?: T;
                           agentImage?: T;
                           agentEmail?: T;
                           agentPhone?: T;
@@ -2068,6 +2090,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       ctaSecondaryLabel?: T;
                                       ctaSecondaryLink?: T;
                                       backgroundImage?: T;
+                                      backgroundVideo?: T;
                                       agentImage?: T;
                                       agentEmail?: T;
                                       agentPhone?: T;
@@ -2251,6 +2274,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   ctaSecondaryLabel?: T;
                                                   ctaSecondaryLink?: T;
                                                   backgroundImage?: T;
+                                                  backgroundVideo?: T;
                                                   agentImage?: T;
                                                   agentEmail?: T;
                                                   agentPhone?: T;
@@ -2434,6 +2458,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               ctaSecondaryLabel?: T;
                                                               ctaSecondaryLink?: T;
                                                               backgroundImage?: T;
+                                                              backgroundVideo?: T;
                                                               agentImage?: T;
                                                               agentEmail?: T;
                                                               agentPhone?: T;

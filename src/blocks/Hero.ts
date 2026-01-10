@@ -94,7 +94,16 @@ export const Hero: Block = {
       type: 'upload',
       relationTo: 'media',
       admin: {
-        description: 'Background image (or Featured image for Blog)',
+        description: 'Background image (or Featured image for Blog). Used as fallback for video.',
+      },
+    },
+    {
+      name: 'backgroundVideo',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Background Video',
+      admin: {
+        description: 'Background video (only used for Default variant). Upload or select a video file (MP4, WebM recommended). The background image will be shown until the video loads or if the browser doesn\'t support video.',
       },
     },
     // Agent variant specific fields
