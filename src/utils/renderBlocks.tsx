@@ -16,8 +16,8 @@ import AgentCarousel from '@/components/AgentCarousel/AgentCarousel'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import { buildoutApi } from '@/utils/buildout-api'
-import type { BuildoutProperty } from '@/utils/buildout-api'
-import { transformPropertyToCard } from '@/utils/property-transform'
+import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
+import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
 
 // Type for any block from a Page (also compatible with Container blocks)
@@ -49,17 +49,7 @@ export async function renderBlock(
   }
   if (block.blockType === 'featuredProperties') {
     // Fetch properties from the selected set if specified
-    let properties: Array<{
-      id: number
-      address: string
-      cityStateZip: string
-      price: string
-      sqft: string
-      type: string
-      agent: string
-      image: string
-      badges?: Array<{ text: string; color: string }>
-    }> = []
+    let properties: PropertyCardData[] = []
 
     const setName = (block as any).featuredPropertySetName
     console.log('[renderBlocks] FeaturedProperties block:', {
@@ -144,15 +134,10 @@ export async function renderBlock(
             console.log('[renderBlocks] Featured properties found:', featuredProperties.length)
 
             // Fetch brokers to get agent names and photos
-            let brokers: Array<{ id: number; first_name: string; last_name: string; profile_photo_url: string | null }> = []
+            let brokers: BuildoutBroker[] = []
             try {
               const brokersResponse = await buildoutApi.getAllBrokers({ skipCache: false })
-              brokers = brokersResponse.brokers.map(b => ({
-                id: b.id,
-                first_name: b.first_name,
-                last_name: b.last_name,
-                profile_photo_url: b.profile_photo_url,
-              }))
+              brokers = brokersResponse.brokers
             } catch (error) {
               console.error('[renderBlocks] Error fetching brokers:', error)
             }
