@@ -1,12 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { Menu, X, Mail, Phone, Linkedin } from 'lucide-react'
 import Navbar, { type NavbarLink } from './Navbar/Navbar'
 import CollapsingMenuMobile from './CollapsingMenuMobile/CollapsingMenuMobile'
 import type { Page } from '@/payload-types'
 import styles from './Hero.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { isInternalLink } from '@/utils/link-utils'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
@@ -110,14 +112,19 @@ const ActionButtons = ({
             {primaryLabel}
           </button>
         ) : primaryLink ? (
-          <a 
-            href={primaryLink}
-            target={primaryOpenInNewTab ? '_blank' : undefined}
-            rel={primaryOpenInNewTab ? 'noopener noreferrer' : undefined}
-            className={primaryClass}
-          >
-            {primaryLabel}
-          </a>
+          (() => {
+            const isInternal = isInternalLink(primaryLink) && !primaryOpenInNewTab
+            const LinkComponent = isInternal ? Link : 'a'
+            const linkProps = isInternal
+              ? { href: primaryLink, className: primaryClass }
+              : {
+                  href: primaryLink,
+                  target: primaryOpenInNewTab ? '_blank' : undefined,
+                  rel: primaryOpenInNewTab ? 'noopener noreferrer' : undefined,
+                  className: primaryClass,
+                }
+            return <LinkComponent {...linkProps}>{primaryLabel}</LinkComponent>
+          })()
         ) : (
           <span className={primaryClass}>
             {primaryLabel}
@@ -130,14 +137,19 @@ const ActionButtons = ({
             {secondaryLabel}
           </button>
         ) : secondaryLink ? (
-          <a 
-            href={secondaryLink}
-            target={secondaryOpenInNewTab ? '_blank' : undefined}
-            rel={secondaryOpenInNewTab ? 'noopener noreferrer' : undefined}
-            className={secondaryClass}
-          >
-            {secondaryLabel}
-          </a>
+          (() => {
+            const isInternal = isInternalLink(secondaryLink) && !secondaryOpenInNewTab
+            const LinkComponent = isInternal ? Link : 'a'
+            const linkProps = isInternal
+              ? { href: secondaryLink, className: secondaryClass }
+              : {
+                  href: secondaryLink,
+                  target: secondaryOpenInNewTab ? '_blank' : undefined,
+                  rel: secondaryOpenInNewTab ? 'noopener noreferrer' : undefined,
+                  className: secondaryClass,
+                }
+            return <LinkComponent {...linkProps}>{secondaryLabel}</LinkComponent>
+          })()
         ) : (
           <span className={secondaryClass}>
             {secondaryLabel}

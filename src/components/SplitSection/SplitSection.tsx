@@ -1,8 +1,10 @@
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { isInternalLink } from '@/utils/link-utils'
 
 type SplitSectionBlock = Extract<Page['blocks'][number], { blockType: 'splitSection' }>
 
@@ -63,15 +65,24 @@ export default function SplitSection({ block }: SplitSectionProps) {
 
             {linkText && linkHref && (
               <div className="pt-4">
-                <a 
-                  href={linkHref}
-                  target={openInNewTab ? '_blank' : undefined}
-                  rel={openInNewTab ? 'noopener noreferrer' : undefined}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5"
-                >
-                  {linkText}
-                  <Arrow direction="right" variant="fill" size={16} />
-                </a>
+                {(() => {
+                  const isInternal = isInternalLink(linkHref) && !openInNewTab
+                  const LinkComponent = isInternal ? Link : 'a'
+                  const linkProps = isInternal
+                    ? { href: linkHref, className: 'inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5' }
+                    : {
+                        href: linkHref,
+                        target: openInNewTab ? '_blank' : undefined,
+                        rel: openInNewTab ? 'noopener noreferrer' : undefined,
+                        className: 'inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5',
+                      }
+                  return (
+                    <LinkComponent {...linkProps}>
+                      {linkText}
+                      <Arrow direction="right" variant="fill" size={16} />
+                    </LinkComponent>
+                  )
+                })()}
               </div>
             )}
           </div>

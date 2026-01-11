@@ -159,11 +159,19 @@ function LeafletMap({
   }, [mounted, hoveredProperty])
 
 
-  // Use provided center/zoom or calculate from properties or use default
-  const center: [number, number] = propCenter || (properties.length > 0
+  // Filter properties with valid coordinates and remove duplicates by ID
+  const validProperties = filterValidCoordinates(properties)
+  // Deduplicate by ID - keep first occurrence
+  const uniqueProperties = validProperties.filter(
+    (property, index, self) => 
+      index === self.findIndex((p) => p.id === property.id)
+  )
+
+  // Use provided center/zoom or calculate from uniqueProperties or use default
+  const center: [number, number] = propCenter || (uniqueProperties.length > 0
     ? [
-        properties.reduce((sum, p) => sum + (p.latitude || 0), 0) / properties.length,
-        properties.reduce((sum, p) => sum + (p.longitude || 0), 0) / properties.length,
+        uniqueProperties.reduce((sum, p) => sum + (p.latitude || 0), 0) / uniqueProperties.length,
+        uniqueProperties.reduce((sum, p) => sum + (p.longitude || 0), 0) / uniqueProperties.length,
       ]
     : [33.5, -81.7]) // Default to Aiken, SC area
   
@@ -264,9 +272,6 @@ function LeafletMap({
       container.removeEventListener('mouseleave', handleMouseLeave)
     }
   }, [mounted])
-
-  // Filter properties with valid coordinates
-  const validProperties = filterValidCoordinates(properties)
 
   if (!mounted || !MapContainer || !TileLayer || !Marker || !L || !useMapHookRef.current) {
     return (
@@ -435,7 +440,7 @@ function LeafletMap({
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             
-            {validProperties.map((property) => (
+            {uniqueProperties.map((property) => (
               <PropertyMarker
                 key={property.id}
                 property={property}
@@ -444,7 +449,7 @@ function LeafletMap({
               />
             ))}
 
-            <MapBoundsHandler properties={validProperties} onBoundsChange={onBoundsChange} />
+            <MapBoundsHandler properties={uniqueProperties} onBoundsChange={onBoundsChange} />
           </>
         )}
       </MapContainer>

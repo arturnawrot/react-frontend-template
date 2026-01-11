@@ -2,7 +2,9 @@
 
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import type { SerializedEditorState } from 'lexical'
+import { isInternalLink } from '@/utils/link-utils'
 
 interface LexicalRendererProps {
   content: SerializedEditorState | null | undefined
@@ -168,16 +170,24 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
         return null
       }
 
+      const isInternal = isInternalLink(url) && node.target !== '_blank'
+      const LinkComponent = isInternal ? Link : 'a'
+      const linkProps = isInternal
+        ? { href: url, className: 'text-blue-600 hover:underline' }
+        : {
+            href: url,
+            target: node.target || undefined,
+            rel: node.target === '_blank' ? 'noopener noreferrer' : undefined,
+            className: 'text-blue-600 hover:underline',
+          }
+
       return (
-        <a
+        <LinkComponent
           key={`link-${index}`}
-          href={url}
-          target={node.target || undefined}
-          rel={node.target === '_blank' ? 'noopener noreferrer' : undefined}
-          className="text-blue-600 hover:underline"
+          {...linkProps}
         >
           {children}
-        </a>
+        </LinkComponent>
       )
     }
 

@@ -1,8 +1,10 @@
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import styles from './FlippedM.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { isInternalLink } from '@/utils/link-utils'
 
 type FlippedMBlock = Extract<Page['blocks'][number], { blockType: 'flippedM' }>
 
@@ -83,16 +85,23 @@ const BulletPointComponent = ({
           {title}
         </h2>
         <p className={descriptionClasses}>{description}</p>
-        {linkText && linkHref && (
-          <a 
-            href={linkHref}
-            target={openInNewTab ? '_blank' : undefined}
-            rel={openInNewTab ? 'noopener noreferrer' : undefined}
-            className={linkClasses}
-          >
-            {linkText} &rarr;
-          </a>
-        )}
+        {linkText && linkHref && (() => {
+          const isInternal = isInternalLink(linkHref) && !openInNewTab
+          const LinkComponent = isInternal ? Link : 'a'
+          const linkProps = isInternal
+            ? { href: linkHref, className: linkClasses }
+            : {
+                href: linkHref,
+                target: openInNewTab ? '_blank' : undefined,
+                rel: openInNewTab ? 'noopener noreferrer' : undefined,
+                className: linkClasses,
+              }
+          return (
+            <LinkComponent {...linkProps}>
+              {linkText} &rarr;
+            </LinkComponent>
+          )
+        })()}
       </div>
     </div>
   )
@@ -161,16 +170,19 @@ const ProcessSection = ({
             ))}
             {ctaText && (
               <div className="mt-30">
-                {ctaHref ? (
-                  <a 
-                    href={ctaHref}
-                    target={ctaOpenInNewTab ? '_blank' : undefined}
-                    rel={ctaOpenInNewTab ? 'noopener noreferrer' : undefined}
-                    className="sale-button inline-block"
-                  >
-                    {ctaText}
-                  </a>
-                ) : (
+                {ctaHref ? (() => {
+                  const isInternal = isInternalLink(ctaHref) && !ctaOpenInNewTab
+                  const LinkComponent = isInternal ? Link : 'a'
+                  const linkProps = isInternal
+                    ? { href: ctaHref, className: 'sale-button inline-block' }
+                    : {
+                        href: ctaHref,
+                        target: ctaOpenInNewTab ? '_blank' : undefined,
+                        rel: ctaOpenInNewTab ? 'noopener noreferrer' : undefined,
+                        className: 'sale-button inline-block',
+                      }
+                  return <LinkComponent {...linkProps}>{ctaText}</LinkComponent>
+                })() : (
                   <span className="sale-button inline-block">
                     {ctaText}
                   </span>

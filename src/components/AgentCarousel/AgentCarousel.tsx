@@ -5,6 +5,7 @@ import Link from 'next/link'
 import type { Page, Media } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { isInternalLink } from '@/utils/link-utils'
 
 type AgentCarouselBlock = Extract<Page['blocks'][number], { blockType: 'agentCarousel' }>
 
@@ -144,17 +145,24 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
             {description}
           </p>
 
-          {linkText && linkHref && (
-            <a 
-              href={linkHref}
-              target={openInNewTab ? '_blank' : undefined}
-              rel={openInNewTab ? 'noopener noreferrer' : undefined}
-              className="group inline-flex items-center font-medium text-[#1a2e28] hover:opacity-70 transition-opacity mt-2"
-            >
-              {linkText}
-              <Arrow direction="right" size="w-4 h-4" className="ml-2 transition-transform group-hover:translate-x-1" />
-            </a>
-          )}
+          {linkText && linkHref && (() => {
+            const isInternal = isInternalLink(linkHref) && !openInNewTab
+            const LinkComponent = isInternal ? Link : 'a'
+            const linkProps = isInternal
+              ? { href: linkHref, className: 'group inline-flex items-center font-medium text-[#1a2e28] hover:opacity-70 transition-opacity mt-2' }
+              : {
+                  href: linkHref,
+                  target: openInNewTab ? '_blank' : undefined,
+                  rel: openInNewTab ? 'noopener noreferrer' : undefined,
+                  className: 'group inline-flex items-center font-medium text-[#1a2e28] hover:opacity-70 transition-opacity mt-2',
+                }
+            return (
+              <LinkComponent {...linkProps}>
+                {linkText}
+                <Arrow direction="right" size="w-4 h-4" className="ml-2 transition-transform group-hover:translate-x-1" />
+              </LinkComponent>
+            )
+          })()}
 
           {/* Desktop Arrows */}
           <div className="hidden lg:flex gap-4 mt-8">

@@ -1,6 +1,8 @@
 import React from 'react'
+import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { isInternalLink } from '@/utils/link-utils'
 
 type CTAFooterBlock = Extract<Page['blocks'][number], { blockType: 'ctaFooter' }>
 
@@ -27,16 +29,23 @@ export default function CTAFooter({ block }: CTAFooterProps) {
     const href = resolveLinkUrl(button as any)
     const openInNewTab = shouldOpenInNewTab(button as any)
     if (href) {
+      const isInternal = isInternalLink(href) && !openInNewTab
+      const LinkComponent = isInternal ? Link : 'a'
+      const linkProps = isInternal
+        ? { href, className }
+        : {
+            href,
+            target: openInNewTab ? '_blank' : undefined,
+            rel: openInNewTab ? 'noopener noreferrer' : undefined,
+            className,
+          }
       return (
-        <a 
+        <LinkComponent 
           key={index} 
-          href={href}
-          target={openInNewTab ? '_blank' : undefined}
-          rel={openInNewTab ? 'noopener noreferrer' : undefined}
-          className={className}
+          {...linkProps}
         >
           {button.label}
-        </a>
+        </LinkComponent>
       )
     }
 

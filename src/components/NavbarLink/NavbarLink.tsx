@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import styles from './NavbarLink.module.scss'
 
 export function NavbarLink({
@@ -12,17 +13,33 @@ export function NavbarLink({
   className?: string
   isExternal?: boolean
 }) {
-  const externalProps = isExternal
+  // Check if link is external (starts with http:// or https://)
+  const isExternalLink = isExternal || (href.startsWith('http://') || href.startsWith('https://'))
+  
+  const externalProps = isExternalLink
     ? { target: '_blank', rel: 'noopener noreferrer' }
     : {}
+
+  // Use regular <a> tag for external links, Next.js Link for internal links
+  if (isExternalLink) {
+    return (
+      <a
+        href={href}
+        className={`text-white hover:text-opacity-80 transition ${className}`}
+        {...externalProps}
+      >
+        {children}
+      </a>
+    )
+  }
+
   return (
-    <a
+    <Link
       href={href}
       className={`text-white hover:text-opacity-80 transition ${className}`}
-      {...externalProps}
     >
       {children}
-    </a>
+    </Link>
   )
 }
 
