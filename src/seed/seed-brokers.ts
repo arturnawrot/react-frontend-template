@@ -1,5 +1,6 @@
 import type { Payload } from 'payload'
 import { buildoutApi } from '../utils/buildout-api'
+import { slugify } from '../utils/slugify'
 import { writeFile, unlink, mkdir } from 'fs/promises'
 import { join } from 'path'
 import { existsSync } from 'fs'
@@ -81,17 +82,6 @@ async function uploadImageFromUrl(
   }
 }
 
-/**
- * Generates a URL-friendly slug from a string
- */
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
-    .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
-}
 
 /**
  * Creates or finds a specialty record and returns its ID
@@ -341,7 +331,7 @@ export async function seedBrokers(payload: Payload) {
           continue
         }
 
-        const slug = `${broker.first_name.toLowerCase().trim()}-${broker.last_name.toLowerCase().trim()}`
+        const slug = `${slugify(broker.first_name)}-${slugify(broker.last_name)}`
         console.log(`\n👤 Processing: ${broker.first_name} ${broker.last_name} (${slug})`)
 
         // Check if agent already exists

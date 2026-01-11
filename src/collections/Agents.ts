@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { slugify } from '../utils/slugify'
 
 export const Agents: CollectionConfig = {
   slug: 'agents',
@@ -158,9 +159,9 @@ export const Agents: CollectionConfig = {
       ({ data }) => {
         // Auto-generate slug from firstName-lastName
         if (data && data.firstName && data.lastName) {
-          const firstName = data.firstName.toLowerCase().trim()
-          const lastName = data.lastName.toLowerCase().trim()
-          data.slug = `${firstName}-${lastName}`
+          const firstNameSlug = slugify(data.firstName)
+          const lastNameSlug = slugify(data.lastName)
+          data.slug = `${firstNameSlug}-${lastNameSlug}`
         }
         return data
       },
