@@ -281,7 +281,7 @@ async function convertServingLocations(payload: Payload, city: string, _state: s
 async function getRandomFeaturedProperties(brokerId: number): Promise<number[]> {
   try {
     const propertiesResponse = await buildoutApi.getPropertiesByBrokerId(brokerId, {
-      skipCache: true,
+      skipCache: false,
       limit: 100, // Get up to 100 properties to choose from
     })
 
@@ -323,7 +323,7 @@ export async function seedBrokers(payload: Payload) {
 
     // Fetch all brokers from Buildout
     console.log('📥 Fetching brokers from Buildout API...')
-    const brokersResponse = await buildoutApi.getAllBrokers({ skipCache: true })
+    const brokersResponse = await buildoutApi.getAllBrokers({ skipCache: false })
     const brokers = brokersResponse.brokers
 
     console.log(`📊 Found ${brokers.length} brokers to process`)

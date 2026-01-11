@@ -74,21 +74,31 @@ export async function renderBlock(
           setsRaw: JSON.stringify(global?.sets, null, 2),
         })
 
-        // Handle JSON field - it might be a string that needs parsing, or already an array
-        let sets: Array<{ name: string; propertyIds: number[] }> = []
+        // Sets is now an array field, propertyIds is a JSON field
+        let sets: Array<{ name: string; propertyIds?: number[] }> = []
         
-        if (global?.sets) {
-          if (typeof global.sets === 'string') {
-            // If it's a string, parse it
-            try {
-              sets = JSON.parse(global.sets)
-            } catch (e) {
-              console.error('[renderBlocks] Failed to parse sets JSON string:', e)
+        if (global?.sets && Array.isArray(global.sets)) {
+          sets = global.sets.map((set: any) => {
+            let propertyIds: number[] = []
+            if (set.propertyIds) {
+              if (Array.isArray(set.propertyIds)) {
+                propertyIds = set.propertyIds.filter((id: any): id is number => typeof id === 'number')
+              } else if (typeof set.propertyIds === 'string') {
+                try {
+                  const parsed = JSON.parse(set.propertyIds)
+                  if (Array.isArray(parsed)) {
+                    propertyIds = parsed.filter((id: any): id is number => typeof id === 'number')
+                  }
+                } catch (e) {
+                  console.error('[renderBlocks] Failed to parse propertyIds JSON:', e)
+                }
+              }
             }
-          } else if (Array.isArray(global.sets)) {
-            // If it's already an array, use it directly
-            sets = global.sets as Array<{ name: string; propertyIds: number[] }>
-          }
+            return {
+              name: set.name,
+              propertyIds
+            }
+          })
         }
         
         console.log('[renderBlocks] Processed sets:', sets.map(s => ({ 
@@ -177,7 +187,55 @@ export async function renderBlock(
     return <FeaturedProperties key={index} block={block} properties={properties} />
   }
   if (block.blockType === 'testimonialCarousel') {
-    return <TestimonialCarousel key={index} block={block} />
+    // Fetch testimonials from the selected set if specified
+    let testimonials: Array<{
+      quote: string
+      author: string
+      company?: string
+    }> = []
+
+    const setName = (block as any).testimonialSetName
+    console.log('[renderBlocks] TestimonialCarousel block:', {
+      setName,
+      hasPayload: !!payload,
+      blockType: block.blockType,
+    })
+
+    if (setName && payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'testimonialsSets',
+          depth: 0,
+        })
+
+        // Sets is an array field, testimonials is an array field
+        let sets: Array<{ name: string; testimonials?: any[] }> = []
+        
+        if (global?.sets && Array.isArray(global.sets)) {
+          sets = global.sets as Array<{ name: string; testimonials?: any[] }>
+        }
+        
+        const set = sets.find((s) => s.name === setName)
+        
+        if (set?.testimonials && Array.isArray(set.testimonials)) {
+          testimonials = set.testimonials.map((testimonial: any) => ({
+            quote: testimonial.quote || '',
+            author: testimonial.author || '',
+            company: testimonial.company || undefined,
+          }))
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching testimonials set:', error)
+      }
+    }
+
+    // Create a modified block with the fetched testimonials
+    const blockWithTestimonials = {
+      ...block,
+      testimonials,
+    }
+
+    return <TestimonialCarousel key={index} block={blockWithTestimonials} />
   }
   if (block.blockType === 'splitSection') {
     return <SplitSection key={index} block={block} />
@@ -326,40 +384,27 @@ export async function renderBlock(
           depth: 2, // Populate agent relationships
         })
 
-        // Handle JSON field - it might be a string that needs parsing, or already an array
-        let sets: Array<{ name: string; agentIds: string[] }> = []
+        // Sets is now an array field, agents are relationship field (populated with depth: 2)
+        let sets: Array<{ name: string; agents?: any[] | string[] }> = []
         
-        if (global?.sets) {
-          if (typeof global.sets === 'string') {
-            // If it's a string, parse it
-            try {
-              sets = JSON.parse(global.sets)
-            } catch (e) {
-              console.error('[renderBlocks] Failed to parse sets JSON string:', e)
-            }
-          } else if (Array.isArray(global.sets)) {
-            // If it's already an array, use it directly
-            sets = global.sets as Array<{ name: string; agentIds: string[] }>
-          }
+        if (global?.sets && Array.isArray(global.sets)) {
+          sets = global.sets as Array<{ name: string; agents?: any[] | string[] }>
         }
         
         const set = sets.find((s) => s.name === setName)
         
-        if (set?.agentIds && Array.isArray(set.agentIds)) {
-          // Fetch agents by IDs
-          const agentResults = await Promise.all(
-            set.agentIds.map((agentId) =>
-              payload.findByID({
-                collection: 'agents',
-                id: agentId,
-                depth: 2, // Populate relationships and images
-              }).catch(() => null)
-            )
-          )
-
-          agents = agentResults
-            .filter((agent): agent is any => agent !== null)
+        if (set?.agents && Array.isArray(set.agents)) {
+          // Agents are already populated (objects) or IDs (strings) depending on depth
+          const agentList = set.agents
+          
+          agents = agentList
             .map((agent: any) => {
+              // If it's an ID string, we need to fetch it (shouldn't happen with depth: 2, but handle it)
+              if (typeof agent === 'string') {
+                return null // Skip IDs, they should be populated
+              }
+              
+              // Agent is already populated as an object
               // Extract roles, specialties, and locations
               const roles = (agent.roles || [])
                 .map((r: any) => (typeof r === 'object' && r !== null && 'name' in r ? r.name : null))
@@ -377,6 +422,7 @@ export async function renderBlock(
                 slug: agent.slug,
               }
             })
+            .filter((agent): agent is NonNullable<typeof agent> => agent !== null)
         }
       } catch (error) {
         console.error('[renderBlocks] Error fetching featured agents from set:', error)

@@ -102,11 +102,16 @@ body,
   height: 100%;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   font-family: "GT America Condensed", sans-serif;
   font-size: 14px;
   font-weight: 400;
   margin: 0;
+  overflow-x: hidden;
 }
 
 .sale-button {

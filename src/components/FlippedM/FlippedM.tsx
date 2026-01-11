@@ -112,6 +112,8 @@ const ProcessSection = ({
   subheading,
   bulletPoints,
   image,
+  imageWidth,
+  imageHeight,
   ctaText,
   ctaHref,
   ctaOpenInNewTab,
@@ -120,20 +122,22 @@ const ProcessSection = ({
   subheading?: string | null
   bulletPoints: BulletPoint[]
   image: string
+  imageWidth?: number | null
+  imageHeight?: number | null
   ctaText?: string | null
   ctaHref?: string | null
   ctaOpenInNewTab?: boolean
 }) => {
   return (
-    <div className="relative w-full flex flex-col py-12 md:py-20 min-h-[1600px] max-w-[1500px] mx-auto md:px-15">
+    <div className="relative w-full flex flex-col py-12 md:py-20 max-w-[1500px] mx-auto md:px-15">
       {/* SVG Background */}
-      <div className="absolute inset-0 md:left-1/2 pointer-events-none z-5">
+      <div className="absolute inset-0 md:left-1/2 pointer-events-none z-10">
         <Image
           src="/svg/flipped-m.svg"
           alt=""
           width={1200}
           height={1600}
-          className="absolute top-0 left-[-15%] w-auto h-auto overflow-hidden"
+          className="absolute top-0 left-[-15%] w-auto h-auto"
           style={{ maxWidth: 'none', maxHeight: 'none' }}
         />
       </div>
@@ -193,12 +197,13 @@ const ProcessSection = ({
 
           {/* Right Column - Image */}
           <div className="hidden md:flex items-center justify-center">
-            <div className="relative w-full max-w-2xl aspect-square">
+            <div className="relative max-w-2xl w-fit h-fit">
               <Image
                 src={image}
                 alt=""
-                fill
-                className="object-contain"
+                width={imageWidth || 636}
+                height={imageHeight || 636}
+                className="object-contain rounded-xl"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
@@ -210,13 +215,18 @@ const ProcessSection = ({
 }
 
 export default function FlippedM({ block }: FlippedMProps) {
-  // Get image URL - handle both string and Media object
-  const imageUrl =
-    typeof block.image === 'string'
-      ? block.image
-      : block.image && typeof block.image === 'object' && 'url' in block.image
-        ? block.image.url || '/img/amazon_fc.png'
-        : '/img/amazon_fc.png' // fallback
+  // Get image URL and dimensions - handle both string and Media object
+  let imageUrl = '/img/amazon_fc.png' // fallback
+  let imageWidth: number | null | undefined = undefined
+  let imageHeight: number | null | undefined = undefined
+
+  if (typeof block.image === 'string') {
+    imageUrl = block.image
+  } else if (block.image && typeof block.image === 'object' && 'url' in block.image) {
+    imageUrl = block.image.url || '/img/amazon_fc.png'
+    imageWidth = block.image.width
+    imageHeight = block.image.height
+  }
 
   // Render heading - split by newlines and add <br /> tags
   const heading = block.heading ? (
@@ -255,12 +265,14 @@ export default function FlippedM({ block }: FlippedMProps) {
   })
 
   return (
-    <div className="overflow-hidden">
+    <div>
       <ProcessSection
         heading={heading}
         subheading={block.subheading}
         bulletPoints={bulletPoints}
         image={imageUrl}
+        imageWidth={imageWidth}
+        imageHeight={imageHeight}
         ctaText={block.ctaText}
         ctaHref={ctaHref}
         ctaOpenInNewTab={ctaOpenInNewTab}
@@ -268,4 +280,3 @@ export default function FlippedM({ block }: FlippedMProps) {
     </div>
   )
 }
-

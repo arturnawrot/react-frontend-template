@@ -3,7 +3,13 @@ import React, { useState } from 'react'
 import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 
-type TestimonialCarouselBlock = Extract<Page['blocks'][number], { blockType: 'testimonialCarousel' }>
+type TestimonialCarouselBlock = Extract<Page['blocks'][number], { blockType: 'testimonialCarousel' }> & {
+  testimonials?: Array<{
+    quote: string
+    author: string
+    company?: string
+  }>
+}
 
 interface TestimonialCarouselProps {
   block: TestimonialCarouselBlock
@@ -12,23 +18,24 @@ interface TestimonialCarouselProps {
 export default function TestimonialCarousel({ block }: TestimonialCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  const testimonials = block.testimonials || [
-    {
-      quote: "...The Meybohm team helped us expand into three cities and we couldn't trust anyone else.",
-      author: "John",
-      company: "Company Name"
-    },
-    {
-      quote: "Working with Meybohm transformed our business. Their expertise and dedication were unmatched.",
-      author: "Sarah",
-      company: "Tech Solutions Inc"
-    },
-    {
-      quote: "The professionalism and attention to detail from the Meybohm team exceeded all our expectations.",
-      author: "Michael",
-      company: "Growth Partners LLC"
-    }
-  ]
+  // Use testimonials from the block (fetched from global set in renderBlocks)
+  const testimonials = block.testimonials || []
+
+  // Handle empty testimonials
+  if (testimonials.length === 0) {
+    return (
+      <div className="max-w-[1050px] mx-auto px-4 py-10">
+        <div className="mx-auto p-8">
+          <div className="text-center mb-8">
+            <p className="text-sm tracking-widest text-gray-500 uppercase mb-4">
+              Testimonials
+            </p>
+            <p className="text-gray-500">No testimonials available. Please select a testimonial set.</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length)

@@ -147,23 +147,7 @@ export async function seedBuyPage(payload: Payload) {
           },
           {
             blockType: 'testimonialCarousel' as const,
-            testimonials: [
-              {
-                quote: "...The Meybohm team helped us expand into three cities and we couldn't trust anyone else.",
-                author: "John",
-                company: "Company Name"
-              },
-              {
-                quote: "Working with Meybohm transformed our business. Their expertise and dedication were unmatched.",
-                author: "Sarah",
-                company: "Tech Solutions Inc"
-              },
-              {
-                quote: "The professionalism and attention to detail from the Meybohm team exceeded all our expectations.",
-                author: "Michael",
-                company: "Growth Partners LLC"
-              }
-            ],
+            testimonialSetName: 'default',
           },
           {
             blockType: 'splitSection' as const,
@@ -236,22 +220,9 @@ export async function seedBuyPage(payload: Payload) {
                 heading: 'Experience that Performs',
                 description: "We're proud to bring a wealth of knowledge and relational capital to every deal and partnership.",
                 linkText: 'Find an Agent',
-                linkHref: '#',
+                linkType: 'none' as const,
+                openInNewTab: false,
                 featuredAgentSetName: 'default',
-                agents: [
-                  {
-                    name: 'Jane Smith',
-                    role: 'Agent',
-                    location: 'Augusta',
-                    // Note: image needs to be uploaded separately in admin panel
-                  },
-                  {
-                    name: 'Jordan Collier',
-                    role: 'Agent & Broker',
-                    location: 'Augusta',
-                    // Note: image needs to be uploaded separately in admin panel
-                  },
-                ],
               },
             ],
           },
@@ -261,9 +232,24 @@ export async function seedBuyPage(payload: Payload) {
         blockType: 'ctaFooter' as const,
         heading: 'Ready to make your next move?',
         buttons: [
-          { label: 'Schedule a Consultation', variant: 'primary' as const },
-          { label: 'Get Matched with a Agent', variant: 'secondary' as const },
-          { label: 'Search Listings', variant: 'secondary' as const },
+          {
+            label: 'Schedule a Consultation',
+            linkType: 'none' as const,
+            openInNewTab: false,
+            variant: 'primary' as const,
+          },
+          {
+            label: 'Get Matched with a Agent',
+            linkType: 'none' as const,
+            openInNewTab: false,
+            variant: 'secondary' as const,
+          },
+          {
+            label: 'Search Listings',
+            linkType: 'none' as const,
+            openInNewTab: false,
+            variant: 'secondary' as const,
+          },
         ],
       },
       {

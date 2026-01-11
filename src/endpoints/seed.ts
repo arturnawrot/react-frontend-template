@@ -1,6 +1,5 @@
 import type { Endpoint } from 'payload'
 import { APIError } from 'payload'
-import { runSeed } from '../lib/seed-runner'
 
 export const seedEndpoint: Endpoint = {
   path: '/seed',
@@ -77,7 +76,9 @@ export const seedEndpoint: Endpoint = {
           // Run seed operations
           sendMessage('🚀 Starting seed operation...', 'log')
           
-          // Use the shared seed function
+          // Dynamically import runSeed to enable hot reloading of seed files
+          // This ensures changes to seed files are picked up during development
+          const { runSeed } = await import('../lib/seed-runner')
           await runSeed(req.payload)
           
           sendMessage('✅ All data seeded successfully!', 'success')

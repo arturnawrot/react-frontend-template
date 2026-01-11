@@ -8,7 +8,7 @@ const FeaturedAgentSetSelector: TextFieldClientComponent = (props) => {
   const { path } = props
   const { value, setValue } = useField<string>({ path })
   
-  const [sets, setSets] = useState<Array<{ name: string; agentIds: string[] }>>([])
+  const [sets, setSets] = useState<Array<{ name: string; agents?: any[] | string[] }>>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -28,18 +28,18 @@ const FeaturedAgentSetSelector: TextFieldClientComponent = (props) => {
         // Payload REST API returns { result: { ...globalData } }
         const global = data?.result || data
         
-        // Handle JSON field - it might be a string that needs parsing, or already an array
-        let setsData = global?.sets
-        if (typeof setsData === 'string') {
-          try {
-            setsData = JSON.parse(setsData)
-          } catch (parseError) {
-            console.error('Error parsing sets JSON string:', parseError)
-            setsData = []
-          }
-        }
-        
-        if (setsData && Array.isArray(setsData)) {
+        // Sets is now an array field, agents is a relationship field
+        if (global?.sets && Array.isArray(global.sets)) {
+          const setsData = global.sets.map((set: any) => {
+            // Extract agent count from relationship field (could be objects or IDs)
+            const agents = set.agents || []
+            const agentCount = Array.isArray(agents) ? agents.length : 0
+            return {
+              name: set.name,
+              agents,
+              agentCount // For display purposes
+            }
+          })
           setSets(setsData)
         }
       } catch (error) {
@@ -69,7 +69,7 @@ const FeaturedAgentSetSelector: TextFieldClientComponent = (props) => {
         <option value="">None (use manual selection)</option>
         {sets.map((set, index) => (
           <option key={index} value={set.name}>
-            {set.name} ({set.agentIds?.length || 0} agents)
+            {set.name} ({(set as any).agentCount || 0} agents)
           </option>
         ))}
       </select>

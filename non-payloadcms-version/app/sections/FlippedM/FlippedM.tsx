@@ -75,7 +75,7 @@ const BulletPoint = ({
 
 const ProcessSection = ({ heading, subheading, bulletPoints, image, svgPath, ctaText, ctaHref }) => {
   return (
-    <div className="relative w-full flex flex-col py-12 md:py-20 min-h-[1600px] max-w-[1500px] mx-auto md:px-15">
+    <div className="relative w-full flex flex-col py-10 md:py-10 min-h-[1600px] max-w-[1500px] mx-auto md:px-15">
       {/* SVG Background */}
       <div className="absolute inset-0 md:left-1/2 pointer-events-none">
         <img

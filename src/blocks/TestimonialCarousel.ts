@@ -8,29 +8,16 @@ export const TestimonialCarousel: Block = {
   },
   fields: [
     {
-      name: 'testimonials',
-      type: 'array',
-      label: 'Testimonials',
-      minRows: 1,
-      fields: [
-        {
-          name: 'quote',
-          type: 'textarea',
-          required: true,
-          label: 'Quote',
+      name: 'testimonialSetName',
+      type: 'text',
+      required: true,
+      label: 'Testimonial Set',
+      admin: {
+        description: 'Select a testimonial set from the global sets.',
+        components: {
+          Field: '/components/TestimonialSetSelector/TestimonialSetSelector',
         },
-        {
-          name: 'author',
-          type: 'text',
-          required: true,
-          label: 'Author',
-        },
-        {
-          name: 'company',
-          type: 'text',
-          label: 'Company',
-        },
-      ],
+      },
     },
   ],
 }

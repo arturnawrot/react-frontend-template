@@ -1,4 +1,5 @@
 import { default as default_f25dc40868e28e429962618d11f63c66 } from '../../../components/FeaturedPropertySetSelector/FeaturedPropertySetSelector'
+import { default as default_fefa67c450726138ef8878db2ceebee9 } from '../../../components/TestimonialSetSelector/TestimonialSetSelector'
 import { default as default_38ac3c24f649ee768b0380bb93256a45 } from '../../../components/FeaturedArticleSetSelector/FeaturedArticleSetSelector'
 import { default as default_44980968092db0d50f91dc7e0dfe616a } from '../../../components/ProvenTrackRecordSetSelector/ProvenTrackRecordSetSelector'
 import { default as default_ef8157c3214847d2b21344374c1b6d92 } from '../../../components/FeaturedAgentSetSelector/FeaturedAgentSetSelector'
@@ -28,13 +29,12 @@ import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { default as default_3cfcbae1c8285b1dc0d2fcbf4d40a752 } from '../../../components/BuildoutBrokerIdField'
 import { default as default_5c82d05d3979d3a77d2f937acbecc21f } from '../../../components/AgentPropertiesDashboard'
 import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
-import { default as default_2a17541ff0d6811e20458a3ba9b68c9d } from '../../../components/FeaturedPropertiesSetManager'
-import { default as default_027527fcf58f8a8292f9da9428ad43ee } from '../../../components/FeaturedAgentsSetManager'
 import { default as default_1ea5719e8a8a26dae6f14f3dc39b5f12 } from '../../../components/ClearBuildoutCache'
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
   "/components/FeaturedPropertySetSelector/FeaturedPropertySetSelector#default": default_f25dc40868e28e429962618d11f63c66,
+  "/components/TestimonialSetSelector/TestimonialSetSelector#default": default_fefa67c450726138ef8878db2ceebee9,
   "/components/FeaturedArticleSetSelector/FeaturedArticleSetSelector#default": default_38ac3c24f649ee768b0380bb93256a45,
   "/components/ProvenTrackRecordSetSelector/ProvenTrackRecordSetSelector#default": default_44980968092db0d50f91dc7e0dfe616a,
   "/components/FeaturedAgentSetSelector/FeaturedAgentSetSelector#default": default_ef8157c3214847d2b21344374c1b6d92,
@@ -64,8 +64,6 @@ export const importMap = {
   "/components/BuildoutBrokerIdField#default": default_3cfcbae1c8285b1dc0d2fcbf4d40a752,
   "/components/AgentPropertiesDashboard#default": default_5c82d05d3979d3a77d2f937acbecc21f,
   "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
-  "/components/FeaturedPropertiesSetManager#default": default_2a17541ff0d6811e20458a3ba9b68c9d,
-  "/components/FeaturedAgentsSetManager#default": default_027527fcf58f8a8292f9da9428ad43ee,
   "/components/ClearBuildoutCache#default": default_1ea5719e8a8a26dae6f14f3dc39b5f12,
   "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }

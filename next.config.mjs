@@ -41,25 +41,12 @@ const nextConfig = {
   },
   // Your Next.js config here
   webpack: (webpackConfig, { isServer, webpack }) => {
-    // Exclude non-payloadcms-version and seed directories from webpack processing
+    // Exclude non-payloadcms-version from webpack processing
+    // Note: Seed files are NOT excluded to allow hot reloading during development
     webpackConfig.watchOptions = {
       ...webpackConfig.watchOptions,
-      ignored: ['**/node_modules/**', '**/non-payloadcms-version/**', '**/src/seed/**', '**/src/seed.ts'],
+      ignored: ['**/node_modules/**', '**/non-payloadcms-version/**'],
     }
-    
-    // Ignore seed files completely using webpack's IgnorePlugin
-    webpackConfig.plugins = webpackConfig.plugins || []
-    webpackConfig.plugins.push(
-      new webpack.IgnorePlugin({
-        resourceRegExp: /^\.\/seed/,
-        contextRegExp: /src$/,
-      })
-    )
-    webpackConfig.plugins.push(
-      new webpack.IgnorePlugin({
-        resourceRegExp: /src\/seed/,
-      })
-    )
     
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],

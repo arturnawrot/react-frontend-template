@@ -11,21 +11,29 @@ export const FeaturedPropertiesSets: GlobalConfig = {
   fields: [
     {
       name: 'sets',
-      type: 'json',
-      required: false,
-      admin: {
-        description: 'Sets of featured properties. Managed via the property selector below.',
-        hidden: true, // Hidden from form, managed by FeaturedPropertiesSetManager component
-      },
-    },
-    {
-      name: 'setManager',
-      type: 'ui',
-      admin: {
-        components: {
-          Field: '/components/FeaturedPropertiesSetManager',
+      type: 'array',
+      label: 'Property Sets',
+      minRows: 0,
+      fields: [
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+          label: 'Set Name',
+          admin: {
+            description: 'A unique name for this set (e.g., "Homepage Featured", "Default Set")',
+          },
         },
-      },
+        {
+          name: 'propertyIds',
+          type: 'json',
+          required: false,
+          label: 'Property IDs',
+          admin: {
+            description: 'Buildout property IDs (max 4 allowed). Enter as JSON array of numbers, e.g., [123, 456, 789]',
+          },
+        },
+      ],
     },
   ],
 }

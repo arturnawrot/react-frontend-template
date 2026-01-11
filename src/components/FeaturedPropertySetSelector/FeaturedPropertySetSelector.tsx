@@ -29,18 +29,29 @@ const FeaturedPropertySetSelector: TextFieldClientComponent = (props) => {
         // Payload REST API returns { result: { ...globalData } }
         const global = data?.result || data
         
-        // Handle JSON field - it might be a string that needs parsing, or already an array
-        let setsData = global?.sets
-        if (typeof setsData === 'string') {
-          try {
-            setsData = JSON.parse(setsData)
-          } catch (parseError) {
-            console.error('Error parsing sets JSON string:', parseError)
-            setsData = []
-          }
-        }
-        
-        if (setsData && Array.isArray(setsData)) {
+        // Sets is now an array field, propertyIds is a JSON field
+        if (global?.sets && Array.isArray(global.sets)) {
+          const setsData = global.sets.map((set: any) => {
+            let propertyIds: number[] = []
+            if (set.propertyIds) {
+              if (Array.isArray(set.propertyIds)) {
+                propertyIds = set.propertyIds.filter((id: any): id is number => typeof id === 'number')
+              } else if (typeof set.propertyIds === 'string') {
+                try {
+                  const parsed = JSON.parse(set.propertyIds)
+                  if (Array.isArray(parsed)) {
+                    propertyIds = parsed.filter((id: any): id is number => typeof id === 'number')
+                  }
+                } catch (e) {
+                  console.error('Error parsing propertyIds JSON:', e)
+                }
+              }
+            }
+            return {
+              name: set.name,
+              propertyIds
+            }
+          })
           setSets(setsData)
         }
       } catch (error) {

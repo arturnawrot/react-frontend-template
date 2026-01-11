@@ -5,34 +5,87 @@ import { seedBuyPage } from '@/seed/seed-buy'
 import { seedBrokers } from '@/seed/seed-brokers'
 import { seedFeaturedAgents } from '@/seed/seed-featured-agents'
 import { seedArticles } from '@/seed/seed-articles'
+import { seedFeaturedArticles } from '@/seed/seed-featured-articles'
+import { seedFeaturedProperties } from '@/seed/seed-featured-properties'
+import { seedProvenTrackRecord } from '@/seed/seed-proven-track-record'
+import { seedTestimonials } from '@/seed/seed-testimonials'
 
 /**
  * Main seed function that runs all seed operations
  * Can be used by both CLI scripts and API endpoints
+ * 
+ * Order is important due to dependencies:
+ * 1. Base data (CSS, Navbar, Footer, Pages) - no dependencies
+ * 2. Core collections (Brokers/Agents, Articles) - must run first
+ * 3. Featured sets (depend on core collections existing)
  */
 export async function runSeed(payload: Payload) {
+  // ============================================
+  // Phase 1: Base Configuration (no dependencies)
+  // ============================================
+  console.log('\n📋 Phase 1: Seeding base configuration...')
+  
   // Seed CSS styles (idempotent)
-  console.log('Seeding CSS styles...')
+  console.log('  Seeding CSS styles...')
   await seedCSSStyles(payload)
 
   // Seed Navbar (idempotent)
+  console.log('  Seeding Navbar...')
   await seedNavbar(payload)
 
   // Seed Footer (idempotent)
+  console.log('  Seeding Footer...')
   await seedFooter(payload)
 
   // Seed all pages
+  console.log('  Seeding pages...')
   await seedHomePage(payload)
   await seedBuyPage(payload)
 
-  // Seed all brokers from Buildout API (includes all agents)
+  // ============================================
+  // Phase 2: Core Collections (must run first)
+  // ============================================
+  console.log('\n👥 Phase 2: Seeding core collections...')
+  
+  // Seed all brokers from Buildout API (creates agents collection)
+  // MUST run before featured agents and proven track record
+  console.log('  Seeding brokers/agents from Buildout API...')
   await seedBrokers(payload)
 
-  // Seed featured agents sets (creates default set with 6 random agents)
-  await seedFeaturedAgents(payload)
-
   // Seed articles (10 of each type: article, market-report, investment-spotlight)
+  // MUST run before featured articles
+  console.log('  Seeding articles...')
   await seedArticles(payload)
 
-  console.log('✅ All pages seeded successfully!')
+  // ============================================
+  // Phase 3: Featured Sets (depend on core collections)
+  // ============================================
+  console.log('\n⭐ Phase 3: Seeding featured sets...')
+  
+  // Seed featured articles sets (depends on articles existing)
+  // Creates default set with all articles
+  console.log('  Seeding featured articles sets...')
+  await seedFeaturedArticles(payload)
+
+  // Seed featured agents sets (depends on agents existing)
+  // Creates default set with 10 random agents from buildout-api
+  console.log('  Seeding featured agents sets...')
+  await seedFeaturedAgents(payload)
+
+  // Seed featured properties sets (no Payload dependencies, uses buildout-api)
+  // Creates default set with 4 random properties from buildout-api
+  console.log('  Seeding featured properties sets...')
+  await seedFeaturedProperties(payload)
+
+  // Seed proven track record sets (depends on agents existing)
+  // Creates default set with properties from buildout-api, matched with agents
+  console.log('  Seeding proven track record sets...')
+  await seedProvenTrackRecord(payload)
+
+  // Seed testimonials sets (no dependencies)
+  // Creates default set with sample testimonials
+  console.log('  Seeding testimonials sets...')
+  await seedTestimonials(payload)
+
+  console.log('\n✅ All seed operations completed successfully!')
 }

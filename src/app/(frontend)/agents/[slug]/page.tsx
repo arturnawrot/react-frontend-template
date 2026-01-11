@@ -114,21 +114,31 @@ export default async function AgentPage({ params }: AgentPageProps) {
         slug: 'featuredPropertiesSets',
       })
 
-      // Handle JSON field - it might be a string that needs parsing, or already an array
-      let sets: Array<{ name: string; propertyIds: number[] }> = []
+      // Sets is now an array field, propertyIds is a JSON field
+      let sets: Array<{ name: string; propertyIds?: number[] }> = []
       
-      if (global?.sets) {
-        if (typeof global.sets === 'string') {
-          // If it's a string, parse it
-          try {
-            sets = JSON.parse(global.sets)
-          } catch (e) {
-            console.error('[Agent Page] Failed to parse sets JSON string:', e)
+      if (global?.sets && Array.isArray(global.sets)) {
+        sets = global.sets.map((set: any) => {
+          let propertyIds: number[] = []
+          if (set.propertyIds) {
+            if (Array.isArray(set.propertyIds)) {
+              propertyIds = set.propertyIds.filter((id: any): id is number => typeof id === 'number')
+            } else if (typeof set.propertyIds === 'string') {
+              try {
+                const parsed = JSON.parse(set.propertyIds)
+                if (Array.isArray(parsed)) {
+                  propertyIds = parsed.filter((id: any): id is number => typeof id === 'number')
+                }
+              } catch (e) {
+                console.error('[Agent Page] Failed to parse propertyIds JSON:', e)
+              }
+            }
           }
-        } else if (Array.isArray(global.sets)) {
-          // If it's already an array, use it directly
-          sets = global.sets as Array<{ name: string; propertyIds: number[] }>
-        }
+          return {
+            name: set.name,
+            propertyIds
+          }
+        })
       }
       
       const set = sets.find((s) => s.name === agent.featuredPropertySetName)

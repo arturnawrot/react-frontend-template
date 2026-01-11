@@ -11,21 +11,31 @@ export const FeaturedAgentsSets: GlobalConfig = {
   fields: [
     {
       name: 'sets',
-      type: 'json',
-      required: false,
-      admin: {
-        description: 'Sets of featured agents. Managed via the agent selector below.',
-        hidden: true, // Hidden from form, managed by FeaturedAgentsSetManager component
-      },
-    },
-    {
-      name: 'setManager',
-      type: 'ui',
-      admin: {
-        components: {
-          Field: '/components/FeaturedAgentsSetManager',
+      type: 'array',
+      label: 'Agent Sets',
+      minRows: 0,
+      fields: [
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+          label: 'Set Name',
+          admin: {
+            description: 'A unique name for this set (e.g., "Homepage Featured", "Default Set")',
+          },
         },
-      },
+        {
+          name: 'agents',
+          type: 'relationship',
+          relationTo: 'agents',
+          hasMany: true,
+          required: false,
+          label: 'Agents',
+          admin: {
+            description: 'Select agents to include in this set',
+          },
+        },
+      ],
     },
   ],
 }

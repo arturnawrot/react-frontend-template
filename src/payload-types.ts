@@ -114,6 +114,7 @@ export interface Config {
     featuredAgentsSets: FeaturedAgentsSet;
     featuredArticles: FeaturedArticle;
     provenTrackRecordSets: ProvenTrackRecordSet;
+    testimonialsSets: TestimonialsSet;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
@@ -122,6 +123,7 @@ export interface Config {
     featuredAgentsSets: FeaturedAgentsSetsSelect<false> | FeaturedAgentsSetsSelect<true>;
     featuredArticles: FeaturedArticlesSelect<false> | FeaturedArticlesSelect<true>;
     provenTrackRecordSets: ProvenTrackRecordSetsSelect<false> | ProvenTrackRecordSetsSelect<true>;
+    testimonialsSets: TestimonialsSetsSelect<false> | TestimonialsSetsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -542,14 +544,10 @@ export interface Page {
                   blockType: 'featuredProperties';
                 }
               | {
-                  testimonials?:
-                    | {
-                        quote: string;
-                        author: string;
-                        company?: string | null;
-                        id?: string | null;
-                      }[]
-                    | null;
+                  /**
+                   * Select a testimonial set from the global sets.
+                   */
+                  testimonialSetName: string;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'testimonialCarousel';
@@ -898,14 +896,10 @@ export interface Page {
                             blockType: 'featuredProperties';
                           }
                         | {
-                            testimonials?:
-                              | {
-                                  quote: string;
-                                  author: string;
-                                  company?: string | null;
-                                  id?: string | null;
-                                }[]
-                              | null;
+                            /**
+                             * Select a testimonial set from the global sets.
+                             */
+                            testimonialSetName: string;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'testimonialCarousel';
@@ -1254,14 +1248,10 @@ export interface Page {
                                       blockType: 'featuredProperties';
                                     }
                                   | {
-                                      testimonials?:
-                                        | {
-                                            quote: string;
-                                            author: string;
-                                            company?: string | null;
-                                            id?: string | null;
-                                          }[]
-                                        | null;
+                                      /**
+                                       * Select a testimonial set from the global sets.
+                                       */
+                                      testimonialSetName: string;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'testimonialCarousel';
@@ -1610,14 +1600,10 @@ export interface Page {
                                                 blockType: 'featuredProperties';
                                               }
                                             | {
-                                                testimonials?:
-                                                  | {
-                                                      quote: string;
-                                                      author: string;
-                                                      company?: string | null;
-                                                      id?: string | null;
-                                                    }[]
-                                                  | null;
+                                                /**
+                                                 * Select a testimonial set from the global sets.
+                                                 */
+                                                testimonialSetName: string;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'testimonialCarousel';
@@ -1845,14 +1831,10 @@ export interface Page {
         blockType: 'featuredProperties';
       }
     | {
-        testimonials?:
-          | {
-              quote: string;
-              author: string;
-              company?: string | null;
-              id?: string | null;
-            }[]
-          | null;
+        /**
+         * Select a testimonial set from the global sets.
+         */
+        testimonialSetName: string;
         id?: string | null;
         blockName?: string | null;
         blockType: 'testimonialCarousel';
@@ -2700,14 +2682,7 @@ export interface PagesSelect<T extends boolean = true> {
                     testimonialCarousel?:
                       | T
                       | {
-                          testimonials?:
-                            | T
-                            | {
-                                quote?: T;
-                                author?: T;
-                                company?: T;
-                                id?: T;
-                              };
+                          testimonialSetName?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -2912,14 +2887,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 testimonialCarousel?:
                                   | T
                                   | {
-                                      testimonials?:
-                                        | T
-                                        | {
-                                            quote?: T;
-                                            author?: T;
-                                            company?: T;
-                                            id?: T;
-                                          };
+                                      testimonialSetName?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -3124,14 +3092,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             testimonialCarousel?:
                                               | T
                                               | {
-                                                  testimonials?:
-                                                    | T
-                                                    | {
-                                                        quote?: T;
-                                                        author?: T;
-                                                        company?: T;
-                                                        id?: T;
-                                                      };
+                                                  testimonialSetName?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -3336,14 +3297,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                         testimonialCarousel?:
                                                           | T
                                                           | {
-                                                              testimonials?:
-                                                                | T
-                                                                | {
-                                                                    quote?: T;
-                                                                    author?: T;
-                                                                    company?: T;
-                                                                    id?: T;
-                                                                  };
+                                                              testimonialSetName?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -3495,14 +3449,7 @@ export interface PagesSelect<T extends boolean = true> {
         testimonialCarousel?:
           | T
           | {
-              testimonials?:
-                | T
-                | {
-                    quote?: T;
-                    author?: T;
-                    company?: T;
-                    id?: T;
-                  };
+              testimonialSetName?: T;
               id?: T;
               blockName?: T;
             };
@@ -3926,17 +3873,26 @@ export interface Footer {
  */
 export interface FeaturedPropertiesSet {
   id: string;
-  /**
-   * Sets of featured properties. Managed via the property selector below.
-   */
   sets?:
     | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
+        /**
+         * A unique name for this set (e.g., "Homepage Featured", "Default Set")
+         */
+        name: string;
+        /**
+         * Buildout property IDs (max 4 allowed). Enter as JSON array of numbers, e.g., [123, 456, 789]
+         */
+        propertyIds?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
     | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -3949,17 +3905,18 @@ export interface FeaturedPropertiesSet {
  */
 export interface FeaturedAgentsSet {
   id: string;
-  /**
-   * Sets of featured agents. Managed via the agent selector below.
-   */
   sets?:
     | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
+        /**
+         * A unique name for this set (e.g., "Homepage Featured", "Default Set")
+         */
+        name: string;
+        /**
+         * Select agents to include in this set
+         */
+        agents?: (string | Agent)[] | null;
+        id?: string | null;
+      }[]
     | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -4027,6 +3984,34 @@ export interface ProvenTrackRecordSet {
                * URL for redirect on click (e.g., "/property/123" or "https://example.com")
                */
               link?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Create and manage sets of testimonials. Each set can contain any number of testimonials and can be assigned to testimonial carousel blocks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonialsSets".
+ */
+export interface TestimonialsSet {
+  id: string;
+  sets?:
+    | {
+        /**
+         * A unique name for this set (e.g., "Homepage Testimonials", "Default Set")
+         */
+        name: string;
+        testimonials?:
+          | {
+              quote: string;
+              author: string;
+              company?: string | null;
               id?: string | null;
             }[]
           | null;
@@ -4121,7 +4106,13 @@ export interface FooterSelect<T extends boolean = true> {
  * via the `definition` "featuredPropertiesSets_select".
  */
 export interface FeaturedPropertiesSetsSelect<T extends boolean = true> {
-  sets?: T;
+  sets?:
+    | T
+    | {
+        name?: T;
+        propertyIds?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -4131,7 +4122,13 @@ export interface FeaturedPropertiesSetsSelect<T extends boolean = true> {
  * via the `definition` "featuredAgentsSets_select".
  */
 export interface FeaturedAgentsSetsSelect<T extends boolean = true> {
-  sets?: T;
+  sets?:
+    | T
+    | {
+        name?: T;
+        agents?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -4172,6 +4169,29 @@ export interface ProvenTrackRecordSetsSelect<T extends boolean = true> {
               propertyType?: T;
               agent?: T;
               link?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonialsSets_select".
+ */
+export interface TestimonialsSetsSelect<T extends boolean = true> {
+  sets?:
+    | T
+    | {
+        name?: T;
+        testimonials?:
+          | T
+          | {
+              quote?: T;
+              author?: T;
+              company?: T;
               id?: T;
             };
         id?: T;

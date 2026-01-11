@@ -1,5 +1,9 @@
 import type { Payload } from 'payload'
 import { slugify } from '../utils/slugify'
+import { writeFile, unlink, mkdir } from 'fs/promises'
+import { join } from 'path'
+import { existsSync } from 'fs'
+import { tmpdir } from 'os'
 
 /**
  * Creates or finds a blog category and returns its ID
@@ -70,41 +74,93 @@ async function getRandomUser(payload: Payload): Promise<string | null> {
 }
 
 /**
- * Gets or creates a placeholder featured image
+ * Downloads an image from a URL and saves it to a temporary file
  */
-async function getOrCreatePlaceholderImage(
-  payload: Payload
+async function downloadImage(url: string, filepath: string): Promise<void> {
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`Failed to download image: ${response.status} ${response.statusText}`)
+  }
+  const buffer = await response.arrayBuffer()
+  await writeFile(filepath, Buffer.from(buffer))
+}
+
+/**
+ * Creates a unique seed from a title
+ */
+function createUniqueSeed(title: string, type: string, index: number): string {
+  // Create a hash-like seed from the title
+  const titleHash = title
+    .split('')
+    .reduce((acc, char) => {
+      return ((acc << 5) - acc) + char.charCodeAt(0)
+    }, 0)
+    .toString(36)
+  
+  return `${type}-${index}-${titleHash}`
+}
+
+/**
+ * Uploads an image from picsum.photos to Payload media collection
+ * Returns the media ID or null if upload fails
+ */
+async function uploadImageFromPicsum(
+  payload: Payload,
+  seed: string,
+  altText: string,
+  filename: string
 ): Promise<string | null> {
   try {
-    // Try to find existing placeholder image
-    const existing = await payload.find({
+    // Check if image already exists by seed (not filename, since we want unique images)
+    // We'll use the seed in the filename to make it unique
+    const existingImage = await payload.find({
       collection: 'media',
       where: {
         filename: {
-          contains: 'placeholder',
+          equals: filename,
         },
       },
       limit: 1,
     })
 
-    if (existing.docs.length > 0) {
-      return existing.docs[0].id
+    if (existingImage.docs.length > 0) {
+      return existingImage.docs[0].id
     }
 
-    // If no placeholder exists, try to get any existing image
-    const anyImage = await payload.find({
+    // Use picsum.photos with seed for consistent images
+    // Using 1200x800 for high-quality blog featured images
+    const imageUrl = `https://picsum.photos/seed/${seed}/1200/800`
+
+    // Create temp directory if it doesn't exist
+    const tempDir = join(tmpdir(), 'payload-seed')
+    if (!existsSync(tempDir)) {
+      await mkdir(tempDir, { recursive: true })
+    }
+
+    // Download image to temp file
+    const tempFilePath = join(tempDir, filename)
+    await downloadImage(imageUrl, tempFilePath)
+
+    // Upload to Payload
+    const uploadedImage = await payload.create({
       collection: 'media',
-      limit: 1,
+      data: {
+        alt: altText,
+      },
+      filePath: tempFilePath,
     })
 
-    if (anyImage.docs.length > 0) {
-      return anyImage.docs[0].id
+    // Clean up temp file
+    try {
+      await unlink(tempFilePath)
+    } catch (error) {
+      // Ignore cleanup errors
+      console.warn(`⚠️  Could not delete temp file ${tempFilePath}:`, error)
     }
 
-    console.warn('⚠️  No media found. Articles will be created without featured images.')
-    return null
+    return uploadedImage.id
   } catch (error) {
-    console.error('❌ Error getting placeholder image:', error)
+    console.error(`❌ Error uploading image from picsum.photos:`, error)
     return null
   }
 }
@@ -301,13 +357,7 @@ export async function seedArticles(payload: Payload) {
       throw new Error('No users found. Please create at least one user first.')
     }
     console.log(`✅ Using author: ${authorId}`)
-
-    const featuredImageId = await getOrCreatePlaceholderImage(payload)
-    if (!featuredImageId) {
-      console.warn('⚠️  No featured images available. Articles will be created without images.')
-    } else {
-      console.log(`✅ Using featured image: ${featuredImageId}`)
-    }
+    console.log(`✅ Will use picsum.photos for article images`)
 
     // Get or create categories
     const categoryIds: string[] = []
@@ -354,6 +404,17 @@ export async function seedArticles(payload: Payload) {
           skipped++
           continue
         }
+
+        // Get unique image from picsum.photos for this article
+        // Use title-based seed to ensure each article gets a unique image
+        const imageSeed = createUniqueSeed(title, 'article', i)
+        const imageFilename = `article-${slugify(title)}-${i}.jpg`
+        const featuredImageId = await uploadImageFromPicsum(
+          payload,
+          imageSeed,
+          title,
+          imageFilename
+        )
 
         const articleData: any = {
           type: 'article',
@@ -408,6 +469,17 @@ export async function seedArticles(payload: Payload) {
           continue
         }
 
+        // Get unique image from picsum.photos for this market report
+        // Use title-based seed to ensure each report gets a unique image
+        const imageSeed = createUniqueSeed(title, 'market-report', i)
+        const imageFilename = `market-report-${slugify(title)}-${i}.jpg`
+        const featuredImageId = await uploadImageFromPicsum(
+          payload,
+          imageSeed,
+          title,
+          imageFilename
+        )
+
         const articleData: any = {
           type: 'market-report',
           title,
@@ -460,6 +532,17 @@ export async function seedArticles(payload: Payload) {
           skipped++
           continue
         }
+
+        // Get unique image from picsum.photos for this investment spotlight
+        // Use title-based seed to ensure each spotlight gets a unique image
+        const imageSeed = createUniqueSeed(title, 'investment-spotlight', i)
+        const imageFilename = `investment-spotlight-${slugify(title)}-${i}.jpg`
+        const featuredImageId = await uploadImageFromPicsum(
+          payload,
+          imageSeed,
+          title,
+          imageFilename
+        )
 
         const articleData: any = {
           type: 'investment-spotlight',
