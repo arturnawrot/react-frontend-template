@@ -32,21 +32,27 @@ const HeroHeader = ({
   align = 'center',
   useJustifyCenter = false,
   allowWrap = false,
+  rowBreakpoint = 'md',
 }: {
   segments: HeadingSegment[]
   className?: string
   align?: 'center' | 'start'
   useJustifyCenter?: boolean
   allowWrap?: boolean
+  rowBreakpoint?: 'md' | 'min-[816px]'
 }) => {
   const containerAlign =
     align === 'center' ? 'items-center text-center' : 'items-start text-left'
+
+  const flexRowClass = rowBreakpoint === 'min-[816px]' 
+    ? 'min-[816px]:flex-row min-[816px]:gap-x-3'
+    : 'md:flex-row md:gap-x-3'
 
   return (
     <h1 className={className}>
       <div
         className={`
-          flex flex-col lg:flex-row flex-wrap lg:gap-x-3 gap-y-2 w-full
+          flex flex-col ${flexRowClass} flex-wrap gap-y-2 w-full
           ${containerAlign}
           ${useJustifyCenter ? 'justify-center' : ''}
         `}
@@ -530,7 +536,7 @@ const SideBySideLayout = (
         >
           <div className="flex flex-col gap-6 justify-center w-full max-w-xl md:mt-[150px] md:mb-[80px]">
             <div className="w-full max-w-[400px] md:max-w-none md:w-auto">
-              <HeroHeader segments={segments} className={headingClass} align="start" />
+              <HeroHeader segments={segments} className={headingClass} align="start" allowWrap={isAgent} />
 
               {subheading && <p className={subClass}>{subheading}</p>}
             </div>
@@ -708,7 +714,7 @@ const CenteredLayout = (
           <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
 
           <div className={`mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 text-center flex flex-col items-center ${isFullWidthColor ? 'gap-6' : ''}`}>
-            <HeroHeader segments={segments} className={headingClass} align="center" useJustifyCenter={!isFullWidthColor} />
+            <HeroHeader segments={segments} className={headingClass} align="center" useJustifyCenter={!isFullWidthColor} rowBreakpoint={isFullWidthColor ? 'min-[816px]' : 'md'} />
 
             {subheading && <p className={subClass}>{subheading}</p>}
 

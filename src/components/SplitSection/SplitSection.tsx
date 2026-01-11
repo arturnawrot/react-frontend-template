@@ -25,7 +25,7 @@ export default function SplitSection({ block }: SplitSectionProps) {
   const openInNewTab = shouldOpenInNewTab(block as any)
 
   return (
-    <section className="w-full py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8">
+    <section className="w-full px-4 sm:px-6 md:px-8">
       <div 
         className={`
           max-w-[1380px] mx-auto 
@@ -35,7 +35,7 @@ export default function SplitSection({ block }: SplitSectionProps) {
       >
         {/* Image Column */}
         <div className="w-full md:w-1/2 flex justify-center md:justify-start">
-          <div className="relative overflow-hidden rounded-2xl shadow-lg w-full max-w-full md:max-w-[720px] aspect-[4/3]">
+          <div className="relative overflow-hidden rounded-2xl shadow-lg w-full max-w-[480px] md:max-w-[720px] aspect-[4/3]">
             <Image 
               src={imageUrl} 
               alt={imageAlt} 

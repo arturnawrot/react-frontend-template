@@ -110,6 +110,7 @@ export interface Config {
   globals: {
     navbar: Navbar;
     footer: Footer;
+    siteSettings: SiteSetting;
     featuredPropertiesSets: FeaturedPropertiesSet;
     featuredAgentsSets: FeaturedAgentsSet;
     featuredArticles: FeaturedArticle;
@@ -119,6 +120,7 @@ export interface Config {
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
     featuredAgentsSets: FeaturedAgentsSetsSelect<false> | FeaturedAgentsSetsSelect<true>;
     featuredArticles: FeaturedArticlesSelect<false> | FeaturedArticlesSelect<true>;
@@ -300,7 +302,7 @@ export interface Page {
           | {
               title: string;
               description: string;
-              linkText: string;
+              linkText?: string | null;
               /**
                * Choose whether to link to an existing page, a custom URL, or no link
                */
@@ -445,7 +447,7 @@ export interface Page {
                     | {
                         title: string;
                         description: string;
-                        linkText: string;
+                        linkText?: string | null;
                         /**
                          * Choose whether to link to an existing page, a custom URL, or no link
                          */
@@ -801,7 +803,7 @@ export interface Page {
                               | {
                                   title: string;
                                   description: string;
-                                  linkText: string;
+                                  linkText?: string | null;
                                   /**
                                    * Choose whether to link to an existing page, a custom URL, or no link
                                    */
@@ -1157,7 +1159,7 @@ export interface Page {
                                         | {
                                             title: string;
                                             description: string;
-                                            linkText: string;
+                                            linkText?: string | null;
                                             /**
                                              * Choose whether to link to an existing page, a custom URL, or no link
                                              */
@@ -1513,7 +1515,7 @@ export interface Page {
                                                   | {
                                                       title: string;
                                                       description: string;
-                                                      linkText: string;
+                                                      linkText?: string | null;
                                                       /**
                                                        * Choose whether to link to an existing page, a custom URL, or no link
                                                        */
@@ -3891,6 +3893,26 @@ export interface Footer {
   createdAt?: string | null;
 }
 /**
+ * Global site settings including block spacing and layout options
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings".
+ */
+export interface SiteSetting {
+  id: string;
+  /**
+   * Configure vertical spacing between page blocks
+   */
+  blockSpacing: {
+    /**
+     * Default vertical spacing applied between blocks (can be overridden per block)
+     */
+    defaultSpacing: 'none' | 'small' | 'medium' | 'large' | 'xlarge';
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Create and manage sets of featured properties. Each set can contain up to 4 properties and can be assigned to agents.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -4121,6 +4143,20 @@ export interface FooterSelect<T extends boolean = true> {
               customUrl?: T;
               id?: T;
             };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  blockSpacing?:
+    | T
+    | {
+        defaultSpacing?: T;
       };
   updatedAt?: T;
   createdAt?: T;

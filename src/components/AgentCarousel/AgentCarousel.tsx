@@ -127,7 +127,7 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
   }
 
   return (
-    <div className="w-full py-12 md:py-20 overflow-x-hidden">
+    <div className="w-full overflow-x-hidden">
       
       <div className="max-w-[1600px] w-full mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         

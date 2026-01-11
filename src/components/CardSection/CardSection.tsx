@@ -52,8 +52,8 @@ function parseIconString(iconString: string): IconProp | null {
 
 export default function CardSection({ block }: CardSectionProps) {
   const title = block.title || 'Relationships Built for the Long Game'
-  const description = block.description || 'In every transaction and relationship we hold true to our guiding principles.'
-  const buttonText = block.buttonText || 'What Makes Us Different'
+  const description = block.description || ''
+  const buttonText = block.buttonText
   const buttonLink = resolveLinkUrl(block as any)
   const openInNewTab = shouldOpenInNewTab(block as any)
   const cards = block.cards || []
@@ -61,7 +61,7 @@ export default function CardSection({ block }: CardSectionProps) {
 
   return (
     <div className="relative z-10">
-      <div className="max-w-[1380px] mx-auto px-4 py-20">
+      <div className="max-w-[1380px] mx-auto px-4">
         <div className="bg-white rounded-4xl border border-gray-100 shadow-md shadow-black/20 py-20 px-15">
           <div className="text-center">
             <h2 className="display2">{title}</h2>

@@ -30,7 +30,7 @@ export default function AboutAgent({
   onScheduleClick,
 }: AboutAgentProps) {
   return (
-    <section className="w-full py-16 md:py-24 px-6 md:px-12">
+    <section className="w-full pt-20 md:pt-24 pb-16 md:pb-24 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
           {/* Left Column - Main Content */}

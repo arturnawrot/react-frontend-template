@@ -38,7 +38,7 @@ export default function FeaturedProperties({ block, properties, heading, seeAllL
     // Show debug message in development
     if (process.env.NODE_ENV === 'development' && (block as any)?.featuredPropertySetName) {
       return (
-        <section className="max-w-[1400px] mx-auto px-4 py-16 md:py-24 font-sans text-[#1C2B28]">
+        <section className="max-w-[1400px] mx-auto px-4 font-sans text-[#1C2B28]">
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <p className="text-yellow-800">
               <strong>Debug:</strong> FeaturedProperties block has set name &quot;{(block as any).featuredPropertySetName}&quot; but no properties were loaded. Check console for details.
@@ -51,7 +51,7 @@ export default function FeaturedProperties({ block, properties, heading, seeAllL
   }
 
   return (
-    <section className="max-w-[1400px] mx-auto px-4 py-10 md:py-10 font-sans text-[#1C2B28]">
+    <section className="max-w-[1400px] mx-auto px-4 font-sans text-[#1C2B28]">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
           <p className="text-sm font-semibold tracking-[0.08em] uppercase text-stone-500 mb-2">

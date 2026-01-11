@@ -250,9 +250,9 @@ export default function PropertySearchInput() {
   }
 
   return (
-    <div className="relative w-full font-sans">
+    <div className="relative w-full font-sans pt-10">
       {/* Main Content Container */}
-      <div className="relative max-w-[1200px] mx-auto px-4 py-8 md:py-24">
+      <div className="relative max-w-[1200px] mx-auto px-4">
         
         {/* Beige Card */}
         <div className="bg-[#DCD7CC] rounded-[2.5rem] shadow-xl px-6 py-12 md:px-12 md:py-16 text-center">

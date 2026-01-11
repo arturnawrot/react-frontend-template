@@ -299,7 +299,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
         linkedin={agent.linkedin || undefined}
         about={agent.about || null}
       />
-      <div className="tan-linear-background">
+      <div className="tan-linear-background pt-20">
         <FeaturedProperties
           properties={transformedFeaturedProperties}
           seeAllLink={propertySearchUrl}

@@ -15,6 +15,7 @@ import PropertySearchWrapper from '@/components/PropertySearch/PropertySearchWra
 import AgentCarousel from '@/components/AgentCarousel/AgentCarousel'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
+import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
@@ -444,7 +445,7 @@ export async function renderBlock(
 }
 
 /**
- * Renders an array of blocks
+ * Renders an array of blocks with consistent spacing
  * Works with both Page blocks and Container nested blocks
  */
 export async function renderBlocks(
@@ -454,6 +455,63 @@ export async function renderBlocks(
   if (!blocks || !Array.isArray(blocks)) {
     return []
   }
-  return Promise.all(blocks.map((block, index) => renderBlock(block, index, payload)))
+
+  // Fetch site settings for default spacing
+  let defaultSpacing: 'none' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium'
+  if (payload) {
+    try {
+      const siteSettings = await payload.findGlobal({
+        slug: 'siteSettings',
+        depth: 0,
+      })
+      const spacing = siteSettings?.blockSpacing?.defaultSpacing
+      if (spacing && ['none', 'small', 'medium', 'large', 'xlarge'].includes(spacing)) {
+        defaultSpacing = spacing as typeof defaultSpacing
+      }
+    } catch (error) {
+      console.warn('[renderBlocks] Error fetching site settings, using default spacing:', error)
+    }
+  }
+
+  // Render all blocks
+  const renderedBlocks = await Promise.all(
+    blocks.map((block, index) => renderBlock(block, index, payload))
+  )
+
+  // Wrap blocks with spacing
+  return renderedBlocks.map((block, index) => {
+    const isFirst = index === 0
+    const isLast = index === renderedBlocks.length - 1
+    
+    // Some blocks (like Hero, Footer, CTAFooter, and components with internal padding) might not need spacing
+    // Check if block is a special case that shouldn't have spacing
+    const blockType = blocks[index]?.blockType
+    const skipSpacing = blockType === 'hero' || 
+                        blockType === 'footer' || 
+                        blockType === 'ctaFooter' ||
+                        blockType === 'insightsSection' ||
+                        blockType === 'trackRecordSection' ||
+                        blockType === 'propertySearchInput'
+    
+    if (skipSpacing) {
+      return block
+    }
+
+    // Check if this block comes after a Hero block (but not for Container blocks)
+    const previousBlockType = index > 0 ? blocks[index - 1]?.blockType : null
+    const isAfterHero = previousBlockType === 'hero' && blockType !== 'container'
+
+    return (
+      <BlockWrapper
+        key={index}
+        spacing={defaultSpacing}
+        isFirst={isFirst}
+        isLast={isLast}
+        isAfterHero={isAfterHero}
+      >
+        {block}
+      </BlockWrapper>
+    )
+  })
 }
 

@@ -163,7 +163,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
   }, [allProperties.length, error])
 
   return (
-    <div className="p-4 md:p-8 font-sans text-stone-800 bg-transparent">
+    <div className="px-4 md:px-8 font-sans text-stone-800 bg-transparent">
       
       {/* Header Section */}
       <div className="max-w-[1400px] mx-auto mb-10">

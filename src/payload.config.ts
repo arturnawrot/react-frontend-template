@@ -20,6 +20,7 @@ import { Jobs } from './collections/Jobs'
 import { JobApplications } from './collections/JobApplications'
 import { Navbar } from './globals/Navbar'
 import { Footer } from './globals/Footer'
+import { SiteSettings } from './globals/SiteSettings'
 import { FeaturedPropertiesSets } from './globals/FeaturedPropertiesSets'
 import { FeaturedAgentsSets } from './globals/FeaturedAgentsSets'
 import { FeaturedArticles } from './globals/FeaturedArticles'
@@ -41,7 +42,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
-  globals: [Navbar, Footer, FeaturedPropertiesSets, FeaturedAgentsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets],
+  globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

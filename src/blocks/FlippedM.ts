@@ -40,7 +40,7 @@ export const FlippedM: Block = {
           label: 'Description',
         },
         ...createLinkFields({
-          linkTextRequired: true,
+          linkTextRequired: false,
         }),
       ],
     },

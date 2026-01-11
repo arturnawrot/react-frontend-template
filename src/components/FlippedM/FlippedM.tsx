@@ -11,8 +11,8 @@ type FlippedMBlock = Extract<Page['blocks'][number], { blockType: 'flippedM' }>
 type BulletPoint = {
   title: string
   description: string
-  linkText: string
-  linkHref: string
+  linkText?: string | null
+  linkHref?: string | null
 }
 
 type FlippedMProps = {
@@ -85,7 +85,7 @@ const BulletPointComponent = ({
           {title}
         </h2>
         <p className={descriptionClasses}>{description}</p>
-        {linkText && linkHref && (() => {
+        {linkText && linkText.trim() && linkHref && (() => {
           const isInternal = isInternalLink(linkHref) && !openInNewTab
           const LinkComponent = isInternal ? Link : 'a'
           const linkProps = isInternal
@@ -129,7 +129,7 @@ const ProcessSection = ({
   ctaOpenInNewTab?: boolean
 }) => {
   return (
-    <div className="relative w-full flex flex-col py-12 md:py-20 max-w-[1500px] mx-auto md:px-15">
+    <div className="relative w-full flex flex-col max-w-[1500px] mx-auto md:px-15">
       {/* SVG Background */}
       <div className="absolute inset-0 md:left-1/2 pointer-events-none z-10">
         <Image
@@ -143,7 +143,7 @@ const ProcessSection = ({
       </div>
 
       {/* Heading & Subheading */}
-      <div className="relative z-40 mx-auto md:mx-0 max-w-md px-5 md:px-0 mt-10 md:mt-0">
+      <div className="relative z-40 mx-auto md:mx-0 max-w-md px-5 md:px-0 mt-20">
         <h2 className={`${styles.heading}`}>
           {heading}
         </h2>
