@@ -86,25 +86,24 @@ export async function seedHomePage(payload: Payload) {
     const heroVideoId = await getMediaIdByFilename(payload, 'meybohm-home-hero-video-compressed-10mb.mp4')
     const handshakeImageId = await getMediaIdByFilename(payload, 'two-men-handshake.jpg')
 
-    // Try to upload if they don't exist (check common locations)
+    // Try to upload if they don't exist (check correct subdirectories)
     const publicDir = join(dirname_path, '..', '..', 'public')
-    const mediaDir = join(dirname_path, '..', '..', 'media')
     
     let finalHeroImageId = heroImageId
     if (!finalHeroImageId) {
-      const heroImagePath = join(publicDir, 'hero.webp')
+      const heroImagePath = join(publicDir, 'webp', 'hero.webp')
       finalHeroImageId = await uploadMediaIfExists(payload, heroImagePath, 'hero')
     }
 
     let finalHeroVideoId = heroVideoId
     if (!finalHeroVideoId) {
-      const heroVideoPath = join(publicDir, 'meybohm-home-hero-video-compressed-10mb.mp4')
+      const heroVideoPath = join(publicDir, 'mp4', 'meybohm-home-hero-video-compressed-10mb.mp4')
       finalHeroVideoId = await uploadMediaIfExists(payload, heroVideoPath, 'video')
     }
 
     let finalHandshakeImageId = handshakeImageId
     if (!finalHandshakeImageId) {
-      const handshakeImagePath = join(publicDir, 'two-men-handshake.jpg')
+      const handshakeImagePath = join(publicDir, 'img', 'two-men-handshake.jpg')
       finalHandshakeImageId = await uploadMediaIfExists(payload, handshakeImagePath, 'two-men-handshake')
     }
 

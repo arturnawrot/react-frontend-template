@@ -247,6 +247,7 @@ export async function renderBlock(
       image: string | { id: string; url?: string } | null
       tags: Array<{ tag: string }>
       slug: string
+      type?: 'article' | 'market-report' | 'investment-spotlight'
     }
     
     let articles: Article[] = []
@@ -274,12 +275,14 @@ export async function renderBlock(
                   }))
                 : []
               const slug = article.slug || ''
+              const type = article.type || 'article'
 
               return {
                 title: article.title || '',
                 image: image || null,
                 tags: categories,
                 slug: slug,
+                type: type,
               }
             })
           }

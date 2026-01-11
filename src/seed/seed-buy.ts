@@ -99,6 +99,7 @@ export async function seedBuyPage(payload: Payload) {
       },
       {
         blockType: 'featuredProperties' as const,
+        featuredPropertySetName: 'default',
         heading: 'Featured Properties',
         seeAllLink: '/property-search',
       },
@@ -115,6 +116,8 @@ export async function seedBuyPage(payload: Payload) {
                 title: 'Relationships Built for the Long Game',
                 description: 'In every transaction and relationship we hold true to our guiding principles.',
                 buttonText: 'What Makes Us Different',
+                linkType: 'none' as const,
+                openInNewTab: false,
                 cards: [
                   {
                     title: 'Partnership',
@@ -158,31 +161,17 @@ export async function seedBuyPage(payload: Payload) {
               { text: 'Multi-Market Acquisition' },
             ],
             linkText: 'Learn About Our Process',
-            linkHref: '#',
+            linkType: 'none' as const,
+            openInNewTab: false,
             image: amazonImageId,
           },
           {
             blockType: 'insightsSection' as const,
+            featuredArticleSetName: 'default',
             heading: 'Insights That Shape Smart Investments',
             linkText: 'Explore More Insights',
-            linkHref: '#',
-            articles: [
-              {
-                title: 'Top 5 Growth Corridors in 2025 in the United States',
-                tags: [{ tag: 'Market' }, { tag: 'Trends' }],
-                // Note: image needs to be uploaded separately in admin panel
-              },
-              {
-                title: 'Sustainable Urban Planning: The Bridge to the Future',
-                tags: [{ tag: 'Eco' }, { tag: 'Planning' }],
-                // Note: image needs to be uploaded separately in admin panel
-              },
-              {
-                title: 'Nightlife Economies: Revitalizing Downtown Districts',
-                tags: [{ tag: 'Urban' }, { tag: 'Retail' }],
-                // Note: image needs to be uploaded separately in admin panel
-              },
-            ],
+            linkType: 'none' as const,
+            openInNewTab: false,
           },
           {
             blockType: 'container' as const,
@@ -191,21 +180,7 @@ export async function seedBuyPage(payload: Payload) {
               {
                 blockType: 'trackRecordSection' as const,
                 heading: 'Proven Track Record',
-                properties: [
-                  {
-                    title: 'Closed in 45 Days',
-                    // Note: image needs to be uploaded separately in admin panel
-                  },
-                  {
-                    title: 'Closed in 45 Days',
-                    address: '105 Lancaster St SW',
-                    price: '$700,000',
-                    size: '4,961 SF',
-                    type: 'Office Space',
-                    agentName: 'Jane Smith',
-                    // Note: image and agentImage need to be uploaded separately in admin panel
-                  },
-                ],
+                provenTrackRecordSetName: 'default',
               },
               {
                 blockType: 'propertySearch' as const,

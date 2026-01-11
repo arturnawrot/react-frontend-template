@@ -14,6 +14,7 @@ interface Article {
   image: string | { id: string; url?: string } | null
   tags: Array<{ tag: string }>
   slug?: string
+  type?: 'article' | 'market-report' | 'investment-spotlight'
 }
 
 interface InsightsSectionProps {
@@ -111,7 +112,17 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
                 const image = typeof article.image === 'object' && article.image !== null ? article.image : null
                 const imageUrl = image?.url || ''
                 const tags = article.tags?.map(t => t.tag).filter(Boolean) || []
-                const link = article.slug ? `/${article.slug}` : '#'
+                
+                // Map type to URL path
+                const typePathMap: Record<string, string> = {
+                  'article': 'article',
+                  'market-report': 'market-report',
+                  'investment-spotlight': 'investment-spotlight',
+                }
+                
+                const articleType = article.type || 'article'
+                const typePath = typePathMap[articleType] || 'article'
+                const link = article.slug ? `/${typePath}/${article.slug}` : '#'
                 
                 return (
                   <ArticleCard 

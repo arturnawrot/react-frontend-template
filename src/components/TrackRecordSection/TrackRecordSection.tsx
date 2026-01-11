@@ -40,7 +40,7 @@ const PropertyCard = ({
   const hasDetails = details && (details.address || details.price)
 
   const cardContent = (
-    <div className="relative w-[300px] md:w-[420px] h-[450px] md:h-[540px] shrink-0 snap-start group cursor-pointer overflow-hidden rounded-[2rem]">
+    <div className="relative w-[300px] md:w-[500px] lg:w-[550px] h-[450px] md:h-[540px] shrink-0 snap-start group cursor-pointer overflow-hidden rounded-[2rem]">
       
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full">
@@ -49,17 +49,17 @@ const PropertyCard = ({
           alt={title} 
           fill
           className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110" 
-          sizes="(max-width: 768px) 300px, 420px"
+          sizes="(max-width: 768px) 300px, (max-width: 1024px) 500px, 550px"
         />
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500" />
       </div>
 
-      {/* Info Box */}
+      {/* Info Box - Positioned on the left */}
       <div 
         className={`
           absolute left-6 bottom-6 bg-white rounded-2xl p-6 shadow-xl z-10
           transition-all duration-300
-          ${hasDetails ? 'w-[calc(100%-3rem)]' : 'w-auto pr-8'}
+          ${hasDetails ? 'w-[calc(100%-3rem)] max-w-[400px]' : 'w-auto pr-8'}
         `}
       >
         <h3 className="text-3xl md:text-4xl font-serif text-[#1a2e2a] leading-none tracking-tight">
@@ -113,7 +113,8 @@ export default function TrackRecordSection({ block, items = [] }: TrackRecordSec
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = 460
+      // Scroll by one card width + gap (550px + 32px = 582px)
+      const scrollAmount = 582
       scrollRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
@@ -154,17 +155,20 @@ export default function TrackRecordSection({ block, items = [] }: TrackRecordSec
         </div>
       </div>
 
-      {/* Full Width Slider */}
-      <div 
-        ref={scrollRef}
-        className="flex gap-8 overflow-x-auto w-full pb-12 scrollbar-hide snap-x"
-        style={{ 
-          scrollbarWidth: 'none', 
-          msOverflowStyle: 'none',
-          paddingLeft: 'max(1.5rem, calc((100vw - 1600px) / 2 + 3rem))',
-          paddingRight: 'max(1.5rem, calc((100vw - 1600px) / 2 + 3rem))'
-        }}
-      >
+      {/* Full Width Slider - Shows 2 full cards in center with partials on sides */}
+      <div className="relative w-full">
+        <div 
+          ref={scrollRef}
+          className="flex gap-8 overflow-x-auto w-full pb-12 scrollbar-hide snap-x"
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+            // Center 2 full cards (550px each) + 1 gap (32px) = 1132px
+            // Show partial cards on sides by calculating padding
+            paddingLeft: 'max(1.5rem, calc((100vw - 1132px) / 2 - 150px))',
+            paddingRight: 'max(1.5rem, calc((100vw - 1132px) / 2 - 150px))'
+          }}
+        >
         {items.map((item, index) => (
           <PropertyCard 
             key={index}
@@ -180,6 +184,7 @@ export default function TrackRecordSection({ block, items = [] }: TrackRecordSec
             link={item.link}
           />
         ))}
+        </div>
       </div>
 
       {/* Mobile Arrows (Bottom Center) */}
