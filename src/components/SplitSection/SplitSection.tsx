@@ -18,23 +18,24 @@ export default function SplitSection({ block }: SplitSectionProps) {
   const imageAlt = block.imageAlt || 'Section image'
   const isReversed = block.isReversed || false
   const header = block.header || ''
+  const paragraph = block.paragraph || ''
   const bulletPoints = block.bulletPoints || []
   const linkText = block.linkText
   const linkHref = resolveLinkUrl(block as any)
   const openInNewTab = shouldOpenInNewTab(block as any)
 
   return (
-    <section className="w-full py-20 px-2">
+    <section className="w-full py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8">
       <div 
         className={`
-          max-w-7xl mx-auto 
-          flex flex-col gap-16 items-center 
+          max-w-[1380px] mx-auto 
+          flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-20 xl:gap-30 items-center 
           ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'}
         `}
       >
         {/* Image Column */}
-        <div className="w-full md:w-1/2">
-          <div className="relative overflow-hidden rounded-2xl shadow-lg aspect-video">
+        <div className="w-full md:w-1/2 flex justify-center md:justify-start">
+          <div className="relative overflow-hidden rounded-2xl shadow-lg w-full max-w-full md:max-w-[720px] aspect-[4/3]">
             <Image 
               src={imageUrl} 
               alt={imageAlt} 
@@ -46,25 +47,40 @@ export default function SplitSection({ block }: SplitSectionProps) {
         </div>
 
         {/* Content Column */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center">
-          <div className="space-y-6 md:pl-12">
-            <h2 className="text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
+        <div className="w-full md:w-1/2 flex flex-col justify-center px-0 sm:px-4 md:px-0 max-w-[480px]">
+          <div className="space-y-4 sm:space-y-5 md:space-y-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
               {header}
             </h2>
             
+            {paragraph && (
+              <p 
+                className="text-[#1a2e2a]"
+                style={{
+                  fontFamily: '"GT America Condensed", sans-serif',
+                  fontWeight: 400,
+                  fontSize: 'var(--xl)',
+                  lineHeight: '27px',
+                  letterSpacing: '0px',
+                }}
+              >
+                {paragraph}
+              </p>
+            )}
+            
             {bulletPoints.length > 0 && (
-              <ul className="space-y-2 text-gray-700 font-medium">
+              <ul className="space-y-2 text-gray-700 font-medium text-base sm:text-lg">
                 {bulletPoints.map((point, index) => (
                   <li key={index} className="flex items-center gap-3">
-                    <span className="w-1 h-1 bg-gray-800 rounded-full"></span>
-                    {point.text}
+                    <span className="w-1 h-1 bg-gray-800 rounded-full flex-shrink-0"></span>
+                    <span>{point.text}</span>
                   </li>
                 ))}
               </ul>
             )}
 
             {linkText && linkHref && (
-              <div className="pt-4">
+              <div className="pt-2 sm:pt-3 md:pt-4">
                 {(() => {
                   const isInternal = isInternalLink(linkHref) && !openInNewTab
                   const LinkComponent = isInternal ? Link : 'a'

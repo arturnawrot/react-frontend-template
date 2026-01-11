@@ -560,6 +560,10 @@ export interface Page {
                    */
                   isReversed?: boolean | null;
                   header: string;
+                  /**
+                   * Optional paragraph text displayed between the header and bullet points
+                   */
+                  paragraph?: string | null;
                   bulletPoints?:
                     | {
                         text: string;
@@ -912,6 +916,10 @@ export interface Page {
                              */
                             isReversed?: boolean | null;
                             header: string;
+                            /**
+                             * Optional paragraph text displayed between the header and bullet points
+                             */
+                            paragraph?: string | null;
                             bulletPoints?:
                               | {
                                   text: string;
@@ -1264,6 +1272,10 @@ export interface Page {
                                        */
                                       isReversed?: boolean | null;
                                       header: string;
+                                      /**
+                                       * Optional paragraph text displayed between the header and bullet points
+                                       */
+                                      paragraph?: string | null;
                                       bulletPoints?:
                                         | {
                                             text: string;
@@ -1616,6 +1628,10 @@ export interface Page {
                                                  */
                                                 isReversed?: boolean | null;
                                                 header: string;
+                                                /**
+                                                 * Optional paragraph text displayed between the header and bullet points
+                                                 */
+                                                paragraph?: string | null;
                                                 bulletPoints?:
                                                   | {
                                                       text: string;
@@ -1847,6 +1863,10 @@ export interface Page {
          */
         isReversed?: boolean | null;
         header: string;
+        /**
+         * Optional paragraph text displayed between the header and bullet points
+         */
+        paragraph?: string | null;
         bulletPoints?:
           | {
               text: string;
@@ -2693,6 +2713,7 @@ export interface PagesSelect<T extends boolean = true> {
                           imageAlt?: T;
                           isReversed?: T;
                           header?: T;
+                          paragraph?: T;
                           bulletPoints?:
                             | T
                             | {
@@ -2898,6 +2919,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       imageAlt?: T;
                                       isReversed?: T;
                                       header?: T;
+                                      paragraph?: T;
                                       bulletPoints?:
                                         | T
                                         | {
@@ -3103,6 +3125,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   imageAlt?: T;
                                                   isReversed?: T;
                                                   header?: T;
+                                                  paragraph?: T;
                                                   bulletPoints?:
                                                     | T
                                                     | {
@@ -3308,6 +3331,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               imageAlt?: T;
                                                               isReversed?: T;
                                                               header?: T;
+                                                              paragraph?: T;
                                                               bulletPoints?:
                                                                 | T
                                                                 | {
@@ -3460,6 +3484,7 @@ export interface PagesSelect<T extends boolean = true> {
               imageAlt?: T;
               isReversed?: T;
               header?: T;
+              paragraph?: T;
               bulletPoints?:
                 | T
                 | {

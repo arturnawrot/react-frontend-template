@@ -37,6 +37,15 @@ export const SplitSection: Block = {
       label: 'Header',
     },
     {
+      name: 'paragraph',
+      type: 'textarea',
+      required: false,
+      label: 'Paragraph Text',
+      admin: {
+        description: 'Optional paragraph text displayed between the header and bullet points',
+      },
+    },
+    {
       name: 'bulletPoints',
       type: 'array',
       label: 'Bullet Points',

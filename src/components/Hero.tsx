@@ -46,7 +46,7 @@ const HeroHeader = ({
     <h1 className={className}>
       <div
         className={`
-          flex flex-col lg:flex-row flex-wrap lg:gap-x-3 gap-y-0 w-full
+          flex flex-col lg:flex-row flex-wrap lg:gap-x-3 gap-y-2 w-full
           ${containerAlign}
           ${useJustifyCenter ? 'justify-center' : ''}
         `}
