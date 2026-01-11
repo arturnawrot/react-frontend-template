@@ -17,6 +17,7 @@
     "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed.ts",
     "seed:home": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/seed-home.ts",
     "seed:buy": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/seed-buy.ts",
+    "seed:articles": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/seed-articles.ts",
     "seed:jordan-collier": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/seed-jordan-collier.ts",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec playwright test",

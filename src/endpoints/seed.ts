@@ -1,10 +1,6 @@
 import type { Endpoint } from 'payload'
 import { APIError } from 'payload'
-import { seedCSSStyles, seedNavbar, seedFooter } from '../seed/seed-utils'
-import { seedHomePage } from '../seed/seed-home'
-import { seedBuyPage } from '../seed/seed-buy'
-import { seedBrokers } from '../seed/seed-brokers'
-import { seedFeaturedAgents } from '../seed/seed-featured-agents'
+import { runSeed } from '../lib/seed-runner'
 
 export const seedEndpoint: Endpoint = {
   path: '/seed',
@@ -81,40 +77,9 @@ export const seedEndpoint: Endpoint = {
           // Run seed operations
           sendMessage('🚀 Starting seed operation...', 'log')
           
-          // Seed CSS styles (idempotent)
-          sendMessage('Seeding CSS styles...', 'log')
-          await seedCSSStyles(req.payload)
-          sendMessage('✅ CSS styles seeded', 'success')
-
-          // Seed Navbar (idempotent)
-          sendMessage('Seeding Navbar...', 'log')
-          await seedNavbar(req.payload)
-          sendMessage('✅ Navbar seeded', 'success')
-
-          // Seed Footer (idempotent)
-          sendMessage('Seeding Footer...', 'log')
-          await seedFooter(req.payload)
-          sendMessage('✅ Footer seeded', 'success')
-
-          // Seed all pages
-          sendMessage('Seeding Home Page...', 'log')
-          await seedHomePage(req.payload)
-          sendMessage('✅ Home Page seeded', 'success')
+          // Use the shared seed function
+          await runSeed(req.payload)
           
-          sendMessage('Seeding Buy Page...', 'log')
-          await seedBuyPage(req.payload)
-          sendMessage('✅ Buy Page seeded', 'success')
-
-          // Seed all brokers from Buildout API (includes all agents)
-          sendMessage('Seeding Brokers...', 'log')
-          await seedBrokers(req.payload)
-          sendMessage('✅ Brokers seeded', 'success')
-
-          // Seed featured agents sets (creates default set with 6 random agents)
-          sendMessage('Seeding Featured Agents...', 'log')
-          await seedFeaturedAgents(req.payload)
-          sendMessage('✅ Featured Agents seeded', 'success')
-
           sendMessage('✅ All data seeded successfully!', 'success')
           
           // Restore original console methods

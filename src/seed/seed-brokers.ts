@@ -310,6 +310,17 @@ export async function seedBrokers(payload: Payload) {
   try {
     console.log('🌱 Starting broker seed...')
 
+    // Check if agents already exist
+    const existingAgents = await payload.find({
+      collection: 'agents',
+      limit: 1,
+    })
+
+    if (existingAgents.docs.length > 0) {
+      console.log('⏭️  Agents already exist. Skipping broker seed.')
+      return
+    }
+
     // Fetch all brokers from Buildout
     console.log('📥 Fetching brokers from Buildout API...')
     const brokersResponse = await buildoutApi.getAllBrokers({ skipCache: true })

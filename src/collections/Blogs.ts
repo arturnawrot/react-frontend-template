@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { slugify } from '../utils/slugify'
 
 export const Blogs: CollectionConfig = {
   slug: 'blogs',
@@ -48,7 +49,7 @@ export const Blogs: CollectionConfig = {
       unique: true,
       index: true,
       admin: {
-        description: 'URL-friendly slug. Auto-generated from title with type prefix.',
+        description: 'URL-friendly slug. Auto-generated from title.',
       },
     },
     {
@@ -152,46 +153,96 @@ export const Blogs: CollectionConfig = {
         description: 'Status (e.g., Closed Off-Market)',
       },
     },
+    {
+      name: 'url',
+      type: 'text',
+      admin: {
+        readOnly: true,
+        description: 'Full URL to the blog post (read-only, auto-generated)',
+      },
+      access: {
+        update: () => false, // Prevent updates
+      },
+      hooks: {
+        beforeChange: [
+          ({ data, siblingData, req }) => {
+            // Compute URL from type and slug
+            const type = siblingData?.type || data?.type
+            const slug = siblingData?.slug || data?.slug
+            
+            if (!type || !slug) {
+              return ''
+            }
+            
+            // Get domain from request headers or environment variables
+            let domain = process.env.NEXT_PUBLIC_SITE_URL
+            
+            if (!domain && req?.headers) {
+              const host = req.headers.get('host') || req.headers.get('x-forwarded-host')
+              const protocol = req.headers.get('x-forwarded-proto') || (req.headers.get('host')?.includes('localhost') ? 'http' : 'https')
+              if (host) {
+                domain = `${protocol}://${host}`
+              }
+            }
+            
+            if (!domain && process.env.VERCEL_URL) {
+              domain = `https://${process.env.VERCEL_URL}`
+            }
+            
+            // Map type to URL path
+            const typePathMap: Record<string, string> = {
+              'article': 'article',
+              'market-report': 'market-report',
+              'investment-spotlight': 'investment-spotlight',
+            }
+            
+            const path = typePathMap[type] || 'article'
+            return domain ? `${domain}/${path}/${slug}` : `/${path}/${slug}`
+          },
+        ],
+      },
+    },
   ],
   hooks: {
     beforeValidate: [
-      ({ data, operation, originalDoc }) => {
-        // Auto-generate slug from title with type prefix
+      ({ data }) => {
+        // Auto-generate slug from title using slugify utility
         if (data && data.title) {
-          const typePrefix = data.type === 'article' ? 'article' : 
-                           data.type === 'market-report' ? 'market-report' : 
-                           data.type === 'investment-spotlight' ? 'investment-spotlight' : 'article'
-          
-          const baseSlug = data.title
-            .toLowerCase()
-            .trim()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '')
-          
-          // On create, always generate new slug
-          if (operation === 'create' || !data.slug) {
-            data.slug = `${typePrefix}/${baseSlug}`
-          } else {
-            // On update, check if type changed or if we need to update prefix
-            const currentPrefix = data.slug.includes('/') 
-              ? data.slug.split('/')[0]
-              : null
-            
-            // If type changed, update the prefix
-            if (currentPrefix !== typePrefix) {
-              const slugWithoutPrefix = data.slug.includes('/') 
-                ? data.slug.split('/').slice(1).join('/')
-                : data.slug
-              data.slug = `${typePrefix}/${slugWithoutPrefix}`
-            }
-            // If title changed significantly, regenerate base slug but keep prefix
-            else if (originalDoc && originalDoc.title !== data.title) {
-              // Only regenerate if the title changed - extract existing prefix and use new base
-              data.slug = `${typePrefix}/${baseSlug}`
-            }
-          }
+          data.slug = slugify(data.title)
         }
         return data
+      },
+    ],
+    afterRead: [
+      ({ doc, req }) => {
+        // Compute and add URL to the document
+        if (doc.type && doc.slug) {
+          // Get domain from request headers or environment variables
+          let domain = process.env.NEXT_PUBLIC_SITE_URL
+          
+          if (!domain && req?.headers) {
+            const host = req.headers.get('host') || req.headers.get('x-forwarded-host')
+            const protocol = req.headers.get('x-forwarded-proto') || (req.headers.get('host')?.includes('localhost') ? 'http' : 'https')
+            if (host) {
+              domain = `${protocol}://${host}`
+            }
+          }
+          
+          if (!domain && process.env.VERCEL_URL) {
+            domain = `https://${process.env.VERCEL_URL}`
+          }
+          
+          // Map type to URL path
+          const typePathMap: Record<string, string> = {
+            'article': 'article',
+            'market-report': 'market-report',
+            'investment-spotlight': 'investment-spotlight',
+          }
+          
+          const path = typePathMap[doc.type] || 'article'
+          doc.url = domain ? `${domain}/${path}/${doc.slug}` : `/${path}/${doc.slug}`
+        }
+        return doc
       },
     ],
   },

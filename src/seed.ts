@@ -1,37 +1,14 @@
 import 'dotenv/config'
 import { getPayload } from 'payload'
 import config from './payload.config'
-import { seedCSSStyles, seedNavbar, seedFooter } from './seed/seed-utils'
-import { seedHomePage } from './seed/seed-home'
-import { seedBuyPage } from './seed/seed-buy'
-import { seedBrokers } from './seed/seed-brokers'
-import { seedFeaturedAgents } from './seed/seed-featured-agents'
+import { runSeed } from './lib/seed-runner'
 
+// CLI entry point
 async function seed() {
   const payload = await getPayload({ config })
 
   try {
-    // Seed CSS styles (idempotent)
-    console.log('Seeding CSS styles...')
-    await seedCSSStyles(payload)
-
-    // Seed Navbar (idempotent)
-    await seedNavbar(payload)
-
-    // Seed Footer (idempotent)
-    await seedFooter(payload)
-
-    // Seed all pages
-    await seedHomePage(payload)
-    await seedBuyPage(payload)
-
-    // Seed all brokers from Buildout API (includes all agents)
-    await seedBrokers(payload)
-
-    // Seed featured agents sets (creates default set with 6 random agents)
-    await seedFeaturedAgents(payload)
-
-    console.log('✅ All pages seeded successfully!')
+    await runSeed(payload)
     process.exit(0)
   } catch (error) {
     console.error('❌ Error seeding data:', error)

@@ -2197,7 +2197,7 @@ export interface Blog {
   type: 'article' | 'market-report' | 'investment-spotlight';
   title: string;
   /**
-   * URL-friendly slug. Auto-generated from title with type prefix.
+   * URL-friendly slug. Auto-generated from title.
    */
   slug: string;
   /**
@@ -2262,6 +2262,10 @@ export interface Blog {
    * Status (e.g., Closed Off-Market)
    */
   status?: string | null;
+  /**
+   * Full URL to the blog post (read-only, auto-generated)
+   */
+  url?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3697,6 +3701,7 @@ export interface BlogsSelect<T extends boolean = true> {
   buyerType?: T;
   closeTime?: T;
   status?: T;
+  url?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -17,13 +17,19 @@ interface BlogPageProps {
 export default async function BlogPage({ slug, defaultType = 'article' }: BlogPageProps) {
   const payload = await getPayload({ config })
 
+  // Extract the actual slug (remove type prefix if present)
+  // Slugs in DB are stored without type prefix (e.g., "my-title" not "article/my-title")
+  const actualSlug = slug.includes('/') 
+    ? slug.split('/').slice(1).join('/') // Remove first segment (type prefix)
+    : slug
+
   // Fetch the blog by slug
   // Use depth 3 to ensure uploads in Lexical content are fully populated
   const { docs } = await payload.find({
     collection: 'blogs',
     where: {
       slug: {
-        equals: slug,
+        equals: actualSlug,
       },
     },
     depth: 3,
@@ -176,9 +182,21 @@ export default async function BlogPage({ slug, defaultType = 'article' }: BlogPa
                 {relatedArticlesData.map((article) => {
                   const articleTitle = article.title || 'Untitled Article'
                   const articleSlug = article.slug || ''
+                  const articleType = article.type || 'article'
+                  
+                  // Map type to URL path
+                  const typePathMap: Record<string, string> = {
+                    'article': 'article',
+                    'market-report': 'market-report',
+                    'investment-spotlight': 'investment-spotlight',
+                  }
+                  
+                  const typePath = typePathMap[articleType] || 'article'
+                  const articleUrl = `/${typePath}/${articleSlug}`
+                  
                   return (
                     <div key={article.id} className="border-b border-gray-200 pb-6 last:border-0">
-                      <Link href={`/${articleSlug}`}>
+                      <Link href={articleUrl}>
                         <h3 className="text-xl font-serif text-[#1a2e2a] mb-2 hover:underline">
                           {articleTitle}
                         </h3>
