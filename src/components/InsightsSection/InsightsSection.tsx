@@ -3,6 +3,7 @@ import React, { useRef } from 'react'
 import type { Page } from '@/payload-types'
 import ArticleCard from '../ArticleCard/ArticleCard'
 import Arrow from '../Arrow/Arrow'
+import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 
 type InsightsSectionBlock = Extract<Page['blocks'][number], { blockType: 'insightsSection' }>
 
@@ -33,7 +34,8 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
 
   const heading = block.heading || 'Insights That Shape Smart Investments'
   const linkText = block.linkText || 'Explore More Insights'
-  const linkHref = block.linkHref || '#'
+  const linkHref = resolveLinkUrl(block as any)
+  const openInNewTab = shouldOpenInNewTab(block as any)
   // Use prop articles if provided, otherwise fall back to block articles (for backward compatibility)
   const articles: Article[] = propArticles || (block as { articles?: Article[] }).articles || []
 
@@ -58,10 +60,17 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
               })}
             </h1>
             
-            <a href={linkHref} className="inline-flex items-center gap-2 font-bold uppercase tracking-wider text-xs md:text-sm text-[#1a2e2a] hover:opacity-70 transition-opacity">
-              {linkText}
-              <Arrow direction="right" size={16} />
-            </a>
+            {linkText && linkHref && (
+              <a 
+                href={linkHref}
+                target={openInNewTab ? '_blank' : undefined}
+                rel={openInNewTab ? 'noopener noreferrer' : undefined}
+                className="inline-flex items-center gap-2 font-bold uppercase tracking-wider text-xs md:text-sm text-[#1a2e2a] hover:opacity-70 transition-opacity"
+              >
+                {linkText}
+                <Arrow direction="right" size={16} />
+              </a>
+            )}
           </div>
 
           {/* Desktop Arrows (positioned at bottom of left col) */}

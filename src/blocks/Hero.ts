@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
 
 export const Hero: Block = {
   slug: 'hero',
@@ -57,38 +58,56 @@ export const Hero: Block = {
       type: 'textarea',
     },
     // Standard CTAs (Hidden for Blog)
-    {
-      name: 'ctaPrimaryLabel',
-      type: 'text',
-      label: 'Primary CTA Label',
-      admin: {
-        condition: (data) => data.variant !== 'blog',
-      },
-    },
-    {
-      name: 'ctaPrimaryLink',
-      type: 'text',
-      label: 'Primary CTA Link',
-      admin: {
-        condition: (data) => data.variant !== 'blog',
-      },
-    },
-    {
-      name: 'ctaSecondaryLabel',
-      type: 'text',
-      label: 'Secondary CTA Label',
-      admin: {
-        condition: (data) => data.variant !== 'blog',
-      },
-    },
-    {
-      name: 'ctaSecondaryLink',
-      type: 'text',
-      label: 'Secondary CTA Link',
-      admin: {
-        condition: (data) => data.variant !== 'blog',
-      },
-    },
+    ...createLinkFields({
+      linkTextName: 'ctaPrimaryLabel',
+      linkTextLabel: 'Primary CTA Label',
+      linkTextRequired: false,
+      fieldPrefix: 'ctaPrimary',
+    }).map((field) => {
+      const existingAdmin = field.admin as any
+      const existingCondition = existingAdmin?.condition
+      return {
+        ...field,
+        admin: {
+          ...(existingAdmin || {}),
+          condition: (data: any, siblingData: any, options?: any) => {
+            if (data.variant === 'blog') return false
+            if (existingCondition) {
+              if (existingCondition.length === 3) {
+                return existingCondition(data, siblingData, options)
+              }
+              return existingCondition(data, siblingData)
+            }
+            return true
+          },
+        } as any,
+      }
+    }),
+    ...createLinkFields({
+      linkTextName: 'ctaSecondaryLabel',
+      linkTextLabel: 'Secondary CTA Label',
+      linkTextRequired: false,
+      fieldPrefix: 'ctaSecondary',
+    }).map((field) => {
+      const existingAdmin = field.admin as any
+      const existingCondition = existingAdmin?.condition
+      return {
+        ...field,
+        admin: {
+          ...(existingAdmin || {}),
+          condition: (data: any, siblingData: any, options?: any) => {
+            if (data.variant === 'blog') return false
+            if (existingCondition) {
+              if (existingCondition.length === 3) {
+                return existingCondition(data, siblingData, options)
+              }
+              return existingCondition(data, siblingData)
+            }
+            return true
+          },
+        } as any,
+      }
+    }),
     {
       name: 'backgroundImage',
       type: 'upload',

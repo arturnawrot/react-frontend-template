@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Page } from '@/payload-types'
+import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 
 type CTAFooterBlock = Extract<Page['blocks'][number], { blockType: 'ctaFooter' }>
 
@@ -23,11 +24,15 @@ export default function CTAFooter({ block }: CTAFooterProps) {
     const secondaryClasses = "bg-transparent text-[#1b2e28] hover:bg-[#1b2e28] hover:text-white"
     const className = `${baseClasses} ${isPrimary ? primaryClasses : secondaryClasses}`
 
-    if (button.href) {
+    const href = resolveLinkUrl(button as any)
+    const openInNewTab = shouldOpenInNewTab(button as any)
+    if (href) {
       return (
         <a 
           key={index} 
-          href={button.href}
+          href={href}
+          target={openInNewTab ? '_blank' : undefined}
+          rel={openInNewTab ? 'noopener noreferrer' : undefined}
           className={className}
         >
           {button.label}

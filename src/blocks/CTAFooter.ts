@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
 
 export const CTAFooter: Block = {
   slug: 'ctaFooter',
@@ -24,17 +25,11 @@ export const CTAFooter: Block = {
       label: 'Buttons',
       minRows: 1,
       fields: [
-        {
-          name: 'label',
-          type: 'text',
-          required: true,
-          label: 'Label',
-        },
-        {
-          name: 'href',
-          type: 'text',
-          label: 'Link URL',
-        },
+        ...createLinkFields({
+          linkTextName: 'label',
+          linkTextLabel: 'Label',
+          linkTextRequired: true,
+        }),
         {
           name: 'variant',
           type: 'select',

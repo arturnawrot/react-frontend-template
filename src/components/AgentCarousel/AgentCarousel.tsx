@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Page, Media } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
+import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 
 type AgentCarouselBlock = Extract<Page['blocks'][number], { blockType: 'agentCarousel' }>
 
@@ -117,7 +118,8 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
   const heading = block.heading || 'Experience that Performs'
   const description = block.description || "We're proud to bring a wealth of knowledge and relational capital to every deal and partnership."
   const linkText = block.linkText || 'Find an Agent'
-  const linkHref = block.linkHref || '#'
+  const linkHref = resolveLinkUrl(block as any)
+  const openInNewTab = shouldOpenInNewTab(block as any)
 
   if (agents.length === 0) {
     return null
@@ -142,10 +144,17 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
             {description}
           </p>
 
-          <a href={linkHref} className="group inline-flex items-center font-medium text-[#1a2e28] hover:opacity-70 transition-opacity mt-2">
-            {linkText}
-            <Arrow direction="right" size="w-4 h-4" className="ml-2 transition-transform group-hover:translate-x-1" />
-          </a>
+          {linkText && linkHref && (
+            <a 
+              href={linkHref}
+              target={openInNewTab ? '_blank' : undefined}
+              rel={openInNewTab ? 'noopener noreferrer' : undefined}
+              className="group inline-flex items-center font-medium text-[#1a2e28] hover:opacity-70 transition-opacity mt-2"
+            >
+              {linkText}
+              <Arrow direction="right" size="w-4 h-4" className="ml-2 transition-transform group-hover:translate-x-1" />
+            </a>
+          )}
 
           {/* Desktop Arrows */}
           <div className="hidden lg:flex gap-4 mt-8">

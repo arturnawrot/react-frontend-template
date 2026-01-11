@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
 
 export const InsightsSection: Block = {
   slug: 'insightsSection',
@@ -24,18 +25,10 @@ export const InsightsSection: Block = {
       label: 'Heading',
       defaultValue: 'Insights That Shape Smart Investments',
     },
-    {
-      name: 'linkText',
-      type: 'text',
-      label: 'Link Text',
-      defaultValue: 'Explore More Insights',
-    },
-    {
-      name: 'linkHref',
-      type: 'text',
-      label: 'Link URL',
-      defaultValue: '#',
-    },
+    ...createLinkFields({
+      linkTextLabel: 'Link Text',
+      linkTextRequired: false,
+    }),
   ],
 }
 

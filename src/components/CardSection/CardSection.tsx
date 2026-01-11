@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { IconProp } from '@fortawesome/fontawesome-svg-core'
 import type { Page } from '@/payload-types'
 import styles from './CardSection.module.scss'
+import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 
 type CardSectionBlock = Extract<Page['blocks'][number], { blockType: 'cardSection' }>
 
@@ -51,8 +52,10 @@ export default function CardSection({ block }: CardSectionProps) {
   const title = block.title || 'Relationships Built for the Long Game'
   const description = block.description || 'In every transaction and relationship we hold true to our guiding principles.'
   const buttonText = block.buttonText || 'What Makes Us Different'
-  const buttonLink = block.buttonLink || '#'
+  const buttonLink = resolveLinkUrl(block as any)
+  const openInNewTab = shouldOpenInNewTab(block as any)
   const cards = block.cards || []
+  const cardTextAlign = block.cardTextAlign || 'left'
 
   return (
     <div className="relative z-10">
@@ -66,8 +69,12 @@ export default function CardSection({ block }: CardSectionProps) {
           <div className="flex flex-wrap justify-center gap-12">
             {cards.map((card, index) => {
               const iconArray = parseIconString(card.icon)
+              const textAlignClass = 
+                cardTextAlign === 'center' ? 'text-center' :
+                cardTextAlign === 'right' ? 'text-right' :
+                'text-left'
               return (
-                <div key={index} className="text-center w-full md:w-[30%] md:max-w-[400px]">
+                <div key={index} className={`${textAlignClass} w-full md:w-[30%] md:max-w-[400px]`}>
                   <span className={styles.cardColumnIcon}>
                     {iconArray ? (
                       <FontAwesomeIcon icon={iconArray} />
@@ -84,9 +91,20 @@ export default function CardSection({ block }: CardSectionProps) {
 
           {buttonText && (
             <div className="text-center mt-15">
-              <a href={buttonLink} className="sale-button">
-                {buttonText}
-              </a>
+              {buttonLink ? (
+                <a 
+                  href={buttonLink}
+                  target={openInNewTab ? '_blank' : undefined}
+                  rel={openInNewTab ? 'noopener noreferrer' : undefined}
+                  className="sale-button"
+                >
+                  {buttonText}
+                </a>
+              ) : (
+                <span className="sale-button">
+                  {buttonText}
+                </span>
+              )}
             </div>
           )}
         </div>

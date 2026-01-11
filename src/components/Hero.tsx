@@ -6,6 +6,7 @@ import Navbar, { type NavbarLink } from './Navbar/Navbar'
 import CollapsingMenuMobile from './CollapsingMenuMobile/CollapsingMenuMobile'
 import type { Page } from '@/payload-types'
 import styles from './Hero.module.scss'
+import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
@@ -85,6 +86,8 @@ const ActionButtons = ({
   onSecondary,
   primaryClass,
   secondaryClass,
+  primaryOpenInNewTab,
+  secondaryOpenInNewTab,
 }: {
   primaryLabel?: string
   primaryLink?: string
@@ -94,6 +97,8 @@ const ActionButtons = ({
   onSecondary?: () => void
   primaryClass: string
   secondaryClass: string
+  primaryOpenInNewTab?: boolean
+  secondaryOpenInNewTab?: boolean
 }) => {
   if (!primaryLabel && !secondaryLabel) return null
 
@@ -104,10 +109,19 @@ const ActionButtons = ({
           <button onClick={onPrimary} className={primaryClass}>
             {primaryLabel}
           </button>
-        ) : (
-          <a href={primaryLink || '#'} className={primaryClass}>
+        ) : primaryLink ? (
+          <a 
+            href={primaryLink}
+            target={primaryOpenInNewTab ? '_blank' : undefined}
+            rel={primaryOpenInNewTab ? 'noopener noreferrer' : undefined}
+            className={primaryClass}
+          >
             {primaryLabel}
           </a>
+        ) : (
+          <span className={primaryClass}>
+            {primaryLabel}
+          </span>
         )
       )}
       {secondaryLabel && (
@@ -115,10 +129,19 @@ const ActionButtons = ({
           <button onClick={onSecondary} className={secondaryClass}>
             {secondaryLabel}
           </button>
-        ) : (
-          <a href={secondaryLink || '#'} className={secondaryClass}>
+        ) : secondaryLink ? (
+          <a 
+            href={secondaryLink}
+            target={secondaryOpenInNewTab ? '_blank' : undefined}
+            rel={secondaryOpenInNewTab ? 'noopener noreferrer' : undefined}
+            className={secondaryClass}
+          >
             {secondaryLabel}
           </a>
+        ) : (
+          <span className={secondaryClass}>
+            {secondaryLabel}
+          </span>
         )
       )}
     </div>
@@ -263,13 +286,40 @@ const resolveHeroContent = (block: HeroBlock) => {
   const secondaryCta =
     block.ctaSecondaryLabel ?? (isFullWidthColor ? 'Schedule a Consultation' : undefined)
 
+  // Resolve CTA links using the new linkType structure
+  const primaryCtaLink = resolveLinkUrl({
+    linkType: (block as any).ctaPrimaryLinkType,
+    page: (block as any).ctaPrimaryPage,
+    customUrl: (block as any).ctaPrimaryCustomUrl,
+    ctaPrimaryLink: (block as any).ctaPrimaryLink, // Legacy support
+  })
+
+  const secondaryCtaLink = resolveLinkUrl({
+    linkType: (block as any).ctaSecondaryLinkType,
+    page: (block as any).ctaSecondaryPage,
+    customUrl: (block as any).ctaSecondaryCustomUrl,
+    ctaSecondaryLink: (block as any).ctaSecondaryLink, // Legacy support
+  })
+
+  const primaryCtaOpenInNewTab = shouldOpenInNewTab({
+    ctaPrimaryLinkType: (block as any).ctaPrimaryLinkType,
+    ctaPrimaryOpenInNewTab: (block as any).ctaPrimaryOpenInNewTab,
+  })
+
+  const secondaryCtaOpenInNewTab = shouldOpenInNewTab({
+    ctaSecondaryLinkType: (block as any).ctaSecondaryLinkType,
+    ctaSecondaryOpenInNewTab: (block as any).ctaSecondaryOpenInNewTab,
+  })
+
   return {
     segments,
     subheading: sub,
     primaryCta,
-    primaryCtaLink: block.ctaPrimaryLink || undefined,
+    primaryCtaLink: primaryCtaLink !== '#' ? primaryCtaLink : undefined,
+    primaryCtaOpenInNewTab,
     secondaryCta,
-    secondaryCtaLink: block.ctaSecondaryLink || undefined,
+    secondaryCtaLink: secondaryCtaLink !== '#' ? secondaryCtaLink : undefined,
+    secondaryCtaOpenInNewTab,
     finalImage,
     backgroundVideoUrl,
     isFullWidthColor,
@@ -433,8 +483,10 @@ const SideBySideLayout = (
     subheading,
     primaryCta,
     primaryCtaLink,
+    primaryCtaOpenInNewTab,
     secondaryCta,
     secondaryCtaLink,
+    secondaryCtaOpenInNewTab,
     finalImage,
     agentEmail,
     agentPhone,
@@ -481,9 +533,11 @@ const SideBySideLayout = (
 
             <ActionButtons
               primaryLabel={primaryCta}
-              primaryLink={primaryCtaLink}
+              primaryLink={primaryCtaLink ?? undefined}
+              primaryOpenInNewTab={primaryCtaOpenInNewTab}
               secondaryLabel={secondaryCta}
-              secondaryLink={secondaryCtaLink}
+              secondaryLink={secondaryCtaLink ?? undefined}
+              secondaryOpenInNewTab={secondaryCtaOpenInNewTab}
               primaryClass={btnPrimaryClass}
               secondaryClass={btnSecondaryClass}
             />
@@ -525,8 +579,10 @@ const CenteredLayout = (
     subheading,
     primaryCta,
     primaryCtaLink,
+    primaryCtaOpenInNewTab,
     secondaryCta,
     secondaryCtaLink,
+    secondaryCtaOpenInNewTab,
     finalImage,
     backgroundVideoUrl,
     menuOpen,
@@ -646,9 +702,11 @@ const CenteredLayout = (
 
             <ActionButtons
               primaryLabel={primaryCta}
-              primaryLink={primaryCtaLink}
+              primaryLink={primaryCtaLink ?? undefined}
+              primaryOpenInNewTab={primaryCtaOpenInNewTab}
               secondaryLabel={secondaryCta}
-              secondaryLink={secondaryCtaLink}
+              secondaryLink={secondaryCtaLink ?? undefined}
+              secondaryOpenInNewTab={secondaryCtaOpenInNewTab}
               primaryClass={btnPrimaryClass}
               secondaryClass={btnSecondaryClass}
             />

@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
 
 export const AgentCarousel: Block = {
   slug: 'agentCarousel',
@@ -25,18 +26,10 @@ export const AgentCarousel: Block = {
       label: 'Description',
       defaultValue: "We're proud to bring a wealth of knowledge and relational capital to every deal and partnership.",
     },
-    {
-      name: 'linkText',
-      type: 'text',
-      label: 'Link Text',
-      defaultValue: 'Find an Agent',
-    },
-    {
-      name: 'linkHref',
-      type: 'text',
-      label: 'Link URL',
-      defaultValue: '#',
-    },
+    ...createLinkFields({
+      linkTextLabel: 'Link Text',
+      linkTextRequired: false,
+    }),
     {
       name: 'featuredAgentSetName',
       type: 'text',

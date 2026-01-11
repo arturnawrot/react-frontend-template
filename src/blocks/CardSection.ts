@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
 
 export const CardSection: Block = {
   slug: 'cardSection',
@@ -19,16 +20,33 @@ export const CardSection: Block = {
       label: 'Description',
       defaultValue: 'In every transaction and relationship we hold true to our guiding principles.',
     },
+    ...createLinkFields({
+      linkTextName: 'buttonText',
+      linkTextLabel: 'Button Text',
+      linkTextRequired: false,
+    }),
     {
-      name: 'buttonText',
-      type: 'text',
-      label: 'Button Text',
-      defaultValue: 'What Makes Us Different',
-    },
-    {
-      name: 'buttonLink',
-      type: 'text',
-      label: 'Button Link',
+      name: 'cardTextAlign',
+      type: 'select',
+      label: 'Card Description Text Align',
+      defaultValue: 'left',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Center',
+          value: 'center',
+        },
+        {
+          label: 'Right',
+          value: 'right',
+        },
+      ],
+      admin: {
+        description: 'Controls the text alignment of card content (icon, title, and description)',
+      },
     },
     {
       name: 'cards',

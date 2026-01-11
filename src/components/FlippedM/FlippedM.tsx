@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import type { Page } from '@/payload-types'
 import styles from './FlippedM.module.scss'
+import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 
 type FlippedMBlock = Extract<Page['blocks'][number], { blockType: 'flippedM' }>
 
@@ -21,9 +22,10 @@ const BulletPointComponent = ({
   description,
   linkText,
   linkHref,
+  openInNewTab,
   isLast = false,
   isActive = false,
-}: BulletPoint & { isLast?: boolean; isActive?: boolean }) => {
+}: BulletPoint & { openInNewTab?: boolean; isLast?: boolean; isActive?: boolean }) => {
   const headingClasses = [
     styles.bulletPointHeading,
     'text-2xl',
@@ -81,9 +83,16 @@ const BulletPointComponent = ({
           {title}
         </h2>
         <p className={descriptionClasses}>{description}</p>
-        <a href={linkHref} className={linkClasses}>
-          {linkText} &rarr;
-        </a>
+        {linkText && linkHref && (
+          <a 
+            href={linkHref}
+            target={openInNewTab ? '_blank' : undefined}
+            rel={openInNewTab ? 'noopener noreferrer' : undefined}
+            className={linkClasses}
+          >
+            {linkText} &rarr;
+          </a>
+        )}
       </div>
     </div>
   )
@@ -96,6 +105,7 @@ const ProcessSection = ({
   image,
   ctaText,
   ctaHref,
+  ctaOpenInNewTab,
 }: {
   heading: React.ReactNode
   subheading?: string | null
@@ -103,6 +113,7 @@ const ProcessSection = ({
   image: string
   ctaText?: string | null
   ctaHref?: string | null
+  ctaOpenInNewTab?: boolean
 }) => {
   return (
     <div className="relative w-full flex flex-col py-12 md:py-20 min-h-[1600px] max-w-[1500px] mx-auto md:px-15">
@@ -150,9 +161,20 @@ const ProcessSection = ({
             ))}
             {ctaText && (
               <div className="mt-30">
-                <a href={ctaHref || '#'} className="sale-button inline-block">
-                  {ctaText}
-                </a>
+                {ctaHref ? (
+                  <a 
+                    href={ctaHref}
+                    target={ctaOpenInNewTab ? '_blank' : undefined}
+                    rel={ctaOpenInNewTab ? 'noopener noreferrer' : undefined}
+                    className="sale-button inline-block"
+                  >
+                    {ctaText}
+                  </a>
+                ) : (
+                  <span className="sale-button inline-block">
+                    {ctaText}
+                  </span>
+                )}
               </div>
             )}
           </div>
@@ -201,15 +223,35 @@ export default function FlippedM({ block }: FlippedMProps) {
     </span>
   )
 
+  // Transform bullet points to include resolved URLs and openInNewTab
+  const bulletPoints = (block.bulletPoints || []).map((bp: any) => ({
+    ...bp,
+    linkHref: resolveLinkUrl(bp),
+    openInNewTab: shouldOpenInNewTab(bp),
+  }))
+
+  // Resolve CTA href and openInNewTab
+  const ctaHref = resolveLinkUrl({
+    linkType: (block as any).linkType,
+    page: (block as any).page,
+    customUrl: (block as any).customUrl,
+    ctaHref: (block as any).ctaHref, // Legacy support
+  })
+  const ctaOpenInNewTab = shouldOpenInNewTab({
+    linkType: (block as any).linkType,
+    openInNewTab: (block as any).openInNewTab,
+  })
+
   return (
     <div className="overflow-hidden">
       <ProcessSection
         heading={heading}
         subheading={block.subheading}
-        bulletPoints={block.bulletPoints || []}
+        bulletPoints={bulletPoints}
         image={imageUrl}
         ctaText={block.ctaText}
-        ctaHref={block.ctaHref}
+        ctaHref={ctaHref}
+        ctaOpenInNewTab={ctaOpenInNewTab}
       />
     </div>
   )

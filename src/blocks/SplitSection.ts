@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
 
 export const SplitSection: Block = {
   slug: 'splitSection',
@@ -48,16 +49,7 @@ export const SplitSection: Block = {
         },
       ],
     },
-    {
-      name: 'linkText',
-      type: 'text',
-      label: 'Link Text',
-    },
-    {
-      name: 'linkHref',
-      type: 'text',
-      label: 'Link URL',
-    },
+    ...createLinkFields(),
   ],
 }
 

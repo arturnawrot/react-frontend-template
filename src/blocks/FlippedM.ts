@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
 
 export const FlippedM: Block = {
   slug: 'flippedM',
@@ -38,18 +39,9 @@ export const FlippedM: Block = {
           required: true,
           label: 'Description',
         },
-        {
-          name: 'linkText',
-          type: 'text',
-          required: true,
-          label: 'Link Text',
-        },
-        {
-          name: 'linkHref',
-          type: 'text',
-          required: true,
-          label: 'Link URL',
-        },
+        ...createLinkFields({
+          linkTextRequired: true,
+        }),
       ],
     },
     {
@@ -61,16 +53,11 @@ export const FlippedM: Block = {
         description: 'Main image displayed on the right side',
       },
     },
-    {
-      name: 'ctaText',
-      type: 'text',
-      label: 'CTA Button Text',
-    },
-    {
-      name: 'ctaHref',
-      type: 'text',
-      label: 'CTA Button Link',
-    },
+    ...createLinkFields({
+      linkTextName: 'ctaText',
+      linkTextLabel: 'CTA Button Text',
+      linkTextRequired: false,
+    }),
   ],
 }
 

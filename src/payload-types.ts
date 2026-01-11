@@ -224,9 +224,39 @@ export interface Page {
           | null;
         subheading?: string | null;
         ctaPrimaryLabel?: string | null;
-        ctaPrimaryLink?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        ctaPrimaryPage?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        ctaPrimaryCustomUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        ctaPrimaryOpenInNewTab?: boolean | null;
         ctaSecondaryLabel?: string | null;
-        ctaSecondaryLink?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        ctaSecondaryPage?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        ctaSecondaryCustomUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        ctaSecondaryOpenInNewTab?: boolean | null;
         /**
          * Background image (or Featured image for Blog). Used as fallback for video.
          */
@@ -269,7 +299,22 @@ export interface Page {
               title: string;
               description: string;
               linkText: string;
-              linkHref: string;
+              /**
+               * Choose whether to link to an existing page, a custom URL, or no link
+               */
+              linkType?: ('none' | 'page' | 'custom') | null;
+              /**
+               * Select a page to link to
+               */
+              page?: (string | null) | Page;
+              /**
+               * Enter a custom URL (e.g., /contact, https://example.com)
+               */
+              customUrl?: string | null;
+              /**
+               * Open the link in a new browser tab
+               */
+              openInNewTab?: boolean | null;
               id?: string | null;
             }[]
           | null;
@@ -278,7 +323,22 @@ export interface Page {
          */
         image?: (string | null) | Media;
         ctaText?: string | null;
-        ctaHref?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'flippedM';
@@ -309,9 +369,39 @@ export interface Page {
                     | null;
                   subheading?: string | null;
                   ctaPrimaryLabel?: string | null;
-                  ctaPrimaryLink?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  ctaPrimaryPage?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  ctaPrimaryCustomUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  ctaPrimaryOpenInNewTab?: boolean | null;
                   ctaSecondaryLabel?: string | null;
-                  ctaSecondaryLink?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  ctaSecondaryPage?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  ctaSecondaryCustomUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  ctaSecondaryOpenInNewTab?: boolean | null;
                   /**
                    * Background image (or Featured image for Blog). Used as fallback for video.
                    */
@@ -354,7 +444,22 @@ export interface Page {
                         title: string;
                         description: string;
                         linkText: string;
-                        linkHref: string;
+                        /**
+                         * Choose whether to link to an existing page, a custom URL, or no link
+                         */
+                        linkType?: ('none' | 'page' | 'custom') | null;
+                        /**
+                         * Select a page to link to
+                         */
+                        page?: (string | null) | Page;
+                        /**
+                         * Enter a custom URL (e.g., /contact, https://example.com)
+                         */
+                        customUrl?: string | null;
+                        /**
+                         * Open the link in a new browser tab
+                         */
+                        openInNewTab?: boolean | null;
                         id?: string | null;
                       }[]
                     | null;
@@ -363,7 +468,22 @@ export interface Page {
                    */
                   image?: (string | null) | Media;
                   ctaText?: string | null;
-                  ctaHref?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  linkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  page?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  customUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  openInNewTab?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'flippedM';
@@ -372,7 +492,26 @@ export interface Page {
                   title?: string | null;
                   description?: string | null;
                   buttonText?: string | null;
-                  buttonLink?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  linkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  page?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  customUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  openInNewTab?: boolean | null;
+                  /**
+                   * Controls the text alignment of card content (icon, title, and description)
+                   */
+                  cardTextAlign?: ('left' | 'center' | 'right') | null;
                   cards: {
                     title: string;
                     /**
@@ -430,7 +569,22 @@ export interface Page {
                       }[]
                     | null;
                   linkText?: string | null;
-                  linkHref?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  linkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  page?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  customUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  openInNewTab?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'splitSection';
@@ -442,7 +596,22 @@ export interface Page {
                   featuredArticleSetName?: string | null;
                   heading?: string | null;
                   linkText?: string | null;
-                  linkHref?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  linkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  page?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  customUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  openInNewTab?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'insightsSection';
@@ -471,7 +640,22 @@ export interface Page {
                   heading?: string | null;
                   description?: string | null;
                   linkText?: string | null;
-                  linkHref?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  linkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  page?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  customUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  openInNewTab?: boolean | null;
                   /**
                    * Select a featured agents set from the global sets. Defaults to "default" set.
                    */
@@ -486,7 +670,22 @@ export interface Page {
                   buttons?:
                     | {
                         label: string;
-                        href?: string | null;
+                        /**
+                         * Choose whether to link to an existing page, a custom URL, or no link
+                         */
+                        linkType?: ('none' | 'page' | 'custom') | null;
+                        /**
+                         * Select a page to link to
+                         */
+                        page?: (string | null) | Page;
+                        /**
+                         * Enter a custom URL (e.g., /contact, https://example.com)
+                         */
+                        customUrl?: string | null;
+                        /**
+                         * Open the link in a new browser tab
+                         */
+                        openInNewTab?: boolean | null;
                         variant?: ('primary' | 'secondary') | null;
                         id?: string | null;
                       }[]
@@ -526,9 +725,39 @@ export interface Page {
                               | null;
                             subheading?: string | null;
                             ctaPrimaryLabel?: string | null;
-                            ctaPrimaryLink?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            ctaPrimaryPage?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            ctaPrimaryCustomUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            ctaPrimaryOpenInNewTab?: boolean | null;
                             ctaSecondaryLabel?: string | null;
-                            ctaSecondaryLink?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            ctaSecondaryPage?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            ctaSecondaryCustomUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            ctaSecondaryOpenInNewTab?: boolean | null;
                             /**
                              * Background image (or Featured image for Blog). Used as fallback for video.
                              */
@@ -571,7 +800,22 @@ export interface Page {
                                   title: string;
                                   description: string;
                                   linkText: string;
-                                  linkHref: string;
+                                  /**
+                                   * Choose whether to link to an existing page, a custom URL, or no link
+                                   */
+                                  linkType?: ('none' | 'page' | 'custom') | null;
+                                  /**
+                                   * Select a page to link to
+                                   */
+                                  page?: (string | null) | Page;
+                                  /**
+                                   * Enter a custom URL (e.g., /contact, https://example.com)
+                                   */
+                                  customUrl?: string | null;
+                                  /**
+                                   * Open the link in a new browser tab
+                                   */
+                                  openInNewTab?: boolean | null;
                                   id?: string | null;
                                 }[]
                               | null;
@@ -580,7 +824,22 @@ export interface Page {
                              */
                             image?: (string | null) | Media;
                             ctaText?: string | null;
-                            ctaHref?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            linkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            page?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            customUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            openInNewTab?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'flippedM';
@@ -589,7 +848,26 @@ export interface Page {
                             title?: string | null;
                             description?: string | null;
                             buttonText?: string | null;
-                            buttonLink?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            linkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            page?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            customUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            openInNewTab?: boolean | null;
+                            /**
+                             * Controls the text alignment of card content (icon, title, and description)
+                             */
+                            cardTextAlign?: ('left' | 'center' | 'right') | null;
                             cards: {
                               title: string;
                               /**
@@ -647,7 +925,22 @@ export interface Page {
                                 }[]
                               | null;
                             linkText?: string | null;
-                            linkHref?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            linkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            page?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            customUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            openInNewTab?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'splitSection';
@@ -659,7 +952,22 @@ export interface Page {
                             featuredArticleSetName?: string | null;
                             heading?: string | null;
                             linkText?: string | null;
-                            linkHref?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            linkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            page?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            customUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            openInNewTab?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'insightsSection';
@@ -688,7 +996,22 @@ export interface Page {
                             heading?: string | null;
                             description?: string | null;
                             linkText?: string | null;
-                            linkHref?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            linkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            page?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            customUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            openInNewTab?: boolean | null;
                             /**
                              * Select a featured agents set from the global sets. Defaults to "default" set.
                              */
@@ -703,7 +1026,22 @@ export interface Page {
                             buttons?:
                               | {
                                   label: string;
-                                  href?: string | null;
+                                  /**
+                                   * Choose whether to link to an existing page, a custom URL, or no link
+                                   */
+                                  linkType?: ('none' | 'page' | 'custom') | null;
+                                  /**
+                                   * Select a page to link to
+                                   */
+                                  page?: (string | null) | Page;
+                                  /**
+                                   * Enter a custom URL (e.g., /contact, https://example.com)
+                                   */
+                                  customUrl?: string | null;
+                                  /**
+                                   * Open the link in a new browser tab
+                                   */
+                                  openInNewTab?: boolean | null;
                                   variant?: ('primary' | 'secondary') | null;
                                   id?: string | null;
                                 }[]
@@ -743,9 +1081,39 @@ export interface Page {
                                         | null;
                                       subheading?: string | null;
                                       ctaPrimaryLabel?: string | null;
-                                      ctaPrimaryLink?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      ctaPrimaryPage?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      ctaPrimaryCustomUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      ctaPrimaryOpenInNewTab?: boolean | null;
                                       ctaSecondaryLabel?: string | null;
-                                      ctaSecondaryLink?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      ctaSecondaryPage?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      ctaSecondaryCustomUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      ctaSecondaryOpenInNewTab?: boolean | null;
                                       /**
                                        * Background image (or Featured image for Blog). Used as fallback for video.
                                        */
@@ -788,7 +1156,22 @@ export interface Page {
                                             title: string;
                                             description: string;
                                             linkText: string;
-                                            linkHref: string;
+                                            /**
+                                             * Choose whether to link to an existing page, a custom URL, or no link
+                                             */
+                                            linkType?: ('none' | 'page' | 'custom') | null;
+                                            /**
+                                             * Select a page to link to
+                                             */
+                                            page?: (string | null) | Page;
+                                            /**
+                                             * Enter a custom URL (e.g., /contact, https://example.com)
+                                             */
+                                            customUrl?: string | null;
+                                            /**
+                                             * Open the link in a new browser tab
+                                             */
+                                            openInNewTab?: boolean | null;
                                             id?: string | null;
                                           }[]
                                         | null;
@@ -797,7 +1180,22 @@ export interface Page {
                                        */
                                       image?: (string | null) | Media;
                                       ctaText?: string | null;
-                                      ctaHref?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      page?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      customUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      openInNewTab?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'flippedM';
@@ -806,7 +1204,26 @@ export interface Page {
                                       title?: string | null;
                                       description?: string | null;
                                       buttonText?: string | null;
-                                      buttonLink?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      page?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      customUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      openInNewTab?: boolean | null;
+                                      /**
+                                       * Controls the text alignment of card content (icon, title, and description)
+                                       */
+                                      cardTextAlign?: ('left' | 'center' | 'right') | null;
                                       cards: {
                                         title: string;
                                         /**
@@ -864,7 +1281,22 @@ export interface Page {
                                           }[]
                                         | null;
                                       linkText?: string | null;
-                                      linkHref?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      page?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      customUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      openInNewTab?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'splitSection';
@@ -876,7 +1308,22 @@ export interface Page {
                                       featuredArticleSetName?: string | null;
                                       heading?: string | null;
                                       linkText?: string | null;
-                                      linkHref?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      page?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      customUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      openInNewTab?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'insightsSection';
@@ -905,7 +1352,22 @@ export interface Page {
                                       heading?: string | null;
                                       description?: string | null;
                                       linkText?: string | null;
-                                      linkHref?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      page?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      customUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      openInNewTab?: boolean | null;
                                       /**
                                        * Select a featured agents set from the global sets. Defaults to "default" set.
                                        */
@@ -920,7 +1382,22 @@ export interface Page {
                                       buttons?:
                                         | {
                                             label: string;
-                                            href?: string | null;
+                                            /**
+                                             * Choose whether to link to an existing page, a custom URL, or no link
+                                             */
+                                            linkType?: ('none' | 'page' | 'custom') | null;
+                                            /**
+                                             * Select a page to link to
+                                             */
+                                            page?: (string | null) | Page;
+                                            /**
+                                             * Enter a custom URL (e.g., /contact, https://example.com)
+                                             */
+                                            customUrl?: string | null;
+                                            /**
+                                             * Open the link in a new browser tab
+                                             */
+                                            openInNewTab?: boolean | null;
                                             variant?: ('primary' | 'secondary') | null;
                                             id?: string | null;
                                           }[]
@@ -960,9 +1437,39 @@ export interface Page {
                                                   | null;
                                                 subheading?: string | null;
                                                 ctaPrimaryLabel?: string | null;
-                                                ctaPrimaryLink?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                ctaPrimaryPage?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                ctaPrimaryCustomUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                ctaPrimaryOpenInNewTab?: boolean | null;
                                                 ctaSecondaryLabel?: string | null;
-                                                ctaSecondaryLink?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                ctaSecondaryPage?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                ctaSecondaryCustomUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                ctaSecondaryOpenInNewTab?: boolean | null;
                                                 /**
                                                  * Background image (or Featured image for Blog). Used as fallback for video.
                                                  */
@@ -1005,7 +1512,22 @@ export interface Page {
                                                       title: string;
                                                       description: string;
                                                       linkText: string;
-                                                      linkHref: string;
+                                                      /**
+                                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                                       */
+                                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                                      /**
+                                                       * Select a page to link to
+                                                       */
+                                                      page?: (string | null) | Page;
+                                                      /**
+                                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                                       */
+                                                      customUrl?: string | null;
+                                                      /**
+                                                       * Open the link in a new browser tab
+                                                       */
+                                                      openInNewTab?: boolean | null;
                                                       id?: string | null;
                                                     }[]
                                                   | null;
@@ -1014,7 +1536,22 @@ export interface Page {
                                                  */
                                                 image?: (string | null) | Media;
                                                 ctaText?: string | null;
-                                                ctaHref?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                page?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                customUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                openInNewTab?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'flippedM';
@@ -1023,7 +1560,26 @@ export interface Page {
                                                 title?: string | null;
                                                 description?: string | null;
                                                 buttonText?: string | null;
-                                                buttonLink?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                page?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                customUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                openInNewTab?: boolean | null;
+                                                /**
+                                                 * Controls the text alignment of card content (icon, title, and description)
+                                                 */
+                                                cardTextAlign?: ('left' | 'center' | 'right') | null;
                                                 cards: {
                                                   title: string;
                                                   /**
@@ -1081,7 +1637,22 @@ export interface Page {
                                                     }[]
                                                   | null;
                                                 linkText?: string | null;
-                                                linkHref?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                page?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                customUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                openInNewTab?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'splitSection';
@@ -1093,7 +1664,22 @@ export interface Page {
                                                 featuredArticleSetName?: string | null;
                                                 heading?: string | null;
                                                 linkText?: string | null;
-                                                linkHref?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                page?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                customUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                openInNewTab?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'insightsSection';
@@ -1122,7 +1708,22 @@ export interface Page {
                                                 heading?: string | null;
                                                 description?: string | null;
                                                 linkText?: string | null;
-                                                linkHref?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                page?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                customUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                openInNewTab?: boolean | null;
                                                 /**
                                                  * Select a featured agents set from the global sets. Defaults to "default" set.
                                                  */
@@ -1137,7 +1738,22 @@ export interface Page {
                                                 buttons?:
                                                   | {
                                                       label: string;
-                                                      href?: string | null;
+                                                      /**
+                                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                                       */
+                                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                                      /**
+                                                       * Select a page to link to
+                                                       */
+                                                      page?: (string | null) | Page;
+                                                      /**
+                                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                                       */
+                                                      customUrl?: string | null;
+                                                      /**
+                                                       * Open the link in a new browser tab
+                                                       */
+                                                      openInNewTab?: boolean | null;
                                                       variant?: ('primary' | 'secondary') | null;
                                                       id?: string | null;
                                                     }[]
@@ -1179,7 +1795,26 @@ export interface Page {
         title?: string | null;
         description?: string | null;
         buttonText?: string | null;
-        buttonLink?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
+        /**
+         * Controls the text alignment of card content (icon, title, and description)
+         */
+        cardTextAlign?: ('left' | 'center' | 'right') | null;
         cards: {
           title: string;
           /**
@@ -1237,7 +1872,22 @@ export interface Page {
             }[]
           | null;
         linkText?: string | null;
-        linkHref?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'splitSection';
@@ -1249,7 +1899,22 @@ export interface Page {
         featuredArticleSetName?: string | null;
         heading?: string | null;
         linkText?: string | null;
-        linkHref?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'insightsSection';
@@ -1278,7 +1943,22 @@ export interface Page {
         heading?: string | null;
         description?: string | null;
         linkText?: string | null;
-        linkHref?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
         /**
          * Select a featured agents set from the global sets. Defaults to "default" set.
          */
@@ -1293,7 +1973,22 @@ export interface Page {
         buttons?:
           | {
               label: string;
-              href?: string | null;
+              /**
+               * Choose whether to link to an existing page, a custom URL, or no link
+               */
+              linkType?: ('none' | 'page' | 'custom') | null;
+              /**
+               * Select a page to link to
+               */
+              page?: (string | null) | Page;
+              /**
+               * Enter a custom URL (e.g., /contact, https://example.com)
+               */
+              customUrl?: string | null;
+              /**
+               * Open the link in a new browser tab
+               */
+              openInNewTab?: boolean | null;
               variant?: ('primary' | 'secondary') | null;
               id?: string | null;
             }[]
@@ -1845,9 +2540,15 @@ export interface PagesSelect<T extends boolean = true> {
                   };
               subheading?: T;
               ctaPrimaryLabel?: T;
-              ctaPrimaryLink?: T;
+              ctaPrimaryLinkType?: T;
+              ctaPrimaryPage?: T;
+              ctaPrimaryCustomUrl?: T;
+              ctaPrimaryOpenInNewTab?: T;
               ctaSecondaryLabel?: T;
-              ctaSecondaryLink?: T;
+              ctaSecondaryLinkType?: T;
+              ctaSecondaryPage?: T;
+              ctaSecondaryCustomUrl?: T;
+              ctaSecondaryOpenInNewTab?: T;
               backgroundImage?: T;
               backgroundVideo?: T;
               agentImage?: T;
@@ -1871,12 +2572,18 @@ export interface PagesSelect<T extends boolean = true> {
                     title?: T;
                     description?: T;
                     linkText?: T;
-                    linkHref?: T;
+                    linkType?: T;
+                    page?: T;
+                    customUrl?: T;
+                    openInNewTab?: T;
                     id?: T;
                   };
               image?: T;
               ctaText?: T;
-              ctaHref?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
               id?: T;
               blockName?: T;
             };
@@ -1902,9 +2609,15 @@ export interface PagesSelect<T extends boolean = true> {
                               };
                           subheading?: T;
                           ctaPrimaryLabel?: T;
-                          ctaPrimaryLink?: T;
+                          ctaPrimaryLinkType?: T;
+                          ctaPrimaryPage?: T;
+                          ctaPrimaryCustomUrl?: T;
+                          ctaPrimaryOpenInNewTab?: T;
                           ctaSecondaryLabel?: T;
-                          ctaSecondaryLink?: T;
+                          ctaSecondaryLinkType?: T;
+                          ctaSecondaryPage?: T;
+                          ctaSecondaryCustomUrl?: T;
+                          ctaSecondaryOpenInNewTab?: T;
                           backgroundImage?: T;
                           backgroundVideo?: T;
                           agentImage?: T;
@@ -1928,12 +2641,18 @@ export interface PagesSelect<T extends boolean = true> {
                                 title?: T;
                                 description?: T;
                                 linkText?: T;
-                                linkHref?: T;
+                                linkType?: T;
+                                page?: T;
+                                customUrl?: T;
+                                openInNewTab?: T;
                                 id?: T;
                               };
                           image?: T;
                           ctaText?: T;
-                          ctaHref?: T;
+                          linkType?: T;
+                          page?: T;
+                          customUrl?: T;
+                          openInNewTab?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -1943,7 +2662,11 @@ export interface PagesSelect<T extends boolean = true> {
                           title?: T;
                           description?: T;
                           buttonText?: T;
-                          buttonLink?: T;
+                          linkType?: T;
+                          page?: T;
+                          customUrl?: T;
+                          openInNewTab?: T;
+                          cardTextAlign?: T;
                           cards?:
                             | T
                             | {
@@ -1998,7 +2721,10 @@ export interface PagesSelect<T extends boolean = true> {
                                 id?: T;
                               };
                           linkText?: T;
-                          linkHref?: T;
+                          linkType?: T;
+                          page?: T;
+                          customUrl?: T;
+                          openInNewTab?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -2008,7 +2734,10 @@ export interface PagesSelect<T extends boolean = true> {
                           featuredArticleSetName?: T;
                           heading?: T;
                           linkText?: T;
-                          linkHref?: T;
+                          linkType?: T;
+                          page?: T;
+                          customUrl?: T;
+                          openInNewTab?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -2037,7 +2766,10 @@ export interface PagesSelect<T extends boolean = true> {
                           heading?: T;
                           description?: T;
                           linkText?: T;
-                          linkHref?: T;
+                          linkType?: T;
+                          page?: T;
+                          customUrl?: T;
+                          openInNewTab?: T;
                           featuredAgentSetName?: T;
                           id?: T;
                           blockName?: T;
@@ -2051,7 +2783,10 @@ export interface PagesSelect<T extends boolean = true> {
                             | T
                             | {
                                 label?: T;
-                                href?: T;
+                                linkType?: T;
+                                page?: T;
+                                customUrl?: T;
+                                openInNewTab?: T;
                                 variant?: T;
                                 id?: T;
                               };
@@ -2086,9 +2821,15 @@ export interface PagesSelect<T extends boolean = true> {
                                           };
                                       subheading?: T;
                                       ctaPrimaryLabel?: T;
-                                      ctaPrimaryLink?: T;
+                                      ctaPrimaryLinkType?: T;
+                                      ctaPrimaryPage?: T;
+                                      ctaPrimaryCustomUrl?: T;
+                                      ctaPrimaryOpenInNewTab?: T;
                                       ctaSecondaryLabel?: T;
-                                      ctaSecondaryLink?: T;
+                                      ctaSecondaryLinkType?: T;
+                                      ctaSecondaryPage?: T;
+                                      ctaSecondaryCustomUrl?: T;
+                                      ctaSecondaryOpenInNewTab?: T;
                                       backgroundImage?: T;
                                       backgroundVideo?: T;
                                       agentImage?: T;
@@ -2112,12 +2853,18 @@ export interface PagesSelect<T extends boolean = true> {
                                             title?: T;
                                             description?: T;
                                             linkText?: T;
-                                            linkHref?: T;
+                                            linkType?: T;
+                                            page?: T;
+                                            customUrl?: T;
+                                            openInNewTab?: T;
                                             id?: T;
                                           };
                                       image?: T;
                                       ctaText?: T;
-                                      ctaHref?: T;
+                                      linkType?: T;
+                                      page?: T;
+                                      customUrl?: T;
+                                      openInNewTab?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -2127,7 +2874,11 @@ export interface PagesSelect<T extends boolean = true> {
                                       title?: T;
                                       description?: T;
                                       buttonText?: T;
-                                      buttonLink?: T;
+                                      linkType?: T;
+                                      page?: T;
+                                      customUrl?: T;
+                                      openInNewTab?: T;
+                                      cardTextAlign?: T;
                                       cards?:
                                         | T
                                         | {
@@ -2182,7 +2933,10 @@ export interface PagesSelect<T extends boolean = true> {
                                             id?: T;
                                           };
                                       linkText?: T;
-                                      linkHref?: T;
+                                      linkType?: T;
+                                      page?: T;
+                                      customUrl?: T;
+                                      openInNewTab?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -2192,7 +2946,10 @@ export interface PagesSelect<T extends boolean = true> {
                                       featuredArticleSetName?: T;
                                       heading?: T;
                                       linkText?: T;
-                                      linkHref?: T;
+                                      linkType?: T;
+                                      page?: T;
+                                      customUrl?: T;
+                                      openInNewTab?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -2221,7 +2978,10 @@ export interface PagesSelect<T extends boolean = true> {
                                       heading?: T;
                                       description?: T;
                                       linkText?: T;
-                                      linkHref?: T;
+                                      linkType?: T;
+                                      page?: T;
+                                      customUrl?: T;
+                                      openInNewTab?: T;
                                       featuredAgentSetName?: T;
                                       id?: T;
                                       blockName?: T;
@@ -2235,7 +2995,10 @@ export interface PagesSelect<T extends boolean = true> {
                                         | T
                                         | {
                                             label?: T;
-                                            href?: T;
+                                            linkType?: T;
+                                            page?: T;
+                                            customUrl?: T;
+                                            openInNewTab?: T;
                                             variant?: T;
                                             id?: T;
                                           };
@@ -2270,9 +3033,15 @@ export interface PagesSelect<T extends boolean = true> {
                                                       };
                                                   subheading?: T;
                                                   ctaPrimaryLabel?: T;
-                                                  ctaPrimaryLink?: T;
+                                                  ctaPrimaryLinkType?: T;
+                                                  ctaPrimaryPage?: T;
+                                                  ctaPrimaryCustomUrl?: T;
+                                                  ctaPrimaryOpenInNewTab?: T;
                                                   ctaSecondaryLabel?: T;
-                                                  ctaSecondaryLink?: T;
+                                                  ctaSecondaryLinkType?: T;
+                                                  ctaSecondaryPage?: T;
+                                                  ctaSecondaryCustomUrl?: T;
+                                                  ctaSecondaryOpenInNewTab?: T;
                                                   backgroundImage?: T;
                                                   backgroundVideo?: T;
                                                   agentImage?: T;
@@ -2296,12 +3065,18 @@ export interface PagesSelect<T extends boolean = true> {
                                                         title?: T;
                                                         description?: T;
                                                         linkText?: T;
-                                                        linkHref?: T;
+                                                        linkType?: T;
+                                                        page?: T;
+                                                        customUrl?: T;
+                                                        openInNewTab?: T;
                                                         id?: T;
                                                       };
                                                   image?: T;
                                                   ctaText?: T;
-                                                  ctaHref?: T;
+                                                  linkType?: T;
+                                                  page?: T;
+                                                  customUrl?: T;
+                                                  openInNewTab?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -2311,7 +3086,11 @@ export interface PagesSelect<T extends boolean = true> {
                                                   title?: T;
                                                   description?: T;
                                                   buttonText?: T;
-                                                  buttonLink?: T;
+                                                  linkType?: T;
+                                                  page?: T;
+                                                  customUrl?: T;
+                                                  openInNewTab?: T;
+                                                  cardTextAlign?: T;
                                                   cards?:
                                                     | T
                                                     | {
@@ -2366,7 +3145,10 @@ export interface PagesSelect<T extends boolean = true> {
                                                         id?: T;
                                                       };
                                                   linkText?: T;
-                                                  linkHref?: T;
+                                                  linkType?: T;
+                                                  page?: T;
+                                                  customUrl?: T;
+                                                  openInNewTab?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -2376,7 +3158,10 @@ export interface PagesSelect<T extends boolean = true> {
                                                   featuredArticleSetName?: T;
                                                   heading?: T;
                                                   linkText?: T;
-                                                  linkHref?: T;
+                                                  linkType?: T;
+                                                  page?: T;
+                                                  customUrl?: T;
+                                                  openInNewTab?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -2405,7 +3190,10 @@ export interface PagesSelect<T extends boolean = true> {
                                                   heading?: T;
                                                   description?: T;
                                                   linkText?: T;
-                                                  linkHref?: T;
+                                                  linkType?: T;
+                                                  page?: T;
+                                                  customUrl?: T;
+                                                  openInNewTab?: T;
                                                   featuredAgentSetName?: T;
                                                   id?: T;
                                                   blockName?: T;
@@ -2419,7 +3207,10 @@ export interface PagesSelect<T extends boolean = true> {
                                                     | T
                                                     | {
                                                         label?: T;
-                                                        href?: T;
+                                                        linkType?: T;
+                                                        page?: T;
+                                                        customUrl?: T;
+                                                        openInNewTab?: T;
                                                         variant?: T;
                                                         id?: T;
                                                       };
@@ -2454,9 +3245,15 @@ export interface PagesSelect<T extends boolean = true> {
                                                                   };
                                                               subheading?: T;
                                                               ctaPrimaryLabel?: T;
-                                                              ctaPrimaryLink?: T;
+                                                              ctaPrimaryLinkType?: T;
+                                                              ctaPrimaryPage?: T;
+                                                              ctaPrimaryCustomUrl?: T;
+                                                              ctaPrimaryOpenInNewTab?: T;
                                                               ctaSecondaryLabel?: T;
-                                                              ctaSecondaryLink?: T;
+                                                              ctaSecondaryLinkType?: T;
+                                                              ctaSecondaryPage?: T;
+                                                              ctaSecondaryCustomUrl?: T;
+                                                              ctaSecondaryOpenInNewTab?: T;
                                                               backgroundImage?: T;
                                                               backgroundVideo?: T;
                                                               agentImage?: T;
@@ -2480,12 +3277,18 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     title?: T;
                                                                     description?: T;
                                                                     linkText?: T;
-                                                                    linkHref?: T;
+                                                                    linkType?: T;
+                                                                    page?: T;
+                                                                    customUrl?: T;
+                                                                    openInNewTab?: T;
                                                                     id?: T;
                                                                   };
                                                               image?: T;
                                                               ctaText?: T;
-                                                              ctaHref?: T;
+                                                              linkType?: T;
+                                                              page?: T;
+                                                              customUrl?: T;
+                                                              openInNewTab?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -2495,7 +3298,11 @@ export interface PagesSelect<T extends boolean = true> {
                                                               title?: T;
                                                               description?: T;
                                                               buttonText?: T;
-                                                              buttonLink?: T;
+                                                              linkType?: T;
+                                                              page?: T;
+                                                              customUrl?: T;
+                                                              openInNewTab?: T;
+                                                              cardTextAlign?: T;
                                                               cards?:
                                                                 | T
                                                                 | {
@@ -2550,7 +3357,10 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     id?: T;
                                                                   };
                                                               linkText?: T;
-                                                              linkHref?: T;
+                                                              linkType?: T;
+                                                              page?: T;
+                                                              customUrl?: T;
+                                                              openInNewTab?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -2560,7 +3370,10 @@ export interface PagesSelect<T extends boolean = true> {
                                                               featuredArticleSetName?: T;
                                                               heading?: T;
                                                               linkText?: T;
-                                                              linkHref?: T;
+                                                              linkType?: T;
+                                                              page?: T;
+                                                              customUrl?: T;
+                                                              openInNewTab?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -2589,7 +3402,10 @@ export interface PagesSelect<T extends boolean = true> {
                                                               heading?: T;
                                                               description?: T;
                                                               linkText?: T;
-                                                              linkHref?: T;
+                                                              linkType?: T;
+                                                              page?: T;
+                                                              customUrl?: T;
+                                                              openInNewTab?: T;
                                                               featuredAgentSetName?: T;
                                                               id?: T;
                                                               blockName?: T;
@@ -2603,7 +3419,10 @@ export interface PagesSelect<T extends boolean = true> {
                                                                 | T
                                                                 | {
                                                                     label?: T;
-                                                                    href?: T;
+                                                                    linkType?: T;
+                                                                    page?: T;
+                                                                    customUrl?: T;
+                                                                    openInNewTab?: T;
                                                                     variant?: T;
                                                                     id?: T;
                                                                   };
@@ -2638,7 +3457,11 @@ export interface PagesSelect<T extends boolean = true> {
               title?: T;
               description?: T;
               buttonText?: T;
-              buttonLink?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
+              cardTextAlign?: T;
               cards?:
                 | T
                 | {
@@ -2693,7 +3516,10 @@ export interface PagesSelect<T extends boolean = true> {
                     id?: T;
                   };
               linkText?: T;
-              linkHref?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
               id?: T;
               blockName?: T;
             };
@@ -2703,7 +3529,10 @@ export interface PagesSelect<T extends boolean = true> {
               featuredArticleSetName?: T;
               heading?: T;
               linkText?: T;
-              linkHref?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
               id?: T;
               blockName?: T;
             };
@@ -2732,7 +3561,10 @@ export interface PagesSelect<T extends boolean = true> {
               heading?: T;
               description?: T;
               linkText?: T;
-              linkHref?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
               featuredAgentSetName?: T;
               id?: T;
               blockName?: T;
@@ -2746,7 +3578,10 @@ export interface PagesSelect<T extends boolean = true> {
                 | T
                 | {
                     label?: T;
-                    href?: T;
+                    linkType?: T;
+                    page?: T;
+                    customUrl?: T;
+                    openInNewTab?: T;
                     variant?: T;
                     id?: T;
                   };
