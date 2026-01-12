@@ -135,6 +135,7 @@ const ActionButtons = ({
   secondaryClass,
   primaryOpenInNewTab,
   secondaryOpenInNewTab,
+  align = 'center',
 }: {
   primaryLabel?: string
   primaryLink?: string
@@ -146,11 +147,14 @@ const ActionButtons = ({
   secondaryClass: string
   primaryOpenInNewTab?: boolean
   secondaryOpenInNewTab?: boolean
+  align?: 'center' | 'start'
 }) => {
   if (!primaryLabel && !secondaryLabel) return null
 
+  const justifyClass = align === 'start' ? 'md:justify-start' : 'md:justify-center'
+
   return (
-    <div className="mt-6 flex flex-col md:flex-row md:justify-center gap-3 md:gap-4 w-full">
+    <div className={`mt-6 flex flex-col md:flex-row ${justifyClass} gap-3 md:gap-4 w-full`}>
       {primaryLabel && (
         onPrimary ? (
           <button onClick={onPrimary} className={primaryClass}>
@@ -585,6 +589,7 @@ const SideBySideLayout = (
               secondaryOpenInNewTab={secondaryCtaOpenInNewTab}
               primaryClass={btnPrimaryClass}
               secondaryClass={btnSecondaryClass}
+              align="start"
             />
           </div>
         </div>
