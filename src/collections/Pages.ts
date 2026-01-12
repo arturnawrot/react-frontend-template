@@ -13,8 +13,12 @@ import { TrackRecordSection } from '../blocks/TrackRecordSection'
 import { PropertySearch } from '../blocks/PropertySearch'
 import { AgentCarousel } from '../blocks/AgentCarousel'
 import { AgentIconsSection } from '../blocks/AgentIconsSection'
+import { AgentDecoration } from '../blocks/AgentDecoration'
+import { AgentDirectory } from '../blocks/AgentDirectory'
+import { AgentsByCategory } from '../blocks/AgentsByCategory'
 import { FAQSection } from '../blocks/FAQSection'
 import { CTAFooter } from '../blocks/CTAFooter'
+import { CardOnBackground } from '../blocks/CardOnBackground'
 import { Footer } from '../blocks/Footer'
 
 export const Pages: CollectionConfig = {
@@ -61,8 +65,12 @@ export const Pages: CollectionConfig = {
         PropertySearch,
         AgentCarousel,
         AgentIconsSection,
+        AgentDecoration,
+        AgentDirectory,
+        AgentsByCategory,
         FAQSection,
         CTAFooter,
+        CardOnBackground,
         Footer,
       ],
     },

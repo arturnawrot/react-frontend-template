@@ -118,6 +118,7 @@ export interface Config {
     provenTrackRecordSets: ProvenTrackRecordSet;
     testimonialsSets: TestimonialsSet;
     faqSets: FaqSet;
+    agentCategories: AgentCategory;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
@@ -130,6 +131,7 @@ export interface Config {
     provenTrackRecordSets: ProvenTrackRecordSetsSelect<false> | ProvenTrackRecordSetsSelect<true>;
     testimonialsSets: TestimonialsSetsSelect<false> | TestimonialsSetsSelect<true>;
     faqSets: FaqSetsSelect<false> | FaqSetsSelect<true>;
+    agentCategories: AgentCategoriesSelect<false> | AgentCategoriesSelect<true>;
   };
   locale: null;
   user: User & {
@@ -708,6 +710,36 @@ export interface Page {
                   blockType: 'agentIconsSection';
                 }
               | {
+                  /**
+                   * Select an agent icons set from the global sets to display in the decorative layout.
+                   */
+                  agentIconsSetName?: string | null;
+                  /**
+                   * Main heading text. Use \n for line breaks.
+                   */
+                  heading: string;
+                  buttonText: string;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  linkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  page?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  customUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  openInNewTab?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'agentDecoration';
+                }
+              | {
                   heading?: string | null;
                   subheading?: string | null;
                   buttons?:
@@ -736,6 +768,38 @@ export interface Page {
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'ctaFooter';
+                }
+              | {
+                  heading?: string | null;
+                  subheading?: string | null;
+                  /**
+                   * Upload an image or leave empty to use default
+                   */
+                  backgroundImage?: (string | null) | Media;
+                  ctaText?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  linkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  page?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  customUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  openInNewTab?: boolean | null;
+                  /**
+                   * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
+                   */
+                  excludeSpacing?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'cardOnBackground';
                 }
               | {
                   id?: string | null;
@@ -1099,6 +1163,36 @@ export interface Page {
                             blockType: 'agentIconsSection';
                           }
                         | {
+                            /**
+                             * Select an agent icons set from the global sets to display in the decorative layout.
+                             */
+                            agentIconsSetName?: string | null;
+                            /**
+                             * Main heading text. Use \n for line breaks.
+                             */
+                            heading: string;
+                            buttonText: string;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            linkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            page?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            customUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            openInNewTab?: boolean | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'agentDecoration';
+                          }
+                        | {
                             heading?: string | null;
                             subheading?: string | null;
                             buttons?:
@@ -1127,6 +1221,38 @@ export interface Page {
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'ctaFooter';
+                          }
+                        | {
+                            heading?: string | null;
+                            subheading?: string | null;
+                            /**
+                             * Upload an image or leave empty to use default
+                             */
+                            backgroundImage?: (string | null) | Media;
+                            ctaText?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            linkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            page?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            customUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            openInNewTab?: boolean | null;
+                            /**
+                             * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
+                             */
+                            excludeSpacing?: boolean | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'cardOnBackground';
                           }
                         | {
                             id?: string | null;
@@ -1490,6 +1616,36 @@ export interface Page {
                                       blockType: 'agentIconsSection';
                                     }
                                   | {
+                                      /**
+                                       * Select an agent icons set from the global sets to display in the decorative layout.
+                                       */
+                                      agentIconsSetName?: string | null;
+                                      /**
+                                       * Main heading text. Use \n for line breaks.
+                                       */
+                                      heading: string;
+                                      buttonText: string;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      page?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      customUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      openInNewTab?: boolean | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'agentDecoration';
+                                    }
+                                  | {
                                       heading?: string | null;
                                       subheading?: string | null;
                                       buttons?:
@@ -1518,6 +1674,38 @@ export interface Page {
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'ctaFooter';
+                                    }
+                                  | {
+                                      heading?: string | null;
+                                      subheading?: string | null;
+                                      /**
+                                       * Upload an image or leave empty to use default
+                                       */
+                                      backgroundImage?: (string | null) | Media;
+                                      ctaText?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      page?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      customUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      openInNewTab?: boolean | null;
+                                      /**
+                                       * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
+                                       */
+                                      excludeSpacing?: boolean | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'cardOnBackground';
                                     }
                                   | {
                                       id?: string | null;
@@ -1881,6 +2069,36 @@ export interface Page {
                                                 blockType: 'agentIconsSection';
                                               }
                                             | {
+                                                /**
+                                                 * Select an agent icons set from the global sets to display in the decorative layout.
+                                                 */
+                                                agentIconsSetName?: string | null;
+                                                /**
+                                                 * Main heading text. Use \n for line breaks.
+                                                 */
+                                                heading: string;
+                                                buttonText: string;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                page?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                customUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                openInNewTab?: boolean | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'agentDecoration';
+                                              }
+                                            | {
                                                 heading?: string | null;
                                                 subheading?: string | null;
                                                 buttons?:
@@ -1909,6 +2127,38 @@ export interface Page {
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'ctaFooter';
+                                              }
+                                            | {
+                                                heading?: string | null;
+                                                subheading?: string | null;
+                                                /**
+                                                 * Upload an image or leave empty to use default
+                                                 */
+                                                backgroundImage?: (string | null) | Media;
+                                                ctaText?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                page?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                customUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                openInNewTab?: boolean | null;
+                                                /**
+                                                 * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
+                                                 */
+                                                excludeSpacing?: boolean | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'cardOnBackground';
                                               }
                                             | {
                                                 id?: string | null;
@@ -2148,6 +2398,51 @@ export interface Page {
       }
     | {
         /**
+         * Select an agent icons set from the global sets to display in the decorative layout.
+         */
+        agentIconsSetName?: string | null;
+        /**
+         * Main heading text. Use \n for line breaks.
+         */
+        heading: string;
+        buttonText: string;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'agentDecoration';
+      }
+    | {
+        heading?: string | null;
+        /**
+         * Number of agents to display per page
+         */
+        itemsPerPage?: number | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'agentDirectory';
+      }
+    | {
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'agentsByCategory';
+      }
+    | {
+        /**
          * Select an FAQ set from the global sets. Questions from the selected set will be displayed.
          */
         faqSetName?: string | null;
@@ -2203,6 +2498,38 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'ctaFooter';
+      }
+    | {
+        heading?: string | null;
+        subheading?: string | null;
+        /**
+         * Upload an image or leave empty to use default
+         */
+        backgroundImage?: (string | null) | Media;
+        ctaText?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
+        /**
+         * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
+         */
+        excludeSpacing?: boolean | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'cardOnBackground';
       }
     | {
         id?: string | null;
@@ -2994,6 +3321,19 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    agentDecoration?:
+                      | T
+                      | {
+                          agentIconsSetName?: T;
+                          heading?: T;
+                          buttonText?: T;
+                          linkType?: T;
+                          page?: T;
+                          customUrl?: T;
+                          openInNewTab?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
                     ctaFooter?:
                       | T
                       | {
@@ -3010,6 +3350,21 @@ export interface PagesSelect<T extends boolean = true> {
                                 variant?: T;
                                 id?: T;
                               };
+                          id?: T;
+                          blockName?: T;
+                        };
+                    cardOnBackground?:
+                      | T
+                      | {
+                          heading?: T;
+                          subheading?: T;
+                          backgroundImage?: T;
+                          ctaText?: T;
+                          linkType?: T;
+                          page?: T;
+                          customUrl?: T;
+                          openInNewTab?: T;
+                          excludeSpacing?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -3215,6 +3570,19 @@ export interface PagesSelect<T extends boolean = true> {
                                       id?: T;
                                       blockName?: T;
                                     };
+                                agentDecoration?:
+                                  | T
+                                  | {
+                                      agentIconsSetName?: T;
+                                      heading?: T;
+                                      buttonText?: T;
+                                      linkType?: T;
+                                      page?: T;
+                                      customUrl?: T;
+                                      openInNewTab?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
                                 ctaFooter?:
                                   | T
                                   | {
@@ -3231,6 +3599,21 @@ export interface PagesSelect<T extends boolean = true> {
                                             variant?: T;
                                             id?: T;
                                           };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                cardOnBackground?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      subheading?: T;
+                                      backgroundImage?: T;
+                                      ctaText?: T;
+                                      linkType?: T;
+                                      page?: T;
+                                      customUrl?: T;
+                                      openInNewTab?: T;
+                                      excludeSpacing?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -3436,6 +3819,19 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            agentDecoration?:
+                                              | T
+                                              | {
+                                                  agentIconsSetName?: T;
+                                                  heading?: T;
+                                                  buttonText?: T;
+                                                  linkType?: T;
+                                                  page?: T;
+                                                  customUrl?: T;
+                                                  openInNewTab?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             ctaFooter?:
                                               | T
                                               | {
@@ -3452,6 +3848,21 @@ export interface PagesSelect<T extends boolean = true> {
                                                         variant?: T;
                                                         id?: T;
                                                       };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            cardOnBackground?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  subheading?: T;
+                                                  backgroundImage?: T;
+                                                  ctaText?: T;
+                                                  linkType?: T;
+                                                  page?: T;
+                                                  customUrl?: T;
+                                                  openInNewTab?: T;
+                                                  excludeSpacing?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -3657,6 +4068,19 @@ export interface PagesSelect<T extends boolean = true> {
                                                               id?: T;
                                                               blockName?: T;
                                                             };
+                                                        agentDecoration?:
+                                                          | T
+                                                          | {
+                                                              agentIconsSetName?: T;
+                                                              heading?: T;
+                                                              buttonText?: T;
+                                                              linkType?: T;
+                                                              page?: T;
+                                                              customUrl?: T;
+                                                              openInNewTab?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
                                                         ctaFooter?:
                                                           | T
                                                           | {
@@ -3673,6 +4097,21 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     variant?: T;
                                                                     id?: T;
                                                                   };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        cardOnBackground?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              subheading?: T;
+                                                              backgroundImage?: T;
+                                                              ctaText?: T;
+                                                              linkType?: T;
+                                                              page?: T;
+                                                              customUrl?: T;
+                                                              openInNewTab?: T;
+                                                              excludeSpacing?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -3824,6 +4263,33 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        agentDecoration?:
+          | T
+          | {
+              agentIconsSetName?: T;
+              heading?: T;
+              buttonText?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
+              id?: T;
+              blockName?: T;
+            };
+        agentDirectory?:
+          | T
+          | {
+              heading?: T;
+              itemsPerPage?: T;
+              id?: T;
+              blockName?: T;
+            };
+        agentsByCategory?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
         faqSection?:
           | T
           | {
@@ -3854,6 +4320,21 @@ export interface PagesSelect<T extends boolean = true> {
                     variant?: T;
                     id?: T;
                   };
+              id?: T;
+              blockName?: T;
+            };
+        cardOnBackground?:
+          | T
+          | {
+              heading?: T;
+              subheading?: T;
+              backgroundImage?: T;
+              ctaText?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
+              excludeSpacing?: T;
               id?: T;
               blockName?: T;
             };
@@ -4425,6 +4906,59 @@ export interface FaqSet {
   createdAt?: string | null;
 }
 /**
+ * Manage agent categories with colors and featured agents. Each category displays 3 agents when expanded.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agentCategories".
+ */
+export interface AgentCategory {
+  id: string;
+  /**
+   * Main heading for the agents by category section
+   */
+  heading?: string | null;
+  /**
+   * Description text below the heading
+   */
+  description?: string | null;
+  categories?:
+    | {
+        /**
+         * Title of the category (e.g., "Land / Infill", "Industrial / Flex")
+         */
+        title: string;
+        /**
+         * Background color in hex format (e.g., #F2F7D5). This will be used as the category background.
+         */
+        backgroundColor: string;
+        linkText?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
+        /**
+         * Select exactly 3 agents to display for this category
+         */
+        agents: (string | Agent)[];
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar_select".
  */
@@ -4649,6 +5183,30 @@ export interface FaqSetsSelect<T extends boolean = true> {
               answer?: T;
               id?: T;
             };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agentCategories_select".
+ */
+export interface AgentCategoriesSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  categories?:
+    | T
+    | {
+        title?: T;
+        backgroundColor?: T;
+        linkText?: T;
+        linkType?: T;
+        page?: T;
+        customUrl?: T;
+        openInNewTab?: T;
+        agents?: T;
         id?: T;
       };
   updatedAt?: T;

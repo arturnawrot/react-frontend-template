@@ -220,6 +220,8 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         sizes="(max-width: 768px) 280px, 340px"
+                        quality={80}
+                        loading="lazy"
                       />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f1f1a] via-transparent to-transparent opacity-90" />

@@ -6,6 +6,7 @@ import { seedBuyerRepresentationPage } from '@/seed/seed-buyer-representation'
 import { seed1031ExchangeSupportPage } from '@/seed/seed-1031-exchange-support'
 import { seedOurServicesPage } from '@/seed/seed-our-services'
 import { seedOurAdvantagePage } from '@/seed/seed-our-advantage'
+import { seedOurAgentsPage } from '@/seed/seed-our-agents'
 import { seedLeasePage } from '@/seed/seed-lease'
 import { seedSellPage } from '@/seed/seed-sell'
 import { seedBrokers } from '@/seed/seed-brokers'
@@ -16,6 +17,7 @@ import { seedFeaturedProperties } from '@/seed/seed-featured-properties'
 import { seedProvenTrackRecord } from '@/seed/seed-proven-track-record'
 import { seedTestimonials } from '@/seed/seed-testimonials'
 import { seedFAQSets } from '@/seed/seed-faq-sets'
+import { seedAgentCategories } from '@/seed/seed-agent-categories'
 
 /**
  * Main seed function that runs all seed operations
@@ -36,10 +38,6 @@ export async function runSeed(payload: Payload) {
   console.log('  Seeding CSS styles...')
   await seedCSSStyles(payload)
 
-  // Seed Navbar (idempotent)
-  console.log('  Seeding Navbar...')
-  await seedNavbar(payload)
-
   // Seed Footer (idempotent)
   console.log('  Seeding Footer...')
   await seedFooter(payload)
@@ -49,7 +47,6 @@ export async function runSeed(payload: Payload) {
   console.log('  Seeding FAQ sets...')
   await seedFAQSets(payload)
 
-
   // Seed all pages
   console.log('  Seeding pages...')
   await seedHomePage(payload)
@@ -58,8 +55,13 @@ export async function runSeed(payload: Payload) {
   await seed1031ExchangeSupportPage(payload)
   await seedOurServicesPage(payload)
   await seedOurAdvantagePage(payload)
+  await seedOurAgentsPage(payload)
   await seedLeasePage(payload)
   await seedSellPage(payload)
+
+  // Seed Navbar (idempotent) - must run after pages since it references them
+  console.log('  Seeding Navbar...')
+  await seedNavbar(payload)
 
   // ============================================
   // Phase 2: Core Collections (must run first)
@@ -90,6 +92,11 @@ export async function runSeed(payload: Payload) {
   // Creates default set with 10 random agents from buildout-api
   console.log('  Seeding featured agents sets...')
   await seedFeaturedAgents(payload)
+
+  // Seed agent categories (depends on agents existing)
+  // Creates categories with associated agents
+  console.log('  Seeding agent categories...')
+  await seedAgentCategories(payload)
 
   // Seed featured properties sets (no Payload dependencies, uses buildout-api)
   // Creates default set with 4 random properties from buildout-api

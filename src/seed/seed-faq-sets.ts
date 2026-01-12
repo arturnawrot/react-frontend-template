@@ -1,4 +1,5 @@
 import type { Payload } from 'payload'
+import type { FaqSet } from '@/payload-types'
 
 /**
  * Seeds the default FAQ set with sample questions and answers
@@ -8,7 +9,7 @@ export async function seedFAQSets(payload: Payload) {
     console.log('🌱 Seeding FAQ sets...')
 
     // Default FAQ questions and answers
-    const defaultQuestions = [
+    const defaultQuestions: NonNullable<NonNullable<FaqSet['sets']>[number]['questions']> = [
       {
         question: 'How is value determined.',
         answer: {
@@ -153,22 +154,7 @@ export async function seedFAQSets(payload: Payload) {
     })
 
     // Prepare sets array
-    let sets: Array<{
-      name: string
-      questions: Array<{
-        question: string
-        answer: {
-          root: {
-            children: any[]
-            direction: null
-            format: string
-            indent: number
-            type: string
-            version: number
-          }
-        }
-      }>
-    }> = []
+    let sets: NonNullable<FaqSet['sets']> = []
 
     if (global?.sets && Array.isArray(global.sets)) {
       sets = global.sets.map((set: any) => ({

@@ -135,17 +135,55 @@ export async function getStyleId(payload: Payload, cssClass: string): Promise<st
 export async function seedNavbar(payload: Payload) {
   console.log('Seeding navbar...')
   
-  const homePage = await payload.find({
+  // Find pages by slug for mainLinks
+  const pageSlugs = ['buy', 'lease', 'sell', 'our-agents', 'our-advantage', 'our-services']
+  const pages = await payload.find({
     collection: 'pages',
     where: {
       slug: {
-        equals: 'home',
+        in: pageSlugs,
       },
     },
-    limit: 1,
+    limit: 100,
   })
 
-  const _homePageId = homePage.docs[0]?.id || null
+  // Create a map of slug to page ID
+  const pageMap = new Map<string, string>()
+  pages.docs.forEach((page) => {
+    if (page.slug) {
+      pageMap.set(page.slug, page.id)
+    }
+  })
+
+  // Warn about missing pages
+  for (const slug of pageSlugs) {
+    if (!pageMap.has(slug)) {
+      console.warn(`⚠️  Page with slug "${slug}" not found. Navbar link will be skipped or use fallback.`)
+    }
+  }
+
+  // Helper to create a main link - uses page if available, falls back to custom URL
+  const createMainLink = (
+    label: string,
+    slug: string,
+    fallbackUrl: string
+  ): { label: string; linkType: 'page' | 'custom'; page?: string; customUrl?: string } => {
+    const pageId = pageMap.get(slug)
+    if (pageId) {
+      return {
+        label,
+        linkType: 'page' as const,
+        page: pageId,
+      }
+    } else {
+      console.warn(`⚠️  Using custom URL fallback for "${label}" (page "${slug}" not found)`)
+      return {
+        label,
+        linkType: 'custom' as const,
+        customUrl: fallbackUrl,
+      }
+    }
+  }
 
   const navbarData = {
     upperLinks: [
@@ -166,36 +204,12 @@ export async function seedNavbar(payload: Payload) {
       },
     ],
     mainLinks: [
-      {
-        label: 'Buy',
-        linkType: 'custom' as const,
-        customUrl: '/buy',
-      },
-      {
-        label: 'Lease',
-        linkType: 'custom' as const,
-        customUrl: '/lease',
-      },
-      {
-        label: 'Sell',
-        linkType: 'custom' as const,
-        customUrl: '/sell',
-      },
-      {
-        label: 'Our Agents',
-        linkType: 'custom' as const,
-        customUrl: '/agents',
-      },
-      {
-        label: 'Our Advantages',
-        linkType: 'custom' as const,
-        customUrl: '/advantages',
-      },
-      {
-        label: 'Our Services',
-        linkType: 'custom' as const,
-        customUrl: '/services',
-      },
+      createMainLink('Buy', 'buy', '/buy'),
+      createMainLink('Lease', 'lease', '/lease'),
+      createMainLink('Sell', 'sell', '/sell'),
+      createMainLink('Our Agents', 'our-agents', '/agents'),
+      createMainLink('Our Advantages', 'our-advantage', '/advantages'),
+      createMainLink('Our Services', 'our-services', '/services'),
       {
         label: 'Insights & Research',
         linkType: 'custom' as const,

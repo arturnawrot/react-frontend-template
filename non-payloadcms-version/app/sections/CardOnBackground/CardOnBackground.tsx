@@ -4,6 +4,7 @@ export interface CardOnBackgroundProps {
   heading?: string;
   subheading?: string;
   ctaText?: string;
+  ctaHref?: string;
   backgroundImage?: string;
   onCTAClick?: () => void;
 }
@@ -17,17 +18,44 @@ export default function CardOnBackground({
   heading = defaultHeading,
   subheading = defaultSubheading,
   ctaText = defaultCTAText,
+  ctaHref,
   backgroundImage = defaultBackgroundImage,
   onCTAClick,
 }: CardOnBackgroundProps) {
+  const CTAButton = ctaHref ? (
+    <a
+      href={ctaHref}
+      className="bg-[#DAE684] hover:bg-[#cdd876] text-[#1C2B28] font-semibold py-3 px-8 rounded-full transition-colors duration-300 text-base md:text-lg w-full md:w-auto inline-block text-center"
+    >
+      {ctaText}
+    </a>
+  ) : (
+    <button
+      onClick={onCTAClick}
+      className="bg-[#DAE684] hover:bg-[#cdd876] text-[#1C2B28] font-semibold py-3 px-8 rounded-full transition-colors duration-300 text-base md:text-lg w-full md:w-auto"
+      aria-label={ctaText}
+    >
+      {ctaText}
+    </button>
+  );
+
   return (
-    <section className="relative w-full min-h-[600px] md:min-h-[700px] bg-cover bg-center bg-no-repeat overflow-hidden">
+    <section className="relative w-full min-h-[600px] md:min-h-[700px] overflow-hidden bg-gray-200">
       {/* Background Image */}
-      <div 
-        className="absolute inset-0 w-full h-full"
-        style={{ backgroundImage: `url('${backgroundImage}')` }}
-      >
-        <div className="absolute inset-0 bg-black/20" aria-hidden />
+      <div className="absolute inset-0 w-full h-full">
+        <img
+          src={backgroundImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+          }}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-black/20" aria-hidden="true" />
       </div>
 
       {/* Content Container */}
@@ -47,14 +75,7 @@ export default function CardOnBackground({
           )}
 
           {/* CTA Button */}
-          {ctaText && (
-            <button
-              onClick={onCTAClick}
-              className="bg-[#DAE684] hover:bg-[#cdd876] text-[#1C2B28] font-semibold py-3 px-8 rounded-full transition-colors duration-300 text-base md:text-lg w-full md:w-auto"
-            >
-              {ctaText}
-            </button>
-          )}
+          {ctaText && CTAButton}
         </div>
       </div>
     </section>

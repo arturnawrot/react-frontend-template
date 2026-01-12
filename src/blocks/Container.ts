@@ -12,7 +12,9 @@ import { TrackRecordSection } from './TrackRecordSection'
 import { PropertySearch } from './PropertySearch'
 import { AgentCarousel } from './AgentCarousel'
 import { AgentIconsSection } from './AgentIconsSection'
+import { AgentDecoration } from './AgentDecoration'
 import { CTAFooter } from './CTAFooter'
+import { CardOnBackground } from './CardOnBackground'
 import { Footer } from './Footer'
 
 /**
@@ -35,7 +37,9 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
     PropertySearch,
     AgentCarousel,
     AgentIconsSection,
+    AgentDecoration,
     CTAFooter,
+    CardOnBackground,
     Footer,
   ]
 

@@ -14,8 +14,12 @@ import TrackRecordSection from '@/components/TrackRecordSection/TrackRecordSecti
 import PropertySearchWrapper from '@/components/PropertySearch/PropertySearchWrapper'
 import AgentCarousel from '@/components/AgentCarousel/AgentCarousel'
 import AgentIconsSection from '@/components/AgentIconsSection/AgentIconsSection'
+import AgentDecoration from '@/components/AgentDecoration/AgentDecoration'
+import AgentDirectory from '@/components/AgentDirectory/AgentDirectory'
+import AgentsByCategory from '@/components/AgentsByCategory/AgentsByCategory'
 import FAQSection from '@/components/FAQSection/FAQSection'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
+import CardOnBackground from '@/components/CardOnBackground/CardOnBackground'
 import Footer from '@/components/Footer/Footer'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
@@ -501,6 +505,70 @@ export async function renderBlock(
 
     return <AgentIconsSection key={index} block={{ ...block, agents } as any} />
   }
+  if (block.blockType === 'agentDecoration') {
+    // Fetch agents from the selected set if specified
+    let agents: Array<{
+      id: string
+      firstName: string
+      lastName: string
+      fullName?: string | null
+      slug?: string
+      cardImage?: any
+    }> = []
+
+    const setName = (block as any).agentIconsSetName
+    console.log('[renderBlocks] AgentDecoration block:', {
+      setName,
+      hasPayload: !!payload,
+      blockType: block.blockType,
+    })
+
+    if (setName && payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'agentIconsSets',
+          depth: 2, // Populate agent relationships
+        })
+
+        // Sets is now an array field, agents are relationship field (populated with depth: 2)
+        let sets: Array<{ name: string; agents?: any[] | string[] }> = []
+        
+        if (global?.sets && Array.isArray(global.sets)) {
+          sets = global.sets as Array<{ name: string; agents?: any[] | string[] }>
+        }
+        
+        const set = sets.find((s) => s.name === setName)
+        
+        if (set?.agents && Array.isArray(set.agents)) {
+          // Agents are already populated (objects) or IDs (strings) depending on depth
+          const agentList = set.agents
+          
+          agents = agentList
+            .map((agent: any) => {
+              // If it's an ID string, we need to fetch it (shouldn't happen with depth: 2, but handle it)
+              if (typeof agent === 'string') {
+                return null // Skip IDs, they should be populated
+              }
+              
+              // Agent is already populated as an object
+              return {
+                id: agent.id,
+                firstName: agent.firstName,
+                lastName: agent.lastName,
+                fullName: agent.fullName || `${agent.firstName} ${agent.lastName}`,
+                slug: agent.slug,
+                cardImage: agent.cardImage || agent.backgroundImage,
+              }
+            })
+            .filter((agent): agent is NonNullable<typeof agent> => agent !== null)
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching agent icons from set:', error)
+      }
+    }
+
+    return <AgentDecoration key={index} block={{ ...block, agents } as any} />
+  }
   if (block.blockType === 'faqSection') {
     // Fetch FAQs from the selected set if specified
     let questions: Array<{
@@ -534,8 +602,132 @@ export async function renderBlock(
 
     return <FAQSection key={index} block={{ ...block, questions } as any} />
   }
+  if (block.blockType === 'agentDirectory') {
+    return <AgentDirectory key={index} block={block} />
+  }
+  if (block.blockType === 'agentsByCategory') {
+    // Fetch agent categories from global
+    let categories: Array<{
+      id: string
+      title: string
+      backgroundColor: string
+      linkText?: string | null
+      linkType?: 'none' | 'page' | 'custom' | null
+      page?: string | { slug?: string; id?: string } | null
+      customUrl?: string | null
+      openInNewTab?: boolean | null
+      agents: Array<{
+        id: string
+        name: string
+        role: string
+        image?: string | null
+        servingLocations: string[]
+        serviceTags: string[]
+        email?: string | null
+        phone?: string | null
+        linkedin?: string | null
+        slug?: string
+      }>
+    }> = []
+    let heading = 'Expertise That Moves Markets'
+    let description = 'Our agents specialize in everything from raw land and infill redevelopment to national net-lease portfolios.'
+
+    if (payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'agentCategories',
+          depth: 2, // Populate agent relationships
+        })
+
+        if (global?.heading) {
+          heading = global.heading
+        }
+        if (global?.description) {
+          description = global.description
+        }
+
+        if (global?.categories && Array.isArray(global.categories)) {
+          type MappedAgent = {
+            id: string
+            name: string
+            role: string
+            image: string | null
+            servingLocations: string[]
+            serviceTags: string[]
+            email: string | null
+            phone: string | null
+            linkedin: string | null
+            slug: string | undefined
+          }
+
+          categories = global.categories.map((cat: any, catIndex: number) => {
+            // Extract agents
+            const agents = (cat.agents || [])
+              .map((agent: any): MappedAgent | null => {
+                if (typeof agent === 'string') {
+                  return null // Skip IDs, they should be populated
+                }
+
+                // Extract roles
+                const roles = (agent.roles || [])
+                  .map((r: any) => (typeof r === 'object' && r !== null && 'name' in r ? r.name : null))
+                  .filter((name: any): name is string => Boolean(name))
+
+                // Extract specialties
+                const specialties = (agent.specialties || [])
+                  .map((s: any) => (typeof s === 'object' && s !== null && 'name' in s ? s.name : null))
+                  .filter((name: any): name is string => Boolean(name))
+
+                // Extract serving locations
+                const servingLocations = (agent.servingLocations || [])
+                  .map((l: any) => (typeof l === 'object' && l !== null && 'name' in l ? l.name : null))
+                  .filter((name: any): name is string => Boolean(name))
+
+                // Get image URL
+                const cardImage = agent.cardImage && typeof agent.cardImage === 'object'
+                  ? agent.cardImage.url || null
+                  : null
+
+                return {
+                  id: agent.id,
+                  name: agent.fullName || `${agent.firstName} ${agent.lastName}`,
+                  role: roles.length > 0 ? roles.join(' & ') : 'Agent & Broker',
+                  image: cardImage,
+                  servingLocations,
+                  serviceTags: specialties,
+                  email: agent.email || null,
+                  phone: agent.phone || null,
+                  linkedin: agent.linkedin || null,
+                  slug: agent.slug,
+                }
+              })
+              .filter((agent: MappedAgent | null): agent is MappedAgent => agent !== null)
+
+            return {
+              id: cat.id || `category-${catIndex}`,
+              title: cat.title || '',
+              backgroundColor: cat.backgroundColor || '#F2F7D5',
+              linkText: cat.linkText || null,
+              linkType: cat.linkType || null,
+              page: cat.page || null,
+              customUrl: cat.customUrl || null,
+              openInNewTab: cat.openInNewTab || null,
+              agents: agents.slice(0, 3), // Ensure max 3 agents
+            }
+          })
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching agent categories:', error)
+      }
+    }
+
+    return <AgentsByCategory key={index} block={{ ...block, categories, heading, description } as any} />
+  }
   if (block.blockType === 'ctaFooter') {
     return <CTAFooter key={index} block={block} />
+  }
+  if (block.blockType === 'cardOnBackground') {
+    return <CardOnBackground key={index} block={block} />
   }
   if (block.blockType === 'footer') {
     return <Footer key={index} />
@@ -585,13 +777,32 @@ export async function renderBlocks(
     // Some blocks (like Hero, Footer, CTAFooter, and components with internal padding) might not need spacing
     // Check if block is a special case that shouldn't have spacing
     const blockType = blocks[index]?.blockType
+    const blockData = blocks[index] as any
+    
+    // Check for excludeSpacing option on cardOnBackground
+    let cardOnBackgroundExcludeSpacing = false
+    if (blockType === 'cardOnBackground') {
+      const excludeSpacing = (blockData as any)?.excludeSpacing
+      cardOnBackgroundExcludeSpacing = excludeSpacing === true
+      // Debug log (remove after testing)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[renderBlocks] CardOnBackground excludeSpacing:', {
+          blockType,
+          excludeSpacing,
+          willSkip: cardOnBackgroundExcludeSpacing,
+          blockDataKeys: Object.keys(blockData || {}),
+        })
+      }
+    }
+    
     const skipSpacing = blockType === 'hero' || 
                         blockType === 'footer' || 
                         blockType === 'ctaFooter' ||
                         blockType === 'insightsSection' ||
                         blockType === 'trackRecordSection' ||
                         blockType === 'faqSection' ||
-                        blockType === 'propertySearchInput'
+                        blockType === 'propertySearchInput' ||
+                        cardOnBackgroundExcludeSpacing
     
     if (skipSpacing) {
       return block
