@@ -47,7 +47,7 @@ const HeroHeader = ({
   // Calculate Alignment Classes
   let containerAlign = ''
   if (responsiveMobileLeft) {
-    // Mobile: Start/Left, Desktop: Center/Center
+    // Mobile: Container centered (via parent), text left-aligned; Desktop: Center/Center
     containerAlign = 'items-start text-left md:items-center md:text-center'
   } else {
     // Standard behavior based on align prop
@@ -58,7 +58,7 @@ const HeroHeader = ({
   let justifyClass = ''
   if (useJustifyCenter) {
     if (responsiveMobileLeft) {
-      // Mobile: Start, Desktop: Center
+      // Mobile: Start (let text flow naturally), Desktop: Center
       justifyClass = 'justify-start md:justify-center'
     } else {
       // Always Center
@@ -693,23 +693,14 @@ const CenteredLayout = (
     }
   }, [useVideo])
 
-  // Styling configuration
-  const wrapperClass = `
-    relative w-full overflow-hidden
-    ${isFullWidthColor ? 'bg-[var(--strong-green)]' : 'md:h-[700px] md:min-h-[700px]'}
-  `
-
-  // Default variant: centered on mobile and desktop
-  // FullWidth variant: left on mobile, center on desktop
+  // Styling configuration - same layout for both variants, but different CSS classes
+  const wrapperClass = 'relative w-full overflow-hidden bg-[var(--strong-green)]'
   const headingClass = isFullWidthColor
-    ? `${styles.meybohmHeading} text-left md:text-center mb-6 mt-0 md:mt-30 w-full max-w-none`
-    : `text-white text-4xl md:text-7xl font-bold mb-6 ${styles.heroHeading} w-full text-center`
-
-  // Default variant: centered on mobile and desktop
-  // FullWidth variant: left on mobile, center on desktop
+    ? `${styles.meybohmHeading} text-left md:text-center w-full mt-0 md:mt-30 max-w-none`
+    : `text-white text-4xl md:text-7xl font-bold ${styles.heroHeading} w-full max-w-[400px] md:max-w-none text-left md:text-center`
   const subClass = isFullWidthColor
     ? `${styles.meybohmSubheading} max-w-4xl mx-auto text-left md:text-center`
-    : `${styles.heroSubheading} w-full text-center max-w-[1200px] max-[1150px]:max-w-[800px] max-[768px]:max-w-[400px]`
+    : `${styles.heroSubheading} w-full text-left md:text-center max-w-[1200px] max-[1150px]:max-w-[800px] max-[768px]:max-w-[400px]`
 
   const btnPrimaryClass = 'sale-button px-6 py-3 text-base w-full md:w-auto shadow-md block md:inline-block text-center'
   const btnSecondaryClass = 'px-6 py-3 rounded-full border border-white/70 bg-[var(--strong-green)] text-white w-full md:w-auto hover:bg-white/10 transition text-base flex items-center justify-center'
@@ -746,23 +737,17 @@ const CenteredLayout = (
 
         {!isFullWidthColor && <div className="absolute inset-0 bg-black/40" />}
 
-        <div className="relative z-10 flex flex-col h-full pb-10">
+        <div className="relative z-10 flex flex-col h-full pb-10 w-full">
           <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
 
-          <div className={`mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 flex flex-col ${isFullWidthColor ? 'items-start md:items-center text-left md:text-center gap-6' : 'items-center text-center'}`}>
-            
-            {/* 
-              UPDATED: 
-              1. Default variant: centered on mobile and desktop
-              2. FullWidth variant: left on mobile, center on desktop
-            */}
+          <div className={`${!isFullWidthColor ? 'md:py-50' : ''} mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 flex flex-col items-start md:items-center text-left md:text-center gap-6 mx-auto max-w-md md:max-w-none`}>
             <HeroHeader 
               segments={segments} 
               className={headingClass} 
               align="center" 
               useJustifyCenter={true} 
-              rowBreakpoint={isFullWidthColor ? 'md' : 'md'}
-              responsiveMobileLeft={isFullWidthColor}
+              rowBreakpoint="md"
+              responsiveMobileLeft={true}
             />
 
             {subheading && <p className={subClass}>{subheading}</p>}
@@ -776,6 +761,7 @@ const CenteredLayout = (
               secondaryOpenInNewTab={secondaryCtaOpenInNewTab}
               primaryClass={btnPrimaryClass}
               secondaryClass={btnSecondaryClass}
+              align="center"
             />
           </div>
 

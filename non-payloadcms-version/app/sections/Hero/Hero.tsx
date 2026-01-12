@@ -309,7 +309,7 @@ const CenteredLayout = (props: HeroProps & ReturnType<typeof resolveHeroContent>
         <div className="relative z-10 flex flex-col h-full pb-10">
           <Navbar />
           
-          <div className={`mt-10 md:mt-20 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 text-left md:text-center flex flex-col items-center ${isFullWidthColor ? 'gap-6' : ''}`}>
+          <div className={`mt-10 md:mt-20 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 text-center md:text-center flex flex-col items-center ${isFullWidthColor ? 'gap-6' : ''}`}>
             <div className="w-full max-w-[400px] md:max-w-none md:w-auto flex flex-col items-center md:items-center">
               <HeroHeader 
                 segments={segments} 
