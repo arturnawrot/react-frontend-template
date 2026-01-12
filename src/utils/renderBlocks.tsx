@@ -13,6 +13,7 @@ import InsightsSection from '@/components/InsightsSection/InsightsSection'
 import TrackRecordSection from '@/components/TrackRecordSection/TrackRecordSection'
 import PropertySearchWrapper from '@/components/PropertySearch/PropertySearchWrapper'
 import AgentCarousel from '@/components/AgentCarousel/AgentCarousel'
+import AgentIconsSection from '@/components/AgentIconsSection/AgentIconsSection'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
@@ -434,6 +435,70 @@ export async function renderBlock(
     }
 
     return <AgentCarousel key={index} block={{ ...block, agents } as any} />
+  }
+  if (block.blockType === 'agentIconsSection') {
+    // Fetch agents from the selected set if specified
+    let agents: Array<{
+      id: string
+      firstName: string
+      lastName: string
+      fullName?: string | null
+      slug?: string
+      cardImage?: any
+    }> = []
+
+    const setName = (block as any).agentIconsSetName
+    console.log('[renderBlocks] AgentIconsSection block:', {
+      setName,
+      hasPayload: !!payload,
+      blockType: block.blockType,
+    })
+
+    if (setName && payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'agentIconsSets',
+          depth: 2, // Populate agent relationships
+        })
+
+        // Sets is now an array field, agents are relationship field (populated with depth: 2)
+        let sets: Array<{ name: string; agents?: any[] | string[] }> = []
+        
+        if (global?.sets && Array.isArray(global.sets)) {
+          sets = global.sets as Array<{ name: string; agents?: any[] | string[] }>
+        }
+        
+        const set = sets.find((s) => s.name === setName)
+        
+        if (set?.agents && Array.isArray(set.agents)) {
+          // Agents are already populated (objects) or IDs (strings) depending on depth
+          const agentList = set.agents
+          
+          agents = agentList
+            .map((agent: any) => {
+              // If it's an ID string, we need to fetch it (shouldn't happen with depth: 2, but handle it)
+              if (typeof agent === 'string') {
+                return null // Skip IDs, they should be populated
+              }
+              
+              // Agent is already populated as an object
+              return {
+                id: agent.id,
+                firstName: agent.firstName,
+                lastName: agent.lastName,
+                fullName: agent.fullName || `${agent.firstName} ${agent.lastName}`,
+                slug: agent.slug,
+                cardImage: agent.cardImage || agent.backgroundImage,
+              }
+            })
+            .filter((agent): agent is NonNullable<typeof agent> => agent !== null)
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching agent icons from set:', error)
+      }
+    }
+
+    return <AgentIconsSection key={index} block={{ ...block, agents } as any} />
   }
   if (block.blockType === 'ctaFooter') {
     return <CTAFooter key={index} block={block} />

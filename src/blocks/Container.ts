@@ -11,6 +11,7 @@ import { InsightsSection } from './InsightsSection'
 import { TrackRecordSection } from './TrackRecordSection'
 import { PropertySearch } from './PropertySearch'
 import { AgentCarousel } from './AgentCarousel'
+import { AgentIconsSection } from './AgentIconsSection'
 import { CTAFooter } from './CTAFooter'
 import { Footer } from './Footer'
 
@@ -33,6 +34,7 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
     TrackRecordSection,
     PropertySearch,
     AgentCarousel,
+    AgentIconsSection,
     CTAFooter,
     Footer,
   ]
@@ -50,6 +52,15 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
       plural: 'Containers',
     },
     fields: [
+      {
+        name: 'includeSpacing',
+        type: 'checkbox',
+        label: 'Include Spacing',
+        defaultValue: false,
+        admin: {
+          description: 'Add vertical padding (spacing) to this container',
+        },
+      },
       {
         name: 'cssStyles',
         type: 'relationship',

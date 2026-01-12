@@ -23,6 +23,7 @@ import { Footer } from './globals/Footer'
 import { SiteSettings } from './globals/SiteSettings'
 import { FeaturedPropertiesSets } from './globals/FeaturedPropertiesSets'
 import { FeaturedAgentsSets } from './globals/FeaturedAgentsSets'
+import { AgentIconsSets } from './globals/AgentIconsSets'
 import { FeaturedArticles } from './globals/FeaturedArticles'
 import { ProvenTrackRecordSets } from './globals/ProvenTrackRecordSets'
 import { TestimonialsSets } from './globals/TestimonialsSets'
@@ -42,7 +43,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
-  globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets],
+  globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

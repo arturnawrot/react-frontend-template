@@ -49,6 +49,9 @@ export default async function Container({ block, payload }: ContainerProps) {
 
   const blocks = await renderBlocks(block.blocks, payload)
 
+  // Apply spacing if enabled (vertical padding similar to other sections)
+  const spacingClass = block.includeSpacing ? 'py-12 md:py-20' : ''
+
   return (
     <div className="relative">
       {/* Inject custom CSS if provided */}
@@ -59,7 +62,7 @@ export default async function Container({ block, payload }: ContainerProps) {
           }}
         />
       )}
-      <div className={combinedClasses || undefined}>
+      <div className={[spacingClass, combinedClasses].filter(Boolean).join(' ') || undefined}>
         {blocks}
       </div>
     </div>

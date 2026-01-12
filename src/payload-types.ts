@@ -113,6 +113,7 @@ export interface Config {
     siteSettings: SiteSetting;
     featuredPropertiesSets: FeaturedPropertiesSet;
     featuredAgentsSets: FeaturedAgentsSet;
+    agentIconsSets: AgentIconsSet;
     featuredArticles: FeaturedArticle;
     provenTrackRecordSets: ProvenTrackRecordSet;
     testimonialsSets: TestimonialsSet;
@@ -123,6 +124,7 @@ export interface Config {
     siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
     featuredAgentsSets: FeaturedAgentsSetsSelect<false> | FeaturedAgentsSetsSelect<true>;
+    agentIconsSets: AgentIconsSetsSelect<false> | AgentIconsSetsSelect<true>;
     featuredArticles: FeaturedArticlesSelect<false> | FeaturedArticlesSelect<true>;
     provenTrackRecordSets: ProvenTrackRecordSetsSelect<false> | ProvenTrackRecordSetsSelect<true>;
     testimonialsSets: TestimonialsSetsSelect<false> | TestimonialsSetsSelect<true>;
@@ -348,6 +350,10 @@ export interface Page {
         blockType: 'flippedM';
       }
     | {
+        /**
+         * Add vertical padding (spacing) to this container
+         */
+        includeSpacing?: boolean | null;
         /**
          * Select one or more CSS styles to apply to this container
          */
@@ -669,6 +675,37 @@ export interface Page {
                   blockType: 'agentCarousel';
                 }
               | {
+                  /**
+                   * Select an agent icons set from the global sets. Defaults to "default" set.
+                   */
+                  agentIconsSetName?: string | null;
+                  header: string;
+                  /**
+                   * Optional paragraph text displayed between the header and link
+                   */
+                  paragraph?: string | null;
+                  linkText?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, or no link
+                   */
+                  linkType?: ('none' | 'page' | 'custom') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  page?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  customUrl?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  openInNewTab?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'agentIconsSection';
+                }
+              | {
                   heading?: string | null;
                   subheading?: string | null;
                   buttons?:
@@ -704,6 +741,10 @@ export interface Page {
                   blockType: 'footer';
                 }
               | {
+                  /**
+                   * Add vertical padding (spacing) to this container
+                   */
+                  includeSpacing?: boolean | null;
                   /**
                    * Select one or more CSS styles to apply to this container
                    */
@@ -1025,6 +1066,37 @@ export interface Page {
                             blockType: 'agentCarousel';
                           }
                         | {
+                            /**
+                             * Select an agent icons set from the global sets. Defaults to "default" set.
+                             */
+                            agentIconsSetName?: string | null;
+                            header: string;
+                            /**
+                             * Optional paragraph text displayed between the header and link
+                             */
+                            paragraph?: string | null;
+                            linkText?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, or no link
+                             */
+                            linkType?: ('none' | 'page' | 'custom') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            page?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            customUrl?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            openInNewTab?: boolean | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'agentIconsSection';
+                          }
+                        | {
                             heading?: string | null;
                             subheading?: string | null;
                             buttons?:
@@ -1060,6 +1132,10 @@ export interface Page {
                             blockType: 'footer';
                           }
                         | {
+                            /**
+                             * Add vertical padding (spacing) to this container
+                             */
+                            includeSpacing?: boolean | null;
                             /**
                              * Select one or more CSS styles to apply to this container
                              */
@@ -1381,6 +1457,37 @@ export interface Page {
                                       blockType: 'agentCarousel';
                                     }
                                   | {
+                                      /**
+                                       * Select an agent icons set from the global sets. Defaults to "default" set.
+                                       */
+                                      agentIconsSetName?: string | null;
+                                      header: string;
+                                      /**
+                                       * Optional paragraph text displayed between the header and link
+                                       */
+                                      paragraph?: string | null;
+                                      linkText?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       */
+                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      page?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      customUrl?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      openInNewTab?: boolean | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'agentIconsSection';
+                                    }
+                                  | {
                                       heading?: string | null;
                                       subheading?: string | null;
                                       buttons?:
@@ -1416,6 +1523,10 @@ export interface Page {
                                       blockType: 'footer';
                                     }
                                   | {
+                                      /**
+                                       * Add vertical padding (spacing) to this container
+                                       */
+                                      includeSpacing?: boolean | null;
                                       /**
                                        * Select one or more CSS styles to apply to this container
                                        */
@@ -1737,6 +1848,37 @@ export interface Page {
                                                 blockType: 'agentCarousel';
                                               }
                                             | {
+                                                /**
+                                                 * Select an agent icons set from the global sets. Defaults to "default" set.
+                                                 */
+                                                agentIconsSetName?: string | null;
+                                                header: string;
+                                                /**
+                                                 * Optional paragraph text displayed between the header and link
+                                                 */
+                                                paragraph?: string | null;
+                                                linkText?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 */
+                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                page?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                customUrl?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                openInNewTab?: boolean | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'agentIconsSection';
+                                              }
+                                            | {
                                                 heading?: string | null;
                                                 subheading?: string | null;
                                                 buttons?:
@@ -1970,6 +2112,37 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'agentCarousel';
+      }
+    | {
+        /**
+         * Select an agent icons set from the global sets. Defaults to "default" set.
+         */
+        agentIconsSetName?: string | null;
+        header: string;
+        /**
+         * Optional paragraph text displayed between the header and link
+         */
+        paragraph?: string | null;
+        linkText?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'agentIconsSection';
       }
     | {
         heading?: string | null;
@@ -2598,6 +2771,7 @@ export interface PagesSelect<T extends boolean = true> {
         container?:
           | T
           | {
+              includeSpacing?: T;
               cssStyles?: T;
               blocks?:
                 | T
@@ -2776,6 +2950,20 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    agentIconsSection?:
+                      | T
+                      | {
+                          agentIconsSetName?: T;
+                          header?: T;
+                          paragraph?: T;
+                          linkText?: T;
+                          linkType?: T;
+                          page?: T;
+                          customUrl?: T;
+                          openInNewTab?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
                     ctaFooter?:
                       | T
                       | {
@@ -2804,6 +2992,7 @@ export interface PagesSelect<T extends boolean = true> {
                     container?:
                       | T
                       | {
+                          includeSpacing?: T;
                           cssStyles?: T;
                           blocks?:
                             | T
@@ -2982,6 +3171,20 @@ export interface PagesSelect<T extends boolean = true> {
                                       id?: T;
                                       blockName?: T;
                                     };
+                                agentIconsSection?:
+                                  | T
+                                  | {
+                                      agentIconsSetName?: T;
+                                      header?: T;
+                                      paragraph?: T;
+                                      linkText?: T;
+                                      linkType?: T;
+                                      page?: T;
+                                      customUrl?: T;
+                                      openInNewTab?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
                                 ctaFooter?:
                                   | T
                                   | {
@@ -3010,6 +3213,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 container?:
                                   | T
                                   | {
+                                      includeSpacing?: T;
                                       cssStyles?: T;
                                       blocks?:
                                         | T
@@ -3188,6 +3392,20 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            agentIconsSection?:
+                                              | T
+                                              | {
+                                                  agentIconsSetName?: T;
+                                                  header?: T;
+                                                  paragraph?: T;
+                                                  linkText?: T;
+                                                  linkType?: T;
+                                                  page?: T;
+                                                  customUrl?: T;
+                                                  openInNewTab?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             ctaFooter?:
                                               | T
                                               | {
@@ -3216,6 +3434,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             container?:
                                               | T
                                               | {
+                                                  includeSpacing?: T;
                                                   cssStyles?: T;
                                                   blocks?:
                                                     | T
@@ -3394,6 +3613,20 @@ export interface PagesSelect<T extends boolean = true> {
                                                               id?: T;
                                                               blockName?: T;
                                                             };
+                                                        agentIconsSection?:
+                                                          | T
+                                                          | {
+                                                              agentIconsSetName?: T;
+                                                              header?: T;
+                                                              paragraph?: T;
+                                                              linkText?: T;
+                                                              linkType?: T;
+                                                              page?: T;
+                                                              customUrl?: T;
+                                                              openInNewTab?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
                                                         ctaFooter?:
                                                           | T
                                                           | {
@@ -3544,6 +3777,20 @@ export interface PagesSelect<T extends boolean = true> {
               customUrl?: T;
               openInNewTab?: T;
               featuredAgentSetName?: T;
+              id?: T;
+              blockName?: T;
+            };
+        agentIconsSection?:
+          | T
+          | {
+              agentIconsSetName?: T;
+              header?: T;
+              paragraph?: T;
+              linkText?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
               id?: T;
               blockName?: T;
             };
@@ -3969,6 +4216,30 @@ export interface FeaturedAgentsSet {
   createdAt?: string | null;
 }
 /**
+ * Create and manage sets of agent icons. Each set can contain up to 13 agents and can be assigned to agent icons section blocks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agentIconsSets".
+ */
+export interface AgentIconsSet {
+  id: string;
+  sets?:
+    | {
+        /**
+         * A unique name for this set (e.g., "Homepage Icons", "Default Set")
+         */
+        name: string;
+        /**
+         * Select agents to include in this set (max 13 agents)
+         */
+        agents?: (string | Agent)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Create and manage sets of featured articles. Each set can contain multiple blog articles and can be selected in InsightsSection blocks.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -4183,6 +4454,22 @@ export interface FeaturedPropertiesSetsSelect<T extends boolean = true> {
  * via the `definition` "featuredAgentsSets_select".
  */
 export interface FeaturedAgentsSetsSelect<T extends boolean = true> {
+  sets?:
+    | T
+    | {
+        name?: T;
+        agents?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agentIconsSets_select".
+ */
+export interface AgentIconsSetsSelect<T extends boolean = true> {
   sets?:
     | T
     | {
