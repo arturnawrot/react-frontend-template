@@ -74,6 +74,14 @@ export async function seedCSSStyles(payload: Payload) {
 }`,
       active: true,
     },
+    {
+      name: 'wet-sand-background',
+      cssClass: 'wet-sand-background',
+      css: `.wet-sand-background {
+  background-color: #dad6cc;
+}`,
+      active: true,
+    },
   ]
 
   for (const styleData of cssStyles) {

@@ -154,7 +154,7 @@ const ActionButtons = ({
   const justifyClass = align === 'start' ? 'md:justify-start' : 'md:justify-center'
 
   return (
-    <div className={`mt-6 flex flex-col md:flex-row ${justifyClass} gap-3 md:gap-4 w-full`}>
+    <div className={`mt-6 flex flex-col md:flex-row md:flex-wrap ${justifyClass} gap-3 md:gap-4 w-full`}>
       {primaryLabel && (
         onPrimary ? (
           <button onClick={onPrimary} className={primaryClass}>

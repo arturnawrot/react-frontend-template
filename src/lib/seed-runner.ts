@@ -7,6 +7,7 @@ import { seed1031ExchangeSupportPage } from '@/seed/seed-1031-exchange-support'
 import { seedOurServicesPage } from '@/seed/seed-our-services'
 import { seedOurAdvantagePage } from '@/seed/seed-our-advantage'
 import { seedLeasePage } from '@/seed/seed-lease'
+import { seedSellPage } from '@/seed/seed-sell'
 import { seedBrokers } from '@/seed/seed-brokers'
 import { seedFeaturedAgents } from '@/seed/seed-featured-agents'
 import { seedArticles } from '@/seed/seed-articles'
@@ -14,6 +15,7 @@ import { seedFeaturedArticles } from '@/seed/seed-featured-articles'
 import { seedFeaturedProperties } from '@/seed/seed-featured-properties'
 import { seedProvenTrackRecord } from '@/seed/seed-proven-track-record'
 import { seedTestimonials } from '@/seed/seed-testimonials'
+import { seedFAQSets } from '@/seed/seed-faq-sets'
 
 /**
  * Main seed function that runs all seed operations
@@ -42,6 +44,12 @@ export async function runSeed(payload: Payload) {
   console.log('  Seeding Footer...')
   await seedFooter(payload)
 
+  // Seed FAQ sets (no dependencies)
+  // Creates default set with sample FAQs
+  console.log('  Seeding FAQ sets...')
+  await seedFAQSets(payload)
+
+
   // Seed all pages
   console.log('  Seeding pages...')
   await seedHomePage(payload)
@@ -51,6 +59,7 @@ export async function runSeed(payload: Payload) {
   await seedOurServicesPage(payload)
   await seedOurAdvantagePage(payload)
   await seedLeasePage(payload)
+  await seedSellPage(payload)
 
   // ============================================
   // Phase 2: Core Collections (must run first)

@@ -27,6 +27,7 @@ import { AgentIconsSets } from './globals/AgentIconsSets'
 import { FeaturedArticles } from './globals/FeaturedArticles'
 import { ProvenTrackRecordSets } from './globals/ProvenTrackRecordSets'
 import { TestimonialsSets } from './globals/TestimonialsSets'
+import { FAQSets } from './globals/FAQSets'
 import { seedEndpoint } from './endpoints/seed'
 
 const filename = fileURLToPath(import.meta.url)
@@ -43,7 +44,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
-  globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets],
+  globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

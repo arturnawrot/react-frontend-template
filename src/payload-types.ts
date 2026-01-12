@@ -117,6 +117,7 @@ export interface Config {
     featuredArticles: FeaturedArticle;
     provenTrackRecordSets: ProvenTrackRecordSet;
     testimonialsSets: TestimonialsSet;
+    faqSets: FaqSet;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
@@ -128,6 +129,7 @@ export interface Config {
     featuredArticles: FeaturedArticlesSelect<false> | FeaturedArticlesSelect<true>;
     provenTrackRecordSets: ProvenTrackRecordSetsSelect<false> | ProvenTrackRecordSetsSelect<true>;
     testimonialsSets: TestimonialsSetsSelect<false> | TestimonialsSetsSelect<true>;
+    faqSets: FaqSetsSelect<false> | FaqSetsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -2145,6 +2147,34 @@ export interface Page {
         blockType: 'agentIconsSection';
       }
     | {
+        /**
+         * Select an FAQ set from the global sets. Questions from the selected set will be displayed.
+         */
+        faqSetName?: string | null;
+        heading?: string | null;
+        description?: string | null;
+        contactButtonText?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, or no link
+         */
+        linkType?: ('none' | 'page' | 'custom') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'faqSection';
+      }
+    | {
         heading?: string | null;
         subheading?: string | null;
         buttons?:
@@ -3794,6 +3824,20 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        faqSection?:
+          | T
+          | {
+              faqSetName?: T;
+              heading?: T;
+              description?: T;
+              contactButtonText?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
+              id?: T;
+              blockName?: T;
+            };
         ctaFooter?:
           | T
           | {
@@ -4340,6 +4384,47 @@ export interface TestimonialsSet {
   createdAt?: string | null;
 }
 /**
+ * Create and manage sets of frequently asked questions. Each set can contain any number of FAQs and can be assigned to FAQ section blocks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqSets".
+ */
+export interface FaqSet {
+  id: string;
+  sets?:
+    | {
+        /**
+         * A unique name for this set (e.g., "Homepage FAQs", "Default Set")
+         */
+        name: string;
+        questions?:
+          | {
+              question: string;
+              answer: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar_select".
  */
@@ -4540,6 +4625,28 @@ export interface TestimonialsSetsSelect<T extends boolean = true> {
               quote?: T;
               author?: T;
               company?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqSets_select".
+ */
+export interface FaqSetsSelect<T extends boolean = true> {
+  sets?:
+    | T
+    | {
+        name?: T;
+        questions?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
               id?: T;
             };
         id?: T;

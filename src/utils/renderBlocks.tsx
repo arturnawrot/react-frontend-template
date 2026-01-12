@@ -14,6 +14,7 @@ import TrackRecordSection from '@/components/TrackRecordSection/TrackRecordSecti
 import PropertySearchWrapper from '@/components/PropertySearch/PropertySearchWrapper'
 import AgentCarousel from '@/components/AgentCarousel/AgentCarousel'
 import AgentIconsSection from '@/components/AgentIconsSection/AgentIconsSection'
+import FAQSection from '@/components/FAQSection/FAQSection'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
@@ -500,6 +501,39 @@ export async function renderBlock(
 
     return <AgentIconsSection key={index} block={{ ...block, agents } as any} />
   }
+  if (block.blockType === 'faqSection') {
+    // Fetch FAQs from the selected set if specified
+    let questions: Array<{
+      question: string
+      answer: any // RichText field (Lexical)
+    }> = []
+
+    const setName = (block as any).faqSetName
+
+    if (setName && payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'faqSets',
+          depth: 0,
+        })
+
+        if (global?.sets && Array.isArray(global.sets)) {
+          const set = global.sets.find((s: any) => s.name === setName)
+
+          if (set?.questions && Array.isArray(set.questions)) {
+            questions = set.questions.map((faq: any) => ({
+              question: faq.question || '',
+              answer: faq.answer || null,
+            }))
+          }
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching FAQ set:', error)
+      }
+    }
+
+    return <FAQSection key={index} block={{ ...block, questions } as any} />
+  }
   if (block.blockType === 'ctaFooter') {
     return <CTAFooter key={index} block={block} />
   }
@@ -556,6 +590,7 @@ export async function renderBlocks(
                         blockType === 'ctaFooter' ||
                         blockType === 'insightsSection' ||
                         blockType === 'trackRecordSection' ||
+                        blockType === 'faqSection' ||
                         blockType === 'propertySearchInput'
     
     if (skipSpacing) {

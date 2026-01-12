@@ -13,6 +13,7 @@ import { TrackRecordSection } from '../blocks/TrackRecordSection'
 import { PropertySearch } from '../blocks/PropertySearch'
 import { AgentCarousel } from '../blocks/AgentCarousel'
 import { AgentIconsSection } from '../blocks/AgentIconsSection'
+import { FAQSection } from '../blocks/FAQSection'
 import { CTAFooter } from '../blocks/CTAFooter'
 import { Footer } from '../blocks/Footer'
 
@@ -60,6 +61,7 @@ export const Pages: CollectionConfig = {
         PropertySearch,
         AgentCarousel,
         AgentIconsSection,
+        FAQSection,
         CTAFooter,
         Footer,
       ],
