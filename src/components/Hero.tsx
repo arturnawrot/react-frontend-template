@@ -33,6 +33,7 @@ const HeroHeader = ({
   useJustifyCenter = false,
   allowWrap = false,
   rowBreakpoint = 'md',
+  responsiveMobileLeft = false, // New prop to handle mobile-left/desktop-center logic
 }: {
   segments: HeadingSegment[]
   className?: string
@@ -40,11 +41,32 @@ const HeroHeader = ({
   useJustifyCenter?: boolean
   allowWrap?: boolean
   rowBreakpoint?: 'md' | 'min-[816px]'
+  responsiveMobileLeft?: boolean
 }) => {
-  const containerAlign =
-    align === 'center' ? 'items-center text-center' : 'items-start text-left'
+  
+  // Calculate Alignment Classes
+  let containerAlign = ''
+  if (responsiveMobileLeft) {
+    // Mobile: Start/Left, Desktop: Center/Center
+    containerAlign = 'items-start text-left md:items-center md:text-center'
+  } else {
+    // Standard behavior based on align prop
+    containerAlign = align === 'center' ? 'items-center text-center' : 'items-start text-left'
+  }
 
-  // Determine the Tailwind prefix for the desktop breakpoint
+  // Calculate Justify Classes
+  let justifyClass = ''
+  if (useJustifyCenter) {
+    if (responsiveMobileLeft) {
+      // Mobile: Start, Desktop: Center
+      justifyClass = 'justify-start md:justify-center'
+    } else {
+      // Always Center
+      justifyClass = 'justify-center'
+    }
+  }
+
+  // Define when the "break element" should appear (independent logic)
   const desktopPrefix = rowBreakpoint === 'min-[816px]' ? 'min-[816px]:' : 'md:'
 
   return (
@@ -53,18 +75,18 @@ const HeroHeader = ({
         className={`
           flex flex-row flex-wrap gap-y-2 gap-x-3 w-full
           ${containerAlign}
-          ${useJustifyCenter ? 'justify-center' : ''}
+          ${justifyClass}
         `}
       >
         {segments.map((segment, idx) => {
           const isUnbreakable = !(allowWrap || segment.breakOnMobile || segment.breakOnDesktop)
           
-          // Determine if we need to render the invisible break element at all
+          // Determine visibility of the invisible break element
           const hasBreak = segment.breakOnMobile || segment.breakOnDesktop
 
-          // Construct the class string to toggle visibility of the break
-          // Mobile: Uses standard classes (block/hidden)
-          // Desktop: Uses prefixed classes (md:block/md:hidden) to override mobile
+          // Construct class string:
+          // 1. Mobile status (block if breakOnMobile, hidden otherwise)
+          // 2. Desktop status (overrides mobile via md: prefix)
           const breakElementClass = `
             w-full h-0 basis-full
             ${segment.breakOnMobile ? 'block' : 'hidden'}
@@ -128,7 +150,7 @@ const ActionButtons = ({
   if (!primaryLabel && !secondaryLabel) return null
 
   return (
-    <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
+    <div className="mt-6 flex flex-col md:flex-row md:justify-center gap-3 md:gap-4 w-full">
       {primaryLabel && (
         onPrimary ? (
           <button onClick={onPrimary} className={primaryClass}>
@@ -531,11 +553,16 @@ const SideBySideLayout = (
       <div className="relative w-full flex flex-col md:flex-row">
         {/* Left Content */}
         <div
-          className={`relative w-full md:w-1/2 ${containerBg} text-white px-6 sm:px-10 md:px-14 lg:px-16 pt-[120px] pb-16 md:py-16 flex justify-center`}
+          className={`
+            relative w-full md:w-1/2 ${containerBg} text-white 
+            px-6 sm:px-10 md:px-14 lg:px-16 
+            pt-[120px] pb-16 
+            md:pt-60 md:pb-40
+            flex flex-col justify-center items-center
+          `}
         >
-          {/* UPDATED: Removed max-width restriction on desktop so text can fill the column */}
-          <div className="flex flex-col gap-6 justify-center w-full md:mt-[150px] md:mb-[80px]">
-            <div className="w-full md:w-auto">
+          <div className="w-full max-w-2xl flex flex-col gap-6">
+            <div className="w-full">
               <HeroHeader segments={segments} className={headingClass} align="start" allowWrap={isAgent} />
 
               {subheading && <p className={subClass}>{subheading}</p>}
@@ -667,16 +694,20 @@ const CenteredLayout = (
     ${isFullWidthColor ? 'bg-[var(--strong-green)]' : 'md:h-[700px] md:min-h-[700px]'}
   `
 
+  // Default variant: centered on mobile and desktop
+  // FullWidth variant: left on mobile, center on desktop
   const headingClass = isFullWidthColor
-    ? `${styles.meybohmHeading} text-center mb-6 mt-0 md:mt-30`
-    : `text-white text-4xl md:text-7xl font-bold mb-6 ${styles.heroHeading} w-full`
+    ? `${styles.meybohmHeading} text-left md:text-center mb-6 mt-0 md:mt-30 w-full max-w-none`
+    : `text-white text-4xl md:text-7xl font-bold mb-6 ${styles.heroHeading} w-full text-center`
 
+  // Default variant: centered on mobile and desktop
+  // FullWidth variant: left on mobile, center on desktop
   const subClass = isFullWidthColor
-    ? `${styles.meybohmSubheading} max-w-4xl mx-auto text-center`
-    : `${styles.heroSubheading} max-w-[1200px] max-[1150px]:max-w-[800px] max-[768px]:max-w-[400px]`
+    ? `${styles.meybohmSubheading} max-w-4xl mx-auto text-left md:text-center`
+    : `${styles.heroSubheading} w-full text-center max-w-[1200px] max-[1150px]:max-w-[800px] max-[768px]:max-w-[400px]`
 
-  const btnPrimaryClass = 'sale-button px-6 py-3 text-base w-full sm:w-auto shadow-md'
-  const btnSecondaryClass = 'px-6 py-3 rounded-full border border-white/70 bg-[var(--strong-green)] text-white w-full sm:w-auto hover:bg-white/10 transition text-base flex items-center justify-center'
+  const btnPrimaryClass = 'sale-button px-6 py-3 text-base w-full md:w-auto shadow-md block md:inline-block text-center'
+  const btnSecondaryClass = 'px-6 py-3 rounded-full border border-white/70 bg-[var(--strong-green)] text-white w-full md:w-auto hover:bg-white/10 transition text-base flex items-center justify-center'
 
   return (
     <>
@@ -713,8 +744,21 @@ const CenteredLayout = (
         <div className="relative z-10 flex flex-col h-full pb-10">
           <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
 
-          <div className={`mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 text-center flex flex-col items-center ${isFullWidthColor ? 'gap-6' : ''}`}>
-            <HeroHeader segments={segments} className={headingClass} align="center" useJustifyCenter={!isFullWidthColor} rowBreakpoint={isFullWidthColor ? 'min-[816px]' : 'md'} />
+          <div className={`mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 flex flex-col ${isFullWidthColor ? 'items-start md:items-center text-left md:text-center gap-6' : 'items-center text-center'}`}>
+            
+            {/* 
+              UPDATED: 
+              1. Default variant: centered on mobile and desktop
+              2. FullWidth variant: left on mobile, center on desktop
+            */}
+            <HeroHeader 
+              segments={segments} 
+              className={headingClass} 
+              align="center" 
+              useJustifyCenter={true} 
+              rowBreakpoint={isFullWidthColor ? 'md' : 'md'}
+              responsiveMobileLeft={isFullWidthColor}
+            />
 
             {subheading && <p className={subClass}>{subheading}</p>}
 

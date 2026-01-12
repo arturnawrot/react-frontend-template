@@ -78,7 +78,13 @@ export async function seedBuyPage(payload: Payload) {
             breakOnDesktop: false,
           },
           {
-            text: 'Invest With Confidence.',
+            text: 'Invest With',
+            color: '#DAE684',
+            breakOnMobile: true,
+            breakOnDesktop: false,
+          },
+          {
+            text: 'Confidence.',
             color: '#DAE684',
             breakOnMobile: true,
             breakOnDesktop: false,

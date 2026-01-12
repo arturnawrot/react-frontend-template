@@ -178,7 +178,7 @@ export async function seedBuyerRepresentationPage(payload: Payload) {
             breakOnDesktop: false,
           },
           {
-            text: 'Strategically.',
+            text: 'Strategically',
             color: '#DAE684',
             breakOnMobile: true,
             breakOnDesktop: false,

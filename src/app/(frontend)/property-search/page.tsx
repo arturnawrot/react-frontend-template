@@ -37,14 +37,19 @@ export default async function PropertySearchPage() {
     variant: 'full-width-color' as const,
     headingSegments: [
       {
-        text: 'Buy With Insight.',
+        text: 'Find Properties',
         breakOnMobile: true,
         breakOnDesktop: false,
       },
       {
-        text: 'Invest With Confidence.',
+        text: 'for',
+        breakOnMobile: false,
+        breakOnDesktop: false,
+      },
+      {
+        text: 'Sale',
         color: '#DAE684',
-        breakOnMobile: true,
+        breakOnMobile: false,
         breakOnDesktop: false,
       },
     ],

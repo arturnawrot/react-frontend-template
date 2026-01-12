@@ -250,7 +250,7 @@ export default function PropertySearchInput() {
   }
 
   return (
-    <div className="relative w-full font-sans pt-10">
+    <div className="relative w-full font-sans py-10">
       {/* Main Content Container */}
       <div className="relative max-w-[1200px] mx-auto px-4">
         

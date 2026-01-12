@@ -4,6 +4,7 @@ import { seedHomePage } from '@/seed/seed-home'
 import { seedBuyPage } from '@/seed/seed-buy'
 import { seedBuyerRepresentationPage } from '@/seed/seed-buyer-representation'
 import { seed1031ExchangeSupportPage } from '@/seed/seed-1031-exchange-support'
+import { seedOurServicesPage } from '@/seed/seed-our-services'
 import { seedBrokers } from '@/seed/seed-brokers'
 import { seedFeaturedAgents } from '@/seed/seed-featured-agents'
 import { seedArticles } from '@/seed/seed-articles'
@@ -45,6 +46,7 @@ export async function runSeed(payload: Payload) {
   await seedBuyPage(payload)
   await seedBuyerRepresentationPage(payload)
   await seed1031ExchangeSupportPage(payload)
+  await seedOurServicesPage(payload)
 
   // ============================================
   // Phase 2: Core Collections (must run first)
