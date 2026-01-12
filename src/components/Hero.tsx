@@ -44,41 +44,58 @@ const HeroHeader = ({
   const containerAlign =
     align === 'center' ? 'items-center text-center' : 'items-start text-left'
 
-  const flexRowClass = rowBreakpoint === 'min-[816px]' 
-    ? 'min-[816px]:flex-row min-[816px]:gap-x-3'
-    : 'md:flex-row md:gap-x-3'
+  // Determine the Tailwind prefix for the desktop breakpoint
+  const desktopPrefix = rowBreakpoint === 'min-[816px]' ? 'min-[816px]:' : 'md:'
 
   return (
     <h1 className={className}>
       <div
         className={`
-          flex flex-col ${flexRowClass} flex-wrap gap-y-2 w-full
+          flex flex-row flex-wrap gap-y-2 gap-x-3 w-full
           ${containerAlign}
           ${useJustifyCenter ? 'justify-center' : ''}
         `}
       >
-        {segments.map((segment, idx) => (
-          <span
-            key={idx}
-            className={
-              allowWrap || segment.breakOnMobile || segment.breakOnDesktop
-                ? ''
-                : styles.unbreakable
-            }
-            style={{
-              ...(segment.color ? { color: segment.color } : {}),
-              ...(allowWrap
-                ? {
-                    wordBreak: 'break-word',
-                    overflowWrap: 'break-word',
-                    whiteSpace: 'normal',
-                  }
-                : {}),
-            }}
-          >
-            {segment.text}
-          </span>
-        ))}
+        {segments.map((segment, idx) => {
+          const isUnbreakable = !(allowWrap || segment.breakOnMobile || segment.breakOnDesktop)
+          
+          // Determine if we need to render the invisible break element at all
+          const hasBreak = segment.breakOnMobile || segment.breakOnDesktop
+
+          // Construct the class string to toggle visibility of the break
+          // Mobile: Uses standard classes (block/hidden)
+          // Desktop: Uses prefixed classes (md:block/md:hidden) to override mobile
+          const breakElementClass = `
+            w-full h-0 basis-full
+            ${segment.breakOnMobile ? 'block' : 'hidden'}
+            ${desktopPrefix}${segment.breakOnDesktop ? 'block' : 'hidden'}
+          `
+
+          return (
+            <React.Fragment key={idx}>
+              <span
+                className={isUnbreakable ? styles.unbreakable : ''}
+                style={{
+                  ...(segment.color ? { color: segment.color } : {}),
+                  ...(allowWrap
+                    ? {
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word',
+                        whiteSpace: 'normal',
+                      }
+                    : {}),
+                }}
+              >
+                {segment.text}
+              </span>
+              
+              {/* Conditional Invisible Line Break */}
+              {hasBreak && (
+                <div className={breakElementClass} aria-hidden="true" />
+              )}
+            </React.Fragment>
+          )
+        })}
       </div>
     </h1>
   )
@@ -253,26 +270,8 @@ const resolveHeroContent = (block: HeroBlock) => {
       breakOnMobile: seg.breakOnMobile || false,
       breakOnDesktop: seg.breakOnDesktop || false,
     }))
-  } else {
-    // Default segments based on variant
-    if (isFullWidthColor)
-      segments = [
-        { text: 'Buy With Insight.' },
-        { text: 'Invest With Confidence.', color: '#DAE684' },
-      ]
-    else if (isSplit)
-      segments = [
-        { text: 'We Represent Buyers' },
-        { text: 'Think Strategically', color: '#DAE684' },
-      ]
-    else if (isAgent) segments = [{ text: 'Agent Name' }]
-    else if (isBlog) segments = [{ text: 'Market Report' }, { text: '2025 Outlook' }]
-    else
-      segments = [
-        { text: 'Smart Moves.' },
-        { text: 'Strong Futures.', color: '#DAE684' },
-      ]
   }
+  // DEFAULTS REMOVED
 
   // 3. Resolve Subheading
   let sub = block.subheading
@@ -534,8 +533,9 @@ const SideBySideLayout = (
         <div
           className={`relative w-full md:w-1/2 ${containerBg} text-white px-6 sm:px-10 md:px-14 lg:px-16 pt-[120px] pb-16 md:py-16 flex justify-center`}
         >
-          <div className="flex flex-col gap-6 justify-center w-full max-w-xl md:mt-[150px] md:mb-[80px]">
-            <div className="w-full max-w-[400px] md:max-w-none md:w-auto">
+          {/* UPDATED: Removed max-width restriction on desktop so text can fill the column */}
+          <div className="flex flex-col gap-6 justify-center w-full md:mt-[150px] md:mb-[80px]">
+            <div className="w-full md:w-auto">
               <HeroHeader segments={segments} className={headingClass} align="start" allowWrap={isAgent} />
 
               {subheading && <p className={subClass}>{subheading}</p>}
