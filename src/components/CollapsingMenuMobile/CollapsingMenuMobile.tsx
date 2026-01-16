@@ -72,6 +72,7 @@ export default function CollapsingMenuMobile({
                 searchIconClassName="text-white/70"
                 wrapperClassName=""
                 inputClassName="w-full bg-white/20 text-white placeholder-white/70 rounded-full py-3 pr-4 pl-10 focus:outline-none focus:ring-2 focus:ring-white/50"
+                openUpward={true}
               />
             </div>
 

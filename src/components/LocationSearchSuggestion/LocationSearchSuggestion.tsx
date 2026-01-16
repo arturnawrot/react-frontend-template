@@ -24,6 +24,7 @@ interface LocationSearchSuggestionProps {
   searchIconClassName?: string // Custom styling for search icon
   wrapperClassName?: string // Custom wrapper div className (for positioning icon)
   handleRedirect?: boolean // Whether to handle redirect internally (default: true)
+  openUpward?: boolean // Whether to open suggestions dropdown upward (default: false)
 }
 
 export default function LocationSearchSuggestion({
@@ -38,6 +39,7 @@ export default function LocationSearchSuggestion({
   searchIconClassName = '',
   wrapperClassName = '',
   handleRedirect = true, // Default to handling redirect internally
+  openUpward = false, // Default to opening downward
 }: LocationSearchSuggestionProps) {
   const router = useRouter()
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([])
@@ -234,7 +236,7 @@ export default function LocationSearchSuggestion({
 
       {/* Suggestions Dropdown */}
       {showSuggestions && (suggestions.length > 0 || isLoading) && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-[9999] border border-stone-200 overflow-hidden">
+        <div className={`absolute left-0 right-0 ${openUpward ? 'bottom-full mb-2' : 'top-full mt-2'} bg-white rounded-lg shadow-lg z-[9999] border border-stone-200 overflow-hidden`}>
           {isLoading ? (
             <div className="px-4 py-3 text-sm text-stone-500">Loading suggestions...</div>
           ) : (
