@@ -493,7 +493,7 @@ const BlogLayout = (
               className="absolute inset-0 w-full h-full bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl"
               style={{ backgroundImage: `url('${finalImage}')` }}
             >
-              <div className="absolute inset-0 bg-black/10" aria-hidden />
+              <div className="absolute inset-0 bg-[#1C2F2980]" aria-hidden />
             </div>
 
             {/* Mobile Menu Trigger (Centered in the square image on mobile) */}
@@ -599,7 +599,7 @@ const SideBySideLayout = (
           className={`relative w-full md:w-1/2 h-[50vh] md:h-auto bg-cover bg-center min-h-[400px]`}
           style={{ backgroundImage: `url('${finalImage}')` }}
         >
-          <div className={`absolute inset-0 bg-black/20 md:bg-black/5`} aria-hidden />
+          <div className="absolute inset-0 bg-[#1C2F2980]" aria-hidden />
 
           {/* Mobile Menu Trigger */}
           <div className="md:hidden absolute inset-0 flex items-center justify-center z-20">
@@ -735,7 +735,7 @@ const CenteredLayout = (
           </video>
         )}
 
-        {!isFullWidthColor && <div className="absolute inset-0 bg-black/40" />}
+        {!isFullWidthColor && <div className="absolute inset-0 bg-[#1C2F2980]" />}
 
         <div className="relative z-10 flex flex-col h-full pb-10 w-full">
           <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
