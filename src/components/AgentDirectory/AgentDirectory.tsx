@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Search, ChevronDown } from 'lucide-react'
 import type { Page } from '@/payload-types'
 import AgentCard from '../AgentCard/AgentCard'
@@ -35,14 +35,19 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
   const [isMobile, setIsMobile] = useState(false)
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
   const [totalCount, setTotalCount] = useState(0)
   const [specialties, setSpecialties] = useState<FilterOption[]>([])
   const [servingLocations, setServingLocations] = useState<FilterOption[]>([])
   const [showRegionDropdown, setShowRegionDropdown] = useState(false)
   const [showSpecialtyDropdown, setShowSpecialtyDropdown] = useState(false)
+  
+  // Ref for infinite scroll sentinel
+  const sentinelRef = useRef<HTMLDivElement>(null)
+  // Ref to track current offset for infinite scroll
+  const offsetRef = useRef(0)
 
   const itemsPerPage = block.itemsPerPage || 12
   const heading = block.heading || 'Agent Directory'
@@ -58,53 +63,20 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Fetch filter options on initial load (from search endpoint)
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        // Fetch initial page with filter options
-        const params = new URLSearchParams({
-          limit: itemsPerPage.toString(),
-          offset: '0',
-        })
-        
-        const response = await fetch(`/api/agents/search?${params.toString()}`)
-        if (!response.ok) throw new Error('Failed to fetch agents')
-        
-        const data = await response.json()
-        if (data.success) {
-          // Set filter options
-          setSpecialties(data.specialties || [])
-          setServingLocations(data.servingLocations || [])
-          
-          // Set initial agents data
-          setAgents(data.agents || [])
-          setTotalCount(data.count || 0)
-          setTotalPages(data.totalPages || 1)
-          setCurrentPage(data.currentPage || 1)
-          setLoading(false)
-        }
-      } catch (err) {
-        console.error('Error fetching initial data:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch agents')
-        setLoading(false)
-      }
-    }
-
-    // Only fetch initial data on mount, not when itemsPerPage changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    fetchInitialData()
-  }, [])
-
   // Fetch agents function
-  const fetchAgents = useCallback(async (page: number = 1) => {
-    setLoading(true)
+  const fetchAgents = useCallback(async (reset: boolean = false) => {
+    if (reset) {
+      setLoading(true)
+      offsetRef.current = 0
+    } else {
+      setLoadingMore(true)
+    }
     setError(null)
 
     try {
       const params = new URLSearchParams({
         limit: itemsPerPage.toString(),
-        offset: ((page - 1) * itemsPerPage).toString(),
+        offset: offsetRef.current.toString(),
       })
 
       if (searchQuery) {
@@ -132,10 +104,21 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
         throw new Error(data.error || 'Failed to fetch agents')
       }
 
-      setAgents(data.agents || [])
+      const newAgents = data.agents || []
+      
+      if (reset) {
+        setAgents(newAgents)
+      } else {
+        setAgents(prev => [...prev, ...newAgents])
+      }
+      
       setTotalCount(data.count || 0)
-      setTotalPages(data.totalPages || 1)
-      setCurrentPage(data.currentPage || 1)
+      
+      // Update offset for next fetch
+      offsetRef.current += newAgents.length
+      
+      // Check if there are more agents to load
+      setHasMore(offsetRef.current < (data.count || 0))
       
       // Update filter options if provided (they're included in every response)
       if (data.specialties) {
@@ -150,28 +133,50 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
       console.error('Error fetching agents:', err)
     } finally {
       setLoading(false)
+      setLoadingMore(false)
     }
   }, [searchQuery, selectedSpecialty, selectedRegion, itemsPerPage])
 
-  // Debounced search effect - only runs when search/filter values change, not on pagination
+  // Load more function for infinite scroll
+  const loadMore = useCallback(() => {
+    if (!loadingMore && !loading && hasMore) {
+      fetchAgents(false)
+    }
+  }, [loadingMore, loading, hasMore, fetchAgents])
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore()
+        }
+      },
+      {
+        rootMargin: '100px',
+      }
+    )
+
+    observer.observe(sentinel)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [loadMore])
+
+  // Debounced search effect - resets and fetches when search/filter values change
   useEffect(() => {
     const timer = setTimeout(() => {
-      setCurrentPage(1) // Reset to first page on search/filter change
-      fetchAgents(1)
+      fetchAgents(true) // Reset and fetch from beginning
     }, 300) // 300ms debounce
 
     return () => clearTimeout(timer)
     // Only depend on the actual filter/search values, not fetchAgents
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, selectedSpecialty, selectedRegion])
-
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      fetchAgents(page)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }
 
   const selectedRegionName = selectedRegion 
     ? servingLocations.find(l => l.id === selectedRegion)?.name || 'Region'
@@ -340,65 +345,20 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
                   ))}
                 </div>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 mt-10">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="px-4 py-2 rounded bg-[#EBEBE8] text-gray-700 font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#D4D4D1] transition-colors"
-                    >
-                      Previous
-                    </button>
-                    
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                        // Show first page, last page, current page, and pages around current
-                        if (
-                          page === 1 ||
-                          page === totalPages ||
-                          (page >= currentPage - 1 && page <= currentPage + 1)
-                        ) {
-                          return (
-                            <button
-                              key={page}
-                              onClick={() => handlePageChange(page)}
-                              className={`px-3 py-2 rounded text-sm font-semibold transition-colors ${
-                                currentPage === page
-                                  ? 'bg-[#CDDC39] text-[#1C2B28]'
-                                  : 'bg-[#EBEBE8] text-gray-700 hover:bg-[#D4D4D1]'
-                              }`}
-                            >
-                              {page}
-                            </button>
-                          )
-                        } else if (
-                          page === currentPage - 2 ||
-                          page === currentPage + 2
-                        ) {
-                          return (
-                            <span key={page} className="px-2 text-gray-500">
-                              ...
-                            </span>
-                          )
-                        }
-                        return null
-                      })}
-                    </div>
-
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="px-4 py-2 rounded bg-[#EBEBE8] text-gray-700 font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#D4D4D1] transition-colors"
-                    >
-                      Next
-                    </button>
+                {/* Infinite scroll sentinel */}
+                <div ref={sentinelRef} className="h-4" />
+                
+                {/* Loading more indicator */}
+                {loadingMore && (
+                  <div className="text-center py-6">
+                    <p className="text-gray-600">Loading more agents...</p>
                   </div>
                 )}
 
                 {/* Results count */}
                 <div className="text-center mt-6 text-sm text-gray-600">
-                  Showing {agents.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} - {Math.min(currentPage * itemsPerPage, totalCount)} of {totalCount} agents
+                  Showing {agents.length} of {totalCount} agents
+                  {!hasMore && agents.length > 0 && ' (all loaded)'}
                 </div>
               </>
             )}
