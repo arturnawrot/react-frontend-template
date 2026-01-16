@@ -1,9 +1,10 @@
 'use client'
-import React, { useRef } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
+import { Carousel, CarouselRenderProps } from '../Carousel'
 
 type TrackRecordSectionBlock = Extract<Page['blocks'][number], { blockType: 'trackRecordSection' }>
 
@@ -109,101 +110,91 @@ const PropertyCard = ({
 }
 
 export default function TrackRecordSection({ block, items = [] }: TrackRecordSectionProps) {
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const heading = block.heading || 'Proven Track Record'
 
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      // Scroll by one card width + gap (550px + 32px = 582px)
-      const scrollAmount = 582
-      scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      })
-    }
+  if (items.length === 0) {
+    return null
   }
 
-  const heading = block.heading || 'Proven Track Record'
+  const renderItem = (item: TrackRecordItem) => (
+    <PropertyCard 
+      image={item.image}
+      title={item.title}
+      details={item.address || item.price || item.size || item.propertyType ? {
+        address: item.address,
+        price: item.price,
+        size: item.size,
+        propertyType: item.propertyType,
+      } : undefined}
+      agent={item.agent}
+      link={item.link}
+    />
+  )
+
+  const renderHeader = ({ handleNext, handlePrev }: CarouselRenderProps) => (
+    <div className="max-w-[1600px] mx-auto px-6 md:px-12 mb-16">
+      <div className="flex flex-col md:flex-row items-center justify-between relative">
+        {/* Title Centered */}
+        <div className="w-full text-center md:absolute md:left-1/2 md:-translate-x-1/2">
+          <h2 className="text-5xl md:text-6xl font-serif text-[#1a2e2a]">
+            {heading}
+          </h2>
+        </div>
+
+        {/* Arrows Right */}
+        <div className="hidden md:flex gap-4 ml-auto z-10">
+          <button 
+            onClick={handlePrev}
+            className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
+          >
+            <Arrow direction="up" variant="triangle" size={12} />
+          </button>
+          <button 
+            onClick={handleNext}
+            className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
+          >
+            <Arrow direction="down" variant="triangle" size={12} />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderMobileArrows = ({ handleNext, handlePrev }: CarouselRenderProps) => (
+    <div className="flex md:hidden justify-center gap-4 px-6">
+      <button 
+        onClick={handlePrev}
+        className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
+      >
+        <Arrow direction="up" variant="triangle" size={12} />
+      </button>
+      <button 
+        onClick={handleNext}
+        className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
+      >
+        <Arrow direction="down" variant="triangle" size={12} />
+      </button>
+    </div>
+  )
 
   return (
     <section className="w-full py-24">
-      {/* Header Container */}
-      <div className="max-w-[1600px] mx-auto px-6 md:px-12 mb-16">
-        <div className="flex flex-col md:flex-row items-center justify-between relative">
-          
-          {/* Title Centered */}
-          <div className="w-full text-center md:absolute md:left-1/2 md:-translate-x-1/2">
-            <h2 className="text-5xl md:text-6xl font-serif text-[#1a2e2a]">
-              {heading}
-            </h2>
-          </div>
-
-          {/* Arrows Right */}
-          <div className="hidden md:flex gap-4 ml-auto z-10">
-            <button 
-              onClick={() => scroll('left')}
-              className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
-            >
-              <Arrow direction="up" variant="triangle" size={12} />
-            </button>
-            <button 
-              onClick={() => scroll('right')}
-              className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
-            >
-              <Arrow direction="down" variant="triangle" size={12} />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Full Width Slider - Shows 2 full cards in center with partials on sides */}
-      <div className="relative w-full">
-        <div 
-          ref={scrollRef}
-          className="flex gap-8 overflow-x-auto w-full pb-12 scrollbar-hide snap-x"
-          style={{ 
-            scrollbarWidth: 'none', 
-            msOverflowStyle: 'none',
-            // Center 2 full cards (550px each) + 1 gap (32px) = 1132px
-            // Show partial cards on sides by calculating padding
-            paddingLeft: 'max(1.5rem, calc((100vw - 1132px) / 2 - 150px))',
-            paddingRight: 'max(1.5rem, calc((100vw - 1132px) / 2 - 150px))'
-          }}
-        >
-        {items.map((item, index) => (
-          <PropertyCard 
-            key={index}
-            image={item.image}
-            title={item.title}
-            details={item.address || item.price || item.size || item.propertyType ? {
-              address: item.address,
-              price: item.price,
-              size: item.size,
-              propertyType: item.propertyType,
-            } : undefined}
-            agent={item.agent}
-            link={item.link}
-          />
-        ))}
-        </div>
-      </div>
-
-      {/* Mobile Arrows (Bottom Center) */}
-      <div className="flex md:hidden justify-center gap-4 px-6">
-        <button 
-          onClick={() => scroll('left')}
-          className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
-        >
-          <Arrow direction="up" variant="triangle" size={12} />
-        </button>
-        <button 
-          onClick={() => scroll('right')}
-          className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
-        >
-          <Arrow direction="down" variant="triangle" size={12} />
-        </button>
-      </div>
-
+      <Carousel
+        items={items}
+        renderItem={renderItem}
+        config={{
+          cardWidth: [300, 500, 550],
+          gap: 32,
+        }}
+        trackClassName="pb-12"
+        wrapperClassName="w-full"
+        wrapperStyle={{ 
+          paddingLeft: 'max(1.5rem, calc((100vw - 1132px) / 2 - 150px))',
+          paddingRight: 'max(1.5rem, calc((100vw - 1132px) / 2 - 150px))'
+        }}
+        renderBefore={renderHeader}
+        renderAfter={renderMobileArrows}
+      />
     </section>
   )
 }
-
