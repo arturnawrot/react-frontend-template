@@ -361,7 +361,7 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
                 {/* Results count */}
                 <div className="text-center mt-6 text-sm text-gray-600">
                   Showing {agents.length} of {totalCount} agents
-                  {!hasMore && agents.length > 0 && ' (all loaded)'}
+                  {!hasMore && agents.length > 0 && '.'}
                 </div>
               </>
             )}

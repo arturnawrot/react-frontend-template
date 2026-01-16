@@ -78,20 +78,20 @@ export default function AgentCard({
         )}
 
         {/* Contact Information */}
-        <div className="flex flex-col gap-2 mb-4">
+        <div className="grid grid-cols-2 gap-2 mb-4">
           {email && (
             <a href={`mailto:${email}`} className="flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:opacity-70">
               <Check className="w-4 h-4" /> Email
             </a>
           )}
-          {phone && (
-            <a href={`tel:${phone}`} className="flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:opacity-70">
-              <Phone className="w-4 h-4" /> Phone
-            </a>
-          )}
           {linkedin && (
             <a href={linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:opacity-70">
               <Linkedin className="w-4 h-4" /> LinkedIn
+            </a>
+          )}
+          {phone && (
+            <a href={`tel:${phone}`} className="flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:opacity-70">
+              <Phone className="w-4 h-4" /> Phone
             </a>
           )}
         </div>
