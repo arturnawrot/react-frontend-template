@@ -1157,56 +1157,102 @@ export default function PropertySearchAdvanced({
               </div>
               
               {/* Pagination Controls */}
-              {!loading && !error && totalCount > ITEMS_PER_PAGE && (
-                <div className="flex items-center justify-center gap-2 mt-6">
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 rounded border border-stone-300 bg-white hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                  >
-                    Previous
-                  </button>
-                  
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: Math.min(5, Math.ceil(totalCount / ITEMS_PER_PAGE)) }, (_, i) => {
-                      const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE)
-                      let pageNum: number
+              {!error && totalCount > ITEMS_PER_PAGE && (() => {
+                const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE)
+                return (
+                  <div className="flex items-center justify-center gap-2 mt-6">
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={loading || currentPage === 1}
+                      className="px-4 py-2 rounded border border-stone-300 bg-white hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                    >
+                      Previous
+                    </button>
+                    
+                    <div className="flex items-center gap-1">
+                      {/* First page */}
+                      <button
+                        onClick={() => setCurrentPage(1)}
+                        disabled={loading}
+                        className={`px-3 py-2 rounded text-sm font-medium ${
+                          currentPage === 1
+                            ? 'bg-[#A8B2AD] text-white'
+                            : 'bg-white border border-stone-300 hover:bg-stone-50'
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      >
+                        1
+                      </button>
                       
-                      if (totalPages <= 5) {
-                        pageNum = i + 1
-                      } else if (currentPage <= 3) {
-                        pageNum = i + 1
-                      } else if (currentPage >= totalPages - 2) {
-                        pageNum = totalPages - 4 + i
-                      } else {
-                        pageNum = currentPage - 2 + i
-                      }
+                      {/* Ellipsis after first page if needed */}
+                      {currentPage > 3 && totalPages > 5 && (
+                        <span className="px-2 py-2 text-stone-400 text-sm">...</span>
+                      )}
                       
-                      return (
+                      {/* Middle pages */}
+                      {Array.from({ length: Math.min(3, totalPages - 2) }, (_, i) => {
+                        let pageNum: number
+                        
+                        if (totalPages <= 5) {
+                          pageNum = i + 2
+                          if (pageNum >= totalPages) return null
+                        } else if (currentPage <= 3) {
+                          pageNum = i + 2
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNum = totalPages - 3 + i
+                        } else {
+                          pageNum = currentPage - 1 + i
+                        }
+                        
+                        // Don't render if it's the first or last page (handled separately)
+                        if (pageNum <= 1 || pageNum >= totalPages) return null
+                        
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => setCurrentPage(pageNum)}
+                            disabled={loading}
+                            className={`px-3 py-2 rounded text-sm font-medium ${
+                              currentPage === pageNum
+                                ? 'bg-[#A8B2AD] text-white'
+                                : 'bg-white border border-stone-300 hover:bg-stone-50'
+                            } disabled:opacity-50 disabled:cursor-not-allowed`}
+                          >
+                            {pageNum}
+                          </button>
+                        )
+                      })}
+                      
+                      {/* Ellipsis before last page if needed */}
+                      {currentPage < totalPages - 2 && totalPages > 5 && (
+                        <span className="px-2 py-2 text-stone-400 text-sm">...</span>
+                      )}
+                      
+                      {/* Last page (only if more than 1 page) */}
+                      {totalPages > 1 && (
                         <button
-                          key={pageNum}
-                          onClick={() => setCurrentPage(pageNum)}
+                          onClick={() => setCurrentPage(totalPages)}
+                          disabled={loading}
                           className={`px-3 py-2 rounded text-sm font-medium ${
-                            currentPage === pageNum
+                            currentPage === totalPages
                               ? 'bg-[#A8B2AD] text-white'
                               : 'bg-white border border-stone-300 hover:bg-stone-50'
-                          }`}
+                          } disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
-                          {pageNum}
+                          {totalPages}
                         </button>
-                      )
-                    })}
+                      )}
+                    </div>
+                    
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={loading || currentPage >= totalPages}
+                      className="px-4 py-2 rounded border border-stone-300 bg-white hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                    >
+                      Next
+                    </button>
                   </div>
-                  
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(Math.ceil(totalCount / ITEMS_PER_PAGE), prev + 1))}
-                    disabled={currentPage >= Math.ceil(totalCount / ITEMS_PER_PAGE)}
-                    className="px-4 py-2 rounded border border-stone-300 bg-white hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
+                )
+              })()}
             </div>
 
             {/* Right Column: Map */}
