@@ -30,8 +30,9 @@ export default function SplitSection({ block }: SplitSectionProps) {
       <div 
         className={`
           ${CONTAINER_MAX_WIDTH_CLASS} ${CONTAINER_PADDING_X} mx-auto 
-          flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-20 xl:gap-30 items-center 
+          flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-20 xl:gap-30 
           ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'}
+          md:justify-between md:items-start
         `}
       >
         {/* Image Column */}
@@ -48,7 +49,7 @@ export default function SplitSection({ block }: SplitSectionProps) {
         </div>
 
         {/* Content Column */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center px-0 sm:px-4 md:px-0 max-w-[480px]">
+        <div className="w-full md:w-1/2 flex flex-col justify-center md:justify-start px-0 sm:px-4 md:px-0">
           <div className="space-y-4 sm:space-y-5 md:space-y-6">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
               {header}
