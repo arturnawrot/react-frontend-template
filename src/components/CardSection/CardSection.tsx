@@ -6,7 +6,7 @@ import type { Page } from '@/payload-types'
 import styles from './CardSection.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
-import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
+import Container from '@/components/Container/Container'
 
 type CardSectionBlock = Extract<Page['blocks'][number], { blockType: 'cardSection' }>
 
@@ -61,61 +61,59 @@ export default function CardSection({ block }: CardSectionProps) {
   const cardTextAlign = block.cardTextAlign || 'left'
 
   return (
-    <div className="relative z-10">
-      <div className={`${CONTAINER_MAX_WIDTH_CLASS} mx-auto ${CONTAINER_PADDING_X}`}>
-        <div className="bg-white rounded-4xl border border-gray-100 shadow-md shadow-black/20 py-20 px-15">
-          <div className="text-center">
-            <h2 className="display2">{title}</h2>
-            <p className="description my-10">{description}</p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-12">
-            {cards.map((card, index) => {
-              const iconArray = parseIconString(card.icon)
-              const textAlignClass = 
-                cardTextAlign === 'center' ? 'text-center' :
-                cardTextAlign === 'right' ? 'text-right' :
-                'text-left'
-              return (
-                <div key={index} className={`${textAlignClass} w-full md:w-[30%] md:max-w-[400px]`}>
-                  <span className={styles.cardColumnIcon}>
-                    {iconArray ? (
-                      <FontAwesomeIcon icon={iconArray} />
-                    ) : (
-                      <i className={card.icon} />
-                    )}
-                  </span>
-                  <h3 className={`${styles.cardColumnTitle} mt-5`}>{card.title}</h3>
-                  <p className={`${styles.cardColumnDescription} mt-5`}>{card.description}</p>
-                </div>
-              )
-            })}
-          </div>
-
-          {buttonText && (
-            <div className="text-center mt-15">
-              {buttonLink ? (() => {
-                const isInternal = isInternalLink(buttonLink) && !openInNewTab
-                const LinkComponent = isInternal ? Link : 'a'
-                const linkProps = isInternal
-                  ? { href: buttonLink, className: 'sale-button' }
-                  : {
-                      href: buttonLink,
-                      target: openInNewTab ? '_blank' : undefined,
-                      rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                      className: 'sale-button',
-                    }
-                return <LinkComponent {...linkProps}>{buttonText}</LinkComponent>
-              })() : (
-                <span className="sale-button">
-                  {buttonText}
-                </span>
-              )}
-            </div>
-          )}
+    <Container className="relative z-10">
+      <div className="bg-white rounded-4xl border border-gray-100 shadow-md shadow-black/20 py-20 px-15">
+        <div className="text-center">
+          <h2 className="display2">{title}</h2>
+          <p className="description my-10">{description}</p>
         </div>
+
+        <div className="flex flex-wrap justify-center gap-12">
+          {cards.map((card, index) => {
+            const iconArray = parseIconString(card.icon)
+            const textAlignClass = 
+              cardTextAlign === 'center' ? 'text-center' :
+              cardTextAlign === 'right' ? 'text-right' :
+              'text-left'
+            return (
+              <div key={index} className={`${textAlignClass} w-full md:w-[30%] md:max-w-[400px]`}>
+                <span className={styles.cardColumnIcon}>
+                  {iconArray ? (
+                    <FontAwesomeIcon icon={iconArray} />
+                  ) : (
+                    <i className={card.icon} />
+                  )}
+                </span>
+                <h3 className={`${styles.cardColumnTitle} mt-5`}>{card.title}</h3>
+                <p className={`${styles.cardColumnDescription} mt-5`}>{card.description}</p>
+              </div>
+            )
+          })}
+        </div>
+
+        {buttonText && (
+          <div className="text-center mt-15">
+            {buttonLink ? (() => {
+              const isInternal = isInternalLink(buttonLink) && !openInNewTab
+              const LinkComponent = isInternal ? Link : 'a'
+              const linkProps = isInternal
+                ? { href: buttonLink, className: 'sale-button' }
+                : {
+                    href: buttonLink,
+                    target: openInNewTab ? '_blank' : undefined,
+                    rel: openInNewTab ? 'noopener noreferrer' : undefined,
+                    className: 'sale-button',
+                  }
+              return <LinkComponent {...linkProps}>{buttonText}</LinkComponent>
+            })() : (
+              <span className="sale-button">
+                {buttonText}
+              </span>
+            )}
+          </div>
+        )}
       </div>
-    </div>
+    </Container>
   )
 }
 

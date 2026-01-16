@@ -3,7 +3,7 @@ import type { Page } from '@/payload-types'
 import type { Payload } from 'payload'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import FlippedM from '@/components/FlippedM/FlippedM'
-import Container from '@/components/Container/Container'
+import PayloadContainer from '@/components/Container/PayloadContainer'
 import CardSection from '@/components/CardSection/CardSection'
 import PropertySearchInput from '@/components/PropertySearchInput/PropertySearchInput'
 import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
@@ -46,7 +46,7 @@ export async function renderBlock(
     return <FlippedM key={index} block={block} />
   }
   if (block.blockType === 'container') {
-    return <Container key={index} block={block} payload={payload} />
+    return <PayloadContainer key={index} block={block} payload={payload} />
   }
   if (block.blockType === 'cardSection') {
     return <CardSection key={index} block={block} />

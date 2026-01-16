@@ -4,7 +4,7 @@ import type { Page } from '@/payload-types'
 import PropertyCard from '../PropertyCard/PropertyCard'
 import Arrow from '../Arrow/Arrow'
 import type { PropertyCardData } from '@/utils/property-transform'
-import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
+import Container from '@/components/Container/Container'
 
 type FeaturedPropertiesBlock = Extract<Page['blocks'][number], { blockType: 'featuredProperties' }>
 
@@ -39,20 +39,20 @@ export default function FeaturedProperties({ block, properties, heading, seeAllL
     // Show debug message in development
     if (process.env.NODE_ENV === 'development' && (block as any)?.featuredPropertySetName) {
       return (
-        <section className={`${CONTAINER_MAX_WIDTH_CLASS} mx-auto ${CONTAINER_PADDING_X} font-sans text-[#1C2B28]`}>
+        <Container className="font-sans text-[#1C2B28]">
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <p className="text-yellow-800">
               <strong>Debug:</strong> FeaturedProperties block has set name &quot;{(block as any).featuredPropertySetName}&quot; but no properties were loaded. Check console for details.
             </p>
           </div>
-        </section>
+        </Container>
       )
     }
     return null
   }
 
   return (
-    <section className={`${CONTAINER_MAX_WIDTH_CLASS} mx-auto ${CONTAINER_PADDING_X} font-sans text-[#1C2B28]`}>
+    <Container className="font-sans text-[#1C2B28]">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
           <p className="text-sm font-semibold tracking-[0.08em] uppercase text-stone-500 mb-2">
@@ -74,7 +74,7 @@ export default function FeaturedProperties({ block, properties, heading, seeAllL
           <PropertyCard key={property.id} property={property} variant="vertical" />
         ))}
       </div>
-    </section>
+    </Container>
   )
 }
 

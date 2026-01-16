@@ -5,7 +5,7 @@ import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
-import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
+import Container from '@/components/Container/Container'
 
 type SplitSectionBlock = Extract<Page['blocks'][number], { blockType: 'splitSection' }>
 
@@ -26,87 +26,84 @@ export default function SplitSection({ block }: SplitSectionProps) {
   const openInNewTab = shouldOpenInNewTab(block as any)
 
   return (
-    <section className={`w-full`}>
-      <div 
-        className={`
-          ${CONTAINER_MAX_WIDTH_CLASS} ${CONTAINER_PADDING_X} mx-auto 
-          flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-20 xl:gap-30 
-          ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'}
-          md:justify-between
-        `}
-      >
-        {/* Image Column */}
-        <div className="w-full md:w-1/2 flex justify-center">
-          <div className="relative overflow-hidden rounded-2xl shadow-lg w-full max-w-[480px] md:max-w-[720px] aspect-[4/3]">
-            <Image 
-              src={imageUrl} 
-              alt={imageAlt} 
-              fill
-              className="object-cover transform hover:scale-105 transition-transform duration-700 ease-out" 
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          </div>
-        </div>
-
-        {/* Content Column */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-0 sm:px-4 md:px-0">
-          <div className="w-full max-w-[480px] md:max-w-none space-y-4 sm:space-y-5 md:space-y-6">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
-              {header}
-            </h2>
-            
-            {paragraph && (
-              <p 
-                className="text-[#1a2e2a]"
-                style={{
-                  fontFamily: '"GT America Condensed", sans-serif',
-                  fontWeight: 400,
-                  fontSize: 'var(--xl)',
-                  lineHeight: '27px',
-                  letterSpacing: '0px',
-                }}
-              >
-                {paragraph}
-              </p>
-            )}
-            
-            {bulletPoints.length > 0 && (
-              <ul className="space-y-2 text-gray-700 font-medium text-base sm:text-lg">
-                {bulletPoints.map((point, index) => (
-                  <li key={index} className="flex items-center gap-3">
-                    <span className="w-1 h-1 bg-gray-800 rounded-full flex-shrink-0"></span>
-                    <span>{point.text}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {linkText && linkHref && (
-              <div className="pt-2 sm:pt-3 md:pt-4">
-                {(() => {
-                  const isInternal = isInternalLink(linkHref) && !openInNewTab
-                  const LinkComponent = isInternal ? Link : 'a'
-                  const linkProps = isInternal
-                    ? { href: linkHref, className: 'inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5' }
-                    : {
-                        href: linkHref,
-                        target: openInNewTab ? '_blank' : undefined,
-                        rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                        className: 'inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5',
-                      }
-                  return (
-                    <LinkComponent {...linkProps}>
-                      {linkText}
-                      <Arrow direction="right" variant="fill" size={16} />
-                    </LinkComponent>
-                  )
-                })()}
-              </div>
-            )}
-          </div>
+    <Container 
+      className={`
+        flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-20 xl:gap-30 
+        ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'}
+        md:justify-between w-full
+      `}
+    >
+      {/* Image Column */}
+      <div className="w-full md:w-1/2 flex justify-center">
+        <div className="relative overflow-hidden rounded-2xl shadow-lg w-full max-w-[480px] md:max-w-[720px] aspect-[4/3]">
+          <Image 
+            src={imageUrl} 
+            alt={imageAlt} 
+            fill
+            className="object-cover transform hover:scale-105 transition-transform duration-700 ease-out" 
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
         </div>
       </div>
-    </section>
+
+      {/* Content Column */}
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-0 sm:px-4 md:px-0">
+        <div className="w-full max-w-[480px] md:max-w-none space-y-4 sm:space-y-5 md:space-y-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
+            {header}
+          </h2>
+          
+          {paragraph && (
+            <p 
+              className="text-[#1a2e2a]"
+              style={{
+                fontFamily: '"GT America Condensed", sans-serif',
+                fontWeight: 400,
+                fontSize: 'var(--xl)',
+                lineHeight: '27px',
+                letterSpacing: '0px',
+              }}
+            >
+              {paragraph}
+            </p>
+          )}
+          
+          {bulletPoints.length > 0 && (
+            <ul className="space-y-2 text-gray-700 font-medium text-base sm:text-lg">
+              {bulletPoints.map((point, index) => (
+                <li key={index} className="flex items-center gap-3">
+                  <span className="w-1 h-1 bg-gray-800 rounded-full flex-shrink-0"></span>
+                  <span>{point.text}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {linkText && linkHref && (
+            <div className="pt-2 sm:pt-3 md:pt-4">
+              {(() => {
+                const isInternal = isInternalLink(linkHref) && !openInNewTab
+                const LinkComponent = isInternal ? Link : 'a'
+                const linkProps = isInternal
+                  ? { href: linkHref, className: 'inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5' }
+                  : {
+                      href: linkHref,
+                      target: openInNewTab ? '_blank' : undefined,
+                      rel: openInNewTab ? 'noopener noreferrer' : undefined,
+                      className: 'inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5',
+                    }
+                return (
+                  <LinkComponent {...linkProps}>
+                    {linkText}
+                    <Arrow direction="right" variant="fill" size={16} />
+                  </LinkComponent>
+                )
+              })()}
+            </div>
+          )}
+        </div>
+      </div>
+    </Container>
   )
 }
 

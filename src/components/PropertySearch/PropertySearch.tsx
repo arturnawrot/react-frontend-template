@@ -8,7 +8,7 @@ import type { LightweightProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { createBrokerMaps, getAgentInfo } from '@/utils/broker-utils'
 import { filterValidCoordinates } from '@/utils/property-utils'
-import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
+import Container from '@/components/Container/Container'
 
 // Dynamically import PropertyMap with SSR disabled to avoid window is not defined error
 const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
@@ -164,7 +164,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
   }, [allProperties.length, error])
 
   return (
-    <div className={`${CONTAINER_MAX_WIDTH_CLASS} ${CONTAINER_PADDING_X} mx-auto font-sans text-stone-800 bg-transparent`}>
+    <Container className="font-sans text-stone-800 bg-transparent">
       
       {/* Header Section */}
       <div className="mb-10">
@@ -252,7 +252,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }
 

@@ -5,7 +5,7 @@ import type { Page } from '@/payload-types'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
-import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
+import Container from '@/components/Container/Container'
 
 type FAQSectionBlock = Extract<Page['blocks'][number], { blockType: 'faqSection' }> & {
   questions?: Array<{
@@ -38,18 +38,18 @@ export default function FAQSection({ block }: FAQSectionProps) {
   if (questions.length === 0) {
     return (
       <section className="w-full bg-[var(--strong-green)] py-20">
-        <div className={`${CONTAINER_MAX_WIDTH_CLASS} ${CONTAINER_PADDING_X} mx-auto`}>
+        <Container>
           <div className="text-center text-white">
             <p className="text-white/60">No FAQs available. Please select an FAQ set.</p>
           </div>
-        </div>
+        </Container>
       </section>
     )
   }
 
   return (
     <section className="w-full bg-[var(--strong-green)] py-20">
-      <div className={`${CONTAINER_MAX_WIDTH_CLASS} ${CONTAINER_PADDING_X} mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20`}>
+      <Container className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
         
         {/* LEFT SECTION: Fixed Content (1/3 width) */}
         <div className="lg:col-span-4 flex flex-col z-10">
@@ -119,7 +119,7 @@ export default function FAQSection({ block }: FAQSectionProps) {
           </div>
         </div>
 
-      </div>
+      </Container>
     </section>
   )
 }
