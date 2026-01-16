@@ -8,6 +8,7 @@ import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
 import { Carousel, CarouselTrackElement } from '../Carousel'
+import styles from './AgentCarousel.module.scss'
 
 type AgentCarouselBlock = Extract<Page['blocks'][number], { blockType: 'agentCarousel' }>
 
@@ -83,28 +84,29 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
       <Container className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         {/* LEFT SECTION: Content */}
         <div className="lg:col-span-4 flex flex-col gap-6 lg:gap-8 lg:pr-8 z-10">
-          <h3 className="text-xs font-bold uppercase tracking-[0.25em] text-gray-500">
+          <h3 className={`${styles.preHeading} text-gray-500`}>
             {preHeading}
           </h3>
 
-          <h1 className="text-5xl md:text-6xl font-serif-display text-[#1a2e28] leading-tight">
+          <h1 className={`${styles.heading} text-[#1a2e28]`}>
             {heading}
           </h1>
 
-          <p className="text-gray-600 leading-relaxed text-lg">
+          <p className={`${styles.description} text-gray-600`}>
             {description}
           </p>
 
           {linkText && linkHref && (() => {
             const isInternal = isInternalLink(linkHref) && !openInNewTab
             const LinkComponent = isInternal ? Link : 'a'
+            const linkClassName = `${styles.link} group inline-flex items-center text-[#1a2e28] hover:opacity-70 transition-opacity mt-2`
             const linkProps = isInternal
-              ? { href: linkHref, className: 'group inline-flex items-center font-medium text-[#1a2e28] hover:opacity-70 transition-opacity mt-2' }
+              ? { href: linkHref, className: linkClassName }
               : {
                   href: linkHref,
                   target: openInNewTab ? '_blank' : undefined,
                   rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                  className: 'group inline-flex items-center font-medium text-[#1a2e28] hover:opacity-70 transition-opacity mt-2',
+                  className: linkClassName,
                 }
             return (
               <LinkComponent {...linkProps}>
@@ -115,16 +117,16 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
           })()}
 
           {/* Desktop Arrows */}
-          <div className="hidden lg:flex gap-4 mt-8">
+          <div className="hidden lg:flex gap-4 mt-8 justify-end">
             <button 
               onClick={() => {
                 setIsPaused(true)
                 handlePrev()
                 setTimeout(() => setIsPaused(false), 5000)
               }}
-              className="flex items-center justify-center transition-colors hover:opacity-70 text-[#1a2e28]"
+              className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
             >
-              <Arrow direction="left" variant="fill" size="w-6 h-6" />
+              <Arrow direction="up" variant="triangle" size={12} />
             </button>
             <button 
               onClick={() => {
@@ -132,9 +134,9 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
                 handleNext()
                 setTimeout(() => setIsPaused(false), 5000)
               }}
-              className="flex items-center justify-center transition-colors hover:opacity-70 text-[#1a2e28]"
+              className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
             >
-              <Arrow direction="right" variant="fill" size="w-6 h-6" />
+              <Arrow direction="down" variant="triangle" size={12} />
             </button>
           </div>
         </div>
@@ -154,7 +156,7 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
             }}
             className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
           >
-            <Arrow direction="left" variant="fill" size="w-6 h-6" />
+            <Arrow direction="up" variant="triangle" size={12} />
           </button>
           <button 
             onClick={() => {
@@ -164,7 +166,7 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
             }}
             className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
           >
-            <Arrow direction="right" variant="fill" size="w-6 h-6" />
+            <Arrow direction="down" variant="triangle" size={12} />
           </button>
         </div>
       </Container>

@@ -1,0 +1,31 @@
+.preHeading {
+  font-family: "GT America Condensed", sans-serif;
+  font-weight: 500;
+  font-size: var(--pre-heading);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.heading {
+  font-family: "Copernicus New Cond Trial", serif;
+  font-weight: 300;
+  font-size: var(--display2);
+  line-height: var(--display2);
+  letter-spacing: 0px;
+}
+
+.description {
+  font-family: "GT America Condensed", sans-serif;
+  font-weight: 400;
+  font-size: var(--xl);
+  line-height: 27px;
+  letter-spacing: 0px;
+}
+
+.link {
+  font-family: "GT America Condensed", sans-serif;
+  font-weight: 400;
+  font-size: var(--l);
+  line-height: 100%;
+  text-align: justify;
+}

@@ -81,21 +81,21 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
         <div className="flex items-center justify-center gap-6 mt-12">
           <button
             onClick={prevSlide}
-            className="p-2 hover:opacity-70 transition-opacity"
+            className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
             aria-label="Previous testimonial"
           >
-            <Arrow direction="left" variant="chevron" size="w-6 h-6" className="text-gray-700" />
+            <Arrow direction="up" variant="triangle" size={12} />
           </button>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             {testimonials.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`transition-all duration-300 ${
                   index === currentIndex
-                    ? 'w-8 h-3 bg-gray-900 rounded-full'
-                    : 'w-3 h-3 bg-gray-300 rounded-full hover:bg-gray-400'
+                    ? 'w-2 h-0.75 bg-gray-900 rounded-full'
+                    : 'w-0.75 h-0.75 bg-gray-300 rounded-full hover:bg-gray-400'
                 }`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
@@ -104,10 +104,10 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
 
           <button
             onClick={nextSlide}
-            className="p-2 hover:opacity-70 transition-opacity"
+            className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
             aria-label="Next testimonial"
           >
-            <Arrow direction="right" variant="chevron" size="w-6 h-6" className="text-gray-700" />
+            <Arrow direction="down" variant="triangle" size={12} />
           </button>
         </div>
       </div>
