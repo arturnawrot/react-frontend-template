@@ -1,0 +1,59 @@
+.heading {
+  font-family: 'Copernicus New Cond Trial', serif;
+  font-weight: 300;
+  font-size: var(--display4);
+  color: var(--strong-green);
+  line-height: 1.1;
+
+  @media (min-width: 768px) {
+    font-size: var(--display2);
+  }
+}
+
+.content {
+  font-family: 'GT America Condensed', sans-serif;
+  font-weight: 400;
+  font-size: var(--xl);
+  color: var(--strong-green);
+  line-height: 1.5;
+}
+
+.bulletList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bulletItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'GT America Condensed', sans-serif;
+  font-weight: 400;
+  font-size: var(--xl);
+  color: var(--strong-green);
+}
+
+.bulletDot {
+  width: 4px;
+  height: 4px;
+  background-color: var(--strong-green);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'GT America Condensed', sans-serif;
+  font-weight: 400;
+  font-size: var(--l);
+  color: var(--strong-green);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

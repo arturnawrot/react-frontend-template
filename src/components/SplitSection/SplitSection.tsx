@@ -6,6 +6,7 @@ import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
+import styles from './SplitSection.module.scss'
 
 type SplitSectionBlock = Extract<Page['blocks'][number], { blockType: 'splitSection' }>
 
@@ -49,30 +50,21 @@ export default function SplitSection({ block }: SplitSectionProps) {
       {/* Content Column */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-0 sm:px-4 md:px-0">
         <div className="w-full max-w-[480px] md:max-w-none space-y-4 sm:space-y-5 md:space-y-6">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
+          <h2 className={styles.heading}>
             {header}
           </h2>
           
           {paragraph && (
-            <p 
-              className="text-[#1a2e2a]"
-              style={{
-                fontFamily: '"GT America Condensed", sans-serif',
-                fontWeight: 400,
-                fontSize: 'var(--xl)',
-                lineHeight: '27px',
-                letterSpacing: '0px',
-              }}
-            >
+            <p className={styles.content}>
               {paragraph}
             </p>
           )}
           
           {bulletPoints.length > 0 && (
-            <ul className="space-y-2 text-gray-700 font-medium text-base sm:text-lg">
+            <ul className={`${styles.bulletList} space-y-2`}>
               {bulletPoints.map((point, index) => (
-                <li key={index} className="flex items-center gap-3">
-                  <span className="w-1 h-1 bg-gray-800 rounded-full flex-shrink-0"></span>
+                <li key={index} className={styles.bulletItem}>
+                  <span className={styles.bulletDot}></span>
                   <span>{point.text}</span>
                 </li>
               ))}
@@ -85,12 +77,12 @@ export default function SplitSection({ block }: SplitSectionProps) {
                 const isInternal = isInternalLink(linkHref) && !openInNewTab
                 const LinkComponent = isInternal ? Link : 'a'
                 const linkProps = isInternal
-                  ? { href: linkHref, className: 'inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5' }
+                  ? { href: linkHref, className: `${styles.link} mt-3` }
                   : {
                       href: linkHref,
                       target: openInNewTab ? '_blank' : undefined,
                       rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                      className: 'inline-flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-[#1a2e2a] transition-colors border-b border-transparent hover:border-gray-800 pb-0.5',
+                      className: `${styles.link} mt-5`,
                     }
                 return (
                   <LinkComponent {...linkProps}>
