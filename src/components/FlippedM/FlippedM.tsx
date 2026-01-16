@@ -5,6 +5,7 @@ import type { Page } from '@/payload-types'
 import styles from './FlippedM.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
 
 type FlippedMBlock = Extract<Page['blocks'][number], { blockType: 'flippedM' }>
 
@@ -129,7 +130,7 @@ const ProcessSection = ({
   ctaOpenInNewTab?: boolean
 }) => {
   return (
-    <div className="relative w-full flex flex-col max-w-[1500px] mx-auto md:px-15">
+    <div className={`relative w-full flex flex-col ${CONTAINER_MAX_WIDTH_CLASS} mx-auto ${CONTAINER_PADDING_X}`}>
       {/* SVG Background */}
       <div className="absolute inset-0 md:left-1/2 pointer-events-none z-10">
         <Image

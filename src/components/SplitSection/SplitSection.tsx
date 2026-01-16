@@ -5,6 +5,7 @@ import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
 
 type SplitSectionBlock = Extract<Page['blocks'][number], { blockType: 'splitSection' }>
 
@@ -25,10 +26,10 @@ export default function SplitSection({ block }: SplitSectionProps) {
   const openInNewTab = shouldOpenInNewTab(block as any)
 
   return (
-    <section className="w-full px-4 sm:px-6 md:px-8">
+    <section className={`w-full ${CONTAINER_PADDING_X}`}>
       <div 
         className={`
-          max-w-[1380px] mx-auto 
+          ${CONTAINER_MAX_WIDTH_CLASS} mx-auto 
           flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-20 xl:gap-30 items-center 
           ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'}
         `}

@@ -6,6 +6,7 @@ import type { Page } from '@/payload-types'
 import styles from './CardSection.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
 
 type CardSectionBlock = Extract<Page['blocks'][number], { blockType: 'cardSection' }>
 
@@ -61,7 +62,7 @@ export default function CardSection({ block }: CardSectionProps) {
 
   return (
     <div className="relative z-10">
-      <div className="max-w-[1380px] mx-auto px-4">
+      <div className={`${CONTAINER_MAX_WIDTH_CLASS} mx-auto ${CONTAINER_PADDING_X}`}>
         <div className="bg-white rounded-4xl border border-gray-100 shadow-md shadow-black/20 py-20 px-15">
           <div className="text-center">
             <h2 className="display2">{title}</h2>

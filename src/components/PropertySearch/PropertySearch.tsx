@@ -8,6 +8,7 @@ import type { LightweightProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { createBrokerMaps, getAgentInfo } from '@/utils/broker-utils'
 import { filterValidCoordinates } from '@/utils/property-utils'
+import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
 
 // Dynamically import PropertyMap with SSR disabled to avoid window is not defined error
 const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
@@ -163,10 +164,10 @@ export default function PropertySearch({ block }: PropertySearchProps) {
   }, [allProperties.length, error])
 
   return (
-    <div className="px-4 md:px-8 font-sans text-stone-800 bg-transparent">
+    <div className={`${CONTAINER_MAX_WIDTH_CLASS} ${CONTAINER_PADDING_X} mx-auto font-sans text-stone-800 bg-transparent`}>
       
       {/* Header Section */}
-      <div className="max-w-[1400px] mx-auto mb-10">
+      <div className="mb-10">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#1C2B28] mb-4 tracking-tight">
@@ -185,7 +186,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
       </div>
 
       {/* Main Content (Equal Height Split) */}
-      <div className="max-w-[1400px] mx-auto">
+      <div>
         <div className="flex flex-col lg:flex-row gap-6">
           
           {/* LEFT COLUMN: Map */}

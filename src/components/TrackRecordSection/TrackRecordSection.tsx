@@ -57,9 +57,9 @@ const PropertyCard = ({
       {/* Info Box - Positioned on the left */}
       <div 
         className={`
-          absolute left-6 bottom-6 bg-white rounded-2xl p-6 shadow-xl z-10
+          absolute left-6 right-6 bottom-6 bg-white rounded-2xl p-6 shadow-xl z-10
           transition-all duration-300
-          ${hasDetails ? 'w-[calc(100%-3rem)] max-w-[400px]' : 'w-auto pr-8'}
+          ${hasDetails ? 'max-w-[400px]' : 'w-auto pr-8'}
         `}
       >
         <h3 className="text-3xl md:text-4xl font-serif text-[#1a2e2a] leading-none tracking-tight">

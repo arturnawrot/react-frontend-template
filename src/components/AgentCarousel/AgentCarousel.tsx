@@ -6,6 +6,7 @@ import type { Page, Media } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import { CONTAINER_MAX_WIDTH_CLASS, CONTAINER_PADDING_X } from '@/utils/constants'
 
 type AgentCarouselBlock = Extract<Page['blocks'][number], { blockType: 'agentCarousel' }>
 
@@ -129,7 +130,7 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
   return (
     <div className="w-full overflow-x-hidden">
       
-      <div className="max-w-[1600px] w-full mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div className={`${CONTAINER_MAX_WIDTH_CLASS} w-full mx-auto ${CONTAINER_PADDING_X} grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center`}>
         
         {/* LEFT SECTION: Content */}
         <div className="lg:col-span-4 flex flex-col gap-6 lg:gap-8 lg:pr-8 z-10">
