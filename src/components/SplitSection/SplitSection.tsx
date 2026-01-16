@@ -26,10 +26,10 @@ export default function SplitSection({ block }: SplitSectionProps) {
   const openInNewTab = shouldOpenInNewTab(block as any)
 
   return (
-    <section className={`w-full ${CONTAINER_PADDING_X}`}>
+    <section className={`w-full`}>
       <div 
         className={`
-          ${CONTAINER_MAX_WIDTH_CLASS} mx-auto 
+          ${CONTAINER_MAX_WIDTH_CLASS} ${CONTAINER_PADDING_X} mx-auto 
           flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-20 xl:gap-30 items-center 
           ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'}
         `}
