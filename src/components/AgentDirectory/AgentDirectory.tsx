@@ -208,98 +208,101 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="block w-full pl-10 pr-4 py-3 border-none rounded bg-[#EBEBE8] text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#CDDC39] text-sm font-medium"
-                placeholder="Q Search"
+                placeholder="Search"
               />
             </div>
 
-            {/* Region Dropdown */}
-            <div className="relative">
-              <button 
-                onClick={() => {
-                  setShowRegionDropdown(!showRegionDropdown)
-                  setShowSpecialtyDropdown(false)
-                }}
-                className="flex items-center justify-between gap-2 bg-[#EBEBE8] hover:bg-[#D4D4D1] text-gray-700 px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
-              >
-                {selectedRegionName}
-                <ChevronDown size={14} className="opacity-70" />
-              </button>
-              {showRegionDropdown && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-10" 
-                    onClick={() => setShowRegionDropdown(false)}
-                  />
-                  <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-20 min-w-[120px] max-h-60 overflow-y-auto">
-                    <button
-                      onClick={() => {
-                        setSelectedRegion(null)
-                        setShowRegionDropdown(false)
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
-                    >
-                      All Regions
-                    </button>
-                    {servingLocations.map((location) => (
+            {/* Filter Dropdowns Container - side by side on mobile */}
+            <div className="flex justify-between gap-2 w-full sm:w-auto sm:gap-3">
+              {/* Region Dropdown */}
+              <div className="relative w-[calc(50%-4px)] sm:w-auto">
+                <button 
+                  onClick={() => {
+                    setShowRegionDropdown(!showRegionDropdown)
+                    setShowSpecialtyDropdown(false)
+                  }}
+                  className="flex items-center justify-between gap-2 bg-[#EBEBE8] hover:bg-[#D4D4D1] text-gray-700 px-4 py-3 rounded text-sm font-semibold transition-colors w-full sm:min-w-[120px]"
+                >
+                  {selectedRegionName}
+                  <ChevronDown size={14} className="opacity-70" />
+                </button>
+                {showRegionDropdown && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setShowRegionDropdown(false)}
+                    />
+                    <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-20 min-w-[120px] max-h-60 overflow-y-auto">
                       <button
-                        key={location.id}
                         onClick={() => {
-                          setSelectedRegion(location.id)
+                          setSelectedRegion(null)
                           setShowRegionDropdown(false)
                         }}
                         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
                       >
-                        {location.name}
+                        All Regions
                       </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
+                      {servingLocations.map((location) => (
+                        <button
+                          key={location.id}
+                          onClick={() => {
+                            setSelectedRegion(location.id)
+                            setShowRegionDropdown(false)
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
+                        >
+                          {location.name}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
 
-            {/* Specialty Dropdown */}
-            <div className="relative">
-              <button 
-                onClick={() => {
-                  setShowSpecialtyDropdown(!showSpecialtyDropdown)
-                  setShowRegionDropdown(false)
-                }}
-                className="flex items-center justify-between gap-2 bg-[#EBEBE8] hover:bg-[#D4D4D1] text-gray-700 px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px]"
-              >
-                {selectedSpecialtyName}
-                <ChevronDown size={14} className="opacity-70" />
-              </button>
-              {showSpecialtyDropdown && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-10" 
-                    onClick={() => setShowSpecialtyDropdown(false)}
-                  />
-                  <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-20 min-w-[120px] max-h-60 overflow-y-auto">
-                    <button
-                      onClick={() => {
-                        setSelectedSpecialty(null)
-                        setShowSpecialtyDropdown(false)
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
-                    >
-                      All Specialties
-                    </button>
-                    {specialties.map((specialty) => (
+              {/* Specialty Dropdown */}
+              <div className="relative w-[calc(50%-4px)] sm:w-auto">
+                <button 
+                  onClick={() => {
+                    setShowSpecialtyDropdown(!showSpecialtyDropdown)
+                    setShowRegionDropdown(false)
+                  }}
+                  className="flex items-center justify-between gap-2 bg-[#EBEBE8] hover:bg-[#D4D4D1] text-gray-700 px-4 py-3 rounded text-sm font-semibold transition-colors w-full sm:min-w-[120px]"
+                >
+                  {selectedSpecialtyName}
+                  <ChevronDown size={14} className="opacity-70" />
+                </button>
+                {showSpecialtyDropdown && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setShowSpecialtyDropdown(false)}
+                    />
+                    <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-20 min-w-[120px] max-h-60 overflow-y-auto">
                       <button
-                        key={specialty.id}
                         onClick={() => {
-                          setSelectedSpecialty(specialty.id)
+                          setSelectedSpecialty(null)
                           setShowSpecialtyDropdown(false)
                         }}
                         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
                       >
-                        {specialty.name}
+                        All Specialties
                       </button>
-                    ))}
-                  </div>
-                </>
-              )}
+                      {specialties.map((specialty) => (
+                        <button
+                          key={specialty.id}
+                          onClick={() => {
+                            setSelectedSpecialty(specialty.id)
+                            setShowSpecialtyDropdown(false)
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
+                        >
+                          {specialty.name}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
