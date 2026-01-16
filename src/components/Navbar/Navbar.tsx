@@ -1,14 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Logo from '../Logo/Logo'
 import {
   MainNavbarLink,
   UpperNavbarLink,
 } from '../NavbarLink/NavbarLink'
 import LocationSearchSuggestion, { type AddressSuggestion } from '../LocationSearchSuggestion/LocationSearchSuggestion'
-import { buildFilterParams } from '@/utils/filter-params'
 import styles from './Navbar.module.scss'
 
 export interface NavbarLink {
@@ -27,20 +25,11 @@ export default function Navbar({
   upperLinks = [],
   mainLinks = [],
 }: NavbarProps) {
-  const router = useRouter()
   const [searchValue, setSearchValue] = useState('')
 
   const handleSearchSelect = (suggestion: AddressSuggestion) => {
-    // Navigate to property search with the selected address
-    const params = buildFilterParams(
-      {
-        search: suggestion.fullAddress,
-      },
-      { includeSearch: true, useSet: true }
-    )
-    
-    const queryString = params.toString()
-    router.push(`/property-search${queryString ? `?${queryString}` : ''}`)
+    // LocationSearchSuggestion handles redirect internally when propertySlug is available
+    // This handler is for side effects only
     setSearchValue('') // Clear search after navigation
   }
 

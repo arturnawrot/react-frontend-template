@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { AddressSuggestion } from '@/components/LocationSearchSuggestion/LocationSearchSuggestion'
 import { buildoutApi, filterProperties, type PropertyFilters } from '@/utils/buildout-api'
+import { addressToSlug } from '@/utils/address-slug'
 
 /**
  * Address autocomplete API endpoint
@@ -49,11 +50,16 @@ export async function GET(request: NextRequest) {
 
       // Use full address as key to avoid duplicates
       if (!addressMap.has(fullAddress) && mainText) {
+        // Generate property slug from the property address
+        const propertyAddress = property.address || property.name || ''
+        const propertySlug = propertyAddress ? addressToSlug(propertyAddress) : undefined
+        
         addressMap.set(fullAddress, {
           id: `buildout-${property.id}`,
           mainText: mainText,
           secondaryText: secondaryText || 'USA',
           fullAddress: fullAddress,
+          propertySlug: propertySlug,
         })
       }
 

@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { MapPin, Search } from 'lucide-react'
 
 export interface AddressSuggestion {
@@ -8,6 +9,7 @@ export interface AddressSuggestion {
   secondaryText: string // City, state, country (e.g., "Jacksonville, FL, USA")
   fullAddress: string // Complete address
   placeId?: string // Google Places ID if available
+  propertySlug?: string // Property address slug for direct navigation
 }
 
 interface LocationSearchSuggestionProps {
@@ -21,6 +23,7 @@ interface LocationSearchSuggestionProps {
   showSearchIcon?: boolean // Show search icon on the left
   searchIconClassName?: string // Custom styling for search icon
   wrapperClassName?: string // Custom wrapper div className (for positioning icon)
+  handleRedirect?: boolean // Whether to handle redirect internally (default: true)
 }
 
 export default function LocationSearchSuggestion({
@@ -34,7 +37,9 @@ export default function LocationSearchSuggestion({
   showSearchIcon = false,
   searchIconClassName = '',
   wrapperClassName = '',
+  handleRedirect = true, // Default to handling redirect internally
 }: LocationSearchSuggestionProps) {
+  const router = useRouter()
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -143,6 +148,13 @@ export default function LocationSearchSuggestion({
     onChange(suggestion.fullAddress)
     setShowSuggestions(false)
     setSelectedIndex(-1)
+    
+    // Handle redirect internally if enabled and property slug is available
+    if (handleRedirect && suggestion.propertySlug) {
+      router.push(`/property/${suggestion.propertySlug}`)
+    }
+    
+    // Always call onSelect for parent components that need to handle their own logic
     onSelect(suggestion)
   }
 

@@ -207,30 +207,12 @@ export default function PropertySearchInput() {
   }
 
   const handleLocationSuggestionSelect = (suggestion: AddressSuggestion) => {
-    // Clear all other filters
+    // LocationSearchSuggestion handles redirect internally when propertySlug is available
+    // Clear all other filters and set location for any side effects
     setSelectedPropertyType(null)
     setSelectedPriceRange(null)
     setSelectedSquareFootage(null)
-    
-    // Set location to the selected address
     setLocation(suggestion.fullAddress)
-    
-    // Submit search with only the location (clear all other filters)
-    const params = buildFilterParams(
-      {
-        search: suggestion.fullAddress,
-        // All other filters are explicitly undefined to clear them
-        propertyType: undefined,
-        minPrice: undefined,
-        maxPrice: undefined,
-        minSquareFootage: undefined,
-        maxSquareFootage: undefined,
-      },
-      { includeSearch: true, useSet: true }
-    )
-    
-    const queryString = params.toString()
-    router.push(`/property-search${queryString ? `?${queryString}` : ''}`)
   }
 
   const getPropertyTypeLabel = () => {
