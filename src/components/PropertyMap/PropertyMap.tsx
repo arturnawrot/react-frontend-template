@@ -51,6 +51,7 @@ function LeafletMap({
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isHoveringMarkerRef = useRef(false)
   const isHoveringCardRef = useRef(false)
+  const isInGracePeriodRef = useRef(false)
   const lastHoveredPropertyRef = useRef<PropertyCardData | null>(null)
   const lastCardPositionRef = useRef<{ x: number; y: number } | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -114,7 +115,8 @@ function LeafletMap({
     const checkInterval = setInterval(() => {
       // If card is visible but we're not hovering marker or card, hide it immediately
       // This check runs continuously and will catch any case where refs are false
-      if (hoveredProperty && !isHoveringMarkerRef.current && !isHoveringCardRef.current) {
+      // BUT respect the grace period to allow moving from pin to card
+      if (hoveredProperty && !isHoveringMarkerRef.current && !isHoveringCardRef.current && !isInGracePeriodRef.current) {
         setHoveredProperty(null)
         setCardPosition(null)
       }
@@ -138,15 +140,32 @@ function LeafletMap({
       const isOverMarker = cardElement?.closest('.leaflet-marker-icon') !== null ||
                           cardElement?.closest('.custom-marker') !== null
       
+      const wasOverMarker = isHoveringMarkerRef.current
+      
       // Update refs based on actual mouse position
       if (isOverCard) {
         isHoveringCardRef.current = true
         isHoveringMarkerRef.current = false
+        isInGracePeriodRef.current = false // Arrived at card, no need for grace
       } else if (isOverMarker) {
         isHoveringMarkerRef.current = true
         isHoveringCardRef.current = false
+        isInGracePeriodRef.current = false // On marker, no need for grace
       } else {
-        // Not over either - set both to false, periodic check will hide
+        // Just left the marker - start grace period
+        if (wasOverMarker && !isInGracePeriodRef.current) {
+          isInGracePeriodRef.current = true
+          
+          // Clear any existing timeout and start new one
+          if (hideTimeoutRef.current) {
+            clearTimeout(hideTimeoutRef.current)
+          }
+          hideTimeoutRef.current = setTimeout(() => {
+            isInGracePeriodRef.current = false
+            hideTimeoutRef.current = null
+          }, 500) // Grace period delay
+        }
+        
         isHoveringMarkerRef.current = false
         isHoveringCardRef.current = false
       }
@@ -207,27 +226,33 @@ function LeafletMap({
   }
 
   const handleMarkerLeave = (_e?: unknown) => {
-    // Immediately set marker ref to false - periodic check will catch this
+    // Immediately set marker ref to false
     isHoveringMarkerRef.current = false
     
-    // Force immediate check - don't wait for periodic check
-    // Use a very short timeout to allow moving to card
+    // Start grace period to allow moving to card
+    isInGracePeriodRef.current = true
+    
+    // Clear any existing timeout
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current)
     }
     
     hideTimeoutRef.current = setTimeout(() => {
+      // End grace period
+      isInGracePeriodRef.current = false
+      
       // Hide if still not hovering card or marker
       if (!isHoveringCardRef.current && !isHoveringMarkerRef.current) {
         setHoveredProperty(null)
         setCardPosition(null)
       }
       hideTimeoutRef.current = null
-    }, 100) // Short delay to allow moving to card
+    }, 500) // Pin hover delay - time to move from pin to card
   }
 
   const handleCardEnter = () => {
     isHoveringCardRef.current = true
+    isInGracePeriodRef.current = false // No longer need grace period
     
     // Clear any pending hide timeout when mouse enters card
     if (hideTimeoutRef.current) {
@@ -244,6 +269,7 @@ function LeafletMap({
 
   const handleCardLeave = () => {
     isHoveringCardRef.current = false
+    isInGracePeriodRef.current = false
     
     // Immediately hide when leaving card
     if (hideTimeoutRef.current) {
@@ -263,6 +289,7 @@ function LeafletMap({
       // When mouse leaves the entire map container, hide the card
       isHoveringMarkerRef.current = false
       isHoveringCardRef.current = false
+      isInGracePeriodRef.current = false
       setHoveredProperty(null)
       setCardPosition(null)
     }
