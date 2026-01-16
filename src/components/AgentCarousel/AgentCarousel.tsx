@@ -140,7 +140,7 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
         </div>
 
         {/* RIGHT SECTION: Infinite Slider */}
-        <div className="lg:col-span-8 relative h-[450px] md:h-[500px]">
+        <div className="lg:col-span-8 relative h-[450px] md:h-[500px] -mx-5 lg:mx-0">
           {trackElement}
         </div>
 
