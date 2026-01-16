@@ -7,6 +7,7 @@ import {
 } from '../NavbarLink/NavbarLink'
 import type { NavbarLink } from '../Navbar/Navbar'
 import LocationSearchSuggestion, { type AddressSuggestion } from '../LocationSearchSuggestion/LocationSearchSuggestion'
+import styles from './CollapsingMenuMobile.module.scss'
 
 export default function CollapsingMenuMobile({
   open,
@@ -52,7 +53,7 @@ export default function CollapsingMenuMobile({
           backgroundRepeat: 'no-repeat',
         }}
       >
-        <div className="flex flex-col min-h-full py-8">
+        <div className="flex flex-col min-h-full py-15 px-12">
           {/* Navigation Links - Left Aligned */}
           <div className="flex flex-col items-start gap-8 text-2xl flex-1 justify-center">
             {mainLinks.map((link, index) => (
@@ -62,16 +63,15 @@ export default function CollapsingMenuMobile({
             ))}
 
             {/* Search Bar - Left Aligned */}
-            <div className="relative w-full px-8 mt-4">
+            <div className="relative w-full mt-4">
               <LocationSearchSuggestion
                 value={searchValue}
                 onChange={setSearchValue}
                 onSelect={handleSearchSelect}
                 placeholder="Search..."
-                showSearchIcon={true}
-                searchIconClassName="text-white/70"
+                showSearchIcon={false}
                 wrapperClassName=""
-                inputClassName="w-full bg-white/20 text-white placeholder-white/70 rounded-full py-3 pr-4 pl-10 focus:outline-none focus:ring-2 focus:ring-white/50"
+                inputClassName={`${styles.searchInput} w-full bg-[#D8F5A2] py-3 pr-4 pl-0 focus:outline-none border-0 border-b-1 border-[var(--strong-green)] rounded-none`}
                 openUpward={true}
               />
             </div>
@@ -80,10 +80,11 @@ export default function CollapsingMenuMobile({
             <div className="w-full flex justify-center mt-4">
               <button
                 onClick={onClose}
-                className="text-white bg-white/20 p-3 rounded-full hover:bg-opacity-30 transition"
+                className="text-white p-5 rounded-full transition-colors"
+                style={{ backgroundColor: 'var(--strong-green)' }}
                 aria-label="Close menu"
               >
-                <X size={28} />
+                <X size={16} strokeWidth={2.5} />
               </button>
             </div>
           </div>

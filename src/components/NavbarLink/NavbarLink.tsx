@@ -81,7 +81,7 @@ export function CollapsingMenuMobileLink({
   return (
     <NavbarLink
       href={href}
-      className={`${styles.mainNavbarLink} text-left w-full hover:text-opacity-80 transition px-8`}
+      className={`${styles.collapsingMenuMobileLink}`}
     >
       {children}
     </NavbarLink>

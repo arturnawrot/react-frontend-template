@@ -1,0 +1,10 @@
+.searchInput {
+  &::placeholder {
+    line-height: 30px;
+    letter-spacing: 0px;
+    text-align: justify;
+    font-size: var(--xxl);
+    font-weight: 300;
+    font-family: "GT America Condensed", sans-serif;
+  }
+}
