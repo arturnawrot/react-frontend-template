@@ -1,0 +1,30 @@
+.title {
+  font-family: "Copernicus New Cond Trial", serif;
+  font-weight: 300;
+  font-size: var(--display2);
+  line-height: var(--display2);
+  color: var(--strong-green);
+}
+
+.description {
+  font-family: "GT America Condensed", sans-serif;
+  font-weight: 400;
+  font-size: var(--xxl);
+  line-height: 30px;
+}
+
+.buttonText {
+  font-family: "GT America Condensed", sans-serif;
+  font-weight: 700;
+  font-size: var(--l);
+  line-height: 100%;
+  letter-spacing: 0.01em;
+}
+
+.propertiesCountText {
+  font-family: "GT America Condensed", sans-serif;
+  font-weight: 400;
+  font-size: var(--l);
+  line-height: 24px;
+  letter-spacing: 0px;
+}

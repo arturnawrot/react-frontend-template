@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
+import styles from './TestimonialCarousel.module.scss'
 
 type TestimonialCarouselBlock = Extract<Page['blocks'][number], { blockType: 'testimonialCarousel' }> & {
   testimonials?: Array<{
@@ -24,13 +25,11 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
   // Handle empty testimonials
   if (testimonials.length === 0) {
     return (
-      <div className="max-w-[1050px] mx-auto px-4">
-        <div className="mx-auto p-8">
-          <div className="text-center mb-8">
-            <p className="text-sm tracking-widest text-gray-500 uppercase mb-4">
-              Testimonials
-            </p>
-            <p className="text-gray-500">No testimonials available. Please select a testimonial set.</p>
+      <div className={styles.container}>
+        <div className={styles.inner}>
+          <div className={styles.emptyState}>
+            <p className={styles.preHeader}>Testimonials</p>
+            <p className={styles.emptyMessage}>No testimonials available. Please select a testimonial set.</p>
           </div>
         </div>
       </div>
@@ -50,26 +49,24 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
   }
 
   return (
-    <div className="max-w-[1050px] mx-auto px-0 md:px-4 overflow-visible">
-      <div className="mx-auto px-4 py-8 md:p-8">
-        <div className="text-center mb-8">
-          <p className="text-sm tracking-widest text-gray-500 uppercase mb-4">
-            Testimonials
-          </p>
+    <div className={styles.container}>
+      <div className={styles.inner}>
+        <div className={styles.header}>
+          <p className={styles.preHeader}>Testimonials</p>
         </div>
 
-        <div className="relative overflow-hidden">
+        <div className={styles.carouselWrapper}>
           <div 
-            className="flex transition-transform duration-500 ease-in-out"
+            className={styles.carouselTrack}
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="w-full flex-shrink-0 px-4">
-                <div className="text-center">
-                  <p className="text-3xl md:text-4xl font-serif text-[#1a2e2a] mb-8">
+              <div key={index} className={styles.slide}>
+                <div className={styles.slideContent}>
+                  <p className={styles.quote}>
                     &quot;{testimonial.quote}&quot;
                   </p>
-                  <p className="text-lg text-gray-600">
+                  <p className={styles.author}>
                     -{testimonial.author}{testimonial.company ? ` | ${testimonial.company}` : ''}
                   </p>
                 </div>
@@ -78,25 +75,21 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-6 mt-12">
+        <div className={styles.controls}>
           <button
             onClick={prevSlide}
-            className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
+            className={styles.navButton}
             aria-label="Previous testimonial"
           >
             <Arrow direction="up" variant="triangle" size={12} />
           </button>
 
-          <div className="flex gap-1.5">
+          <div className={styles.dots}>
             {testimonials.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`transition-all duration-300 ${
-                  index === currentIndex
-                    ? 'w-2 h-0.75 bg-gray-900 rounded-full'
-                    : 'w-0.75 h-0.75 bg-gray-300 rounded-full hover:bg-gray-400'
-                }`}
+                className={`${styles.dot} ${index === currentIndex ? styles.active : styles.inactive}`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}
@@ -104,7 +97,7 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
 
           <button
             onClick={nextSlide}
-            className="flex items-center justify-center hover:opacity-70 text-[#1a2e2a] transition-opacity"
+            className={styles.navButton}
             aria-label="Next testimonial"
           >
             <Arrow direction="down" variant="triangle" size={12} />

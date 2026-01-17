@@ -9,6 +9,7 @@ import { transformPropertyToCard, type PropertyCardData } from '@/utils/property
 import { createBrokerMaps, getAgentInfo } from '@/utils/broker-utils'
 import { filterValidCoordinates } from '@/utils/property-utils'
 import Container from '@/components/Container/Container'
+import styles from './PropertySearch.module.scss'
 
 // Dynamically import PropertyMap with SSR disabled to avoid window is not defined error
 const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
@@ -170,15 +171,15 @@ export default function PropertySearch({ block }: PropertySearchProps) {
       <div className="mb-10">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#1C2B28] mb-4 tracking-tight">
+            <h1 className={`${styles.title} mb-4 tracking-tight`}>
               {heading}
             </h1>
-            <p className="text-lg text-stone-600 leading-relaxed max-w-2xl">
+            <p className={`${styles.description} text-stone-600 max-w-2xl`}>
               {description}
             </p>
           </div>
           <div className="flex-shrink-0">
-            <button className="whitespace-nowrap px-8 py-3 rounded-full border border-stone-800 hover:bg-stone-800 hover:text-white transition-colors font-medium text-sm tracking-wide">
+            <button className={`${styles.buttonText} whitespace-nowrap px-8 py-3 rounded-full border border-stone-800 hover:bg-stone-800 hover:text-white transition-colors`}>
               {buttonText}
             </button>
           </div>
@@ -217,7 +218,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
             {/* List Toolbar - Above property cards container */}
             <div className="flex flex-wrap gap-2 justify-between items-center mb-4 pb-2 flex-shrink-0">
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-medium text-stone-800">
+                <h2 className={`${styles.propertiesCountText} text-stone-800`}>
                   {propertiesCountText}
                 </h2>
                 {loading && (
