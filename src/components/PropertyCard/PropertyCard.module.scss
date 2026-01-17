@@ -1,0 +1,50 @@
+.label {
+  border-radius: 16px;
+  background-color: var(--sale-green);
+  padding: 4px 8px;
+  font-size: var(--xs);
+  color: #0C1411;
+//   line-height: 12px;
+  font-weight: 700;
+  font-family: "GT America Condensed", sans-serif;
+}
+
+.title {
+  font-family: "GT America Condensed", sans-serif;
+  font-weight: 700;
+  font-size: var(--xxl);
+//   line-height: 30px;
+  letter-spacing: 0px;
+  color: #0C1411;
+}
+
+.address {
+  font-family: "GT America", sans-serif;
+  font-weight: 400;
+  font-size: var(--m);
+//   line-height: 21px;
+  color: #0C1411;
+}
+
+.additionalInfo {
+  font-family: "GT America", sans-serif;
+  font-weight: 400;
+  font-size: var(--s);
+//   line-height: 21px;
+  color: #0C1411;
+}
+
+.agentLabel {
+  font-family: "GT America Trial", sans-serif;
+  font-weight: 700;
+  font-size: var(--xs);
+  color: #222222;
+  background-color: #EEEEEE;
+}
+
+.divider {
+  font-family: "GT America Trial", sans-serif;
+  font-weight: 400;
+  font-size: var(--s);
+  color: #222222;
+}

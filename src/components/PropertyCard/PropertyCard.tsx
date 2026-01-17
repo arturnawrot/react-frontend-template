@@ -6,6 +6,7 @@ import { Heart } from 'lucide-react'
 import { isPropertySaved, togglePropertySaved } from '@/utils/saved-properties'
 import { addressToSlug } from '@/utils/address-slug'
 import { useAgentSlugMap } from '@/hooks/useAgentSlugMap'
+import styles from './PropertyCard.module.scss'
 
 interface PropertyCardProps {
   property: {
@@ -73,7 +74,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
         {property.badges && property.badges.length > 0 && (
           <div className="absolute top-2 left-2 flex flex-wrap gap-1 z-20">
             {property.badges.map((badge, bIdx) => (
-              <span key={bIdx} className={`text-[10px] font-bold px-2 py-1 rounded-sm text-stone-900 ${badge.color}`}>
+              <span key={bIdx} className={styles.label}>
                 {badge.text}
               </span>
             ))}
@@ -92,54 +93,64 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
       </div>
 
       {/* Card Details */}
-      <div className={`flex flex-col w-full min-h-0 flex-1 min-w-0 ${isVertical ? 'p-3 justify-between' : 'py-2 px-4 justify-center'}`}>
+      <div className={`flex flex-col w-full min-h-0 flex-1 min-w-0 justify-between ${isVertical ? 'p-3' : 'py-2 px-4'}`}>
+        {/* Group 1: Title + Address */}
         <div className="flex-shrink-0 min-w-0">
           <Link 
             href={`/property/${addressToSlug(property.address)}`}
-            className={`font-bold text-stone-900 mb-1 leading-tight hover:text-stone-700 transition-colors truncate block min-w-0 ${isVertical ? 'text-lg' : 'text-xl font-serif'}`}
+            className={`${styles.title} hover:text-stone-700 transition-colors truncate block min-w-0`}
             title={property.address}
           >
             {property.address}
           </Link>
-          <p className="text-stone-500 text-xs mb-2">{property.cityStateZip}</p>
-          
-          <div className="flex items-center gap-x-2 text-xs font-semibold text-stone-700 mb-2 overflow-hidden">
+          <span className={styles.address}>{property.cityStateZip}</span>
+        </div>
+
+        {/* Group 2: Additional Info + Agent */}
+        <div className="flex-shrink-0 min-w-0">
+          <div className={`${styles.additionalInfo} flex items-center gap-x-2 overflow-hidden`}>
             <span className="whitespace-nowrap">{property.price}</span>
             {property.sqft && (
               <>
-                <span className="text-stone-300 flex-shrink-0">|</span>
+                <span className={`${styles.divider} text-stone-300 flex-shrink-0`}>|</span>
                 <span className="whitespace-nowrap">{property.sqft}</span>
               </>
             )}
-            <span className="text-stone-300 flex-shrink-0">|</span>
+            <span className={`${styles.divider} text-stone-300 flex-shrink-0`}>|</span>
             <span className="truncate whitespace-nowrap min-w-0">{property.type}</span>
           </div>
-        </div>
-
-        <div className={`flex items-center gap-2 flex-shrink-0 ${isVertical ? 'pt-2 mt-1 border-t border-stone-100' : 'pt-1'}`}>
-          <div className="w-5 h-5 rounded-full bg-stone-200 overflow-hidden flex-shrink-0 relative">
-             <Image 
-               src={property.agentImage || 'https://i.pravatar.cc/100?img=5'} 
-               alt={property.agent} 
-               fill
-               className="object-cover" 
-               sizes="20px"
-             />
-          </div>
-          {agentSlug ? (
-            <Link 
-              href={`/agents/${agentSlug}`}
-              onClick={(e) => e.stopPropagation()}
-              className="text-[10px] font-bold bg-stone-100 px-2.5 py-1.5 rounded-full text-stone-600 truncate min-w-0 hover:bg-stone-200 transition-colors"
-              title={property.agent}
-            >
-              {property.agent}
-            </Link>
-          ) : (
-            <span className="text-[10px] font-bold bg-stone-100 px-2.5 py-1.5 rounded-full text-stone-600 truncate min-w-0" title={property.agent}>
-              {property.agent}
-            </span>
-          )}
+          {(() => {
+            const agentLabelContent = (
+              <>
+                <div className="w-4 h-4 rounded-full bg-stone-200 overflow-hidden flex-shrink-0 relative">
+                  <Image 
+                    src={property.agentImage || 'https://i.pravatar.cc/100?img=5'} 
+                    alt={property.agent} 
+                    fill
+                    className="object-cover" 
+                    sizes="16px"
+                  />
+                </div>
+                <span className="truncate">{property.agent}</span>
+              </>
+            )
+            const labelClassName = `${styles.agentLabel} inline-flex items-center gap-1.5 py-1 px-2 rounded-full hover:bg-stone-200 transition-colors mt-1`
+            
+            return agentSlug ? (
+              <Link 
+                href={`/agents/${agentSlug}`}
+                onClick={(e) => e.stopPropagation()}
+                className={labelClassName}
+                title={property.agent}
+              >
+                {agentLabelContent}
+              </Link>
+            ) : (
+              <span className={labelClassName} title={property.agent}>
+                {agentLabelContent}
+              </span>
+            )
+          })()}
         </div>
       </div>
     </div>
