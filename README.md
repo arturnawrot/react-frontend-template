@@ -20,6 +20,7 @@ Run with hot reload:
 ```
 ./run.sh run_dev
 ```
+Visit: `http://localhost:8080`
 
 ## Build (Local Production Test)
 After making changes, build locally to ensure it succeeds:
@@ -27,6 +28,7 @@ After making changes, build locally to ensure it succeeds:
 ```
 ./run.sh run_prod_build_local
 ```
+Visit: `http://localhost:80`
 
 ## Production
 Using Docker Hub image:
@@ -41,3 +43,7 @@ Or build locally and run:
 ```
 ./run.sh run_prod_build_local
 ```
+
+Visit: `http://localhost:80`
+
+
