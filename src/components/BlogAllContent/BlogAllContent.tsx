@@ -205,7 +205,7 @@ export default function BlogAllContent({
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#1a2e2a]" />
               )}
               {!hasMore && blogs.length > 0 && (
-                <p className="text-sm text-stone-500">You've reached the end</p>
+                <p className="text-sm text-stone-500">You&apos;ve reached the end</p>
               )}
             </div>
           </>
