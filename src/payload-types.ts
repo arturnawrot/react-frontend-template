@@ -119,6 +119,7 @@ export interface Config {
     testimonialsSets: TestimonialsSet;
     faqSets: FaqSet;
     agentCategories: AgentCategory;
+    blogHighlights: BlogHighlight;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
@@ -132,6 +133,7 @@ export interface Config {
     testimonialsSets: TestimonialsSetsSelect<false> | TestimonialsSetsSelect<true>;
     faqSets: FaqSetsSelect<false> | FaqSetsSelect<true>;
     agentCategories: AgentCategoriesSelect<false> | AgentCategoriesSelect<true>;
+    blogHighlights: BlogHighlightsSelect<false> | BlogHighlightsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -4959,6 +4961,67 @@ export interface AgentCategory {
   createdAt?: string | null;
 }
 /**
+ * Configure the blog highlights page with featured posts, category explorer, and custom sections.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogHighlights".
+ */
+export interface BlogHighlight {
+  id: string;
+  featuredPosts?: {
+    enabled?: boolean | null;
+    /**
+     * Select up to 4 posts. First post displays as featured (large), remaining 3 display in grid.
+     */
+    posts?: (string | Blog)[] | null;
+  };
+  exploreByCategory?: {
+    enabled?: boolean | null;
+    heading?: string | null;
+    /**
+     * Select categories to display as quick filter buttons. All categories remain available in dropdown.
+     */
+    displayedCategories?: (string | BlogCategory)[] | null;
+    /**
+     * Show Blog & Articles, Market Reports, Investment Spotlights, Client Stories as quick filters
+     */
+    showTypeFilters?: boolean | null;
+    postsPerPage?: number | null;
+  };
+  /**
+   * Add custom sections like "Client Stories" with manually selected or auto-populated articles.
+   */
+  flexibleSections?:
+    | {
+        /**
+         * e.g., "Client Stories", "Investment Insights"
+         */
+        title: string;
+        viewAllLink?: string | null;
+        selectionMode: 'manual' | 'category' | 'type';
+        /**
+         * Manually select articles to display in this section
+         */
+        manualArticles?: (string | Blog)[] | null;
+        /**
+         * Select a category to show newest articles from
+         */
+        categoryFilter?: (string | null) | BlogCategory;
+        /**
+         * Select a type to show newest articles from
+         */
+        typeFilter?: ('article' | 'market-report' | 'investment-spotlight') | null;
+        /**
+         * Number of articles to display
+         */
+        limit?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar_select".
  */
@@ -5207,6 +5270,42 @@ export interface AgentCategoriesSelect<T extends boolean = true> {
         customUrl?: T;
         openInNewTab?: T;
         agents?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogHighlights_select".
+ */
+export interface BlogHighlightsSelect<T extends boolean = true> {
+  featuredPosts?:
+    | T
+    | {
+        enabled?: T;
+        posts?: T;
+      };
+  exploreByCategory?:
+    | T
+    | {
+        enabled?: T;
+        heading?: T;
+        displayedCategories?: T;
+        showTypeFilters?: T;
+        postsPerPage?: T;
+      };
+  flexibleSections?:
+    | T
+    | {
+        title?: T;
+        viewAllLink?: T;
+        selectionMode?: T;
+        manualArticles?: T;
+        categoryFilter?: T;
+        typeFilter?: T;
+        limit?: T;
         id?: T;
       };
   updatedAt?: T;
