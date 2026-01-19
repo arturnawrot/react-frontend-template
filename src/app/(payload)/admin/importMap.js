@@ -1,3 +1,4 @@
+import { ViewWrapper as ViewWrapper_023789d862ecf764c682ca49ec4d5e56 } from 'payload-plugin-import-export/client'
 import { default as default_f25dc40868e28e429962618d11f63c66 } from '../../../components/FeaturedPropertySetSelector/FeaturedPropertySetSelector'
 import { default as default_fefa67c450726138ef8878db2ceebee9 } from '../../../components/TestimonialSetSelector/TestimonialSetSelector'
 import { default as default_38ac3c24f649ee768b0380bb93256a45 } from '../../../components/FeaturedArticleSetSelector/FeaturedArticleSetSelector'
@@ -37,6 +38,7 @@ import { default as default_1ea5719e8a8a26dae6f14f3dc39b5f12 } from '../../../co
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
+  "payload-plugin-import-export/client#ViewWrapper": ViewWrapper_023789d862ecf764c682ca49ec4d5e56,
   "/components/FeaturedPropertySetSelector/FeaturedPropertySetSelector#default": default_f25dc40868e28e429962618d11f63c66,
   "/components/TestimonialSetSelector/TestimonialSetSelector#default": default_fefa67c450726138ef8878db2ceebee9,
   "/components/FeaturedArticleSetSelector/FeaturedArticleSetSelector#default": default_38ac3c24f649ee768b0380bb93256a45,

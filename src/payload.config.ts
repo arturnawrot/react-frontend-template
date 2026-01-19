@@ -5,6 +5,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import importExportPlugin from 'payload-plugin-import-export'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -64,6 +65,11 @@ export default buildConfig({
     url: process.env.DATABASE_URL || '',
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    importExportPlugin({
+      enabled: true,
+      excludeCollections: ['users'],
+    }),
+  ],
   endpoints: [seedEndpoint],
 })

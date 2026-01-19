@@ -424,20 +424,61 @@ function LeafletMap({
     useEffect(() => {
       if (!map) return
       
-      // Wait for map container to be ready
-      const container = map.getContainer()
-      if (!container) {
-        // If container doesn't exist yet, wait a bit
-        const timeout = setTimeout(() => setMapReady(true), 50)
-        return () => clearTimeout(timeout)
+      let intervalId: NodeJS.Timeout | null = null
+      let isCancelled = false
+      
+      // Check if map panes are ready (required for TileLayer)
+      const checkPanesReady = () => {
+        try {
+          const container = map.getContainer()
+          const panes = map.getPanes()
+          // TileLayer needs tilePane to exist
+          return !!(container && panes && panes.tilePane)
+        } catch {
+          return false
+        }
       }
       
-      // Wait for map to be fully initialized
-      map.whenReady(() => {
+      const setReadyIfPanes = () => {
+        if (isCancelled) return
+        if (checkPanesReady()) {
+          setMapReady(true)
+          if (intervalId) {
+            clearInterval(intervalId)
+            intervalId = null
+          }
+        }
+      }
+      
+      // Try immediately
+      if (checkPanesReady()) {
         setMapReady(true)
+        return
+      }
+      
+      // Wait for map to be fully initialized, then verify panes
+      map.whenReady(() => {
+        if (isCancelled) return
+        if (checkPanesReady()) {
+          setMapReady(true)
+        } else {
+          // Poll briefly if panes aren't ready yet
+          intervalId = setInterval(setReadyIfPanes, 10)
+          // Safety timeout to stop polling
+          setTimeout(() => {
+            if (intervalId) {
+              clearInterval(intervalId)
+              intervalId = null
+            }
+          }, 1000)
+        }
       })
       
       return () => {
+        isCancelled = true
+        if (intervalId) {
+          clearInterval(intervalId)
+        }
         setMapReady(false)
       }
     }, [map])
