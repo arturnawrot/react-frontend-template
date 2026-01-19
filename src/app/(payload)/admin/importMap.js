@@ -31,6 +31,8 @@ import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { default as default_3cfcbae1c8285b1dc0d2fcbf4d40a752 } from '../../../components/BuildoutBrokerIdField'
 import { default as default_5c82d05d3979d3a77d2f937acbecc21f } from '../../../components/AgentPropertiesDashboard'
 import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
+import { default as default_9191a585a82a0aecfd02686e839bffab } from '../../../components/Logo/Icon'
+import { default as default_d4e726f63cbd33f92385903da964392d } from '../../../components/Logo/LogoDark'
 import { default as default_1ea5719e8a8a26dae6f14f3dc39b5f12 } from '../../../components/ClearBuildoutCache'
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
@@ -68,6 +70,8 @@ export const importMap = {
   "/components/BuildoutBrokerIdField#default": default_3cfcbae1c8285b1dc0d2fcbf4d40a752,
   "/components/AgentPropertiesDashboard#default": default_5c82d05d3979d3a77d2f937acbecc21f,
   "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
+  "/components/Logo/Icon#default": default_9191a585a82a0aecfd02686e839bffab,
+  "/components/Logo/LogoDark#default": default_d4e726f63cbd33f92385903da964392d,
   "/components/ClearBuildoutCache#default": default_1ea5719e8a8a26dae6f14f3dc39b5f12,
   "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }

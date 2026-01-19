@@ -43,6 +43,14 @@ export default buildConfig({
     },
     components: {
       afterNavLinks: ['/components/ClearBuildoutCache'],
+      graphics: {
+        Logo: '/components/Logo/LogoDark',
+        Icon: '/components/Logo/Icon',
+      },
+    },
+    meta: {
+      titleSuffix: 'Real Estate CMS',
+      icons: [{ url: '/favicon.ico' }],
     },
   },
   collections: [Users, Media, Pages, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],

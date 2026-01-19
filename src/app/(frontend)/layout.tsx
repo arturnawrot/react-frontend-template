@@ -12,8 +12,8 @@ config.autoAddCss = false
 library.add(fas, far, fab)
 
 export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
+  description: 'Description',
+  title: 'Title',
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
