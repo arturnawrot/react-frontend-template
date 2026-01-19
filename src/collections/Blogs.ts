@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugify } from '../utils/slugify'
+import { seoFields } from '../fields/seoFields'
 
 export const Blogs: CollectionConfig = {
   slug: 'blogs',
@@ -202,6 +203,7 @@ export const Blogs: CollectionConfig = {
         ],
       },
     },
+    seoFields,
   ],
   hooks: {
     beforeValidate: [

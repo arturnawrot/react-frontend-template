@@ -2,7 +2,8 @@ import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
 import config from '@/payload.config'
-import type { Agent, Role, Specialty, ServingLocation } from '@/payload-types'
+import type { Agent, Role, Specialty, ServingLocation, Media } from '@/payload-types'
+import type { Metadata } from 'next'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import AboutAgent from '@/components/AboutAgent/AboutAgent'
 import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
@@ -13,12 +14,52 @@ import type { Page } from '@/payload-types'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
+import { getSeoMetadata } from '@/utils/getSeoMetadata'
 
 // Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
 export const dynamic = 'force-dynamic'
 
 interface AgentPageProps {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: AgentPageProps): Promise<Metadata> {
+  const { slug } = await params
+  const payload = await getPayload({ config })
+
+  const { docs } = await payload.find({
+    collection: 'agents',
+    where: { slug: { equals: slug } },
+    depth: 1,
+    limit: 1,
+  })
+
+  const agent = docs[0] as Agent | undefined
+
+  if (!agent) {
+    return { title: 'Agent Not Found' }
+  }
+
+  const fullName = agent.fullName || `${agent.firstName} ${agent.lastName}`
+  const roles = (agent.roles || [])
+    .map((r) => (typeof r === 'object' && r !== null && 'name' in r ? (r as Role).name : null))
+    .filter(Boolean)
+    .join(', ')
+
+  // Get image URL from agent's card image or background image
+  let imageUrl: string | undefined
+  if (agent.cardImage && typeof agent.cardImage === 'object' && 'url' in agent.cardImage) {
+    imageUrl = (agent.cardImage as Media).url || undefined
+  } else if (agent.backgroundImage && typeof agent.backgroundImage === 'object' && 'url' in agent.backgroundImage) {
+    imageUrl = (agent.backgroundImage as Media).url || undefined
+  }
+
+  return getSeoMetadata({
+    docMeta: agent.meta,
+    fallbackTitle: `${fullName} | Meybohm Real Estate`,
+    fallbackDescription: roles ? `${fullName} - ${roles} at Meybohm Real Estate` : `${fullName} at Meybohm Real Estate`,
+    fallbackImage: imageUrl,
+  })
 }
 
 export default async function AgentPage({ params }: AgentPageProps) {

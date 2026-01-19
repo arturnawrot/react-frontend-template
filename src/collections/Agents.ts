@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugify } from '../utils/slugify'
+import { seoFields } from '../fields/seoFields'
 
 export const Agents: CollectionConfig = {
   slug: 'agents',
@@ -153,6 +154,7 @@ export const Agents: CollectionConfig = {
         description: 'Auto-generated full name',
       },
     },
+    seoFields,
   ],
   hooks: {
     beforeValidate: [

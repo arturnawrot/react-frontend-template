@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     pages: Page;
+    'page-seo': PageSeo;
     'css-styles': CssStyle;
     agents: Agent;
     roles: Role;
@@ -89,6 +90,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    'page-seo': PageSeoSelect<false> | PageSeoSelect<true>;
     'css-styles': CssStylesSelect<false> | CssStylesSelect<true>;
     agents: AgentsSelect<false> | AgentsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
@@ -2539,6 +2541,27 @@ export interface Page {
         blockType: 'footer';
       }
   )[];
+  /**
+   * Search engine optimization settings
+   */
+  meta?: {
+    /**
+     * Title for search engines and browser tabs. Recommended: 50-60 characters.
+     */
+    title?: string | null;
+    /**
+     * Description for search engines. Recommended: 150-160 characters.
+     */
+    description?: string | null;
+    /**
+     * Image for social media sharing (Open Graph / Twitter). Recommended: 1200x630px.
+     */
+    image?: (string | null) | Media;
+    /**
+     * Prevent this page from being indexed by search engines.
+     */
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2581,6 +2604,37 @@ export interface CssStyle {
    * Only active styles will appear in the Container block selector
    */
   active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * SEO metadata for hard-coded pages (routes not managed in the Pages collection)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-seo".
+ */
+export interface PageSeo {
+  id: string;
+  /**
+   * The URL path (e.g., /about, /contact, /agents)
+   */
+  path: string;
+  /**
+   * Page title for search engines and browser tabs
+   */
+  title: string;
+  /**
+   * Meta description for search engines (recommended: 150-160 characters)
+   */
+  description?: string | null;
+  /**
+   * Image for social media sharing (Open Graph)
+   */
+  image?: (string | null) | Media;
+  /**
+   * Prevent search engines from indexing this page
+   */
+  noIndex?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2664,6 +2718,27 @@ export interface Agent {
    * Auto-generated full name
    */
   fullName?: string | null;
+  /**
+   * Search engine optimization settings
+   */
+  meta?: {
+    /**
+     * Title for search engines and browser tabs. Recommended: 50-60 characters.
+     */
+    title?: string | null;
+    /**
+     * Description for search engines. Recommended: 150-160 characters.
+     */
+    description?: string | null;
+    /**
+     * Image for social media sharing (Open Graph / Twitter). Recommended: 1200x630px.
+     */
+    image?: (string | null) | Media;
+    /**
+     * Prevent this page from being indexed by search engines.
+     */
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2802,6 +2877,27 @@ export interface Blog {
    * Full URL to the blog post (read-only, auto-generated)
    */
   url?: string | null;
+  /**
+   * Search engine optimization settings
+   */
+  meta?: {
+    /**
+     * Title for search engines and browser tabs. Recommended: 50-60 characters.
+     */
+    title?: string | null;
+    /**
+     * Description for search engines. Recommended: 150-160 characters.
+     */
+    description?: string | null;
+    /**
+     * Image for social media sharing (Open Graph / Twitter). Recommended: 1200x630px.
+     */
+    image?: (string | null) | Media;
+    /**
+     * Prevent this page from being indexed by search engines.
+     */
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2936,6 +3032,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: string | Page;
+      } | null)
+    | ({
+        relationTo: 'page-seo';
+        value: string | PageSeo;
       } | null)
     | ({
         relationTo: 'css-styles';
@@ -4347,6 +4447,27 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
       };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-seo_select".
+ */
+export interface PageSeoSelect<T extends boolean = true> {
+  path?: T;
+  title?: T;
+  description?: T;
+  image?: T;
+  noIndex?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -4383,6 +4504,14 @@ export interface AgentsSelect<T extends boolean = true> {
   featuredPropertySetName?: T;
   featuredPropertyIds?: T;
   fullName?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -4450,6 +4579,14 @@ export interface BlogsSelect<T extends boolean = true> {
   closeTime?: T;
   status?: T;
   url?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

@@ -10,6 +10,7 @@ import importExportPlugin from 'payload-plugin-import-export'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
+import { PageSEO } from './collections/PageSEO'
 import { CSSStyles } from './collections/CSSStyles'
 import { Agents } from './collections/Agents'
 import { Roles } from './collections/Roles'
@@ -54,7 +55,7 @@ export default buildConfig({
       icons: [{ url: '/favicon.ico' }],
     },
   },
-  collections: [Users, Media, Pages, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
+  collections: [Users, Media, Pages, PageSEO, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
   globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets, AgentCategories, BlogHighlights],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

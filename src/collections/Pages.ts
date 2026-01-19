@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { seoFields } from '../fields/seoFields'
 
 import { Hero } from '../blocks/Hero'
 import { FlippedM } from '../blocks/FlippedM'
@@ -74,6 +75,7 @@ export const Pages: CollectionConfig = {
         Footer,
       ],
     },
+    seoFields,
   ],
   timestamps: true,
 }

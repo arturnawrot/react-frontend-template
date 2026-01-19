@@ -12,8 +12,11 @@ config.autoAddCss = false
 library.add(fas, far, fab)
 
 export const metadata = {
-  description: 'Description',
-  title: 'Title',
+  title: {
+    default: 'Meybohm Real Estate',
+    template: '%s | Meybohm Real Estate',
+  },
+  description: 'Your trusted partner in real estate.',
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
