@@ -75,6 +75,7 @@ export const CACHE_KEYS = {
   PROPERTIES: 'buildout:properties',
   BROKERS: 'buildout:brokers',
   PROPERTY_BY_ID: (id: number) => `buildout:property:${id}`,
+  NEAREST_PROPERTIES: (propertyId: number, limit: number) => `buildout:nearest:${propertyId}:${limit}`,
 } as const
 
 /**

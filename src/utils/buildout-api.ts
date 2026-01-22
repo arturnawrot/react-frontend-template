@@ -672,6 +672,141 @@ async function clearAllRedisCache(): Promise<void> {
 }
 
 // ----------------------------------------------------------------------
+// Distance Utilities
+// ----------------------------------------------------------------------
+
+/**
+ * Calculate distance between two points using the Haversine formula
+ * Returns distance in miles
+ */
+function calculateDistanceMiles(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 3959 // Earth's radius in miles
+  const dLat = ((lat2 - lat1) * Math.PI) / 180
+  const dLon = ((lon2 - lon1) * Math.PI) / 180
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
+}
+
+export interface NearestPropertiesOptions {
+  /** The property to find neighbors for */
+  currentProperty: BuildoutProperty
+  /** Maximum number of properties to return (default: 4) */
+  limit?: number
+  /** Skip cache when fetching properties */
+  skipCache?: boolean
+}
+
+export interface NearestPropertiesResult {
+  properties: BuildoutProperty[]
+  /** Whether we fell back to all types (true) or stayed with same type (false) */
+  usedFallback: boolean
+}
+
+/**
+ * Find nearest properties to a given property.
+ * Prioritizes properties of the same type, falls back to all types if not enough.
+ * Results are cached in Redis.
+ */
+export async function getNearestProperties(
+  options: NearestPropertiesOptions
+): Promise<NearestPropertiesResult> {
+  const { currentProperty, limit = 4, skipCache } = options
+  const { latitude, longitude, property_type_id, id } = currentProperty
+
+  // Check cache first
+  const cacheKey = CACHE_KEYS.NEAREST_PROPERTIES(id, limit)
+  if (!skipCache) {
+    const cached = await getFromRedisCache<NearestPropertiesResult>(cacheKey)
+    if (cached) {
+      return cached
+    }
+  }
+
+  // Fetch all properties (uses its own cache)
+  const allPropertiesResponse = await buildoutApi.getAllProperties({ skipCache })
+  const allProperties = allPropertiesResponse.properties
+
+  // Filter out the current property and properties without valid coordinates
+  const otherProperties = allProperties.filter(
+    (p) =>
+      p.id !== id &&
+      p.latitude !== null &&
+      p.latitude !== undefined &&
+      p.longitude !== null &&
+      p.longitude !== undefined &&
+      // Only include published listings (either sale or lease)
+      ((p.sale && p.sale_listing_published) || (p.lease && p.lease_listing_published))
+  )
+
+  // Add distance to each property
+  const propertiesWithDistance = otherProperties.map((p) => ({
+    property: p,
+    distance: calculateDistanceMiles(latitude, longitude, p.latitude, p.longitude),
+  }))
+
+  // Sort by distance
+  propertiesWithDistance.sort((a, b) => a.distance - b.distance)
+
+  // First, try to get properties of the same type
+  const sameTypeProperties = propertiesWithDistance.filter(
+    (p) => p.property.property_type_id === property_type_id
+  )
+
+  // If we have enough same-type properties, return those
+  if (sameTypeProperties.length >= limit) {
+    const result: NearestPropertiesResult = {
+      properties: sameTypeProperties.slice(0, limit).map((p) => p.property),
+      usedFallback: false,
+    }
+    // Cache the result
+    await setRedisCache(cacheKey, result)
+    return result
+  }
+
+  // If not enough same-type properties, fill with nearest properties of any type
+  // Start with same-type properties, then add from all types (avoiding duplicates)
+  const resultIds = new Set<number>()
+  const resultProperties: BuildoutProperty[] = []
+
+  // Add same-type properties first
+  for (const p of sameTypeProperties) {
+    if (resultProperties.length >= limit) break
+    resultProperties.push(p.property)
+    resultIds.add(p.property.id)
+  }
+
+  // Fill remaining slots with nearest properties of any type
+  for (const p of propertiesWithDistance) {
+    if (resultProperties.length >= limit) break
+    if (!resultIds.has(p.property.id)) {
+      resultProperties.push(p.property)
+      resultIds.add(p.property.id)
+    }
+  }
+
+  const result: NearestPropertiesResult = {
+    properties: resultProperties,
+    usedFallback: sameTypeProperties.length < limit,
+  }
+
+  // Cache the result
+  await setRedisCache(cacheKey, result)
+
+  return result
+}
+
+// ----------------------------------------------------------------------
 // API Client
 // ----------------------------------------------------------------------
 

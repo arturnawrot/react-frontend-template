@@ -6,10 +6,14 @@ import type { Metadata } from 'next'
 import PropertyDetails from '@/components/PropertyDetails/PropertyDetails'
 import Footer from '@/components/Footer/Footer'
 import NavbarWrapper from '@/components/Navbar/NavbarWrapper'
-import { buildoutApi } from '@/utils/buildout-api'
-import type { BuildoutProperty } from '@/utils/buildout-api'
+import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
+import { buildoutApi, getNearestProperties } from '@/utils/buildout-api'
+import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { addressToSlug } from '@/utils/address-slug'
 import { buildSeoMetadata } from '@/utils/getSeoMetadata'
+import { transformPropertyToCard } from '@/utils/property-transform'
+import { getPropertyTypeLabel } from '@/utils/property-types'
+import Container from '@/components/Container/Container'
 
 // Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
 export const dynamic = 'force-dynamic'
@@ -104,6 +108,43 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     }
   }
 
+  // Get nearest properties of the same type (with fallback to all types)
+  const nearestResult = await getNearestProperties({
+    currentProperty: property,
+    limit: 4,
+  })
+
+  // Helper to get agent info from broker
+  const getAgentInfoFromBrokers = (
+    brokerId: number | undefined,
+    allBrokers: BuildoutBroker[]
+  ): { name: string; image: string | null } => {
+    if (!brokerId) return { name: 'Agent', image: null }
+    const broker = allBrokers.find((b) => b.id === brokerId)
+    if (!broker) return { name: 'Agent', image: null }
+    return {
+      name: `${broker.first_name} ${broker.last_name}`,
+      image: broker.profile_photo_url,
+    }
+  }
+
+  // Transform nearby properties for the FeaturedProperties component
+  const nearbyPropertyCards = nearestResult.properties.map((prop) => {
+    const brokerId = prop.broker_id || (prop.broker_ids && prop.broker_ids[0])
+    const { name: agentName, image: agentImage } = getAgentInfoFromBrokers(
+      brokerId,
+      brokers.brokers
+    )
+    return transformPropertyToCard(prop, agentName, agentImage)
+  })
+
+  // Generate heading based on property type
+  const propertyTypeLabel = getPropertyTypeLabel(property.property_type_id)
+  const nearbyHeading = "Explore More Opportunities Nearby";
+  const seeAllLinkText = `See More Listings in ${property.city}, ${property.state}`;
+  const seeAllLink = property.city 
+    ? `/property-search?search=${encodeURIComponent(property.city)}`
+    : '/property-search';
 
   return (
     <>
@@ -115,6 +156,18 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           brokers={propertyBrokers}
           brokerIdToAgentSlug={brokerIdToAgentSlug}
         />
+        {nearbyPropertyCards.length > 0 && (
+          <div className="bg-[#dad6cc] py-30">
+            <Container>
+              <FeaturedProperties
+                properties={nearbyPropertyCards}
+                heading={nearbyHeading}
+                seeAllLink={seeAllLink}
+                seeAllLinkText={seeAllLinkText}
+              />
+            </Container>
+          </div>
+        )}
         <Footer />
     </>
   )
