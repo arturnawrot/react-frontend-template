@@ -252,11 +252,22 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* Block CSS Text */}
+        {/* Footer Logo */}
         <div className="w-full flex justify-center overflow-hidden select-none pointer-events-none">
-             <h1 className="text-[24vw] font-bold text-white opacity-10 leading-[0.75] tracking-tighter m-0 whitespace-nowrap">
-               SAMPLE
-             </h1>
+          {/* Mobile Logo */}
+          <img 
+            src="/svg/meybohm-footer-logo-mobile.svg" 
+            alt="Meybohm" 
+            className="md:hidden w-full max-w-none opacity-10"
+            style={{ filter: 'brightness(0) invert(1)' }}
+          />
+          {/* Desktop Logo */}
+          <img 
+            src="/svg/meybohm-footer-logo.svg" 
+            alt="Meybohm" 
+            className="hidden md:block w-full max-w-none opacity-10"
+            style={{ filter: 'brightness(0) invert(1)' }}
+          />
         </div>
 
       </footer>
