@@ -5,6 +5,7 @@ import PropertyCard from '../PropertyCard/PropertyCard'
 import Arrow from '../Arrow/Arrow'
 import type { PropertyCardData } from '@/utils/property-transform'
 import Container from '@/components/Container/Container'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 type FeaturedPropertiesBlock = Extract<Page['blocks'][number], { blockType: 'featuredProperties' }>
 
@@ -58,7 +59,7 @@ export default function FeaturedProperties({ block, properties, heading, seeAllL
           <p className="text-sm font-semibold tracking-[0.08em] uppercase text-stone-500 mb-2">
             Featured
           </p>
-          <h2 className="text-4xl md:text-5xl font-serif leading-tight">{displayHeading}</h2>
+          <SectionHeading>{displayHeading}</SectionHeading>
         </div>
 
         <Link

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 type CardOnBackgroundBlock = Extract<Page['blocks'][number], { blockType: 'cardOnBackground' }>
 
@@ -84,9 +85,9 @@ export default function CardOnBackground({ block }: CardOnBackgroundProps) {
         {/* White Card */}
         <div className="w-full md:w-[500px] lg:w-[550px] bg-white rounded-2xl md:rounded-3xl p-8 md:p-10 lg:p-12 shadow-xl">
           {/* Heading */}
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#1C2B28] mb-6 leading-tight tracking-tight">
+          <SectionHeading className="mb-6 tracking-tight">
             {heading}
-          </h2>
+          </SectionHeading>
 
           {/* Subheading */}
           {subheading && (

@@ -6,6 +6,7 @@ import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import Container from '@/components/Container/Container'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 type FAQSectionBlock = Extract<Page['blocks'][number], { blockType: 'faqSection' }> & {
   questions?: Array<{
@@ -54,9 +55,9 @@ export default function FAQSection({ block }: FAQSectionProps) {
         {/* LEFT SECTION: Fixed Content (1/3 width) */}
         <div className="lg:col-span-4 flex flex-col z-10">
           <div>
-            <h1 className="text-5xl md:text-6xl font-serif text-white leading-[1.1] mb-8 whitespace-normal">
+            <SectionHeading as="h1" className="text-white mb-8 whitespace-normal leading-[1.1]">
               {heading}
-            </h1>
+            </SectionHeading>
             
             <p className="text-white text-base leading-relaxed mb-8">
               {description}

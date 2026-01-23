@@ -6,6 +6,7 @@ import Arrow from '../Arrow/Arrow'
 import Link from 'next/link'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 type AgentsByCategoryBlock = Extract<Page['blocks'][number], { blockType: 'agentsByCategory' }>
 
@@ -195,9 +196,9 @@ export default function AgentsByCategory({ block }: AgentsByCategoryProps) {
     <section className="w-full bg-[#FAF9F6]">
       {/* Top Header Section */}
       <div className="max-w-[1400px] mx-auto px-6 py-16 md:py-20">
-        <h2 className="font-serif text-4xl md:text-5xl text-[#1C2B28] mb-4">
+        <SectionHeading className="mb-4">
           {heading}
-        </h2>
+        </SectionHeading>
         <p className="text-[#1C2B28] font-medium text-lg max-w-2xl leading-relaxed">
           {description}
         </p>

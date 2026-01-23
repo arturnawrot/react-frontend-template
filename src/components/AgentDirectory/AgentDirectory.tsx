@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Search, ChevronDown } from 'lucide-react'
 import type { Page } from '@/payload-types'
 import AgentCard from '../AgentCard/AgentCard'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 type AgentDirectoryBlock = Extract<Page['blocks'][number], { blockType: 'agentDirectory' }>
 
@@ -192,9 +193,9 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-serif text-[#1C2B28] font-light">
+          <SectionHeading as="h1">
             {heading}
-          </h1>
+          </SectionHeading>
 
           {/* Search and Filter Bar */}
           <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
