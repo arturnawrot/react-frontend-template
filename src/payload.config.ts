@@ -33,6 +33,7 @@ import { FAQSets } from './globals/FAQSets'
 import { AgentCategories } from './globals/AgentCategories'
 import { BlogHighlights } from './globals/BlogHighlights'
 import { AvailableJobSets } from './globals/AvailableJobSets'
+import { OfficeLocationSets } from './globals/OfficeLocationSets'
 import { seedEndpoint } from './endpoints/seed'
 
 const filename = fileURLToPath(import.meta.url)
@@ -57,7 +58,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, PageSEO, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
-  globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets, AgentCategories, BlogHighlights, AvailableJobSets],
+  globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets, AgentCategories, BlogHighlights, AvailableJobSets, OfficeLocationSets],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

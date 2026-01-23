@@ -25,6 +25,7 @@ import BlogHighlightsBlock from '@/components/BlogHighlightsBlock/BlogHighlights
 import LocalRootsSection from '@/components/LocalRootsSection/LocalRootsSection'
 import StatsSection from '@/components/StatsSection/StatsSection'
 import AvailableRoles from '@/components/AvailableRoles/AvailableRoles'
+import OfficeLocations from '@/components/OfficeLocations/OfficeLocations'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
@@ -866,6 +867,56 @@ export async function renderBlock(
     }
 
     return <AvailableRoles key={index} block={{ ...(block as any), jobs }} />
+  }
+  // Handle officeLocations block
+  if ((block as any).blockType === 'officeLocations') {
+    // Fetch locations from the selected set if specified
+    let locations: Array<{
+      image?: any
+      header: string
+      subheader?: string | null
+      office?: string | null
+      fax?: string | null
+      linkText?: string | null
+      linkType?: 'none' | 'page' | 'custom' | null
+      page?: string | { slug?: string; id?: string } | null
+      customUrl?: string | null
+      openInNewTab?: boolean | null
+    }> = []
+
+    const setName = (block as any).officeLocationSetName
+
+    if (setName && payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'officeLocationSets',
+          depth: 2, // Populate image relationships
+        })
+
+        if (global?.sets && Array.isArray(global.sets)) {
+          const set = global.sets.find((s: any) => s.name === setName)
+
+          if (set?.locations && Array.isArray(set.locations)) {
+            locations = set.locations.map((loc: any) => ({
+              image: loc.image || null,
+              header: loc.header || '',
+              subheader: loc.subheader || null,
+              office: loc.office || null,
+              fax: loc.fax || null,
+              linkText: loc.linkText || null,
+              linkType: loc.linkType || null,
+              page: loc.page || null,
+              customUrl: loc.customUrl || null,
+              openInNewTab: loc.openInNewTab || null,
+            }))
+          }
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching office locations from set:', error)
+      }
+    }
+
+    return <OfficeLocations key={index} block={{ ...(block as any), locations }} />
   }
   return null
 }

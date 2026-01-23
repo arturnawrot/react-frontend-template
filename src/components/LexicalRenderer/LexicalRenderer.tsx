@@ -90,27 +90,23 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
         return null
       }
 
-      const headingProps = {
-        key: `heading-${index}`,
-        className: 'font-serif mb-4 mt-8',
-        children,
-      }
+      const key = `heading-${index}`
 
       switch (headingTag) {
         case 1:
-          return <h1 {...headingProps} className="text-4xl font-serif mb-4 mt-8" />
+          return <h1 key={key} className="text-4xl font-serif mb-4 mt-8">{children}</h1>
         case 2:
-          return <h2 {...headingProps} className="text-3xl font-serif mb-4 mt-8" />
+          return <h2 key={key} className="text-3xl font-serif mb-4 mt-8">{children}</h2>
         case 3:
-          return <h3 {...headingProps} className="text-2xl font-serif mb-4 mt-8" />
+          return <h3 key={key} className="text-2xl font-serif mb-4 mt-8">{children}</h3>
         case 4:
-          return <h4 {...headingProps} className="text-xl font-serif mb-4 mt-8" />
+          return <h4 key={key} className="text-xl font-serif mb-4 mt-8">{children}</h4>
         case 5:
-          return <h5 {...headingProps} className="text-lg font-serif mb-4 mt-8" />
+          return <h5 key={key} className="text-lg font-serif mb-4 mt-8">{children}</h5>
         case 6:
-          return <h6 {...headingProps} className="text-base font-serif mb-4 mt-8" />
+          return <h6 key={key} className="text-base font-serif mb-4 mt-8">{children}</h6>
         default:
-          return <h2 {...headingProps} className="text-3xl font-serif mb-4 mt-8" />
+          return <h2 key={key} className="text-3xl font-serif mb-4 mt-8">{children}</h2>
       }
     }
 

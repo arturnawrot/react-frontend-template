@@ -123,6 +123,7 @@ export interface Config {
     agentCategories: AgentCategory;
     blogHighlights: BlogHighlight;
     availableJobSets: AvailableJobSet;
+    officeLocationSets: OfficeLocationSet;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
@@ -138,6 +139,7 @@ export interface Config {
     agentCategories: AgentCategoriesSelect<false> | AgentCategoriesSelect<true>;
     blogHighlights: BlogHighlightsSelect<false> | BlogHighlightsSelect<true>;
     availableJobSets: AvailableJobSetsSelect<false> | AvailableJobSetsSelect<true>;
+    officeLocationSets: OfficeLocationSetsSelect<false> | OfficeLocationSetsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -872,6 +874,19 @@ export interface Page {
                 }
               | {
                   /**
+                   * Select an Office Location set from the global sets. Cards from the selected set will be displayed.
+                   */
+                  officeLocationSetName?: string | null;
+                  /**
+                   * Main heading for the section (uses SectionHeading styling)
+                   */
+                  heading?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'officeLocations';
+                }
+              | {
+                  /**
                    * Add vertical padding (spacing) to this container
                    */
                   includeSpacing?: boolean | null;
@@ -1380,6 +1395,19 @@ export interface Page {
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'availableRoles';
+                          }
+                        | {
+                            /**
+                             * Select an Office Location set from the global sets. Cards from the selected set will be displayed.
+                             */
+                            officeLocationSetName?: string | null;
+                            /**
+                             * Main heading for the section (uses SectionHeading styling)
+                             */
+                            heading?: string | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'officeLocations';
                           }
                         | {
                             /**
@@ -1894,6 +1922,19 @@ export interface Page {
                                     }
                                   | {
                                       /**
+                                       * Select an Office Location set from the global sets. Cards from the selected set will be displayed.
+                                       */
+                                      officeLocationSetName?: string | null;
+                                      /**
+                                       * Main heading for the section (uses SectionHeading styling)
+                                       */
+                                      heading?: string | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'officeLocations';
+                                    }
+                                  | {
+                                      /**
                                        * Add vertical padding (spacing) to this container
                                        */
                                       includeSpacing?: boolean | null;
@@ -2403,6 +2444,19 @@ export interface Page {
                                                 blockName?: string | null;
                                                 blockType: 'availableRoles';
                                               }
+                                            | {
+                                                /**
+                                                 * Select an Office Location set from the global sets. Cards from the selected set will be displayed.
+                                                 */
+                                                officeLocationSetName?: string | null;
+                                                /**
+                                                 * Main heading for the section (uses SectionHeading styling)
+                                                 */
+                                                heading?: string | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'officeLocations';
+                                              }
                                           )[]
                                         | null;
                                       id?: string | null;
@@ -2851,6 +2905,19 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'availableRoles';
+      }
+    | {
+        /**
+         * Select an Office Location set from the global sets. Cards from the selected set will be displayed.
+         */
+        officeLocationSetName?: string | null;
+        /**
+         * Main heading for the section (uses SectionHeading styling)
+         */
+        heading?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'officeLocations';
       }
   )[];
   /**
@@ -3825,6 +3892,14 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    officeLocations?:
+                      | T
+                      | {
+                          officeLocationSetName?: T;
+                          heading?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
                     container?:
                       | T
                       | {
@@ -4108,6 +4183,14 @@ export interface PagesSelect<T extends boolean = true> {
                                   | T
                                   | {
                                       availableJobSetName?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                officeLocations?:
+                                  | T
+                                  | {
+                                      officeLocationSetName?: T;
+                                      heading?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -4397,6 +4480,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            officeLocations?:
+                                              | T
+                                              | {
+                                                  officeLocationSetName?: T;
+                                                  heading?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             container?:
                                               | T
                                               | {
@@ -4683,6 +4774,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                               id?: T;
                                                               blockName?: T;
                                                             };
+                                                        officeLocations?:
+                                                          | T
+                                                          | {
+                                                              officeLocationSetName?: T;
+                                                              heading?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
                                                       };
                                                   id?: T;
                                                   blockName?: T;
@@ -4954,6 +5053,14 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               availableJobSetName?: T;
+              id?: T;
+              blockName?: T;
+            };
+        officeLocations?:
+          | T
+          | {
+              officeLocationSetName?: T;
+              heading?: T;
               id?: T;
               blockName?: T;
             };
@@ -5694,6 +5801,68 @@ export interface AvailableJobSet {
   createdAt?: string | null;
 }
 /**
+ * Create and manage sets of office location cards. Each set can contain multiple office locations and can be assigned to Office Locations section blocks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "officeLocationSets".
+ */
+export interface OfficeLocationSet {
+  id: string;
+  sets?:
+    | {
+        /**
+         * A unique name for this set (e.g., "Homepage Offices", "Contact Page Offices")
+         */
+        name: string;
+        locations?:
+          | {
+              /**
+               * Background image for the office location card
+               */
+              image: string | Media;
+              /**
+               * Office location header (e.g., "Augusta, GA") - will be displayed using SectionHeader styling
+               */
+              header: string;
+              /**
+               * Address or additional info (e.g., "3519 Wheeler Road, Augusta, GA 30909")
+               */
+              subheader?: string | null;
+              /**
+               * Office phone number (e.g., "706.736.0700")
+               */
+              office?: string | null;
+              /**
+               * Fax number (e.g., "706.736.5363")
+               */
+              fax?: string | null;
+              linkText?: string | null;
+              /**
+               * Choose whether to link to an existing page, a custom URL, or no link
+               */
+              linkType?: ('none' | 'page' | 'custom') | null;
+              /**
+               * Select a page to link to
+               */
+              page?: (string | null) | Page;
+              /**
+               * Enter a custom URL (e.g., /contact, https://example.com)
+               */
+              customUrl?: string | null;
+              /**
+               * Open the link in a new browser tab
+               */
+              openInNewTab?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar_select".
  */
@@ -5994,6 +6163,36 @@ export interface AvailableJobSetsSelect<T extends boolean = true> {
     | {
         name?: T;
         jobs?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "officeLocationSets_select".
+ */
+export interface OfficeLocationSetsSelect<T extends boolean = true> {
+  sets?:
+    | T
+    | {
+        name?: T;
+        locations?:
+          | T
+          | {
+              image?: T;
+              header?: T;
+              subheader?: T;
+              office?: T;
+              fax?: T;
+              linkText?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              openInNewTab?: T;
+              id?: T;
+            };
         id?: T;
       };
   updatedAt?: T;
