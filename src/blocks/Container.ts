@@ -17,6 +17,7 @@ import { CTAFooter } from './CTAFooter'
 import { CardOnBackground } from './CardOnBackground'
 import { Footer } from './Footer'
 import { BlogHighlightsBlock } from './BlogHighlightsBlock'
+import { LocalRootsSection } from './LocalRootsSection'
 
 /**
  * Creates a Container block with nested container support
@@ -43,6 +44,7 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
     CardOnBackground,
     Footer,
     BlogHighlightsBlock,
+    LocalRootsSection,
   ]
 
   // Add nested Container if we haven't reached max depth

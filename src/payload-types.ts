@@ -817,6 +817,29 @@ export interface Page {
                 }
               | {
                   /**
+                   * Choose color scheme - dark for black text, light for white text
+                   */
+                  variant?: ('dark' | 'light') | null;
+                  heading: string;
+                  items?:
+                    | {
+                        /**
+                         * Main text for the item
+                         */
+                        title: string;
+                        /**
+                         * Optional secondary text/description
+                         */
+                        description?: string | null;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'localRootsSection';
+                }
+              | {
+                  /**
                    * Add vertical padding (spacing) to this container
                    */
                   includeSpacing?: boolean | null;
@@ -1272,6 +1295,29 @@ export interface Page {
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'blogHighlightsBlock';
+                          }
+                        | {
+                            /**
+                             * Choose color scheme - dark for black text, light for white text
+                             */
+                            variant?: ('dark' | 'light') | null;
+                            heading: string;
+                            items?:
+                              | {
+                                  /**
+                                   * Main text for the item
+                                   */
+                                  title: string;
+                                  /**
+                                   * Optional secondary text/description
+                                   */
+                                  description?: string | null;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'localRootsSection';
                           }
                         | {
                             /**
@@ -1733,6 +1779,29 @@ export interface Page {
                                     }
                                   | {
                                       /**
+                                       * Choose color scheme - dark for black text, light for white text
+                                       */
+                                      variant?: ('dark' | 'light') | null;
+                                      heading: string;
+                                      items?:
+                                        | {
+                                            /**
+                                             * Main text for the item
+                                             */
+                                            title: string;
+                                            /**
+                                             * Optional secondary text/description
+                                             */
+                                            description?: string | null;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'localRootsSection';
+                                    }
+                                  | {
+                                      /**
                                        * Add vertical padding (spacing) to this container
                                        */
                                       includeSpacing?: boolean | null;
@@ -2189,6 +2258,29 @@ export interface Page {
                                                 blockName?: string | null;
                                                 blockType: 'blogHighlightsBlock';
                                               }
+                                            | {
+                                                /**
+                                                 * Choose color scheme - dark for black text, light for white text
+                                                 */
+                                                variant?: ('dark' | 'light') | null;
+                                                heading: string;
+                                                items?:
+                                                  | {
+                                                      /**
+                                                       * Main text for the item
+                                                       */
+                                                      title: string;
+                                                      /**
+                                                       * Optional secondary text/description
+                                                       */
+                                                      description?: string | null;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'localRootsSection';
+                                              }
                                           )[]
                                         | null;
                                       id?: string | null;
@@ -2564,6 +2656,29 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'blogHighlightsBlock';
+      }
+    | {
+        /**
+         * Choose color scheme - dark for black text, light for white text
+         */
+        variant?: ('dark' | 'light') | null;
+        heading: string;
+        items?:
+          | {
+              /**
+               * Main text for the item
+               */
+              title: string;
+              /**
+               * Optional secondary text/description
+               */
+              description?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'localRootsSection';
       }
   )[];
   /**
@@ -3507,6 +3622,21 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    localRootsSection?:
+                      | T
+                      | {
+                          variant?: T;
+                          heading?: T;
+                          items?:
+                            | T
+                            | {
+                                title?: T;
+                                description?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
                     container?:
                       | T
                       | {
@@ -3759,6 +3889,21 @@ export interface PagesSelect<T extends boolean = true> {
                                 blogHighlightsBlock?:
                                   | T
                                   | {
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                localRootsSection?:
+                                  | T
+                                  | {
+                                      variant?: T;
+                                      heading?: T;
+                                      items?:
+                                        | T
+                                        | {
+                                            title?: T;
+                                            description?: T;
+                                            id?: T;
+                                          };
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -4017,6 +4162,21 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            localRootsSection?:
+                                              | T
+                                              | {
+                                                  variant?: T;
+                                                  heading?: T;
+                                                  items?:
+                                                    | T
+                                                    | {
+                                                        title?: T;
+                                                        description?: T;
+                                                        id?: T;
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             container?:
                                               | T
                                               | {
@@ -4272,6 +4432,21 @@ export interface PagesSelect<T extends boolean = true> {
                                                               id?: T;
                                                               blockName?: T;
                                                             };
+                                                        localRootsSection?:
+                                                          | T
+                                                          | {
+                                                              variant?: T;
+                                                              heading?: T;
+                                                              items?:
+                                                                | T
+                                                                | {
+                                                                    title?: T;
+                                                                    description?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
                                                       };
                                                   id?: T;
                                                   blockName?: T;
@@ -4498,6 +4673,21 @@ export interface PagesSelect<T extends boolean = true> {
         blogHighlightsBlock?:
           | T
           | {
+              id?: T;
+              blockName?: T;
+            };
+        localRootsSection?:
+          | T
+          | {
+              variant?: T;
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };

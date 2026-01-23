@@ -22,6 +22,7 @@ import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import CardOnBackground from '@/components/CardOnBackground/CardOnBackground'
 import Footer from '@/components/Footer/Footer'
 import BlogHighlightsBlock from '@/components/BlogHighlightsBlock/BlogHighlightsBlock'
+import LocalRootsSection from '@/components/LocalRootsSection/LocalRootsSection'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
@@ -799,6 +800,9 @@ export async function renderBlock(
       console.error('[renderBlocks] Error fetching BlogHighlights data:', error)
       return null
     }
+  }
+  if (block.blockType === 'localRootsSection') {
+    return <LocalRootsSection key={index} block={block} />
   }
   return null
 }
