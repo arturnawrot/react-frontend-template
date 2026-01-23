@@ -9,6 +9,25 @@ export const CardSection: Block = {
   },
   fields: [
     {
+      name: 'variant',
+      type: 'select',
+      label: 'Variant',
+      defaultValue: 'icons',
+      options: [
+        {
+          label: 'With Icons (3 per row)',
+          value: 'icons',
+        },
+        {
+          label: 'With Bullet Points (4 per row)',
+          value: 'bulletPoints',
+        },
+      ],
+      admin: {
+        description: 'Choose between icon cards (3 per row) or bullet point cards (4 per row)',
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       label: 'Title',
@@ -64,10 +83,12 @@ export const CardSection: Block = {
         {
           name: 'icon',
           type: 'text',
-          required: true,
           label: 'Icon',
           admin: {
-            description: 'FontAwesome icon class (e.g., "fa-regular fa-handshake")',
+            description: 'FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.',
+            condition: (data, siblingData, { blockData }) => {
+              return (blockData as any)?.variant !== 'bulletPoints'
+            },
           },
         },
         {

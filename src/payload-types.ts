@@ -509,6 +509,10 @@ export interface Page {
                   blockType: 'flippedM';
                 }
               | {
+                  /**
+                   * Choose between icon cards (3 per row) or bullet point cards (4 per row)
+                   */
+                  variant?: ('icons' | 'bulletPoints') | null;
                   title?: string | null;
                   description?: string | null;
                   buttonText?: string | null;
@@ -535,9 +539,9 @@ export interface Page {
                   cards: {
                     title: string;
                     /**
-                     * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+                     * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
                      */
-                    icon: string;
+                    icon?: string | null;
                     description: string;
                     id?: string | null;
                   }[];
@@ -1016,6 +1020,10 @@ export interface Page {
                             blockType: 'flippedM';
                           }
                         | {
+                            /**
+                             * Choose between icon cards (3 per row) or bullet point cards (4 per row)
+                             */
+                            variant?: ('icons' | 'bulletPoints') | null;
                             title?: string | null;
                             description?: string | null;
                             buttonText?: string | null;
@@ -1042,9 +1050,9 @@ export interface Page {
                             cards: {
                               title: string;
                               /**
-                               * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+                               * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
                                */
-                              icon: string;
+                              icon?: string | null;
                               description: string;
                               id?: string | null;
                             }[];
@@ -1523,6 +1531,10 @@ export interface Page {
                                       blockType: 'flippedM';
                                     }
                                   | {
+                                      /**
+                                       * Choose between icon cards (3 per row) or bullet point cards (4 per row)
+                                       */
+                                      variant?: ('icons' | 'bulletPoints') | null;
                                       title?: string | null;
                                       description?: string | null;
                                       buttonText?: string | null;
@@ -1549,9 +1561,9 @@ export interface Page {
                                       cards: {
                                         title: string;
                                         /**
-                                         * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+                                         * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
                                          */
-                                        icon: string;
+                                        icon?: string | null;
                                         description: string;
                                         id?: string | null;
                                       }[];
@@ -2030,6 +2042,10 @@ export interface Page {
                                                 blockType: 'flippedM';
                                               }
                                             | {
+                                                /**
+                                                 * Choose between icon cards (3 per row) or bullet point cards (4 per row)
+                                                 */
+                                                variant?: ('icons' | 'bulletPoints') | null;
                                                 title?: string | null;
                                                 description?: string | null;
                                                 buttonText?: string | null;
@@ -2056,9 +2072,9 @@ export interface Page {
                                                 cards: {
                                                   title: string;
                                                   /**
-                                                   * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+                                                   * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
                                                    */
-                                                  icon: string;
+                                                  icon?: string | null;
                                                   description: string;
                                                   id?: string | null;
                                                 }[];
@@ -2412,6 +2428,10 @@ export interface Page {
         blockType: 'container';
       }
     | {
+        /**
+         * Choose between icon cards (3 per row) or bullet point cards (4 per row)
+         */
+        variant?: ('icons' | 'bulletPoints') | null;
         title?: string | null;
         description?: string | null;
         buttonText?: string | null;
@@ -2438,9 +2458,9 @@ export interface Page {
         cards: {
           title: string;
           /**
-           * FontAwesome icon class (e.g., "fa-regular fa-handshake")
+           * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
            */
-          icon: string;
+          icon?: string | null;
           description: string;
           id?: string | null;
         }[];
@@ -3592,6 +3612,7 @@ export interface PagesSelect<T extends boolean = true> {
                     cardSection?:
                       | T
                       | {
+                          variant?: T;
                           title?: T;
                           description?: T;
                           buttonText?: T;
@@ -3877,6 +3898,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 cardSection?:
                                   | T
                                   | {
+                                      variant?: T;
                                       title?: T;
                                       description?: T;
                                       buttonText?: T;
@@ -4162,6 +4184,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             cardSection?:
                                               | T
                                               | {
+                                                  variant?: T;
                                                   title?: T;
                                                   description?: T;
                                                   buttonText?: T;
@@ -4447,6 +4470,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                         cardSection?:
                                                           | T
                                                           | {
+                                                              variant?: T;
                                                               title?: T;
                                                               description?: T;
                                                               buttonText?: T;
@@ -4678,6 +4702,7 @@ export interface PagesSelect<T extends boolean = true> {
         cardSection?:
           | T
           | {
+              variant?: T;
               title?: T;
               description?: T;
               buttonText?: T;

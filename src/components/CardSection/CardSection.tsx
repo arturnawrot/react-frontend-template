@@ -53,6 +53,7 @@ function parseIconString(iconString: string): IconProp | null {
 }
 
 export default function CardSection({ block }: CardSectionProps) {
+  const variant = (block as any).variant || 'icons'
   const title = block.title || 'Relationships Built for the Long Game'
   const description = block.description || ''
   const buttonText = block.buttonText
@@ -61,32 +62,44 @@ export default function CardSection({ block }: CardSectionProps) {
   const cards = block.cards || []
   const cardTextAlign = block.cardTextAlign || 'left'
 
+  const isBulletPointsVariant = variant === 'bulletPoints'
+
   return (
     <Container className="relative z-10">
       <div className="bg-white rounded-4xl border border-gray-100 shadow-md shadow-black/20 py-20 px-15">
         <div className="text-center">
           <SectionHeading align="center">{title}</SectionHeading>
-          <p className="description my-10">{description}</p>
+          {description && <p className="description my-10">{description}</p>}
         </div>
 
-        <div className="flex flex-wrap justify-center gap-12">
+        <div className={`flex flex-wrap justify-center ${isBulletPointsVariant ? 'gap-8' : 'gap-12'}`}>
           {cards.map((card, index) => {
-            const iconArray = parseIconString(card.icon)
+            const iconArray = !isBulletPointsVariant && card.icon ? parseIconString(card.icon) : null
             const textAlignClass = 
               cardTextAlign === 'center' ? 'text-center' :
               cardTextAlign === 'right' ? 'text-right' :
               'text-left'
+            
+            // Width classes based on variant
+            const widthClass = isBulletPointsVariant 
+              ? 'w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]' 
+              : 'w-full md:w-[30%] md:max-w-[400px]'
+
             return (
-              <div key={index} className={`${textAlignClass} w-full md:w-[30%] md:max-w-[400px]`}>
-                <span className={styles.cardColumnIcon}>
-                  {iconArray ? (
-                    <FontAwesomeIcon icon={iconArray} />
-                  ) : (
-                    <i className={card.icon} />
-                  )}
-                </span>
-                <h3 className={`${styles.cardColumnTitle} mt-5`}>{card.title}</h3>
-                <p className={`${styles.cardColumnDescription} mt-5`}>{card.description}</p>
+              <div key={index} className={`${textAlignClass} ${widthClass}`}>
+                {isBulletPointsVariant ? (
+                  <span className={styles.bulletPoint} />
+                ) : (
+                  <span className={styles.cardColumnIcon}>
+                    {iconArray ? (
+                      <FontAwesomeIcon icon={iconArray} />
+                    ) : (
+                      card.icon && <i className={card.icon} />
+                    )}
+                  </span>
+                )}
+                <h3 className={`${isBulletPointsVariant ? styles.bulletPointTitle : styles.cardColumnTitle} mt-5`}>{card.title}</h3>
+                <p className={`${isBulletPointsVariant ? styles.bulletPointDescription : styles.cardColumnDescription} mt-5`}>{card.description}</p>
               </div>
             )
           })}
