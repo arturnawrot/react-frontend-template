@@ -23,6 +23,8 @@ import { CardOnBackground } from '../blocks/CardOnBackground'
 import { Footer } from '../blocks/Footer'
 import { BlogHighlightsBlock } from '../blocks/BlogHighlightsBlock'
 import { LocalRootsSection } from '../blocks/LocalRootsSection'
+import { StatsSection } from '../blocks/StatsSection'
+import { AvailableRoles } from '../blocks/AvailableRoles'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -77,6 +79,8 @@ export const Pages: CollectionConfig = {
         Footer,
         BlogHighlightsBlock,
         LocalRootsSection,
+        StatsSection,
+        AvailableRoles,
       ],
     },
     seoFields,

@@ -47,7 +47,8 @@ export default async function PayloadContainer({ block, payload }: ContainerProp
   const { cssClasses, cssCode } = getCSSStyles(block.cssStyles)
   const combinedClasses = cssClasses.length > 0 ? cssClasses.join(' ') : undefined
 
-  const blocks = await renderBlocks(block.blocks, payload)
+  // Cast to any to handle nested container blocks (like availableRoles) which have different types
+  const blocks = await renderBlocks(block.blocks as any, payload)
 
   // Apply spacing if enabled (vertical padding similar to other sections)
   const spacingClass = block.includeSpacing ? 'py-12 md:py-20' : ''

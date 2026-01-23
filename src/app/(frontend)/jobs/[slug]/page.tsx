@@ -81,23 +81,15 @@ export default async function JobPage({ params }: JobPageProps) {
                     <span className="text-gray-900 font-sans font-medium">{job.reportsTo}</span>
                   </div>
                 )}
+                {/* Custom Fields - inline with other job details */}
+                {job.customFields && Array.isArray(job.customFields) && job.customFields.map((field, index) => (
+                  <div key={index} className="flex justify-between items-center border-b border-gray-200 pb-2">
+                    <span className="text-gray-600 font-sans">{field.label}:</span>
+                    <span className="text-gray-900 font-sans font-medium">{field.value}</span>
+                  </div>
+                ))}
               </div>
             </section>
-
-            {/* Custom Fields */}
-            {job.customFields && Array.isArray(job.customFields) && job.customFields.length > 0 && (
-              <section>
-                <h2 className="text-2xl font-serif text-[#1C2F29] mb-4">Additional Details</h2>
-                <div className="space-y-3">
-                  {job.customFields.map((field, index) => (
-                    <div key={index} className="flex justify-between items-center border-b border-gray-200 pb-2">
-                      <span className="text-gray-600 font-sans">{field.label}:</span>
-                      <span className="text-gray-900 font-sans font-medium">{field.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
 
             {/* Job Description */}
             <section>

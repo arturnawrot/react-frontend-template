@@ -57,17 +57,27 @@ const AgentCard = ({ src, alt, className }: { src: string; alt: string; classNam
 
 export default function AgentDecoration({ block }: AgentDecorationProps) {
   const heading = block.heading || 'Find the Right\nPartner for Your\nProperty Goals'
-  const buttonText = block.buttonText || 'Browse All Agents'
+  const buttonText = block.buttonText
   const linkHref = resolveLinkUrl(block as any)
   const openInNewTab = shouldOpenInNewTab(block as any)
+  const variant = (block as any).variant || 'full'
+  const description = (block as any).description
+  const bulletPoints = (block as any).bulletPoints || []
+  const isCompact = variant === 'compact'
   
   // Split heading by \n for line breaks
   const headingLines = heading.split('\\n')
   
   const allAgents = block.agents || []
   
-  // Use up to 8 agents for the decorative layout
-  const agents = allAgents.slice(0, 8)
+  // Use fewer agents for compact variant
+  const maxAgents = isCompact ? 5 : 8
+  const agents = allAgents.slice(0, maxAgents)
+
+  // Split bullet points into 2 columns
+  const midPoint = Math.ceil(bulletPoints.length / 2)
+  const leftBullets = bulletPoints.slice(0, midPoint)
+  const rightBullets = bulletPoints.slice(midPoint)
 
   return (
     <section className="relative w-full overflow-hidden bg-white py-16 lg:py-24">
@@ -75,20 +85,60 @@ export default function AgentDecoration({ block }: AgentDecorationProps) {
       <div className="flex flex-col items-center justify-center relative w-full z-10">
         
         {/* --- Text & Button Section --- */}
-        <div className="flex flex-col items-center text-center px-6 mx-auto mb-12 lg:mb-0 
-                        max-w-lg xl:max-w-3xl transition-all duration-300">
+        <div className={`flex flex-col items-center text-center px-6 mx-auto mb-12 lg:mb-0 
+                        transition-all duration-300 ${isCompact ? 'max-w-2xl xl:max-w-4xl' : 'max-w-lg xl:max-w-3xl'}`}>
           
-          <SectionHeading align="center" className="mb-8 tracking-tight">
-            {headingLines.map((line, index) => (
-              <React.Fragment key={index}>
-                {line}
-                {index < headingLines.length - 1 && <br />}
-              </React.Fragment>
-            ))}
-          </SectionHeading>
+          {isCompact ? (
+            <h2 className="font-serif italic text-3xl md:text-4xl lg:text-5xl text-[#1E3A2F] mb-6 tracking-tight">
+              {headingLines.map((line, index) => (
+                <React.Fragment key={index}>
+                  {line}
+                  {index < headingLines.length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            </h2>
+          ) : (
+            <SectionHeading align="center" className="mb-8 tracking-tight">
+              {headingLines.map((line, index) => (
+                <React.Fragment key={index}>
+                  {line}
+                  {index < headingLines.length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            </SectionHeading>
+          )}
+
+          {/* Description (compact variant) */}
+          {isCompact && description && (
+            <p className="text-[#1E3A2F] text-base md:text-lg leading-relaxed mb-8 max-w-2xl">
+              {description}
+            </p>
+          )}
+
+          {/* Bullet Points (compact variant) */}
+          {isCompact && bulletPoints.length > 0 && (
+            <div className="flex flex-col md:flex-row gap-4 md:gap-12 text-left">
+              <ul className="space-y-2">
+                {leftBullets.map((bullet: { text: string; id?: string }, idx: number) => (
+                  <li key={bullet.id || idx} className="flex items-start gap-2 text-[#1E3A2F]">
+                    <span className="text-[#1E3A2F] mt-1.5">•</span>
+                    <span className="text-sm md:text-base">{bullet.text}</span>
+                  </li>
+                ))}
+              </ul>
+              <ul className="space-y-2">
+                {rightBullets.map((bullet: { text: string; id?: string }, idx: number) => (
+                  <li key={bullet.id || idx} className="flex items-start gap-2 text-[#1E3A2F]">
+                    <span className="text-[#1E3A2F] mt-1.5">•</span>
+                    <span className="text-sm md:text-base">{bullet.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           
           {buttonText && linkHref && (
-            <div>
+            <div className={isCompact ? 'mt-8' : ''}>
               {(() => {
                 const isInternal = isInternalLink(linkHref) && !openInNewTab
                 const LinkComponent = isInternal ? Link : 'a'
@@ -118,7 +168,7 @@ export default function AgentDecoration({ block }: AgentDecorationProps) {
           <>
             <div className="flex lg:hidden flex-col gap-4 w-full mt-4">
               <div className="flex justify-center gap-4 min-w-[120%] -ml-[10%]">
-                {agents.slice(0, 5).map((agent) => (
+                {agents.slice(0, isCompact ? 3 : 5).map((agent) => (
                   <AgentCard 
                     key={agent.id} 
                     src={getImageUrl(agent.cardImage)} 
@@ -127,7 +177,7 @@ export default function AgentDecoration({ block }: AgentDecorationProps) {
                 ))}
               </div>
               <div className="flex justify-center gap-4">
-                {agents.slice(2, 6).map((agent) => (
+                {agents.slice(isCompact ? 2 : 2, isCompact ? 5 : 6).map((agent) => (
                   <AgentCard 
                     key={agent.id} 
                     src={getImageUrl(agent.cardImage)} 
@@ -140,8 +190,8 @@ export default function AgentDecoration({ block }: AgentDecorationProps) {
             {/* --- DESKTOP: Left Side Images --- */}
             <div className="hidden lg:flex flex-col gap-6 absolute left-0 top-1/2 -translate-y-1/2 
                             xl:left-[-5%] 2xl:left-0 transition-all duration-300">
-              <div className="flex gap-2 translate-x-[-40px]">
-                {agents.slice(0, 3).map((agent) => (
+              <div className={`flex gap-2 ${isCompact ? 'translate-x-[-60px]' : 'translate-x-[-40px]'}`}>
+                {agents.slice(0, isCompact ? 2 : 3).map((agent) => (
                   <AgentCard 
                     key={agent.id} 
                     src={getImageUrl(agent.cardImage)} 
@@ -149,8 +199,8 @@ export default function AgentDecoration({ block }: AgentDecorationProps) {
                   />
                 ))}
               </div>
-              <div className="flex gap-2 translate-x-[-80px]">
-                {agents.slice(2, 6).map((agent) => (
+              <div className={`flex gap-2 ${isCompact ? 'translate-x-[-100px]' : 'translate-x-[-80px]'}`}>
+                {agents.slice(isCompact ? 1 : 2, isCompact ? 4 : 6).map((agent) => (
                   <AgentCard 
                     key={agent.id} 
                     src={getImageUrl(agent.cardImage)} 
@@ -163,8 +213,8 @@ export default function AgentDecoration({ block }: AgentDecorationProps) {
             {/* --- DESKTOP: Right Side Images --- */}
             <div className="hidden lg:flex flex-col gap-6 absolute right-0 top-1/2 -translate-y-1/2 
                             xl:right-[-5%] 2xl:right-0 transition-all duration-300">
-              <div className="flex gap-2 translate-x-[170px]">
-                {agents.slice(2, 5).map((agent) => (
+              <div className={`flex gap-2 ${isCompact ? 'translate-x-[90px]' : 'translate-x-[170px]'}`}>
+                {agents.slice(isCompact ? 2 : 2, isCompact ? 4 : 5).map((agent) => (
                   <AgentCard 
                     key={agent.id} 
                     src={getImageUrl(agent.cardImage)} 
@@ -172,8 +222,8 @@ export default function AgentDecoration({ block }: AgentDecorationProps) {
                   />
                 ))}
               </div>
-              <div className="flex gap-2 translate-x-[80px]">
-                {agents.slice(4, 8).map((agent) => (
+              <div className={`flex gap-2 ${isCompact ? 'translate-x-[20px]' : 'translate-x-[80px]'}`}>
+                {agents.slice(isCompact ? 3 : 4, isCompact ? 5 : 8).map((agent) => (
                   <AgentCard 
                     key={agent.id} 
                     src={getImageUrl(agent.cardImage)} 

@@ -23,6 +23,8 @@ import CardOnBackground from '@/components/CardOnBackground/CardOnBackground'
 import Footer from '@/components/Footer/Footer'
 import BlogHighlightsBlock from '@/components/BlogHighlightsBlock/BlogHighlightsBlock'
 import LocalRootsSection from '@/components/LocalRootsSection/LocalRootsSection'
+import StatsSection from '@/components/StatsSection/StatsSection'
+import AvailableRoles from '@/components/AvailableRoles/AvailableRoles'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
@@ -803,6 +805,67 @@ export async function renderBlock(
   }
   if (block.blockType === 'localRootsSection') {
     return <LocalRootsSection key={index} block={block} />
+  }
+  if (block.blockType === 'statsSection') {
+    return <StatsSection key={index} block={block} />
+  }
+  // Handle availableRoles block (only available in containers, not at page level)
+  // Cast to any first since TypeScript narrows to never for non-page-level blocks
+  if ((block as any).blockType === 'availableRoles') {
+    // Fetch jobs from the selected set if specified
+    let jobs: Array<{
+      id: string
+      title: string
+      slug?: string
+      department?: string
+      location?: string
+      employmentType?: string
+      reportsTo?: string
+      jobDescription?: any
+      applyUrl?: string
+    }> = []
+
+    const setName = (block as any).availableJobSetName
+
+    if (setName && payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'availableJobSets',
+          depth: 2, // Populate job relationships
+        })
+
+        if (global?.sets && Array.isArray(global.sets)) {
+          const set = global.sets.find((s: any) => s.name === setName)
+
+          if (set?.jobs && Array.isArray(set.jobs)) {
+            jobs = set.jobs
+              .map((job: any) => {
+                // If it's just an ID string, skip it
+                if (typeof job === 'string') {
+                  return null
+                }
+
+                return {
+                  id: job.id,
+                  title: job.title || '',
+                  slug: job.slug || undefined,
+                  department: job.department || undefined,
+                  location: job.location || undefined,
+                  employmentType: job.employmentType || undefined,
+                  reportsTo: job.reportsTo || undefined,
+                  jobDescription: job.jobDescription || undefined,
+                  applyUrl: job.applyUrl || undefined,
+                }
+              })
+              .filter((job: any): job is NonNullable<typeof job> => job !== null)
+          }
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching available jobs from set:', error)
+      }
+    }
+
+    return <AvailableRoles key={index} block={{ ...(block as any), jobs }} />
   }
   return null
 }

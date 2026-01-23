@@ -122,6 +122,7 @@ export interface Config {
     faqSets: FaqSet;
     agentCategories: AgentCategory;
     blogHighlights: BlogHighlight;
+    availableJobSets: AvailableJobSet;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
@@ -136,6 +137,7 @@ export interface Config {
     faqSets: FaqSetsSelect<false> | FaqSetsSelect<true>;
     agentCategories: AgentCategoriesSelect<false> | AgentCategoriesSelect<true>;
     blogHighlights: BlogHighlightsSelect<false> | BlogHighlightsSelect<true>;
+    availableJobSets: AvailableJobSetsSelect<false> | AvailableJobSetsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -715,6 +717,10 @@ export interface Page {
                 }
               | {
                   /**
+                   * Choose layout variant
+                   */
+                  variant?: ('full' | 'compact') | null;
+                  /**
                    * Select an agent icons set from the global sets to display in the decorative layout.
                    */
                   agentIconsSetName?: string | null;
@@ -722,7 +728,20 @@ export interface Page {
                    * Main heading text. Use \n for line breaks.
                    */
                   heading: string;
-                  buttonText: string;
+                  /**
+                   * Optional description text below the heading (used in compact variant)
+                   */
+                  description?: string | null;
+                  /**
+                   * Bullet points displayed in 2 columns (used in compact variant)
+                   */
+                  bulletPoints?:
+                    | {
+                        text: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  buttonText?: string | null;
                   /**
                    * Choose whether to link to an existing page, a custom URL, or no link
                    */
@@ -837,6 +856,15 @@ export interface Page {
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'localRootsSection';
+                }
+              | {
+                  /**
+                   * Select a job set from the global sets. Jobs from the selected set will be displayed.
+                   */
+                  availableJobSetName?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'availableRoles';
                 }
               | {
                   /**
@@ -1196,6 +1224,10 @@ export interface Page {
                           }
                         | {
                             /**
+                             * Choose layout variant
+                             */
+                            variant?: ('full' | 'compact') | null;
+                            /**
                              * Select an agent icons set from the global sets to display in the decorative layout.
                              */
                             agentIconsSetName?: string | null;
@@ -1203,7 +1235,20 @@ export interface Page {
                              * Main heading text. Use \n for line breaks.
                              */
                             heading: string;
-                            buttonText: string;
+                            /**
+                             * Optional description text below the heading (used in compact variant)
+                             */
+                            description?: string | null;
+                            /**
+                             * Bullet points displayed in 2 columns (used in compact variant)
+                             */
+                            bulletPoints?:
+                              | {
+                                  text: string;
+                                  id?: string | null;
+                                }[]
+                              | null;
+                            buttonText?: string | null;
                             /**
                              * Choose whether to link to an existing page, a custom URL, or no link
                              */
@@ -1318,6 +1363,15 @@ export interface Page {
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'localRootsSection';
+                          }
+                        | {
+                            /**
+                             * Select a job set from the global sets. Jobs from the selected set will be displayed.
+                             */
+                            availableJobSetName?: string | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'availableRoles';
                           }
                         | {
                             /**
@@ -1677,6 +1731,10 @@ export interface Page {
                                     }
                                   | {
                                       /**
+                                       * Choose layout variant
+                                       */
+                                      variant?: ('full' | 'compact') | null;
+                                      /**
                                        * Select an agent icons set from the global sets to display in the decorative layout.
                                        */
                                       agentIconsSetName?: string | null;
@@ -1684,7 +1742,20 @@ export interface Page {
                                        * Main heading text. Use \n for line breaks.
                                        */
                                       heading: string;
-                                      buttonText: string;
+                                      /**
+                                       * Optional description text below the heading (used in compact variant)
+                                       */
+                                      description?: string | null;
+                                      /**
+                                       * Bullet points displayed in 2 columns (used in compact variant)
+                                       */
+                                      bulletPoints?:
+                                        | {
+                                            text: string;
+                                            id?: string | null;
+                                          }[]
+                                        | null;
+                                      buttonText?: string | null;
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, or no link
                                        */
@@ -1799,6 +1870,15 @@ export interface Page {
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'localRootsSection';
+                                    }
+                                  | {
+                                      /**
+                                       * Select a job set from the global sets. Jobs from the selected set will be displayed.
+                                       */
+                                      availableJobSetName?: string | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'availableRoles';
                                     }
                                   | {
                                       /**
@@ -2158,6 +2238,10 @@ export interface Page {
                                               }
                                             | {
                                                 /**
+                                                 * Choose layout variant
+                                                 */
+                                                variant?: ('full' | 'compact') | null;
+                                                /**
                                                  * Select an agent icons set from the global sets to display in the decorative layout.
                                                  */
                                                 agentIconsSetName?: string | null;
@@ -2165,7 +2249,20 @@ export interface Page {
                                                  * Main heading text. Use \n for line breaks.
                                                  */
                                                 heading: string;
-                                                buttonText: string;
+                                                /**
+                                                 * Optional description text below the heading (used in compact variant)
+                                                 */
+                                                description?: string | null;
+                                                /**
+                                                 * Bullet points displayed in 2 columns (used in compact variant)
+                                                 */
+                                                bulletPoints?:
+                                                  | {
+                                                      text: string;
+                                                      id?: string | null;
+                                                    }[]
+                                                  | null;
+                                                buttonText?: string | null;
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, or no link
                                                  */
@@ -2280,6 +2377,15 @@ export interface Page {
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'localRootsSection';
+                                              }
+                                            | {
+                                                /**
+                                                 * Select a job set from the global sets. Jobs from the selected set will be displayed.
+                                                 */
+                                                availableJobSetName?: string | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'availableRoles';
                                               }
                                           )[]
                                         | null;
@@ -2514,6 +2620,10 @@ export interface Page {
       }
     | {
         /**
+         * Choose layout variant
+         */
+        variant?: ('full' | 'compact') | null;
+        /**
          * Select an agent icons set from the global sets to display in the decorative layout.
          */
         agentIconsSetName?: string | null;
@@ -2521,7 +2631,20 @@ export interface Page {
          * Main heading text. Use \n for line breaks.
          */
         heading: string;
-        buttonText: string;
+        /**
+         * Optional description text below the heading (used in compact variant)
+         */
+        description?: string | null;
+        /**
+         * Bullet points displayed in 2 columns (used in compact variant)
+         */
+        bulletPoints?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        buttonText?: string | null;
         /**
          * Choose whether to link to an existing page, a custom URL, or no link
          */
@@ -2679,6 +2802,35 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'localRootsSection';
+      }
+    | {
+        /**
+         * Optional heading above the stats (e.g., "Life at Meybohm")
+         */
+        heading?: string | null;
+        items: {
+          /**
+           * The main stat value (e.g., "1M+", "80%", "50+")
+           */
+          value: string;
+          /**
+           * Description text below the value
+           */
+          description: string;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'statsSection';
+      }
+    | {
+        /**
+         * Select a job set from the global sets. Jobs from the selected set will be displayed.
+         */
+        availableJobSetName?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'availableRoles';
       }
   )[];
   /**
@@ -3566,8 +3718,16 @@ export interface PagesSelect<T extends boolean = true> {
                     agentDecoration?:
                       | T
                       | {
+                          variant?: T;
                           agentIconsSetName?: T;
                           heading?: T;
+                          description?: T;
+                          bulletPoints?:
+                            | T
+                            | {
+                                text?: T;
+                                id?: T;
+                              };
                           buttonText?: T;
                           linkType?: T;
                           page?: T;
@@ -3634,6 +3794,13 @@ export interface PagesSelect<T extends boolean = true> {
                                 description?: T;
                                 id?: T;
                               };
+                          id?: T;
+                          blockName?: T;
+                        };
+                    availableRoles?:
+                      | T
+                      | {
+                          availableJobSetName?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -3836,8 +4003,16 @@ export interface PagesSelect<T extends boolean = true> {
                                 agentDecoration?:
                                   | T
                                   | {
+                                      variant?: T;
                                       agentIconsSetName?: T;
                                       heading?: T;
+                                      description?: T;
+                                      bulletPoints?:
+                                        | T
+                                        | {
+                                            text?: T;
+                                            id?: T;
+                                          };
                                       buttonText?: T;
                                       linkType?: T;
                                       page?: T;
@@ -3904,6 +4079,13 @@ export interface PagesSelect<T extends boolean = true> {
                                             description?: T;
                                             id?: T;
                                           };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                availableRoles?:
+                                  | T
+                                  | {
+                                      availableJobSetName?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -4106,8 +4288,16 @@ export interface PagesSelect<T extends boolean = true> {
                                             agentDecoration?:
                                               | T
                                               | {
+                                                  variant?: T;
                                                   agentIconsSetName?: T;
                                                   heading?: T;
+                                                  description?: T;
+                                                  bulletPoints?:
+                                                    | T
+                                                    | {
+                                                        text?: T;
+                                                        id?: T;
+                                                      };
                                                   buttonText?: T;
                                                   linkType?: T;
                                                   page?: T;
@@ -4174,6 +4364,13 @@ export interface PagesSelect<T extends boolean = true> {
                                                         description?: T;
                                                         id?: T;
                                                       };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
+                                            availableRoles?:
+                                              | T
+                                              | {
+                                                  availableJobSetName?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -4376,8 +4573,16 @@ export interface PagesSelect<T extends boolean = true> {
                                                         agentDecoration?:
                                                           | T
                                                           | {
+                                                              variant?: T;
                                                               agentIconsSetName?: T;
                                                               heading?: T;
+                                                              description?: T;
+                                                              bulletPoints?:
+                                                                | T
+                                                                | {
+                                                                    text?: T;
+                                                                    id?: T;
+                                                                  };
                                                               buttonText?: T;
                                                               linkType?: T;
                                                               page?: T;
@@ -4444,6 +4649,13 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     description?: T;
                                                                     id?: T;
                                                                   };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        availableRoles?:
+                                                          | T
+                                                          | {
+                                                              availableJobSetName?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -4592,8 +4804,16 @@ export interface PagesSelect<T extends boolean = true> {
         agentDecoration?:
           | T
           | {
+              variant?: T;
               agentIconsSetName?: T;
               heading?: T;
+              description?: T;
+              bulletPoints?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
               buttonText?: T;
               linkType?: T;
               page?: T;
@@ -4688,6 +4908,27 @@ export interface PagesSelect<T extends boolean = true> {
                     description?: T;
                     id?: T;
                   };
+              id?: T;
+              blockName?: T;
+            };
+        statsSection?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    value?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        availableRoles?:
+          | T
+          | {
+              availableJobSetName?: T;
               id?: T;
               blockName?: T;
             };
@@ -5404,6 +5645,30 @@ export interface BlogHighlight {
   createdAt?: string | null;
 }
 /**
+ * Create and manage sets of available jobs/roles. Each set can contain any number of jobs and can be assigned to Available Roles section blocks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "availableJobSets".
+ */
+export interface AvailableJobSet {
+  id: string;
+  sets?:
+    | {
+        /**
+         * A unique name for this set (e.g., "Careers Page Jobs", "Commercial Roles")
+         */
+        name: string;
+        /**
+         * Select jobs to include in this set
+         */
+        jobs?: (string | Job)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar_select".
  */
@@ -5688,6 +5953,22 @@ export interface BlogHighlightsSelect<T extends boolean = true> {
         categoryFilter?: T;
         typeFilter?: T;
         limit?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "availableJobSets_select".
+ */
+export interface AvailableJobSetsSelect<T extends boolean = true> {
+  sets?:
+    | T
+    | {
+        name?: T;
+        jobs?: T;
         id?: T;
       };
   updatedAt?: T;
