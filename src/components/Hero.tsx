@@ -599,7 +599,7 @@ const SideBySideLayout = (
           className={`relative w-full md:w-1/2 h-[50vh] md:h-auto bg-cover bg-center min-h-[400px]`}
           style={{ backgroundImage: `url('${finalImage}')` }}
         >
-          <div className="absolute inset-0 bg-[#1C2F2980]" aria-hidden />
+          {!isAgent && <div className="absolute inset-0 bg-[#1C2F2980]" aria-hidden />}
 
           {/* Mobile Menu Trigger */}
           <div className="md:hidden absolute inset-0 flex items-center justify-center z-20">
