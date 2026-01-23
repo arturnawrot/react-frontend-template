@@ -544,7 +544,7 @@ export interface Page {
                      * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
                      */
                     icon?: string | null;
-                    description: string;
+                    description?: string | null;
                     id?: string | null;
                   }[];
                   id?: string | null;
@@ -1068,7 +1068,7 @@ export interface Page {
                                * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
                                */
                               icon?: string | null;
-                              description: string;
+                              description?: string | null;
                               id?: string | null;
                             }[];
                             id?: string | null;
@@ -1592,7 +1592,7 @@ export interface Page {
                                          * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
                                          */
                                         icon?: string | null;
-                                        description: string;
+                                        description?: string | null;
                                         id?: string | null;
                                       }[];
                                       id?: string | null;
@@ -2116,7 +2116,7 @@ export interface Page {
                                                    * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
                                                    */
                                                   icon?: string | null;
-                                                  description: string;
+                                                  description?: string | null;
                                                   id?: string | null;
                                                 }[];
                                                 id?: string | null;
@@ -2515,7 +2515,7 @@ export interface Page {
            * FontAwesome icon class (e.g., "fa-regular fa-handshake"). Only used in "icons" variant.
            */
           icon?: string | null;
-          description: string;
+          description?: string | null;
           id?: string | null;
         }[];
         id?: string | null;

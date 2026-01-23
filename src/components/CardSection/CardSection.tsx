@@ -67,7 +67,7 @@ export default function CardSection({ block }: CardSectionProps) {
   return (
     <Container className="relative z-10">
       <div className="bg-white rounded-4xl border border-gray-100 shadow-md shadow-black/20 py-20 px-15">
-        <div className="text-center">
+        <div className={`text-center ${!description ? 'mb-15' : ''}`}>
           <SectionHeading align="center">{title}</SectionHeading>
           {description && <p className="description my-10">{description}</p>}
         </div>
@@ -99,7 +99,9 @@ export default function CardSection({ block }: CardSectionProps) {
                   </span>
                 )}
                 <h3 className={`${isBulletPointsVariant ? styles.bulletPointTitle : styles.cardColumnTitle} mt-5`}>{card.title}</h3>
-                <p className={`${isBulletPointsVariant ? styles.bulletPointDescription : styles.cardColumnDescription} mt-5`}>{card.description}</p>
+                {card.description && (
+                  <p className={`${isBulletPointsVariant ? styles.bulletPointDescription : styles.cardColumnDescription} mt-5`}>{card.description}</p>
+                )}
               </div>
             )
           })}

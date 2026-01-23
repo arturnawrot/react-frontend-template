@@ -94,7 +94,6 @@ export const CardSection: Block = {
         {
           name: 'description',
           type: 'textarea',
-          required: true,
           label: 'Description',
         },
       ],
