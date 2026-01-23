@@ -1,48 +1,30 @@
 version: '3'
 
 services:
-  payload:
-    image: node:18-alpine
-    ports:
-      - '8080:3000'
-    volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
-    depends_on:
-      - mongo
-      - redis
-      # - postgres
-    env_file:
-      - .env
-
   payload-production:
-    # Keep this line! It tells Docker what to name the image after building
     image: arturnawrot/meybohm-frontend:latest
     container_name: payload-production
     restart: unless-stopped
-    # You MUST uncomment this section so Docker knows how to build it
     build:
       context: .
       dockerfile: Dockerfile
-      
     ports:
       - '80:3000'
-    depends_on:
-      - mongo
-      - redis
     env_file:
       - .env
     environment:
       - NODE_ENV=production
     volumes:
       - ./media:/app/media
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
-  # Ensure your DATABASE_URL uses 'mongo' as the hostname with authentication
-  # Format: mongodb://MONGO_USERNAME:MONGO_PASSWORD@mongo:27017/MONGO_DATABASE?authSource=admin
   mongo:
     image: mongo:latest
+    restart: unless-stopped
     command:
       - --storageEngine=wiredTiger
       - --auth
@@ -56,29 +38,21 @@ services:
       - data:/data/db
     logging:
       driver: none
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "mongodb://localhost:27017/admin", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
-  # Redis for Buildout API cache
   redis:
     image: redis:7-alpine
-    # ports:
-    #   - '6379:6379'
+    restart: unless-stopped
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
     logging:
       driver: none
 
-  # Uncomment the following to use postgres
-  # postgres:
-  #   restart: always
-  #   image: postgres:latest
-  #   volumes:
-  #     - pgdata:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
-
 volumes:
   data:
   redis_data:
-  # pgdata:
-  node_modules:
