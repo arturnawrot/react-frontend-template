@@ -21,6 +21,7 @@ import FAQSection from '@/components/FAQSection/FAQSection'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import CardOnBackground from '@/components/CardOnBackground/CardOnBackground'
 import Footer from '@/components/Footer/Footer'
+import BlogHighlightsBlock from '@/components/BlogHighlightsBlock/BlogHighlightsBlock'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
@@ -731,6 +732,73 @@ export async function renderBlock(
   }
   if (block.blockType === 'footer') {
     return <Footer key={index} />
+  }
+  if (block.blockType === 'blogHighlightsBlock') {
+    // Fetch BlogHighlights global config and initial data
+    if (!payload) {
+      console.warn('[renderBlocks] BlogHighlightsBlock requires payload instance')
+      return null
+    }
+
+    try {
+      // Fetch the BlogHighlights global config
+      const blogHighlightsConfig = await payload.findGlobal({
+        slug: 'blogHighlights',
+        depth: 2, // Populate relationships
+      })
+
+      // Fetch initial blogs
+      const postsPerPage = blogHighlightsConfig.exploreByCategory?.postsPerPage || 10
+      const blogsResponse = await payload.find({
+        collection: 'blogs',
+        limit: postsPerPage,
+        sort: '-createdAt',
+        depth: 2,
+      })
+
+      // Fetch all categories
+      const categoriesResponse = await payload.find({
+        collection: 'blog-categories',
+        limit: 100,
+      })
+
+      // Fetch authors (users who have written blogs)
+      const authorsResponse = await payload.find({
+        collection: 'users',
+        limit: 100,
+      })
+
+      // Get unique years from blogs
+      const allBlogsForYears = await payload.find({
+        collection: 'blogs',
+        limit: 1000,
+        depth: 0,
+      })
+      const years = Array.from(
+        new Set(
+          allBlogsForYears.docs
+            .map((blog) => {
+              const date = blog.createdAt
+              return date ? new Date(date).getFullYear() : null
+            })
+            .filter((year): year is number => year !== null)
+        )
+      ).sort((a, b) => b - a)
+
+      return (
+        <BlogHighlightsBlock
+          key={index}
+          config={blogHighlightsConfig as any}
+          initialBlogs={blogsResponse.docs as any}
+          allCategories={categoriesResponse.docs as any}
+          authors={authorsResponse.docs as any}
+          years={years}
+        />
+      )
+    } catch (error) {
+      console.error('[renderBlocks] Error fetching BlogHighlights data:', error)
+      return null
+    }
   }
   return null
 }

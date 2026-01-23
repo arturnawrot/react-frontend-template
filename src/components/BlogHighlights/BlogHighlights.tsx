@@ -139,25 +139,29 @@ export default function BlogHighlights({
       {/* SECTION 2: Explore by Category */}
       {/* ============================================ */}
       {config.exploreByCategory?.enabled && (
-        <section id="explore-by-category" className="py-16 lg:py-20 bg-[#faf9f7]">
+        <section id="explore-by-category" className="py-16 lg:py-20">
           <Container>
-            {/* Section Header */}
+            {/* Section Header - Inline layout with dividers */}
             <div className="mb-10">
-              <h2 className="font-serif text-4xl lg:text-5xl text-[#1a2e2a] mb-8">
-                {config.exploreByCategory?.heading || 'Explore by Category'}
-              </h2>
+              <div className="border-t border-stone-300" />
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 py-6">
+                <h2 className="font-serif text-3xl lg:text-4xl text-[#1a2e2a] shrink-0">
+                  {config.exploreByCategory?.heading || 'Explore by Category'}
+                </h2>
 
-              {/* Search and Filters */}
-              <BlogSearchFilters
-                displayedCategories={displayedCategories}
-                allCategories={allCategories}
-                authors={authors}
-                years={years}
-                showTypeFilters={config.exploreByCategory?.showTypeFilters !== false}
-                filters={filters}
-                onFiltersChange={setFilters}
-                redirectOnFilter={false}
-              />
+                {/* Search and Filters - Inline */}
+                <BlogSearchFilters
+                  displayedCategories={displayedCategories}
+                  allCategories={allCategories}
+                  authors={authors}
+                  years={years}
+                  showTypeFilters={config.exploreByCategory?.showTypeFilters !== false}
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  redirectOnFilter={false}
+                />
+              </div>
+              <div className="border-b border-stone-300" />
             </div>
 
             {/* Blog Grid */}
@@ -169,7 +173,7 @@ export default function BlogHighlights({
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                   {categoryBlogs.map((blog) => (
-                    <BlogCard key={blog.id} blog={blog} variant="default" />
+                    <BlogCard key={blog.id} blog={blog} variant="default" lite />
                   ))}
                 </div>
 

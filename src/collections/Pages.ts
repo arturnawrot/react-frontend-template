@@ -21,6 +21,7 @@ import { FAQSection } from '../blocks/FAQSection'
 import { CTAFooter } from '../blocks/CTAFooter'
 import { CardOnBackground } from '../blocks/CardOnBackground'
 import { Footer } from '../blocks/Footer'
+import { BlogHighlightsBlock } from '../blocks/BlogHighlightsBlock'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -73,6 +74,7 @@ export const Pages: CollectionConfig = {
         CTAFooter,
         CardOnBackground,
         Footer,
+        BlogHighlightsBlock,
       ],
     },
     seoFields,

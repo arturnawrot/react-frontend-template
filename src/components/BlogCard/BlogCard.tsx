@@ -8,6 +8,7 @@ import type { Blog, BlogCategory, User, Media } from '@/payload-types'
 export interface BlogCardProps {
   blog: Blog
   variant?: 'featured' | 'default' | 'story'
+  lite?: boolean
 }
 
 // Helper to get image URL from media
@@ -131,7 +132,7 @@ const FeaturedCard: React.FC<{ blog: Blog }> = ({ blog }) => {
 }
 
 // Default variant - Vertical card for grid display
-const DefaultCard: React.FC<{ blog: Blog }> = ({ blog }) => {
+const DefaultCard: React.FC<{ blog: Blog; lite?: boolean }> = ({ blog, lite = false }) => {
   const imageUrl = getImageUrl(blog.featuredImage)
   const authorName = getAuthorName(blog.author)
   const categories = getCategoryNames(blog.categories)
@@ -149,8 +150,8 @@ const DefaultCard: React.FC<{ blog: Blog }> = ({ blog }) => {
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        {/* Floating Tags */}
-        {categories.length > 0 && (
+        {/* Floating Tags - hidden in lite mode */}
+        {!lite && categories.length > 0 && (
           <div className="absolute bottom-4 left-4 flex gap-2 flex-wrap">
             {categories.slice(0, 2).map((cat, index) => (
               <span
@@ -172,18 +173,22 @@ const DefaultCard: React.FC<{ blog: Blog }> = ({ blog }) => {
           </Link>
         </h3>
 
-        {blog.description && (
+        {/* Description - hidden in lite mode */}
+        {!lite && blog.description && (
           <p className="text-stone-600 text-sm mb-4 line-clamp-2 flex-grow">
             {blog.description}
           </p>
         )}
 
-        <div className="flex items-center justify-between gap-4 mt-auto">
-          <div className="flex items-center gap-2 text-xs text-stone-500">
-            <span className="font-medium text-[#1a2e2a]">{authorName}</span>
-            <span>·</span>
-            <time dateTime={blog.createdAt}>{formattedDate}</time>
-          </div>
+        <div className={`flex items-center ${lite ? 'justify-start' : 'justify-between'} gap-4 mt-auto`}>
+          {/* Author and date - hidden in lite mode */}
+          {!lite && (
+            <div className="flex items-center gap-2 text-xs text-stone-500">
+              <span className="font-medium text-[#1a2e2a]">{authorName}</span>
+              <span>·</span>
+              <time dateTime={blog.createdAt}>{formattedDate}</time>
+            </div>
+          )}
 
           <Link
             href={blogUrl}
@@ -275,7 +280,7 @@ const StoryCard: React.FC<{ blog: Blog }> = ({ blog }) => {
 }
 
 // Main BlogCard Component
-const BlogCard: React.FC<BlogCardProps> = ({ blog, variant = 'default' }) => {
+const BlogCard: React.FC<BlogCardProps> = ({ blog, variant = 'default', lite = false }) => {
   switch (variant) {
     case 'featured':
       return <FeaturedCard blog={blog} />
@@ -283,7 +288,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, variant = 'default' }) => {
       return <StoryCard blog={blog} />
     case 'default':
     default:
-      return <DefaultCard blog={blog} />
+      return <DefaultCard blog={blog} lite={lite} />
   }
 }
 

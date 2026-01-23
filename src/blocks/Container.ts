@@ -16,6 +16,7 @@ import { AgentDecoration } from './AgentDecoration'
 import { CTAFooter } from './CTAFooter'
 import { CardOnBackground } from './CardOnBackground'
 import { Footer } from './Footer'
+import { BlogHighlightsBlock } from './BlogHighlightsBlock'
 
 /**
  * Creates a Container block with nested container support
@@ -41,6 +42,7 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
     CTAFooter,
     CardOnBackground,
     Footer,
+    BlogHighlightsBlock,
   ]
 
   // Add nested Container if we haven't reached max depth

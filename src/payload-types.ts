@@ -811,6 +811,11 @@ export interface Page {
                   blockType: 'footer';
                 }
               | {
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'blogHighlightsBlock';
+                }
+              | {
                   /**
                    * Add vertical padding (spacing) to this container
                    */
@@ -1262,6 +1267,11 @@ export interface Page {
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'footer';
+                          }
+                        | {
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'blogHighlightsBlock';
                           }
                         | {
                             /**
@@ -1717,6 +1727,11 @@ export interface Page {
                                       blockType: 'footer';
                                     }
                                   | {
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'blogHighlightsBlock';
+                                    }
+                                  | {
                                       /**
                                        * Add vertical padding (spacing) to this container
                                        */
@@ -2169,6 +2184,11 @@ export interface Page {
                                                 blockName?: string | null;
                                                 blockType: 'footer';
                                               }
+                                            | {
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'blogHighlightsBlock';
+                                              }
                                           )[]
                                         | null;
                                       id?: string | null;
@@ -2539,6 +2559,11 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'footer';
+      }
+    | {
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'blogHighlightsBlock';
       }
   )[];
   /**
@@ -3476,6 +3501,12 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    blogHighlightsBlock?:
+                      | T
+                      | {
+                          id?: T;
+                          blockName?: T;
+                        };
                     container?:
                       | T
                       | {
@@ -3720,6 +3751,12 @@ export interface PagesSelect<T extends boolean = true> {
                                       blockName?: T;
                                     };
                                 footer?:
+                                  | T
+                                  | {
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                blogHighlightsBlock?:
                                   | T
                                   | {
                                       id?: T;
@@ -3974,6 +4011,12 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            blogHighlightsBlock?:
+                                              | T
+                                              | {
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             container?:
                                               | T
                                               | {
@@ -4223,6 +4266,12 @@ export interface PagesSelect<T extends boolean = true> {
                                                               id?: T;
                                                               blockName?: T;
                                                             };
+                                                        blogHighlightsBlock?:
+                                                          | T
+                                                          | {
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
                                                       };
                                                   id?: T;
                                                   blockName?: T;
@@ -4441,6 +4490,12 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
         footer?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
+        blogHighlightsBlock?:
           | T
           | {
               id?: T;

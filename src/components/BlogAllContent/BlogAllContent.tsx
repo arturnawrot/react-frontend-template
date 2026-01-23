@@ -162,21 +162,25 @@ export default function BlogAllContent({
   return (
     <div className="min-h-screen bg-[#faf9f7]">
       <Container className="py-16 lg:py-20">
-        {/* Page Header */}
+        {/* Page Header - Inline layout with dividers */}
         <div className="mb-10">
-          <h1 className="font-serif text-4xl lg:text-5xl text-[#1a2e2a] mb-8">All Content</h1>
+          <div className="border-t border-stone-300" />
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 py-6">
+            <h1 className="font-serif text-3xl lg:text-4xl text-[#1a2e2a] shrink-0">All Content</h1>
 
-          {/* Search and Filters */}
-          <BlogSearchFilters
-            displayedCategories={displayedCategories}
-            allCategories={allCategories}
-            authors={authors}
-            years={years}
-            showTypeFilters={showTypeFilters}
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-            redirectOnFilter={false}
-          />
+            {/* Search and Filters - Inline */}
+            <BlogSearchFilters
+              displayedCategories={displayedCategories}
+              allCategories={allCategories}
+              authors={authors}
+              years={years}
+              showTypeFilters={showTypeFilters}
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              redirectOnFilter={false}
+            />
+          </div>
+          <div className="border-b border-stone-300" />
         </div>
 
         {/* Results Count */}
@@ -195,7 +199,7 @@ export default function BlogAllContent({
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {blogs.map((blog) => (
-                <BlogCard key={blog.id} blog={blog} variant="default" />
+                <BlogCard key={blog.id} blog={blog} variant="default" lite />
               ))}
             </div>
 
