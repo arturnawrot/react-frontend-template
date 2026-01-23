@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import styles from './TestimonialCarousel.module.scss'
 
 type TestimonialCarouselBlock = Extract<Page['blocks'][number], { blockType: 'testimonialCarousel' }> & {
@@ -63,9 +64,9 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
             {testimonials.map((testimonial, index) => (
               <div key={index} className={styles.slide}>
                 <div className={styles.slideContent}>
-                  <p className={styles.quote}>
+                  <SectionHeading align="center" className="mb-8">
                     &quot;{testimonial.quote}&quot;
-                  </p>
+                  </SectionHeading>
                   <p className={styles.author}>
                     -{testimonial.author}{testimonial.company ? ` | ${testimonial.company}` : ''}
                   </p>

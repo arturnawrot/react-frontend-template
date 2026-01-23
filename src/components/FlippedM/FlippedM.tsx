@@ -6,6 +6,7 @@ import styles from './FlippedM.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 type FlippedMBlock = Extract<Page['blocks'][number], { blockType: 'flippedM' }>
 
@@ -145,9 +146,9 @@ const ProcessSection = ({
 
       {/* Heading & Subheading */}
       <div className="relative z-40 mx-auto md:mx-0 max-w-md px-5 md:px-0 mt-20">
-        <h2 className={`${styles.heading}`}>
+        <SectionHeading>
           {heading}
-        </h2>
+        </SectionHeading>
         {subheading && (
           <p
             className={`${styles.subheading} text-base md:text-lg mt-4 max-w-[400px]`}

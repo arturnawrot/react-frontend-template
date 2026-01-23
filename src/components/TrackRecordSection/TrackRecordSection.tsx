@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import { Carousel, CarouselRenderProps } from '../Carousel'
 
 type TrackRecordSectionBlock = Extract<Page['blocks'][number], { blockType: 'trackRecordSection' }>
@@ -136,9 +137,9 @@ export default function TrackRecordSection({ block, items = [] }: TrackRecordSec
       <div className="flex flex-col md:flex-row items-center justify-between relative">
         {/* Title Centered */}
         <div className="w-full text-center md:absolute md:left-1/2 md:-translate-x-1/2">
-          <h2 className="text-5xl md:text-6xl font-serif text-[#1a2e2a]">
+          <SectionHeading align="center">
             {heading}
-          </h2>
+          </SectionHeading>
         </div>
 
         {/* Arrows Right */}

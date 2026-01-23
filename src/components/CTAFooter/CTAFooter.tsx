@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 type CTAFooterBlock = Extract<Page['blocks'][number], { blockType: 'ctaFooter' }>
 
@@ -62,9 +63,9 @@ export default function CTAFooter({ block }: CTAFooterProps) {
   return ( 
     <div className="w-full font-sans antialiased">
       <section className="bg-[#dce567] py-24 px-4 flex flex-col items-center justify-center text-center">
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#1b2e28] mb-10 tracking-tight">
+        <SectionHeading align="center" className="mb-10 tracking-tight">
           {heading}
-        </h2>
+        </SectionHeading>
         
         {subheading && (
           <p className="text-xl md:text-2xl font-serif text-[#1b2e28] mb-10">

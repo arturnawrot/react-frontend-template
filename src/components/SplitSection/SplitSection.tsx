@@ -6,6 +6,7 @@ import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import styles from './SplitSection.module.scss'
 
 type SplitSectionBlock = Extract<Page['blocks'][number], { blockType: 'splitSection' }>
@@ -50,9 +51,9 @@ export default function SplitSection({ block }: SplitSectionProps) {
       {/* Content Column */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-0 sm:px-4 md:px-0">
         <div className="w-full max-w-[480px] md:max-w-none space-y-4 sm:space-y-5 md:space-y-6">
-          <h2 className={styles.heading}>
+          <SectionHeading>
             {header}
-          </h2>
+          </SectionHeading>
           
           {paragraph && (
             <p className={styles.content}>

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { Search, ChevronDown } from 'lucide-react'
 import { buildFilterParams } from '@/utils/filter-params'
 import LocationSearchSuggestion, { type AddressSuggestion } from '@/components/LocationSearchSuggestion/LocationSearchSuggestion'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 // Property types matching PropertySearchAdvanced
 const propertyTypes = [
@@ -240,9 +241,9 @@ export default function PropertySearchInput() {
         <div className="bg-[#DCD7CC] rounded-[2.5rem] shadow-xl px-6 py-12 md:px-12 md:py-16 text-center">
             
           {/* Heading */}
-          <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-serif text-[#1C2B28] mb-10 tracking-tight leading-tight">
+          <SectionHeading align="center" className="mb-10 tracking-tight">
             Search Commercial Properties for Sale
-          </h2>
+          </SectionHeading>
 
           {/* Search Bar (Pill Shape) */}
           <div className="bg-white rounded-[2rem] p-2 shadow-sm flex flex-col lg:flex-row lg:items-center divide-y lg:divide-y-0 lg:divide-x divide-stone-200 max-w-5xl mx-auto">

@@ -7,6 +7,7 @@ import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import { Carousel, CarouselTrackElement } from '../Carousel'
 
 type InsightsSectionBlock = Extract<Page['blocks'][number], { blockType: 'insightsSection' }>
@@ -73,7 +74,7 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
         {/* LEFT SECTION: Fixed Content */}
         <div className="lg:col-span-4 flex flex-col justify-between z-10">
           <div>
-            <h1 className="text-5xl md:text-6xl font-serif text-[#1a2e2a] leading-[1.1] mb-8 whitespace-normal">
+            <SectionHeading as="h1" className="mb-8 whitespace-normal leading-[1.1]">
               {heading.split(' ').map((word, i, arr) => {
                 // Add line breaks after word at index 0 and index 2
                 const shouldAddBreak = (i === 0 || i === 2) && i < arr.length - 1
@@ -85,7 +86,7 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
                   </React.Fragment>
                 )
               })}
-            </h1>
+            </SectionHeading>
 
             {linkText && linkHref && (() => {
               const isInternal = isInternalLink(linkHref) && !openInNewTab

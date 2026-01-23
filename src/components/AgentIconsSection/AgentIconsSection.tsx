@@ -5,6 +5,7 @@ import type { Page, Media } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 type AgentIconsSectionBlock = Extract<Page['blocks'][number], { blockType: 'agentIconsSection' }>
 
@@ -148,9 +149,9 @@ export default function AgentIconsSection({ block }: AgentIconsSectionProps) {
            {/* RIGHT COLUMN: Content */}
            <div className="w-full md:w-[40vw] md:ml-[calc(10%-10vw)] flex md:justify-end">
              <div className="space-y-4 sm:space-y-5 md:space-y-6 max-w-[580px]">
-               <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1a2e2a] leading-tight">
+               <SectionHeading>
                  {header}
-               </h2>
+               </SectionHeading>
                
                {paragraph && (
                  <p 

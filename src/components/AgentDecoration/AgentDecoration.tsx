@@ -4,6 +4,7 @@ import Link from 'next/link'
 import type { Page, Media } from '@/payload-types'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
 type AgentDecorationBlock = Extract<Page['blocks'][number], { blockType: 'agentDecoration' }>
 
@@ -77,18 +78,14 @@ export default function AgentDecoration({ block }: AgentDecorationProps) {
         <div className="flex flex-col items-center text-center px-6 mx-auto mb-12 lg:mb-0 
                         max-w-lg xl:max-w-3xl transition-all duration-300">
           
-          {/* Responsive Font Sizes: Smaller on laptop (lg), Larger on desktop (xl) */}
-          <h2 className="font-serif text-[#1a3b32] mb-8 tracking-tight
-                         text-[2.75rem] leading-[1] 
-                         lg:text-5xl lg:leading-tight 
-                         xl:text-6xl xl:leading-[1]">
+          <SectionHeading align="center" className="mb-8 tracking-tight">
             {headingLines.map((line, index) => (
               <React.Fragment key={index}>
                 {line}
                 {index < headingLines.length - 1 && <br />}
               </React.Fragment>
             ))}
-          </h2>
+          </SectionHeading>
           
           {buttonText && linkHref && (
             <div>

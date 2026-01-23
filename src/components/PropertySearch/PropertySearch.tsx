@@ -9,6 +9,7 @@ import { transformPropertyToCard, type PropertyCardData } from '@/utils/property
 import { createBrokerMaps, getAgentInfo } from '@/utils/broker-utils'
 import { filterValidCoordinates } from '@/utils/property-utils'
 import Container from '@/components/Container/Container'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import styles from './PropertySearch.module.scss'
 
 // Dynamically import PropertyMap with SSR disabled to avoid window is not defined error
@@ -171,9 +172,9 @@ export default function PropertySearch({ block }: PropertySearchProps) {
       <div className="mb-10">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div className="max-w-3xl">
-            <h1 className={`${styles.title} mb-4 tracking-tight`}>
+            <SectionHeading as="h1" className="mb-4 tracking-tight">
               {heading}
-            </h1>
+            </SectionHeading>
             <p className={`${styles.description} text-stone-600 max-w-2xl`}>
               {description}
             </p>

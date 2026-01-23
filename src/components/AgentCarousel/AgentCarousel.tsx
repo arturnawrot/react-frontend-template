@@ -7,6 +7,7 @@ import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
+import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import { Carousel, CarouselTrackElement } from '../Carousel'
 import styles from './AgentCarousel.module.scss'
 
@@ -88,9 +89,9 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
             {preHeading}
           </h3>
 
-          <h1 className={`${styles.heading} text-[#1a2e28]`}>
+          <SectionHeading as="h1">
             {heading}
-          </h1>
+          </SectionHeading>
 
           <p className={`${styles.description} text-gray-600`}>
             {description}
