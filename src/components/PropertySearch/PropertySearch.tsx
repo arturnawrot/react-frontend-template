@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import { List, Grid, Share2, Loader2 } from 'lucide-react'
 import type { Page } from '@/payload-types'
 import PropertyCard from '../PropertyCard/PropertyCard'
@@ -180,9 +181,9 @@ export default function PropertySearch({ block }: PropertySearchProps) {
             </p>
           </div>
           <div className="flex-shrink-0">
-            <button className={`${styles.buttonText} whitespace-nowrap px-8 py-3 rounded-full border border-stone-800 hover:bg-stone-800 hover:text-white transition-colors`}>
+            <Link href="/property-search" className={`${styles.buttonText} whitespace-nowrap px-8 py-3 rounded-full border border-stone-800 hover:bg-stone-800 hover:text-white transition-colors`}>
               {buttonText}
-            </button>
+            </Link>
           </div>
         </div>
       </div>
