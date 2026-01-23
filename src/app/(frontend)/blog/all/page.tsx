@@ -2,6 +2,9 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import BlogAllContent from '@/components/BlogAllContent/BlogAllContent'
 import type { Blog, BlogCategory, User, BlogHighlight as BlogHighlightsType } from '@/payload-types'
+import NavbarWrapper from '@/components/Navbar/NavbarWrapper'
+import CTAFooter from '@/components/CTAFooter/CTAFooter'
+import Footer from '@/components/Footer/Footer'
 
 export const dynamic = 'force-dynamic'
 
@@ -70,7 +73,10 @@ export default async function AllContentPage() {
   const years = Array.from(yearsSet).sort((a, b) => b - a)
 
   return (
-    <main className="min-h-screen">
+    <>
+      <div className="bg-transparent md:bg-[var(--strong-green)]">
+          <NavbarWrapper darkVariant={true} />
+      </div>
       <BlogAllContent
         initialBlogs={initialBlogsResult.docs as Blog[]}
         initialTotalCount={initialBlogsResult.totalDocs}
@@ -80,6 +86,20 @@ export default async function AllContentPage() {
         years={years}
         showTypeFilters={true}
       />
-    </main>
+      <CTAFooter
+        block={{
+          blockType: 'ctaFooter',
+          heading: 'Want Insight Specific to Your Goals?',
+          subheading: "Let's connect and align content with strategy.",
+          buttons: [
+            { label: 'Talk to Our Team', variant: 'primary' },
+            { label: 'Request Market Report', variant: 'secondary' },
+            { label: 'See Client Stories', variant: 'secondary' },
+          ],
+          id: 'blog-all-cta-footer',
+        }}
+      />
+      <Footer />
+    </>
   )
 }

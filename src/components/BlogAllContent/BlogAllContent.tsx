@@ -160,7 +160,7 @@ export default function BlogAllContent({
   }
 
   return (
-    <div className="min-h-screen bg-[#faf9f7]">
+    <div className="min-h-screen">
       <Container className="py-16 lg:py-20">
         {/* Page Header - Inline layout with dividers */}
         <div className="mb-10">
