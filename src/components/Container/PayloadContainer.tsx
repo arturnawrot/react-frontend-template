@@ -1,13 +1,14 @@
 import React from 'react'
 import type { Page } from '@/payload-types'
 import type { Payload } from 'payload'
-import { renderBlocks } from '@/utils/renderBlocks'
+import { renderBlocks, type RenderBlocksOptions } from '@/utils/renderBlocks'
 
 type ContainerBlock = Extract<Page['blocks'][number], { blockType: 'container' }>
 
 type ContainerProps = {
   block: ContainerBlock
   payload?: Payload
+  options?: RenderBlocksOptions
 }
 
 // Helper function to get CSS class names and CSS code from CSS styles array
@@ -43,12 +44,13 @@ const getCSSStyles = (
   return { cssClasses, cssCode }
 }
 
-export default async function PayloadContainer({ block, payload }: ContainerProps) {
+export default async function PayloadContainer({ block, payload, options }: ContainerProps) {
   const { cssClasses, cssCode } = getCSSStyles(block.cssStyles)
   const combinedClasses = cssClasses.length > 0 ? cssClasses.join(' ') : undefined
 
   // Cast to any to handle nested container blocks (like availableRoles) which have different types
-  const blocks = await renderBlocks(block.blocks as any, payload)
+  // Pass options through to avoid redundant siteSettings fetches
+  const blocks = await renderBlocks(block.blocks as any, payload, options)
 
   // Apply spacing if enabled (vertical padding similar to other sections)
   const spacingClass = block.includeSpacing ? 'py-12 md:py-20' : ''

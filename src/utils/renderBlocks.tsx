@@ -35,6 +35,16 @@ import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
 // Type for any block from a Page (also compatible with Container blocks)
 type PageBlock = Page['blocks'][number]
 
+// Options for renderBlocks to avoid redundant fetches
+export interface RenderBlocksOptions {
+  /** Pre-fetched site settings to avoid redundant fetches in nested containers */
+  siteSettings?: {
+    blockSpacing?: {
+      defaultSpacing?: 'none' | 'small' | 'medium' | 'large' | 'xlarge'
+    }
+  }
+}
+
 /**
  * Renders a single block based on its blockType
  * Works with both Page blocks and Container nested blocks
@@ -42,7 +52,8 @@ type PageBlock = Page['blocks'][number]
 export async function renderBlock(
   block: PageBlock,
   index: number,
-  payload?: Payload
+  payload?: Payload,
+  options?: RenderBlocksOptions
 ): Promise<React.ReactNode> {
   if (block.blockType === 'hero') {
     return <HeroWrapper key={index} block={block} />
@@ -51,7 +62,7 @@ export async function renderBlock(
     return <FlippedM key={index} block={block} />
   }
   if (block.blockType === 'container') {
-    return <PayloadContainer key={index} block={block} payload={payload} />
+    return <PayloadContainer key={index} block={block} payload={payload} options={options} />
   }
   if (block.blockType === 'cardSection') {
     return <CardSection key={index} block={block} />
@@ -64,27 +75,13 @@ export async function renderBlock(
     let properties: PropertyCardData[] = []
 
     const setName = (block as any).featuredPropertySetName
-    console.log('[renderBlocks] FeaturedProperties block:', {
-      setName,
-      hasPayload: !!payload,
-      blockType: block.blockType,
-    })
 
     if (setName && payload) {
       try {
-        console.log('[renderBlocks] Fetching global set for:', setName)
         const global = await payload.findGlobal({
           slug: 'featuredPropertiesSets',
         })
 
-        console.log('[renderBlocks] Global fetched:', {
-          hasGlobal: !!global,
-          globalKeys: global ? Object.keys(global) : [],
-          setsType: typeof global?.sets,
-          setsIsArray: Array.isArray(global?.sets),
-          setsCount: global?.sets ? (Array.isArray(global.sets) ? global.sets.length : 0) : 0,
-          setsRaw: JSON.stringify(global?.sets, null, 2),
-        })
 
         // Sets is now an array field, propertyIds is a JSON field
         let sets: Array<{ name: string; propertyIds?: number[] }> = []
@@ -113,56 +110,27 @@ export async function renderBlock(
           })
         }
         
-        console.log('[renderBlocks] Processed sets:', sets.map(s => ({ 
-          name: s.name, 
-          propertyIdsCount: s.propertyIds?.length || 0,
-          propertyIds: s.propertyIds 
-        })))
-        
         const set = sets.find((s) => s.name === setName)
-
-        console.log('[renderBlocks] Set found:', {
-          setName,
-          hasSet: !!set,
-          setRaw: set,
-          propertyIdsType: typeof set?.propertyIds,
-          propertyIdsIsArray: Array.isArray(set?.propertyIds),
-          propertyIdsCount: set?.propertyIds?.length || 0,
-          propertyIdsRaw: set?.propertyIds,
-        })
 
         if (set?.propertyIds && Array.isArray(set.propertyIds)) {
           const propertyIds = set.propertyIds.filter((id: any): id is number => typeof id === 'number')
 
-          console.log('[renderBlocks] Filtered property IDs:', propertyIds)
-
           if (propertyIds.length > 0) {
-            // Fetch all properties to find the ones in the set
-            console.log('[renderBlocks] Fetching properties from Buildout API...')
-            const allPropertiesResponse = await buildoutApi.getAllProperties({
-              skipCache: false,
-              limit: 10000,
-            })
-
-            console.log('[renderBlocks] Properties fetched:', {
-              totalProperties: allPropertiesResponse.properties.length,
-            })
+            // Fetch properties and brokers in PARALLEL for better performance
+            const [allPropertiesResponse, brokersResponse] = await Promise.all([
+              buildoutApi.getAllProperties({ skipCache: false, limit: 10000 }),
+              buildoutApi.getAllBrokers({ skipCache: false }).catch(error => {
+                console.error('[renderBlocks] Error fetching brokers:', error)
+                return { brokers: [] as BuildoutBroker[] }
+              })
+            ])
 
             // Filter to only the properties in the set and maintain order
             const featuredProperties: BuildoutProperty[] = propertyIds
               .map((id: number) => allPropertiesResponse.properties.find((p: BuildoutProperty) => p.id === id))
               .filter((p): p is BuildoutProperty => p !== undefined)
 
-            console.log('[renderBlocks] Featured properties found:', featuredProperties.length)
-
-            // Fetch brokers to get agent names and photos
-            let brokers: BuildoutBroker[] = []
-            try {
-              const brokersResponse = await buildoutApi.getAllBrokers({ skipCache: false })
-              brokers = brokersResponse.brokers
-            } catch (error) {
-              console.error('[renderBlocks] Error fetching brokers:', error)
-            }
+            const brokers = brokersResponse.brokers
 
             // Transform properties with actual agent names and photos
             properties = featuredProperties.map((prop) => {
@@ -172,29 +140,12 @@ export async function renderBlock(
               
               return transformPropertyToCard(prop, agentName, agentImage)
             })
-
-            console.log('[renderBlocks] Properties transformed:', properties.length)
-          } else {
-            console.warn('[renderBlocks] No valid property IDs in set')
           }
-        } else {
-          console.warn('[renderBlocks] Set not found or has no propertyIds:', {
-            setName,
-            hasSet: !!set,
-            hasPropertyIds: !!set?.propertyIds,
-          })
         }
       } catch (error) {
         console.error('[renderBlocks] Error fetching featured properties from set:', error)
       }
-    } else {
-      console.warn('[renderBlocks] No set name or payload:', {
-        setName,
-        hasPayload: !!payload,
-      })
     }
-
-    console.log('[renderBlocks] Rendering FeaturedProperties with', properties.length, 'properties')
 
     return <FeaturedProperties key={index} block={block} properties={properties} />
   }
@@ -927,15 +878,25 @@ export async function renderBlock(
  */
 export async function renderBlocks(
   blocks: Page['blocks'] | null | undefined,
-  payload?: Payload
+  payload?: Payload,
+  options?: RenderBlocksOptions
 ): Promise<React.ReactNode[]> {
   if (!blocks || !Array.isArray(blocks)) {
     return []
   }
 
-  // Fetch site settings for default spacing
+  // Use pre-fetched site settings if available, otherwise fetch
   let defaultSpacing: 'none' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium'
-  if (payload) {
+  let resolvedOptions = options
+  
+  if (options?.siteSettings) {
+    // Use cached siteSettings (avoids redundant fetches in nested containers)
+    const spacing = options.siteSettings.blockSpacing?.defaultSpacing
+    if (spacing && ['none', 'small', 'medium', 'large', 'xlarge'].includes(spacing)) {
+      defaultSpacing = spacing
+    }
+  } else if (payload) {
+    // Fetch site settings only at the top level
     try {
       const siteSettings = await payload.findGlobal({
         slug: 'siteSettings',
@@ -945,14 +906,17 @@ export async function renderBlocks(
       if (spacing && ['none', 'small', 'medium', 'large', 'xlarge'].includes(spacing)) {
         defaultSpacing = spacing as typeof defaultSpacing
       }
+      // Cache for nested calls
+      resolvedOptions = { siteSettings: { blockSpacing: { defaultSpacing } } }
     } catch (error) {
       console.warn('[renderBlocks] Error fetching site settings, using default spacing:', error)
+      resolvedOptions = { siteSettings: { blockSpacing: { defaultSpacing: 'medium' } } }
     }
   }
 
-  // Render all blocks
+  // Render all blocks in parallel
   const renderedBlocks = await Promise.all(
-    blocks.map((block, index) => renderBlock(block, index, payload))
+    blocks.map((block, index) => renderBlock(block, index, payload, resolvedOptions))
   )
 
   // Wrap blocks with spacing
