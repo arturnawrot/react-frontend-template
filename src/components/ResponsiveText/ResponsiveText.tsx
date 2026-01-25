@@ -49,6 +49,8 @@ export interface ResponsiveTextProps {
   color?: string
   /** Text alignment */
   align?: TextAlign
+  /** Max width constraint (e.g., '600px', '80%', '40ch') */
+  maxWidth?: string
   /** Additional CSS class names */
   className?: string
   /** Additional inline styles */
@@ -69,6 +71,10 @@ export interface ResponsiveTextProps {
  * @example
  * // Different font weight on mobile
  * <ResponsiveText desktop="32px" mobile="24px" fontWeight={300} fontWeightMobile={400}>Text</ResponsiveText>
+ * 
+ * @example
+ * // With max width constraint
+ * <ResponsiveText desktop="--headline2" mobile="--headline4" maxWidth="600px">Constrained text</ResponsiveText>
  */
 export default function ResponsiveText({
   children,
@@ -82,6 +88,7 @@ export default function ResponsiveText({
   fontWeightMobile,
   color,
   align = 'left',
+  maxWidth,
   className = '',
   style = {},
 }: ResponsiveTextProps) {
@@ -104,6 +111,8 @@ export default function ResponsiveText({
     ...(hasResponsiveFontWeight && { '--rt-mobile-fw': fontWeightMobile }),
     ...(!hasResponsiveFontWeight && fontWeight !== undefined && { fontWeight }),
     ...(color && { color }),
+    // max-width requires block/inline-block display to work on inline elements like span
+    ...(maxWidth && { display: 'block', maxWidth }),
     ...style,
   } as React.CSSProperties
 

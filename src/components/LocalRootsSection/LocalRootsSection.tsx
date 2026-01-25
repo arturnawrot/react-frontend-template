@@ -18,10 +18,9 @@ export default function LocalRootsSection({ block }: LocalRootsSectionProps) {
   const headingAlignment = block.headingAlignment || 'top'
   
   const isLight = variant === 'light'
-  // When card style is enabled, always use dark text colors regardless of variant
-  const textColor = useCardStyle ? 'var(--strong-green)' : (isLight ? 'text-[#FAF9F7]' : 'var(--strong-green)')
-  const headingColor = useCardStyle ? '!text-black' : (isLight ? '!text-[#FAF9F7]' : '!text-black')
-  const dividerColor = useCardStyle ? 'divide-[rgba(2,3,3,1)]' : (isLight ? 'divide-[#FAF9F7]/20' : 'divide-black/20')
+  const textColor = isLight ? 'rgba(250, 249, 247, 1)' : 'var(--strong-green)'
+  const headingColor = isLight ? '!text-[rgba(250,249,247,1)]' : '!text-black'
+  const dividerColor = isLight ? 'divide-[rgba(250,249,247,1)]' : 'divide-black/20'
 
   // Mobile: items-center, Desktop: use headingAlignment setting
   const headingAlignmentClass = headingAlignment === 'center' ? 'items-center' : 'items-center lg:items-start'
@@ -34,7 +33,7 @@ export default function LocalRootsSection({ block }: LocalRootsSectionProps) {
           {/* Left Column - Heading */}
           <div className="lg:w-2/5">
             <SectionHeading>
-              <ResponsiveText desktop="--display3" mobile="--display4" className={headingColor} as="span">
+              <ResponsiveText maxWidth="480px" desktop="--display2" mobile="--display4" className={headingColor} as="span">
                 {heading}
               </ResponsiveText>
             </SectionHeading>
