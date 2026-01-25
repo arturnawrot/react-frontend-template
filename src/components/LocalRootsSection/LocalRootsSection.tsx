@@ -35,7 +35,7 @@ export default function LocalRootsSection({ block }: LocalRootsSectionProps) {
             maxWidth={useCardStyle ? "360px" : "480px"} 
             desktop={useCardStyle ? "--display3" : "--display2"} 
             mobile="--display4" 
-            className={headingColor} 
+            className={`text-center lg:text-left ${headingColor}`} 
             as="span"
           >
             {heading}
@@ -58,6 +58,7 @@ export default function LocalRootsSection({ block }: LocalRootsSectionProps) {
                 color={textColor}
                 fontFamily="GT America Condensed"
                 fontWeight={500}
+                breakpoint="lg"
               >
                 {item.sentence}
               </ResponsiveText>

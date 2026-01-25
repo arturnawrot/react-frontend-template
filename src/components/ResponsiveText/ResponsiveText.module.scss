@@ -1,21 +1,77 @@
 .responsiveText {
-  // Mobile
+  // Base mobile styles
   font-size: var(--rt-mobile-size);
   line-height: var(--rt-mobile-lh);
+}
 
-  // Desktop (768px+)
+// Breakpoint classes for font size/line height
+.breakpoint_sm {
+  @media (min-width: 640px) {
+    font-size: var(--rt-desktop-size);
+    line-height: var(--rt-desktop-lh);
+  }
+}
+
+.breakpoint_md {
   @media (min-width: 768px) {
     font-size: var(--rt-desktop-size);
     line-height: var(--rt-desktop-lh);
   }
 }
 
-.responsiveFontWeight {
-  // Mobile
-  font-weight: var(--rt-mobile-fw);
+.breakpoint_lg {
+  @media (min-width: 1024px) {
+    font-size: var(--rt-desktop-size);
+    line-height: var(--rt-desktop-lh);
+  }
+}
 
-  // Desktop (768px+)
+.breakpoint_xl {
+  @media (min-width: 1280px) {
+    font-size: var(--rt-desktop-size);
+    line-height: var(--rt-desktop-lh);
+  }
+}
+
+.breakpoint_2xl {
+  @media (min-width: 1536px) {
+    font-size: var(--rt-desktop-size);
+    line-height: var(--rt-desktop-lh);
+  }
+}
+
+// Responsive font weight classes
+.responsiveFontWeight_sm {
+  font-weight: var(--rt-mobile-fw);
+  @media (min-width: 640px) {
+    font-weight: var(--rt-desktop-fw);
+  }
+}
+
+.responsiveFontWeight_md {
+  font-weight: var(--rt-mobile-fw);
   @media (min-width: 768px) {
+    font-weight: var(--rt-desktop-fw);
+  }
+}
+
+.responsiveFontWeight_lg {
+  font-weight: var(--rt-mobile-fw);
+  @media (min-width: 1024px) {
+    font-weight: var(--rt-desktop-fw);
+  }
+}
+
+.responsiveFontWeight_xl {
+  font-weight: var(--rt-mobile-fw);
+  @media (min-width: 1280px) {
+    font-weight: var(--rt-desktop-fw);
+  }
+}
+
+.responsiveFontWeight_2xl {
+  font-weight: var(--rt-mobile-fw);
+  @media (min-width: 1536px) {
     font-weight: var(--rt-desktop-fw);
   }
 }

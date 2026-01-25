@@ -4,6 +4,16 @@ import styles from './ResponsiveText.module.scss'
 type TextAlign = 'left' | 'center' | 'right'
 
 /**
+ * Breakpoint at which desktop styles apply (Tailwind breakpoints)
+ * - sm: 640px
+ * - md: 768px (default)
+ * - lg: 1024px
+ * - xl: 1280px
+ * - 2xl: 1536px
+ */
+type Breakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+
+/**
  * Font size can be specified as:
  * - CSS variable: '--display2', '--headline2', '--xxl', etc.
  * - Pixel value: '48px', '32px', etc.
@@ -49,6 +59,8 @@ export interface ResponsiveTextProps {
   color?: string
   /** Text alignment */
   align?: TextAlign
+  /** Breakpoint at which desktop styles apply (default: 'md' = 768px) */
+  breakpoint?: Breakpoint
   /** Max width constraint (e.g., '600px', '80%', '40ch') */
   maxWidth?: string
   /** Additional CSS class names */
@@ -75,6 +87,10 @@ export interface ResponsiveTextProps {
  * @example
  * // With max width constraint
  * <ResponsiveText desktop="--headline2" mobile="--headline4" maxWidth="600px">Constrained text</ResponsiveText>
+ * 
+ * @example
+ * // Custom breakpoint (desktop starts at lg = 1024px)
+ * <ResponsiveText desktop="--display2" mobile="--display4" breakpoint="lg">Heading</ResponsiveText>
  */
 export default function ResponsiveText({
   children,
@@ -87,7 +103,8 @@ export default function ResponsiveText({
   fontWeight,
   fontWeightMobile,
   color,
-  align = 'left',
+  align,
+  breakpoint = 'md',
   maxWidth,
   className = '',
   style = {},
@@ -95,7 +112,8 @@ export default function ResponsiveText({
   const alignClass = 
     align === 'center' ? 'text-center' :
     align === 'right' ? 'text-right' :
-    'text-left'
+    align === 'left' ? 'text-left' :
+    ''
 
   // Determine if we need responsive font weight
   const hasResponsiveFontWeight = fontWeightMobile !== undefined
@@ -116,11 +134,13 @@ export default function ResponsiveText({
     ...style,
   } as React.CSSProperties
 
-  const responsiveFwClass = hasResponsiveFontWeight ? styles.responsiveFontWeight : ''
+  // Get the appropriate breakpoint class
+  const breakpointClass = styles[`breakpoint_${breakpoint}`] || styles.breakpoint_md
+  const responsiveFwClass = hasResponsiveFontWeight ? styles[`responsiveFontWeight_${breakpoint}`] || styles.responsiveFontWeight_md : ''
 
   return (
     <Component 
-      className={`${styles.responsiveText} ${responsiveFwClass} ${alignClass} ${className}`.trim()}
+      className={`${styles.responsiveText} ${breakpointClass} ${responsiveFwClass} ${alignClass} ${className}`.trim()}
       style={cssVars}
     >
       {children}
