@@ -22,6 +22,8 @@ interface SectionHeadingProps {
   desktop?: FontSize
   /** Font size for mobile (default: '--display4') */
   mobile?: FontSize
+  /** Max width constraint (e.g., '600px', '80%', '40ch') */
+  maxWidth?: string
   /** Additional CSS class names */
   className?: string
 }
@@ -37,12 +39,14 @@ export default function SectionHeading({
   as: Component = 'h2',
   desktop = '--display2',
   mobile = '--display4',
+  maxWidth = '480px',
   className = '',
 }: SectionHeadingProps) {
 
   const cssVars = {
     '--heading-desktop': resolveFontSize(desktop),
     '--heading-mobile': resolveFontSize(mobile),
+    maxWidth,
   } as React.CSSProperties
 
   return (
