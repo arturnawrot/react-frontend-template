@@ -363,9 +363,9 @@ export interface Page {
       }
     | {
         /**
-         * Add vertical padding (spacing) to this container
+         * Add extra vertical padding to the top and/or bottom of this container
          */
-        includeSpacing?: boolean | null;
+        extraPadding?: ('top' | 'bottom')[] | null;
         /**
          * Select one or more CSS styles to apply to this container
          */
@@ -888,9 +888,9 @@ export interface Page {
                 }
               | {
                   /**
-                   * Add vertical padding (spacing) to this container
+                   * Add extra vertical padding to the top and/or bottom of this container
                    */
-                  includeSpacing?: boolean | null;
+                  extraPadding?: ('top' | 'bottom')[] | null;
                   /**
                    * Select one or more CSS styles to apply to this container
                    */
@@ -1413,9 +1413,9 @@ export interface Page {
                           }
                         | {
                             /**
-                             * Add vertical padding (spacing) to this container
+                             * Add extra vertical padding to the top and/or bottom of this container
                              */
-                            includeSpacing?: boolean | null;
+                            extraPadding?: ('top' | 'bottom')[] | null;
                             /**
                              * Select one or more CSS styles to apply to this container
                              */
@@ -1938,9 +1938,9 @@ export interface Page {
                                     }
                                   | {
                                       /**
-                                       * Add vertical padding (spacing) to this container
+                                       * Add extra vertical padding to the top and/or bottom of this container
                                        */
-                                      includeSpacing?: boolean | null;
+                                      extraPadding?: ('top' | 'bottom')[] | null;
                                       /**
                                        * Select one or more CSS styles to apply to this container
                                        */
@@ -3614,7 +3614,7 @@ export interface PagesSelect<T extends boolean = true> {
         container?:
           | T
           | {
-              includeSpacing?: T;
+              extraPadding?: T;
               cssStyles?: T;
               blocks?:
                 | T
@@ -3909,7 +3909,7 @@ export interface PagesSelect<T extends boolean = true> {
                     container?:
                       | T
                       | {
-                          includeSpacing?: T;
+                          extraPadding?: T;
                           cssStyles?: T;
                           blocks?:
                             | T
@@ -4204,7 +4204,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 container?:
                                   | T
                                   | {
-                                      includeSpacing?: T;
+                                      extraPadding?: T;
                                       cssStyles?: T;
                                       blocks?:
                                         | T
@@ -4499,7 +4499,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             container?:
                                               | T
                                               | {
-                                                  includeSpacing?: T;
+                                                  extraPadding?: T;
                                                   cssStyles?: T;
                                                   blocks?:
                                                     | T

@@ -52,8 +52,15 @@ export default async function PayloadContainer({ block, payload, options }: Cont
   // Pass options through to avoid redundant siteSettings fetches
   const blocks = await renderBlocks(block.blocks as any, payload, options)
 
-  // Apply spacing if enabled (vertical padding similar to other sections)
-  const spacingClass = block.includeSpacing ? 'py-12 md:py-20' : ''
+  // Build padding classes based on extraPadding selection
+  const paddingClasses: string[] = []
+  if (block.extraPadding?.includes('top')) {
+    paddingClasses.push('pt-12 md:pt-20')
+  }
+  if (block.extraPadding?.includes('bottom')) {
+    paddingClasses.push('pb-12 md:pb-20')
+  }
+  const spacingClass = paddingClasses.join(' ')
 
   return (
     <div className="relative">

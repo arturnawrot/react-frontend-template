@@ -65,12 +65,16 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
     },
     fields: [
       {
-        name: 'includeSpacing',
-        type: 'checkbox',
-        label: 'Include Spacing',
-        defaultValue: false,
+        name: 'extraPadding',
+        type: 'select',
+        hasMany: true,
+        label: 'Extra Padding',
+        options: [
+          { label: 'Top', value: 'top' },
+          { label: 'Bottom', value: 'bottom' },
+        ],
         admin: {
-          description: 'Add vertical padding (spacing) to this container',
+          description: 'Add extra vertical padding to the top and/or bottom of this container',
         },
       },
       {
