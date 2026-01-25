@@ -39,7 +39,7 @@ export default function SectionHeading({
   as: Component = 'h2',
   desktop = '--display2',
   mobile = '--display4',
-  maxWidth = '480px',
+  maxWidth = '',
   className = '',
 }: SectionHeadingProps) {
 
