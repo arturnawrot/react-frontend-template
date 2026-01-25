@@ -71,7 +71,7 @@ export default function AgentIconsSection({ block }: AgentIconsSectionProps) {
 
   return (
     // 'overflow-hidden' on the SECTION is critical to handle the negative margins safely
-    <section className="w-full overflow-hidden bg-white py-12 md:py-20">
+    <section className="w-full overflow-hidden bg-white">
       <div className="container mx-auto px-4">
         
         <div className="flex flex-col gap-10 md:flex-row md:items-center">
