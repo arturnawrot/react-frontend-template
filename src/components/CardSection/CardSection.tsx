@@ -8,6 +8,7 @@ import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import CardWrapper from '@/components/CardWrapper'
 
 type CardSectionBlock = Extract<Page['blocks'][number], { blockType: 'cardSection' }>
 
@@ -66,7 +67,7 @@ export default function CardSection({ block }: CardSectionProps) {
 
   return (
     <Container className="relative z-10">
-      <div className="bg-white rounded-4xl border border-gray-100 shadow-md shadow-black/20 py-20 px-15">
+      <CardWrapper className="py-20 px-15">
         <div className={`text-center ${!description ? 'mb-15' : ''}`}>
           <SectionHeading align="center">{title}</SectionHeading>
           {description && <p className="description my-10">{description}</p>}
@@ -128,7 +129,7 @@ export default function CardSection({ block }: CardSectionProps) {
             )}
           </div>
         )}
-      </div>
+      </CardWrapper>
     </Container>
   )
 }
