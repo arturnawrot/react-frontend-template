@@ -1,0 +1,21 @@
+.responsiveText {
+  // Mobile
+  font-size: var(--rt-mobile-size);
+  line-height: var(--rt-mobile-lh);
+
+  // Desktop (768px+)
+  @media (min-width: 768px) {
+    font-size: var(--rt-desktop-size);
+    line-height: var(--rt-desktop-lh);
+  }
+}
+
+.responsiveFontWeight {
+  // Mobile
+  font-weight: var(--rt-mobile-fw);
+
+  // Desktop (768px+)
+  @media (min-width: 768px) {
+    font-weight: var(--rt-desktop-fw);
+  }
+}

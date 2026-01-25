@@ -21,6 +21,28 @@ export const LocalRootsSection: Block = {
       },
     },
     {
+      name: 'useCardStyle',
+      type: 'checkbox',
+      label: 'Use Card Style',
+      defaultValue: false,
+      admin: {
+        description: 'When enabled, displays content in a card with white background, border and shadow (like CardSection)',
+      },
+    },
+    {
+      name: 'headingAlignment',
+      type: 'select',
+      label: 'Heading Vertical Alignment',
+      defaultValue: 'top',
+      options: [
+        { label: 'Top', value: 'top' },
+        { label: 'Center', value: 'center' },
+      ],
+      admin: {
+        description: 'Vertical alignment of the heading relative to the items list',
+      },
+    },
+    {
       name: 'heading',
       type: 'text',
       label: 'Heading',
@@ -35,29 +57,17 @@ export const LocalRootsSection: Block = {
       maxRows: 8,
       fields: [
         {
-          name: 'title',
+          name: 'sentence',
           type: 'text',
-          label: 'Title',
+          label: 'Sentence',
           required: true,
-          admin: {
-            description: 'Main text for the item',
-          },
-        },
-        {
-          name: 'description',
-          type: 'text',
-          label: 'Description',
-          required: false,
-          admin: {
-            description: 'Optional secondary text/description',
-          },
         },
       ],
       defaultValue: [
-        { title: 'Southeast-based, regionally respected' },
-        { title: 'Market presence in Augusta, Aiken, Columbia - with national reach' },
-        { title: 'Deep repeat client base.', description: '"We measure success in return calls, not cold calls."' },
-        { title: 'Integrated platform.', description: 'Listings, advisory, planning, marketing, and management' },
+        { sentence: 'Southeast-based, regionally respected' },
+        { sentence: 'Market presence in Augusta, Aiken, Columbia - with national reach' },
+        { sentence: 'Deep repeat client base. "We measure success in return calls, not cold calls."' },
+        { sentence: 'Integrated platform. Listings, advisory, planning, marketing, and management' },
       ],
     },
   ],

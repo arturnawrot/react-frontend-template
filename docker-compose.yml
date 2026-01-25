@@ -22,6 +22,22 @@ services:
       redis:
         condition: service_started
 
+  payload:
+    image: node:18-alpine
+    ports:
+      - '8080:3000'
+    volumes:
+      - .:/home/node/app
+      - node_modules:/home/node/app/node_modules
+    working_dir: /home/node/app/
+    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
+    depends_on:
+      - mongo
+      - redis
+      # - postgres
+    env_file:
+      - .env
+
   mongo:
     image: mongo:latest
     restart: unless-stopped
@@ -56,3 +72,4 @@ services:
 volumes:
   data:
   redis_data:
+  node_modules:

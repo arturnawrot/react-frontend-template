@@ -845,17 +845,18 @@ export interface Page {
                    * Choose color scheme - dark for black text, light for white text
                    */
                   variant?: ('dark' | 'light') | null;
+                  /**
+                   * When enabled, displays content in a card with white background, border and shadow (like CardSection)
+                   */
+                  useCardStyle?: boolean | null;
+                  /**
+                   * Vertical alignment of the heading relative to the items list
+                   */
+                  headingAlignment?: ('top' | 'center') | null;
                   heading: string;
                   items?:
                     | {
-                        /**
-                         * Main text for the item
-                         */
-                        title: string;
-                        /**
-                         * Optional secondary text/description
-                         */
-                        description?: string | null;
+                        sentence: string;
                         id?: string | null;
                       }[]
                     | null;
@@ -1369,17 +1370,18 @@ export interface Page {
                              * Choose color scheme - dark for black text, light for white text
                              */
                             variant?: ('dark' | 'light') | null;
+                            /**
+                             * When enabled, displays content in a card with white background, border and shadow (like CardSection)
+                             */
+                            useCardStyle?: boolean | null;
+                            /**
+                             * Vertical alignment of the heading relative to the items list
+                             */
+                            headingAlignment?: ('top' | 'center') | null;
                             heading: string;
                             items?:
                               | {
-                                  /**
-                                   * Main text for the item
-                                   */
-                                  title: string;
-                                  /**
-                                   * Optional secondary text/description
-                                   */
-                                  description?: string | null;
+                                  sentence: string;
                                   id?: string | null;
                                 }[]
                               | null;
@@ -1893,17 +1895,18 @@ export interface Page {
                                        * Choose color scheme - dark for black text, light for white text
                                        */
                                       variant?: ('dark' | 'light') | null;
+                                      /**
+                                       * When enabled, displays content in a card with white background, border and shadow (like CardSection)
+                                       */
+                                      useCardStyle?: boolean | null;
+                                      /**
+                                       * Vertical alignment of the heading relative to the items list
+                                       */
+                                      headingAlignment?: ('top' | 'center') | null;
                                       heading: string;
                                       items?:
                                         | {
-                                            /**
-                                             * Main text for the item
-                                             */
-                                            title: string;
-                                            /**
-                                             * Optional secondary text/description
-                                             */
-                                            description?: string | null;
+                                            sentence: string;
                                             id?: string | null;
                                           }[]
                                         | null;
@@ -2417,17 +2420,18 @@ export interface Page {
                                                  * Choose color scheme - dark for black text, light for white text
                                                  */
                                                 variant?: ('dark' | 'light') | null;
+                                                /**
+                                                 * When enabled, displays content in a card with white background, border and shadow (like CardSection)
+                                                 */
+                                                useCardStyle?: boolean | null;
+                                                /**
+                                                 * Vertical alignment of the heading relative to the items list
+                                                 */
+                                                headingAlignment?: ('top' | 'center') | null;
                                                 heading: string;
                                                 items?:
                                                   | {
-                                                      /**
-                                                       * Main text for the item
-                                                       */
-                                                      title: string;
-                                                      /**
-                                                       * Optional secondary text/description
-                                                       */
-                                                      description?: string | null;
+                                                      sentence: string;
                                                       id?: string | null;
                                                     }[]
                                                   | null;
@@ -2859,17 +2863,18 @@ export interface Page {
          * Choose color scheme - dark for black text, light for white text
          */
         variant?: ('dark' | 'light') | null;
+        /**
+         * When enabled, displays content in a card with white background, border and shadow (like CardSection)
+         */
+        useCardStyle?: boolean | null;
+        /**
+         * Vertical alignment of the heading relative to the items list
+         */
+        headingAlignment?: ('top' | 'center') | null;
         heading: string;
         items?:
           | {
-              /**
-               * Main text for the item
-               */
-              title: string;
-              /**
-               * Optional secondary text/description
-               */
-              description?: string | null;
+              sentence: string;
               id?: string | null;
             }[]
           | null;
@@ -3874,12 +3879,13 @@ export interface PagesSelect<T extends boolean = true> {
                       | T
                       | {
                           variant?: T;
+                          useCardStyle?: T;
+                          headingAlignment?: T;
                           heading?: T;
                           items?:
                             | T
                             | {
-                                title?: T;
-                                description?: T;
+                                sentence?: T;
                                 id?: T;
                               };
                           id?: T;
@@ -4168,12 +4174,13 @@ export interface PagesSelect<T extends boolean = true> {
                                   | T
                                   | {
                                       variant?: T;
+                                      useCardStyle?: T;
+                                      headingAlignment?: T;
                                       heading?: T;
                                       items?:
                                         | T
                                         | {
-                                            title?: T;
-                                            description?: T;
+                                            sentence?: T;
                                             id?: T;
                                           };
                                       id?: T;
@@ -4462,12 +4469,13 @@ export interface PagesSelect<T extends boolean = true> {
                                               | T
                                               | {
                                                   variant?: T;
+                                                  useCardStyle?: T;
+                                                  headingAlignment?: T;
                                                   heading?: T;
                                                   items?:
                                                     | T
                                                     | {
-                                                        title?: T;
-                                                        description?: T;
+                                                        sentence?: T;
                                                         id?: T;
                                                       };
                                                   id?: T;
@@ -4756,12 +4764,13 @@ export interface PagesSelect<T extends boolean = true> {
                                                           | T
                                                           | {
                                                               variant?: T;
+                                                              useCardStyle?: T;
+                                                              headingAlignment?: T;
                                                               heading?: T;
                                                               items?:
                                                                 | T
                                                                 | {
-                                                                    title?: T;
-                                                                    description?: T;
+                                                                    sentence?: T;
                                                                     id?: T;
                                                                   };
                                                               id?: T;
@@ -5024,12 +5033,13 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               variant?: T;
+              useCardStyle?: T;
+              headingAlignment?: T;
               heading?: T;
               items?:
                 | T
                 | {
-                    title?: T;
-                    description?: T;
+                    sentence?: T;
                     id?: T;
                   };
               id?: T;

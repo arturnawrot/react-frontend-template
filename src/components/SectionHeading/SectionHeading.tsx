@@ -2,8 +2,15 @@ import React from 'react'
 import styles from './SectionHeading.module.scss'
 
 type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-
 type TextAlign = 'left' | 'center' | 'right'
+type FontSize = `--${string}` | `${number}px`
+
+function resolveFontSize(size: FontSize): string {
+  if (size.startsWith('--')) {
+    return `var(${size})`
+  }
+  return size
+}
 
 interface SectionHeadingProps {
   children: React.ReactNode
@@ -11,29 +18,38 @@ interface SectionHeadingProps {
   as?: HeadingLevel
   /** Text alignment (default: 'left') */
   align?: TextAlign
+  /** Font size for desktop (default: '--display2') */
+  desktop?: FontSize
+  /** Font size for mobile (default: '--display4') */
+  mobile?: FontSize
   /** Additional CSS class names */
   className?: string
 }
 
 /**
- * Unified section heading component with responsive typography.
- * Uses Copernicus New Cond Trial font with responsive sizing:
- * - Mobile: var(--display4) = 48px
- * - Desktop (768px+): var(--display2) = 64px
+ * Section heading component with responsive typography.
+ * Uses Copernicus New Cond Trial font with configurable responsive sizing.
+ * 
+ * Default: --display2 on desktop, --display4 on mobile
  */
 export default function SectionHeading({
   children,
   as: Component = 'h2',
-  align = 'left',
+  desktop = '--display2',
+  mobile = '--display4',
   className = '',
 }: SectionHeadingProps) {
-  const alignClass = 
-    align === 'center' ? 'text-center' :
-    align === 'right' ? 'text-right' :
-    'text-left'
+
+  const cssVars = {
+    '--heading-desktop': resolveFontSize(desktop),
+    '--heading-mobile': resolveFontSize(mobile),
+  } as React.CSSProperties
 
   return (
-    <Component className={`${styles.heading} ${alignClass} ${className}`.trim()}>
+    <Component 
+      className={`${styles.heading} ${className}`.trim()}
+      style={cssVars}
+    >
       {children}
     </Component>
   )
