@@ -70,7 +70,7 @@ export default function LocalRootsSection({ block }: LocalRootsSectionProps) {
   )
 
   return (
-    <Container className="py-16 md:py-24 text-center md:text-left">
+    <Container className="text-center md:text-left">
       {useCardStyle ? (
         <CardWrapper className="py-20 px-8 md:px-15">
           {content}
