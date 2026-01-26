@@ -52,6 +52,7 @@ const PropertyCard = ({
           fill
           className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110" 
           sizes="(max-width: 768px) 300px, (max-width: 1024px) 500px, 550px"
+          quality={100}
         />
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500" />
       </div>
