@@ -144,7 +144,7 @@ const TrackRecord = () => {
   ]
 
   return (
-    <section className="w-full py-24">
+    <section className="w-full py-20">
       {/* Header Container */}
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 mb-16">
         <div className="flex flex-col md:flex-row items-center justify-between relative">
