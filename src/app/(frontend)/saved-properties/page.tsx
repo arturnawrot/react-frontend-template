@@ -49,8 +49,10 @@ export default async function SavedPropertiesPage() {
       },
     ],
     subheading: "View and manage your saved properties. Filter and search through your favorites.",
-    ctaPrimaryLabel: 'Start New Search',
-    ctaSecondaryLabel: 'Schedule a Consultation',
+    ctaPrimaryLabel: 'Start the Conversation',
+    ctaSecondaryLabel: '',
+    ctaPrimaryLinkType: 'custom',
+    ctaPrimaryCustomUrl: '/contact-us'
   }
 
   return (
@@ -61,7 +63,6 @@ export default async function SavedPropertiesPage() {
       {/* PropertySearchAdvanced with saved properties mode and no map */}
       <PropertySearchAdvanced 
         backgroundColor="var(--strong-green)"
-        backgroundExtendPx={200}
         savedPropertiesMode={true}
         hideMap={true}
       />

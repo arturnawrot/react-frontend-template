@@ -5,6 +5,7 @@ import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
 import PropertySearchAdvanced from '@/components/PropertySearchAdvanced/PropertySearchAdvanced'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
+import Footer from '@/components/Footer/Footer'
 
 export const dynamic = 'force-dynamic'
 
@@ -53,9 +54,9 @@ export default async function PropertySearchPage() {
         breakOnDesktop: false,
       },
     ],
-    subheading: "Approach every deal confidently, knowing you're backed by analytical excellence, investment foresight, and personal care.",
-    ctaPrimaryLabel: 'Start Your Property Search',
-    ctaSecondaryLabel: 'Schedule a Consultation',
+    subheading: "Browse commercial opportunities across Augusta, Aiken, Columbia, and beyond.",
+    ctaPrimaryLabel: '',
+    ctaSecondaryLabel: '',
   }
 
   return (
@@ -66,8 +67,12 @@ export default async function PropertySearchPage() {
       {/* PropertySearchAdvanced with hero background extension */}
       <PropertySearchAdvanced 
         backgroundColor="var(--strong-green)"
-        backgroundExtendPx={200}
       />
+
+
+      <div className="mt-20"></div>
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }

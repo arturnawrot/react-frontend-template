@@ -43,7 +43,7 @@ const ITEMS_PER_PAGE = 20
 
 export default function PropertySearchAdvanced({ 
   backgroundColor, 
-  backgroundExtendPx = 200,
+  backgroundExtendPx = 400,
   savedPropertiesMode = false,
   hideMap = false
 }: PropertySearchAdvancedProps) {
@@ -607,7 +607,7 @@ export default function PropertySearchAdvanced({
       }
     >
       {/* Top block shares the hero background when provided */}
-      <div className="px-4 md:px-8">
+      <div className="px-4 md:px-8 pt-8 md:pt-14">
         <div className="max-w-[1400px] mx-auto">
           {/* --- Filter Section --- */}
           <div className="py-6">
