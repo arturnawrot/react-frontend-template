@@ -52,7 +52,7 @@ export default async function SavedPropertiesPage() {
     subheading: "View and manage your saved properties. Filter and search through your favorites.",
     ctaPrimaryLabel: 'Start the Conversation',
     ctaSecondaryLabel: '',
-    ctaPrimaryLinkType: 'custom',
+    ctaPrimaryLinkType: 'custom' as const,
     ctaPrimaryCustomUrl: '/contact-us'
   }
 
