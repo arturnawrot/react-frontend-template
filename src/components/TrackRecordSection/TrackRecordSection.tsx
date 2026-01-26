@@ -179,7 +179,7 @@ export default function TrackRecordSection({ block, items = [] }: TrackRecordSec
   )
 
   return (
-    <section className="w-full">
+    <section className="w-full mb-18">
       <Carousel
         items={items}
         renderItem={renderItem}
