@@ -44,6 +44,8 @@ export interface RenderBlocksOptions {
       defaultSpacing?: 'none' | 'small' | 'medium' | 'large' | 'xlarge'
     }
   }
+  /** Pre-fetched constant links map for resolving constant link types */
+  constantLinksMap?: import('@/utils/linkResolver').ConstantLinksMap
 }
 
 /**

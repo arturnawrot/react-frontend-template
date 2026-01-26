@@ -125,6 +125,7 @@ export interface Config {
     blogHighlights: BlogHighlight;
     availableJobSets: AvailableJobSet;
     officeLocationSets: OfficeLocationSet;
+    constantLinks: ConstantLink;
   };
   globalsSelect: {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
@@ -142,6 +143,7 @@ export interface Config {
     blogHighlights: BlogHighlightsSelect<false> | BlogHighlightsSelect<true>;
     availableJobSets: AvailableJobSetsSelect<false> | AvailableJobSetsSelect<true>;
     officeLocationSets: OfficeLocationSetsSelect<false> | OfficeLocationSetsSelect<true>;
+    constantLinks: ConstantLinksSelect<false> | ConstantLinksSelect<true>;
   };
   locale: null;
   user: User & {
@@ -249,9 +251,9 @@ export interface Page {
         subheading?: string | null;
         ctaPrimaryLabel?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+        ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -261,14 +263,18 @@ export interface Page {
          */
         ctaPrimaryCustomUrl?: string | null;
         /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        ctaPrimaryConstantLink?: string | null;
+        /**
          * Open the link in a new browser tab
          */
         ctaPrimaryOpenInNewTab?: boolean | null;
         ctaSecondaryLabel?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+        ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -277,6 +283,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         ctaSecondaryCustomUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        ctaSecondaryConstantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -324,9 +334,9 @@ export interface Page {
               description: string;
               linkText?: string | null;
               /**
-               * Choose whether to link to an existing page, a custom URL, or no link
+               * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                */
-              linkType?: ('none' | 'page' | 'custom') | null;
+              linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
               /**
                * Select a page to link to
                */
@@ -335,6 +345,10 @@ export interface Page {
                * Enter a custom URL (e.g., /contact, https://example.com)
                */
               customUrl?: string | null;
+              /**
+               * Select a constant link. These links can be managed globally and updated in one place.
+               */
+              constantLink?: string | null;
               /**
                * Open the link in a new browser tab
                */
@@ -348,9 +362,9 @@ export interface Page {
         image?: (string | null) | Media;
         ctaText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -359,6 +373,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -403,9 +421,9 @@ export interface Page {
                   subheading?: string | null;
                   ctaPrimaryLabel?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+                  ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -415,14 +433,18 @@ export interface Page {
                    */
                   ctaPrimaryCustomUrl?: string | null;
                   /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  ctaPrimaryConstantLink?: string | null;
+                  /**
                    * Open the link in a new browser tab
                    */
                   ctaPrimaryOpenInNewTab?: boolean | null;
                   ctaSecondaryLabel?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+                  ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -431,6 +453,10 @@ export interface Page {
                    * Enter a custom URL (e.g., /contact, https://example.com)
                    */
                   ctaSecondaryCustomUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  ctaSecondaryConstantLink?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -478,9 +504,9 @@ export interface Page {
                         description: string;
                         linkText?: string | null;
                         /**
-                         * Choose whether to link to an existing page, a custom URL, or no link
+                         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                          */
-                        linkType?: ('none' | 'page' | 'custom') | null;
+                        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                         /**
                          * Select a page to link to
                          */
@@ -489,6 +515,10 @@ export interface Page {
                          * Enter a custom URL (e.g., /contact, https://example.com)
                          */
                         customUrl?: string | null;
+                        /**
+                         * Select a constant link. These links can be managed globally and updated in one place.
+                         */
+                        constantLink?: string | null;
                         /**
                          * Open the link in a new browser tab
                          */
@@ -502,9 +532,9 @@ export interface Page {
                   image?: (string | null) | Media;
                   ctaText?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -513,6 +543,10 @@ export interface Page {
                    * Enter a custom URL (e.g., /contact, https://example.com)
                    */
                   customUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  constantLink?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -530,9 +564,9 @@ export interface Page {
                   description?: string | null;
                   buttonText?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -541,6 +575,10 @@ export interface Page {
                    * Enter a custom URL (e.g., /contact, https://example.com)
                    */
                   customUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  constantLink?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -607,9 +645,9 @@ export interface Page {
                     | null;
                   linkText?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -618,6 +656,10 @@ export interface Page {
                    * Enter a custom URL (e.g., /contact, https://example.com)
                    */
                   customUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  constantLink?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -634,9 +676,9 @@ export interface Page {
                   heading?: string | null;
                   linkText?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -645,6 +687,10 @@ export interface Page {
                    * Enter a custom URL (e.g., /contact, https://example.com)
                    */
                   customUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  constantLink?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -678,9 +724,9 @@ export interface Page {
                   description?: string | null;
                   linkText?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -689,6 +735,10 @@ export interface Page {
                    * Enter a custom URL (e.g., /contact, https://example.com)
                    */
                   customUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  constantLink?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -721,9 +771,9 @@ export interface Page {
                   paragraph?: string | null;
                   linkText?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -732,6 +782,10 @@ export interface Page {
                    * Enter a custom URL (e.g., /contact, https://example.com)
                    */
                   customUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  constantLink?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -768,9 +822,9 @@ export interface Page {
                     | null;
                   buttonText?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -779,6 +833,10 @@ export interface Page {
                    * Enter a custom URL (e.g., /contact, https://example.com)
                    */
                   customUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  constantLink?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -804,9 +862,9 @@ export interface Page {
                     | {
                         label: string;
                         /**
-                         * Choose whether to link to an existing page, a custom URL, or no link
+                         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                          */
-                        linkType?: ('none' | 'page' | 'custom') | null;
+                        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                         /**
                          * Select a page to link to
                          */
@@ -815,6 +873,10 @@ export interface Page {
                          * Enter a custom URL (e.g., /contact, https://example.com)
                          */
                         customUrl?: string | null;
+                        /**
+                         * Select a constant link. These links can be managed globally and updated in one place.
+                         */
+                        constantLink?: string | null;
                         /**
                          * Open the link in a new browser tab
                          */
@@ -836,9 +898,9 @@ export interface Page {
                   backgroundImage?: (string | null) | Media;
                   ctaText?: string | null;
                   /**
-                   * Choose whether to link to an existing page, a custom URL, or no link
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                   /**
                    * Select a page to link to
                    */
@@ -847,6 +909,10 @@ export interface Page {
                    * Enter a custom URL (e.g., /contact, https://example.com)
                    */
                   customUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  constantLink?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -951,9 +1017,9 @@ export interface Page {
                             subheading?: string | null;
                             ctaPrimaryLabel?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+                            ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -963,14 +1029,18 @@ export interface Page {
                              */
                             ctaPrimaryCustomUrl?: string | null;
                             /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            ctaPrimaryConstantLink?: string | null;
+                            /**
                              * Open the link in a new browser tab
                              */
                             ctaPrimaryOpenInNewTab?: boolean | null;
                             ctaSecondaryLabel?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+                            ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -979,6 +1049,10 @@ export interface Page {
                              * Enter a custom URL (e.g., /contact, https://example.com)
                              */
                             ctaSecondaryCustomUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            ctaSecondaryConstantLink?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1026,9 +1100,9 @@ export interface Page {
                                   description: string;
                                   linkText?: string | null;
                                   /**
-                                   * Choose whether to link to an existing page, a custom URL, or no link
+                                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                    */
-                                  linkType?: ('none' | 'page' | 'custom') | null;
+                                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                   /**
                                    * Select a page to link to
                                    */
@@ -1037,6 +1111,10 @@ export interface Page {
                                    * Enter a custom URL (e.g., /contact, https://example.com)
                                    */
                                   customUrl?: string | null;
+                                  /**
+                                   * Select a constant link. These links can be managed globally and updated in one place.
+                                   */
+                                  constantLink?: string | null;
                                   /**
                                    * Open the link in a new browser tab
                                    */
@@ -1050,9 +1128,9 @@ export interface Page {
                             image?: (string | null) | Media;
                             ctaText?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1061,6 +1139,10 @@ export interface Page {
                              * Enter a custom URL (e.g., /contact, https://example.com)
                              */
                             customUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            constantLink?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1078,9 +1160,9 @@ export interface Page {
                             description?: string | null;
                             buttonText?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1089,6 +1171,10 @@ export interface Page {
                              * Enter a custom URL (e.g., /contact, https://example.com)
                              */
                             customUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            constantLink?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1155,9 +1241,9 @@ export interface Page {
                               | null;
                             linkText?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1166,6 +1252,10 @@ export interface Page {
                              * Enter a custom URL (e.g., /contact, https://example.com)
                              */
                             customUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            constantLink?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1182,9 +1272,9 @@ export interface Page {
                             heading?: string | null;
                             linkText?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1193,6 +1283,10 @@ export interface Page {
                              * Enter a custom URL (e.g., /contact, https://example.com)
                              */
                             customUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            constantLink?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1226,9 +1320,9 @@ export interface Page {
                             description?: string | null;
                             linkText?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1237,6 +1331,10 @@ export interface Page {
                              * Enter a custom URL (e.g., /contact, https://example.com)
                              */
                             customUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            constantLink?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1269,9 +1367,9 @@ export interface Page {
                             paragraph?: string | null;
                             linkText?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1280,6 +1378,10 @@ export interface Page {
                              * Enter a custom URL (e.g., /contact, https://example.com)
                              */
                             customUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            constantLink?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1316,9 +1418,9 @@ export interface Page {
                               | null;
                             buttonText?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1327,6 +1429,10 @@ export interface Page {
                              * Enter a custom URL (e.g., /contact, https://example.com)
                              */
                             customUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            constantLink?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1352,9 +1458,9 @@ export interface Page {
                               | {
                                   label: string;
                                   /**
-                                   * Choose whether to link to an existing page, a custom URL, or no link
+                                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                    */
-                                  linkType?: ('none' | 'page' | 'custom') | null;
+                                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                   /**
                                    * Select a page to link to
                                    */
@@ -1363,6 +1469,10 @@ export interface Page {
                                    * Enter a custom URL (e.g., /contact, https://example.com)
                                    */
                                   customUrl?: string | null;
+                                  /**
+                                   * Select a constant link. These links can be managed globally and updated in one place.
+                                   */
+                                  constantLink?: string | null;
                                   /**
                                    * Open the link in a new browser tab
                                    */
@@ -1384,9 +1494,9 @@ export interface Page {
                             backgroundImage?: (string | null) | Media;
                             ctaText?: string | null;
                             /**
-                             * Choose whether to link to an existing page, a custom URL, or no link
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1395,6 +1505,10 @@ export interface Page {
                              * Enter a custom URL (e.g., /contact, https://example.com)
                              */
                             customUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            constantLink?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1499,9 +1613,9 @@ export interface Page {
                                       subheading?: string | null;
                                       ctaPrimaryLabel?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+                                      ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1511,14 +1625,18 @@ export interface Page {
                                        */
                                       ctaPrimaryCustomUrl?: string | null;
                                       /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      ctaPrimaryConstantLink?: string | null;
+                                      /**
                                        * Open the link in a new browser tab
                                        */
                                       ctaPrimaryOpenInNewTab?: boolean | null;
                                       ctaSecondaryLabel?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+                                      ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1527,6 +1645,10 @@ export interface Page {
                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                        */
                                       ctaSecondaryCustomUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      ctaSecondaryConstantLink?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -1574,9 +1696,9 @@ export interface Page {
                                             description: string;
                                             linkText?: string | null;
                                             /**
-                                             * Choose whether to link to an existing page, a custom URL, or no link
+                                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                              */
-                                            linkType?: ('none' | 'page' | 'custom') | null;
+                                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                             /**
                                              * Select a page to link to
                                              */
@@ -1585,6 +1707,10 @@ export interface Page {
                                              * Enter a custom URL (e.g., /contact, https://example.com)
                                              */
                                             customUrl?: string | null;
+                                            /**
+                                             * Select a constant link. These links can be managed globally and updated in one place.
+                                             */
+                                            constantLink?: string | null;
                                             /**
                                              * Open the link in a new browser tab
                                              */
@@ -1598,9 +1724,9 @@ export interface Page {
                                       image?: (string | null) | Media;
                                       ctaText?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1609,6 +1735,10 @@ export interface Page {
                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                        */
                                       customUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      constantLink?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -1626,9 +1756,9 @@ export interface Page {
                                       description?: string | null;
                                       buttonText?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1637,6 +1767,10 @@ export interface Page {
                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                        */
                                       customUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      constantLink?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -1703,9 +1837,9 @@ export interface Page {
                                         | null;
                                       linkText?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1714,6 +1848,10 @@ export interface Page {
                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                        */
                                       customUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      constantLink?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -1730,9 +1868,9 @@ export interface Page {
                                       heading?: string | null;
                                       linkText?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1741,6 +1879,10 @@ export interface Page {
                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                        */
                                       customUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      constantLink?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -1774,9 +1916,9 @@ export interface Page {
                                       description?: string | null;
                                       linkText?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1785,6 +1927,10 @@ export interface Page {
                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                        */
                                       customUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      constantLink?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -1817,9 +1963,9 @@ export interface Page {
                                       paragraph?: string | null;
                                       linkText?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1828,6 +1974,10 @@ export interface Page {
                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                        */
                                       customUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      constantLink?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -1864,9 +2014,9 @@ export interface Page {
                                         | null;
                                       buttonText?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1875,6 +2025,10 @@ export interface Page {
                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                        */
                                       customUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      constantLink?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -1900,9 +2054,9 @@ export interface Page {
                                         | {
                                             label: string;
                                             /**
-                                             * Choose whether to link to an existing page, a custom URL, or no link
+                                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                              */
-                                            linkType?: ('none' | 'page' | 'custom') | null;
+                                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                             /**
                                              * Select a page to link to
                                              */
@@ -1911,6 +2065,10 @@ export interface Page {
                                              * Enter a custom URL (e.g., /contact, https://example.com)
                                              */
                                             customUrl?: string | null;
+                                            /**
+                                             * Select a constant link. These links can be managed globally and updated in one place.
+                                             */
+                                            constantLink?: string | null;
                                             /**
                                              * Open the link in a new browser tab
                                              */
@@ -1932,9 +2090,9 @@ export interface Page {
                                       backgroundImage?: (string | null) | Media;
                                       ctaText?: string | null;
                                       /**
-                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -1943,6 +2101,10 @@ export interface Page {
                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                        */
                                       customUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      constantLink?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2047,9 +2209,9 @@ export interface Page {
                                                 subheading?: string | null;
                                                 ctaPrimaryLabel?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                ctaPrimaryLinkType?: ('none' | 'page' | 'custom') | null;
+                                                ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2059,14 +2221,18 @@ export interface Page {
                                                  */
                                                 ctaPrimaryCustomUrl?: string | null;
                                                 /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                ctaPrimaryConstantLink?: string | null;
+                                                /**
                                                  * Open the link in a new browser tab
                                                  */
                                                 ctaPrimaryOpenInNewTab?: boolean | null;
                                                 ctaSecondaryLabel?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                ctaSecondaryLinkType?: ('none' | 'page' | 'custom') | null;
+                                                ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2075,6 +2241,10 @@ export interface Page {
                                                  * Enter a custom URL (e.g., /contact, https://example.com)
                                                  */
                                                 ctaSecondaryCustomUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                ctaSecondaryConstantLink?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -2122,9 +2292,9 @@ export interface Page {
                                                       description: string;
                                                       linkText?: string | null;
                                                       /**
-                                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                        */
-                                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                       /**
                                                        * Select a page to link to
                                                        */
@@ -2133,6 +2303,10 @@ export interface Page {
                                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                                        */
                                                       customUrl?: string | null;
+                                                      /**
+                                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                                       */
+                                                      constantLink?: string | null;
                                                       /**
                                                        * Open the link in a new browser tab
                                                        */
@@ -2146,9 +2320,9 @@ export interface Page {
                                                 image?: (string | null) | Media;
                                                 ctaText?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2157,6 +2331,10 @@ export interface Page {
                                                  * Enter a custom URL (e.g., /contact, https://example.com)
                                                  */
                                                 customUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                constantLink?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -2174,9 +2352,9 @@ export interface Page {
                                                 description?: string | null;
                                                 buttonText?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2185,6 +2363,10 @@ export interface Page {
                                                  * Enter a custom URL (e.g., /contact, https://example.com)
                                                  */
                                                 customUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                constantLink?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -2251,9 +2433,9 @@ export interface Page {
                                                   | null;
                                                 linkText?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2262,6 +2444,10 @@ export interface Page {
                                                  * Enter a custom URL (e.g., /contact, https://example.com)
                                                  */
                                                 customUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                constantLink?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -2278,9 +2464,9 @@ export interface Page {
                                                 heading?: string | null;
                                                 linkText?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2289,6 +2475,10 @@ export interface Page {
                                                  * Enter a custom URL (e.g., /contact, https://example.com)
                                                  */
                                                 customUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                constantLink?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -2322,9 +2512,9 @@ export interface Page {
                                                 description?: string | null;
                                                 linkText?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2333,6 +2523,10 @@ export interface Page {
                                                  * Enter a custom URL (e.g., /contact, https://example.com)
                                                  */
                                                 customUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                constantLink?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -2365,9 +2559,9 @@ export interface Page {
                                                 paragraph?: string | null;
                                                 linkText?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2376,6 +2570,10 @@ export interface Page {
                                                  * Enter a custom URL (e.g., /contact, https://example.com)
                                                  */
                                                 customUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                constantLink?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -2412,9 +2610,9 @@ export interface Page {
                                                   | null;
                                                 buttonText?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2423,6 +2621,10 @@ export interface Page {
                                                  * Enter a custom URL (e.g., /contact, https://example.com)
                                                  */
                                                 customUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                constantLink?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -2448,9 +2650,9 @@ export interface Page {
                                                   | {
                                                       label: string;
                                                       /**
-                                                       * Choose whether to link to an existing page, a custom URL, or no link
+                                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                        */
-                                                      linkType?: ('none' | 'page' | 'custom') | null;
+                                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                       /**
                                                        * Select a page to link to
                                                        */
@@ -2459,6 +2661,10 @@ export interface Page {
                                                        * Enter a custom URL (e.g., /contact, https://example.com)
                                                        */
                                                       customUrl?: string | null;
+                                                      /**
+                                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                                       */
+                                                      constantLink?: string | null;
                                                       /**
                                                        * Open the link in a new browser tab
                                                        */
@@ -2480,9 +2686,9 @@ export interface Page {
                                                 backgroundImage?: (string | null) | Media;
                                                 ctaText?: string | null;
                                                 /**
-                                                 * Choose whether to link to an existing page, a custom URL, or no link
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -2491,6 +2697,10 @@ export interface Page {
                                                  * Enter a custom URL (e.g., /contact, https://example.com)
                                                  */
                                                 customUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                constantLink?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -2588,9 +2798,9 @@ export interface Page {
         description?: string | null;
         buttonText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -2599,6 +2809,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -2665,9 +2879,9 @@ export interface Page {
           | null;
         linkText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -2676,6 +2890,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -2692,9 +2910,9 @@ export interface Page {
         heading?: string | null;
         linkText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -2703,6 +2921,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -2736,9 +2958,9 @@ export interface Page {
         description?: string | null;
         linkText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -2747,6 +2969,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -2779,9 +3005,9 @@ export interface Page {
         paragraph?: string | null;
         linkText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -2790,6 +3016,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -2826,9 +3056,9 @@ export interface Page {
           | null;
         buttonText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -2837,6 +3067,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -2869,9 +3103,9 @@ export interface Page {
         description?: string | null;
         contactButtonText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -2880,6 +3114,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -2900,9 +3138,9 @@ export interface Page {
           | {
               label: string;
               /**
-               * Choose whether to link to an existing page, a custom URL, or no link
+               * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                */
-              linkType?: ('none' | 'page' | 'custom') | null;
+              linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
               /**
                * Select a page to link to
                */
@@ -2911,6 +3149,10 @@ export interface Page {
                * Enter a custom URL (e.g., /contact, https://example.com)
                */
               customUrl?: string | null;
+              /**
+               * Select a constant link. These links can be managed globally and updated in one place.
+               */
+              constantLink?: string | null;
               /**
                * Open the link in a new browser tab
                */
@@ -2932,9 +3174,9 @@ export interface Page {
         backgroundImage?: (string | null) | Media;
         ctaText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -2943,6 +3185,10 @@ export interface Page {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -3675,11 +3921,13 @@ export interface PagesSelect<T extends boolean = true> {
               ctaPrimaryLinkType?: T;
               ctaPrimaryPage?: T;
               ctaPrimaryCustomUrl?: T;
+              ctaPrimaryConstantLink?: T;
               ctaPrimaryOpenInNewTab?: T;
               ctaSecondaryLabel?: T;
               ctaSecondaryLinkType?: T;
               ctaSecondaryPage?: T;
               ctaSecondaryCustomUrl?: T;
+              ctaSecondaryConstantLink?: T;
               ctaSecondaryOpenInNewTab?: T;
               backgroundImage?: T;
               backgroundVideo?: T;
@@ -3707,6 +3955,7 @@ export interface PagesSelect<T extends boolean = true> {
                     linkType?: T;
                     page?: T;
                     customUrl?: T;
+                    constantLink?: T;
                     openInNewTab?: T;
                     id?: T;
                   };
@@ -3715,6 +3964,7 @@ export interface PagesSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               id?: T;
               blockName?: T;
@@ -3747,11 +3997,13 @@ export interface PagesSelect<T extends boolean = true> {
                           ctaPrimaryLinkType?: T;
                           ctaPrimaryPage?: T;
                           ctaPrimaryCustomUrl?: T;
+                          ctaPrimaryConstantLink?: T;
                           ctaPrimaryOpenInNewTab?: T;
                           ctaSecondaryLabel?: T;
                           ctaSecondaryLinkType?: T;
                           ctaSecondaryPage?: T;
                           ctaSecondaryCustomUrl?: T;
+                          ctaSecondaryConstantLink?: T;
                           ctaSecondaryOpenInNewTab?: T;
                           backgroundImage?: T;
                           backgroundVideo?: T;
@@ -3779,6 +4031,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 linkType?: T;
                                 page?: T;
                                 customUrl?: T;
+                                constantLink?: T;
                                 openInNewTab?: T;
                                 id?: T;
                               };
@@ -3787,6 +4040,7 @@ export interface PagesSelect<T extends boolean = true> {
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
+                          constantLink?: T;
                           openInNewTab?: T;
                           id?: T;
                           blockName?: T;
@@ -3801,6 +4055,7 @@ export interface PagesSelect<T extends boolean = true> {
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
+                          constantLink?: T;
                           openInNewTab?: T;
                           cardTextAlign?: T;
                           cards?:
@@ -3854,6 +4109,7 @@ export interface PagesSelect<T extends boolean = true> {
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
+                          constantLink?: T;
                           openInNewTab?: T;
                           id?: T;
                           blockName?: T;
@@ -3867,6 +4123,7 @@ export interface PagesSelect<T extends boolean = true> {
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
+                          constantLink?: T;
                           openInNewTab?: T;
                           id?: T;
                           blockName?: T;
@@ -3899,6 +4156,7 @@ export interface PagesSelect<T extends boolean = true> {
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
+                          constantLink?: T;
                           openInNewTab?: T;
                           featuredAgentSetName?: T;
                           colorVariant?: T;
@@ -3916,6 +4174,7 @@ export interface PagesSelect<T extends boolean = true> {
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
+                          constantLink?: T;
                           openInNewTab?: T;
                           id?: T;
                           blockName?: T;
@@ -3937,6 +4196,7 @@ export interface PagesSelect<T extends boolean = true> {
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
+                          constantLink?: T;
                           openInNewTab?: T;
                           id?: T;
                           blockName?: T;
@@ -3961,6 +4221,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 linkType?: T;
                                 page?: T;
                                 customUrl?: T;
+                                constantLink?: T;
                                 openInNewTab?: T;
                                 variant?: T;
                                 id?: T;
@@ -3978,6 +4239,7 @@ export interface PagesSelect<T extends boolean = true> {
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
+                          constantLink?: T;
                           openInNewTab?: T;
                           excludeSpacing?: T;
                           id?: T;
@@ -4054,11 +4316,13 @@ export interface PagesSelect<T extends boolean = true> {
                                       ctaPrimaryLinkType?: T;
                                       ctaPrimaryPage?: T;
                                       ctaPrimaryCustomUrl?: T;
+                                      ctaPrimaryConstantLink?: T;
                                       ctaPrimaryOpenInNewTab?: T;
                                       ctaSecondaryLabel?: T;
                                       ctaSecondaryLinkType?: T;
                                       ctaSecondaryPage?: T;
                                       ctaSecondaryCustomUrl?: T;
+                                      ctaSecondaryConstantLink?: T;
                                       ctaSecondaryOpenInNewTab?: T;
                                       backgroundImage?: T;
                                       backgroundVideo?: T;
@@ -4086,6 +4350,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             linkType?: T;
                                             page?: T;
                                             customUrl?: T;
+                                            constantLink?: T;
                                             openInNewTab?: T;
                                             id?: T;
                                           };
@@ -4094,6 +4359,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
+                                      constantLink?: T;
                                       openInNewTab?: T;
                                       id?: T;
                                       blockName?: T;
@@ -4108,6 +4374,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
+                                      constantLink?: T;
                                       openInNewTab?: T;
                                       cardTextAlign?: T;
                                       cards?:
@@ -4161,6 +4428,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
+                                      constantLink?: T;
                                       openInNewTab?: T;
                                       id?: T;
                                       blockName?: T;
@@ -4174,6 +4442,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
+                                      constantLink?: T;
                                       openInNewTab?: T;
                                       id?: T;
                                       blockName?: T;
@@ -4206,6 +4475,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
+                                      constantLink?: T;
                                       openInNewTab?: T;
                                       featuredAgentSetName?: T;
                                       colorVariant?: T;
@@ -4223,6 +4493,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
+                                      constantLink?: T;
                                       openInNewTab?: T;
                                       id?: T;
                                       blockName?: T;
@@ -4244,6 +4515,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
+                                      constantLink?: T;
                                       openInNewTab?: T;
                                       id?: T;
                                       blockName?: T;
@@ -4268,6 +4540,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             linkType?: T;
                                             page?: T;
                                             customUrl?: T;
+                                            constantLink?: T;
                                             openInNewTab?: T;
                                             variant?: T;
                                             id?: T;
@@ -4285,6 +4558,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
+                                      constantLink?: T;
                                       openInNewTab?: T;
                                       excludeSpacing?: T;
                                       id?: T;
@@ -4361,11 +4635,13 @@ export interface PagesSelect<T extends boolean = true> {
                                                   ctaPrimaryLinkType?: T;
                                                   ctaPrimaryPage?: T;
                                                   ctaPrimaryCustomUrl?: T;
+                                                  ctaPrimaryConstantLink?: T;
                                                   ctaPrimaryOpenInNewTab?: T;
                                                   ctaSecondaryLabel?: T;
                                                   ctaSecondaryLinkType?: T;
                                                   ctaSecondaryPage?: T;
                                                   ctaSecondaryCustomUrl?: T;
+                                                  ctaSecondaryConstantLink?: T;
                                                   ctaSecondaryOpenInNewTab?: T;
                                                   backgroundImage?: T;
                                                   backgroundVideo?: T;
@@ -4393,6 +4669,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                         linkType?: T;
                                                         page?: T;
                                                         customUrl?: T;
+                                                        constantLink?: T;
                                                         openInNewTab?: T;
                                                         id?: T;
                                                       };
@@ -4401,6 +4678,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
+                                                  constantLink?: T;
                                                   openInNewTab?: T;
                                                   id?: T;
                                                   blockName?: T;
@@ -4415,6 +4693,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
+                                                  constantLink?: T;
                                                   openInNewTab?: T;
                                                   cardTextAlign?: T;
                                                   cards?:
@@ -4468,6 +4747,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
+                                                  constantLink?: T;
                                                   openInNewTab?: T;
                                                   id?: T;
                                                   blockName?: T;
@@ -4481,6 +4761,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
+                                                  constantLink?: T;
                                                   openInNewTab?: T;
                                                   id?: T;
                                                   blockName?: T;
@@ -4513,6 +4794,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
+                                                  constantLink?: T;
                                                   openInNewTab?: T;
                                                   featuredAgentSetName?: T;
                                                   colorVariant?: T;
@@ -4530,6 +4812,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
+                                                  constantLink?: T;
                                                   openInNewTab?: T;
                                                   id?: T;
                                                   blockName?: T;
@@ -4551,6 +4834,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
+                                                  constantLink?: T;
                                                   openInNewTab?: T;
                                                   id?: T;
                                                   blockName?: T;
@@ -4575,6 +4859,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                         linkType?: T;
                                                         page?: T;
                                                         customUrl?: T;
+                                                        constantLink?: T;
                                                         openInNewTab?: T;
                                                         variant?: T;
                                                         id?: T;
@@ -4592,6 +4877,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
+                                                  constantLink?: T;
                                                   openInNewTab?: T;
                                                   excludeSpacing?: T;
                                                   id?: T;
@@ -4668,11 +4954,13 @@ export interface PagesSelect<T extends boolean = true> {
                                                               ctaPrimaryLinkType?: T;
                                                               ctaPrimaryPage?: T;
                                                               ctaPrimaryCustomUrl?: T;
+                                                              ctaPrimaryConstantLink?: T;
                                                               ctaPrimaryOpenInNewTab?: T;
                                                               ctaSecondaryLabel?: T;
                                                               ctaSecondaryLinkType?: T;
                                                               ctaSecondaryPage?: T;
                                                               ctaSecondaryCustomUrl?: T;
+                                                              ctaSecondaryConstantLink?: T;
                                                               ctaSecondaryOpenInNewTab?: T;
                                                               backgroundImage?: T;
                                                               backgroundVideo?: T;
@@ -4700,6 +4988,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     linkType?: T;
                                                                     page?: T;
                                                                     customUrl?: T;
+                                                                    constantLink?: T;
                                                                     openInNewTab?: T;
                                                                     id?: T;
                                                                   };
@@ -4708,6 +4997,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
+                                                              constantLink?: T;
                                                               openInNewTab?: T;
                                                               id?: T;
                                                               blockName?: T;
@@ -4722,6 +5012,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
+                                                              constantLink?: T;
                                                               openInNewTab?: T;
                                                               cardTextAlign?: T;
                                                               cards?:
@@ -4775,6 +5066,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
+                                                              constantLink?: T;
                                                               openInNewTab?: T;
                                                               id?: T;
                                                               blockName?: T;
@@ -4788,6 +5080,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
+                                                              constantLink?: T;
                                                               openInNewTab?: T;
                                                               id?: T;
                                                               blockName?: T;
@@ -4820,6 +5113,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
+                                                              constantLink?: T;
                                                               openInNewTab?: T;
                                                               featuredAgentSetName?: T;
                                                               colorVariant?: T;
@@ -4837,6 +5131,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
+                                                              constantLink?: T;
                                                               openInNewTab?: T;
                                                               id?: T;
                                                               blockName?: T;
@@ -4858,6 +5153,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
+                                                              constantLink?: T;
                                                               openInNewTab?: T;
                                                               id?: T;
                                                               blockName?: T;
@@ -4882,6 +5178,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     linkType?: T;
                                                                     page?: T;
                                                                     customUrl?: T;
+                                                                    constantLink?: T;
                                                                     openInNewTab?: T;
                                                                     variant?: T;
                                                                     id?: T;
@@ -4899,6 +5196,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
+                                                              constantLink?: T;
                                                               openInNewTab?: T;
                                                               excludeSpacing?: T;
                                                               id?: T;
@@ -4969,6 +5267,7 @@ export interface PagesSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               cardTextAlign?: T;
               cards?:
@@ -5022,6 +5321,7 @@ export interface PagesSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               id?: T;
               blockName?: T;
@@ -5035,6 +5335,7 @@ export interface PagesSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               id?: T;
               blockName?: T;
@@ -5067,6 +5368,7 @@ export interface PagesSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               featuredAgentSetName?: T;
               colorVariant?: T;
@@ -5084,6 +5386,7 @@ export interface PagesSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               id?: T;
               blockName?: T;
@@ -5105,6 +5408,7 @@ export interface PagesSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               id?: T;
               blockName?: T;
@@ -5133,6 +5437,7 @@ export interface PagesSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               id?: T;
               blockName?: T;
@@ -5155,6 +5460,7 @@ export interface PagesSelect<T extends boolean = true> {
                     linkType?: T;
                     page?: T;
                     customUrl?: T;
+                    constantLink?: T;
                     openInNewTab?: T;
                     variant?: T;
                     id?: T;
@@ -5172,6 +5478,7 @@ export interface PagesSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               excludeSpacing?: T;
               id?: T;
@@ -5901,9 +6208,9 @@ export interface AgentCategory {
         backgroundColor: string;
         linkText?: string | null;
         /**
-         * Choose whether to link to an existing page, a custom URL, or no link
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -5912,6 +6219,10 @@ export interface AgentCategory {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -6049,9 +6360,9 @@ export interface OfficeLocationSet {
               fax?: string | null;
               linkText?: string | null;
               /**
-               * Choose whether to link to an existing page, a custom URL, or no link
+               * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                */
-              linkType?: ('none' | 'page' | 'custom') | null;
+              linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
               /**
                * Select a page to link to
                */
@@ -6061,12 +6372,47 @@ export interface OfficeLocationSet {
                */
               customUrl?: string | null;
               /**
+               * Select a constant link. These links can be managed globally and updated in one place.
+               */
+              constantLink?: string | null;
+              /**
                * Open the link in a new browser tab
                */
               openInNewTab?: boolean | null;
               id?: string | null;
             }[]
           | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Manage constant links that can be used across blocks. These links can be updated in one place and will automatically update everywhere they are used.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "constantLinks".
+ */
+export interface ConstantLink {
+  id: string;
+  /**
+   * Define constant links that can be referenced by blocks. When you update a link here, it will automatically update everywhere it is used.
+   */
+  links?:
+    | {
+        /**
+         * Unique identifier for this constant link (e.g., "contact", "about", "apply-now")
+         */
+        key: string;
+        /**
+         * Display name for this constant link (e.g., "Contact Us", "About Us", "Apply Now")
+         */
+        label: string;
+        /**
+         * The URL this constant link redirects to (e.g., /contact, https://example.com, /about)
+         */
+        url: string;
         id?: string | null;
       }[]
     | null;
@@ -6342,6 +6688,7 @@ export interface AgentCategoriesSelect<T extends boolean = true> {
         linkType?: T;
         page?: T;
         customUrl?: T;
+        constantLink?: T;
         openInNewTab?: T;
         agents?: T;
         id?: T;
@@ -6423,9 +6770,27 @@ export interface OfficeLocationSetsSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
               openInNewTab?: T;
               id?: T;
             };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "constantLinks_select".
+ */
+export interface ConstantLinksSelect<T extends boolean = true> {
+  links?:
+    | T
+    | {
+        key?: T;
+        label?: T;
+        url?: T;
         id?: T;
       };
   updatedAt?: T;

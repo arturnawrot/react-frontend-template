@@ -2,7 +2,7 @@ import type { Field } from 'payload'
 
 /**
  * Creates a reusable link field group with linkType selector
- * that allows choosing between Page relationship, Custom URL, or None
+ * that allows choosing between Page relationship, Custom URL, Constant Link, or None
  */
 export function createLinkFields(options?: {
   linkTextName?: string
@@ -18,6 +18,7 @@ export function createLinkFields(options?: {
   const linkTypeName = prefix ? `${prefix}LinkType` : 'linkType'
   const pageName = prefix ? `${prefix}Page` : 'page'
   const customUrlName = prefix ? `${prefix}CustomUrl` : 'customUrl'
+  const constantLinkName = prefix ? `${prefix}ConstantLink` : 'constantLink'
 
   const openInNewTabName = prefix ? `${prefix}OpenInNewTab` : 'openInNewTab'
 
@@ -45,10 +46,14 @@ export function createLinkFields(options?: {
           label: 'Custom URL',
           value: 'custom',
         },
+        {
+          label: 'Constant Link',
+          value: 'constant',
+        },
       ],
       defaultValue: 'none',
       admin: {
-        description: 'Choose whether to link to an existing page, a custom URL, or no link',
+        description: 'Choose whether to link to an existing page, a custom URL, a constant link, or no link',
       },
     },
     {
@@ -74,6 +79,21 @@ export function createLinkFields(options?: {
           return linkType === 'custom'
         },
         description: 'Enter a custom URL (e.g., /contact, https://example.com)',
+      },
+    },
+    {
+      name: constantLinkName,
+      type: 'text',
+      required: false,
+      admin: {
+        condition: (data, siblingData) => {
+          const linkType = siblingData?.[linkTypeName]
+          return linkType === 'constant'
+        },
+        description: 'Select a constant link. These links can be managed globally and updated in one place.',
+        components: {
+          Field: '/components/ConstantLinkSelector/ConstantLinkSelector',
+        },
       },
     },
     {

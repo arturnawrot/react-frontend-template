@@ -7,7 +7,7 @@ import Navbar, { type NavbarLink } from './Navbar/Navbar'
 import CollapsingMenuMobile from './CollapsingMenuMobile/CollapsingMenuMobile'
 import type { Page } from '@/payload-types'
 import styles from './Hero.module.scss'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
@@ -23,6 +23,7 @@ type HeroProps = {
   block: HeroBlock
   upperLinks?: NavbarLink[]
   mainLinks?: NavbarLink[]
+  constantLinksMap?: ConstantLinksMap
 }
 
 // Reusable Heading Component
@@ -250,7 +251,7 @@ const AgentContactInfo = ({
 /**
  * Centralizes the logic for default text/images based on variant.
  */
-const resolveHeroContent = (block: HeroBlock) => {
+const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMap) => {
   const variant = block.variant || 'default'
   const isFullWidthColor = variant === 'full-width-color'
   const isSplit = variant === 'split'
@@ -328,18 +329,20 @@ const resolveHeroContent = (block: HeroBlock) => {
 
   // Resolve CTA links using the new linkType structure
   const primaryCtaLink = resolveLinkUrl({
-    linkType: (block as any).ctaPrimaryLinkType,
-    page: (block as any).ctaPrimaryPage,
-    customUrl: (block as any).ctaPrimaryCustomUrl,
+    ctaPrimaryLinkType: (block as any).ctaPrimaryLinkType,
+    ctaPrimaryPage: (block as any).ctaPrimaryPage,
+    ctaPrimaryCustomUrl: (block as any).ctaPrimaryCustomUrl,
+    ctaPrimaryConstantLink: (block as any).ctaPrimaryConstantLink,
     ctaPrimaryLink: (block as any).ctaPrimaryLink, // Legacy support
-  })
+  }, constantLinksMap)
 
   const secondaryCtaLink = resolveLinkUrl({
-    linkType: (block as any).ctaSecondaryLinkType,
-    page: (block as any).ctaSecondaryPage,
-    customUrl: (block as any).ctaSecondaryCustomUrl,
+    ctaSecondaryLinkType: (block as any).ctaSecondaryLinkType,
+    ctaSecondaryPage: (block as any).ctaSecondaryPage,
+    ctaSecondaryCustomUrl: (block as any).ctaSecondaryCustomUrl,
+    ctaSecondaryConstantLink: (block as any).ctaSecondaryConstantLink,
     ctaSecondaryLink: (block as any).ctaSecondaryLink, // Legacy support
-  })
+  }, constantLinksMap)
 
   const primaryCtaOpenInNewTab = shouldOpenInNewTab({
     ctaPrimaryLinkType: (block as any).ctaPrimaryLinkType,
@@ -777,11 +780,11 @@ const CenteredLayout = (
   )
 }
 
-export default function Hero({ block, upperLinks = [], mainLinks = [] }: HeroProps) {
+export default function Hero({ block, upperLinks = [], mainLinks = [], constantLinksMap }: HeroProps) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   // Prepare data (content, styling flags)
-  const content = resolveHeroContent(block)
+  const content = resolveHeroContent(block, constantLinksMap)
 
   // Determine Layout Strategy
   const isSideBySide = content.isSplit || content.isAgent
