@@ -149,13 +149,18 @@ const ActionButtons = ({
   secondaryOpenInNewTab?: boolean
   align?: 'center' | 'start'
 }) => {
-  if (!primaryLabel && !secondaryLabel) return null
+  // Check if we have any valid button to display
+  const hasPrimary = primaryLabel && (onPrimary || primaryLink)
+  const hasSecondary = secondaryLabel && (onSecondary || secondaryLink)
+  
+  // If no valid buttons, don't render anything
+  if (!hasPrimary && !hasSecondary) return null
 
   const justifyClass = align === 'start' ? 'md:justify-start' : 'md:justify-center'
 
   return (
     <div className={`mt-6 flex flex-col md:flex-row md:flex-wrap ${justifyClass} gap-3 md:gap-4 w-full`}>
-      {primaryLabel && (
+      {hasPrimary && (
         onPrimary ? (
           <button onClick={onPrimary} className={primaryClass}>
             {primaryLabel}
@@ -174,13 +179,9 @@ const ActionButtons = ({
                 }
             return <LinkComponent {...linkProps}>{primaryLabel}</LinkComponent>
           })()
-        ) : (
-          <span className={primaryClass}>
-            {primaryLabel}
-          </span>
-        )
+        ) : null
       )}
-      {secondaryLabel && (
+      {hasSecondary && (
         onSecondary ? (
           <button onClick={onSecondary} className={secondaryClass}>
             {secondaryLabel}
@@ -199,11 +200,7 @@ const ActionButtons = ({
                 }
             return <LinkComponent {...linkProps}>{secondaryLabel}</LinkComponent>
           })()
-        ) : (
-          <span className={secondaryClass}>
-            {secondaryLabel}
-          </span>
-        )
+        ) : null
       )}
     </div>
   )
