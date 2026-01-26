@@ -179,7 +179,7 @@ export default function TrackRecordSection({ block, items = [] }: TrackRecordSec
   )
 
   return (
-    <section className="w-full py-24">
+    <section className="w-full">
       <Carousel
         items={items}
         renderItem={renderItem}
