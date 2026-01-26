@@ -5,6 +5,7 @@ import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
 import PropertySearchAdvanced from '@/components/PropertySearchAdvanced/PropertySearchAdvanced'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
+import Footer from '@/components/Footer/Footer'
 
 export const dynamic = 'force-dynamic'
 
@@ -66,6 +67,8 @@ export default async function SavedPropertiesPage() {
         savedPropertiesMode={true}
         hideMap={true}
       />
+
+      <Footer />
     </div>
   )
 }
