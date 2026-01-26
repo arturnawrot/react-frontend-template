@@ -30,6 +30,7 @@ import { FeaturedArticles } from './globals/FeaturedArticles'
 import { ProvenTrackRecordSets } from './globals/ProvenTrackRecordSets'
 import { TestimonialsSets } from './globals/TestimonialsSets'
 import { FAQSets } from './globals/FAQSets'
+import { FAQFullPage } from './globals/FAQFullPage'
 import { AgentCategories } from './globals/AgentCategories'
 import { BlogHighlights } from './globals/BlogHighlights'
 import { AvailableJobSets } from './globals/AvailableJobSets'
@@ -58,7 +59,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, PageSEO, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
-  globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets, AgentCategories, BlogHighlights, AvailableJobSets, OfficeLocationSets],
+  globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets, FAQFullPage, AgentCategories, BlogHighlights, AvailableJobSets, OfficeLocationSets],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

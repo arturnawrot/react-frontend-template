@@ -120,6 +120,7 @@ export interface Config {
     provenTrackRecordSets: ProvenTrackRecordSet;
     testimonialsSets: TestimonialsSet;
     faqSets: FaqSet;
+    faqFullPage: FaqFullPage;
     agentCategories: AgentCategory;
     blogHighlights: BlogHighlight;
     availableJobSets: AvailableJobSet;
@@ -136,6 +137,7 @@ export interface Config {
     provenTrackRecordSets: ProvenTrackRecordSetsSelect<false> | ProvenTrackRecordSetsSelect<true>;
     testimonialsSets: TestimonialsSetsSelect<false> | TestimonialsSetsSelect<true>;
     faqSets: FaqSetsSelect<false> | FaqSetsSelect<true>;
+    faqFullPage: FaqFullPageSelect<false> | FaqFullPageSelect<true>;
     agentCategories: AgentCategoriesSelect<false> | AgentCategoriesSelect<true>;
     blogHighlights: BlogHighlightsSelect<false> | BlogHighlightsSelect<true>;
     availableJobSets: AvailableJobSetsSelect<false> | AvailableJobSetsSelect<true>;
@@ -2847,6 +2849,11 @@ export interface Page {
         blockType: 'faqSection';
       }
     | {
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'faqSectionFull';
+      }
+    | {
         heading?: string | null;
         subheading?: string | null;
         buttons?:
@@ -5058,6 +5065,12 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        faqSectionFull?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
         ctaFooter?:
           | T
           | {
@@ -5748,6 +5761,47 @@ export interface FaqSet {
   createdAt?: string | null;
 }
 /**
+ * Full page FAQ configuration with categories and questions. This global is used by the FAQSectionFull block.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqFullPage".
+ */
+export interface FaqFullPage {
+  id: string;
+  categories?:
+    | {
+        /**
+         * The heading for this category (e.g., "Listing and Property Search")
+         */
+        categoryName: string;
+        questions?:
+          | {
+              question: string;
+              answer: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Manage agent categories with colors and featured agents. Each category displays 3 agents when expanded.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -6165,6 +6219,28 @@ export interface FaqSetsSelect<T extends boolean = true> {
     | T
     | {
         name?: T;
+        questions?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqFullPage_select".
+ */
+export interface FaqFullPageSelect<T extends boolean = true> {
+  categories?:
+    | T
+    | {
+        categoryName?: T;
         questions?:
           | T
           | {

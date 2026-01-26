@@ -18,6 +18,7 @@ import AgentDecoration from '@/components/AgentDecoration/AgentDecoration'
 import AgentDirectory from '@/components/AgentDirectory/AgentDirectory'
 import AgentsByCategory from '@/components/AgentsByCategory/AgentsByCategory'
 import FAQSection from '@/components/FAQSection/FAQSection'
+import FAQSectionFull from '@/components/FAQSectionFull/FAQSectionFull'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import CardOnBackground from '@/components/CardOnBackground/CardOnBackground'
 import Footer from '@/components/Footer/Footer'
@@ -558,6 +559,49 @@ export async function renderBlock(
 
     return <FAQSection key={index} block={{ ...block, questions } as any} />
   }
+  if (block.blockType === 'faqSectionFull') {
+    // Fetch FAQs from the FAQFullPage global
+    let categories: Array<{
+      categoryName: string
+      questions: Array<{
+        question: string
+        answer: any
+      }>
+    }> = []
+
+    if (payload) {
+      try {
+        const global = await payload.findGlobal({
+          slug: 'faqFullPage',
+          depth: 0,
+        })
+
+        if (global) {
+          if (global.categories && Array.isArray(global.categories)) {
+            categories = global.categories.map((cat: any) => ({
+              categoryName: cat.categoryName || '',
+              questions: (cat.questions || []).map((faq: any) => ({
+                question: faq.question || '',
+                answer: faq.answer || null,
+              })),
+            }))
+          }
+        }
+      } catch (error) {
+        console.error('[renderBlocks] Error fetching FAQ Full Page global:', error)
+      }
+    }
+
+    return (
+      <FAQSectionFull
+        key={index}
+        block={{
+          ...block,
+          categories,
+        } as any}
+      />
+    )
+  }
   if (block.blockType === 'agentDirectory') {
     return <AgentDirectory key={index} block={block} />
   }
@@ -951,6 +995,7 @@ export async function renderBlocks(
                         blockType === 'insightsSection' ||
                         blockType === 'trackRecordSection' ||
                         blockType === 'faqSection' ||
+                        blockType === 'faqSectionFull' ||
                         blockType === 'propertySearchInput' ||
                         cardOnBackgroundExcludeSpacing
     

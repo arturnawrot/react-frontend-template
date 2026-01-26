@@ -18,6 +18,7 @@ import { AgentDecoration } from '../blocks/AgentDecoration'
 import { AgentDirectory } from '../blocks/AgentDirectory'
 import { AgentsByCategory } from '../blocks/AgentsByCategory'
 import { FAQSection } from '../blocks/FAQSection'
+import { FAQSectionFull } from '../blocks/FAQSectionFull'
 import { CTAFooter } from '../blocks/CTAFooter'
 import { CardOnBackground } from '../blocks/CardOnBackground'
 import { Footer } from '../blocks/Footer'
@@ -75,6 +76,7 @@ export const Pages: CollectionConfig = {
         AgentDirectory,
         AgentsByCategory,
         FAQSection,
+        FAQSectionFull,
         CTAFooter,
         CardOnBackground,
         Footer,
