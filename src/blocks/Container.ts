@@ -72,9 +72,11 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
         options: [
           { label: 'Top', value: 'top' },
           { label: 'Bottom', value: 'bottom' },
+          { label: 'Top (Negative)', value: 'top-negative' },
+          { label: 'Bottom (Negative)', value: 'bottom-negative' },
         ],
         admin: {
-          description: 'Add extra vertical padding to the top and/or bottom of this container',
+          description: 'Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.',
         },
       },
       {
@@ -85,9 +87,11 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
         options: [
           { label: 'Top', value: 'top' },
           { label: 'Bottom', value: 'bottom' },
+          { label: 'Top (Negative)', value: 'top-negative' },
+          { label: 'Bottom (Negative)', value: 'bottom-negative' },
         ],
         admin: {
-          description: 'Add extra vertical margin to the top and/or bottom of this container',
+          description: 'Add extra vertical margin to the top and/or bottom of this container. Negative options pull the container closer to adjacent elements.',
         },
       },
       {

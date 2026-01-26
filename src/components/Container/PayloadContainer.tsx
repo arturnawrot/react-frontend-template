@@ -60,11 +60,23 @@ export default async function PayloadContainer({ block, payload, options }: Cont
   if (block.extraPadding?.includes('bottom')) {
     spacingClasses.push('pb-12 md:pb-20')
   }
+  if (block.extraPadding?.includes('top-negative')) {
+    spacingClasses.push('-mt-12 md:-mt-20')
+  }
+  if (block.extraPadding?.includes('bottom-negative')) {
+    spacingClasses.push('-mb-12 md:-mb-20')
+  }
   if (block.extraMargin?.includes('top')) {
     spacingClasses.push('mt-12 md:mt-20')
   }
   if (block.extraMargin?.includes('bottom')) {
     spacingClasses.push('mb-12 md:mb-20')
+  }
+  if (block.extraMargin?.includes('top-negative')) {
+    spacingClasses.push('-mt-12 md:-mt-20')
+  }
+  if (block.extraMargin?.includes('bottom-negative')) {
+    spacingClasses.push('-mb-12 md:-mb-20')
   }
   const spacingClass = spacingClasses.join(' ')
 

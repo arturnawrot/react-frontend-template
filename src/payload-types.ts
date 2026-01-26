@@ -363,13 +363,13 @@ export interface Page {
       }
     | {
         /**
-         * Add extra vertical padding to the top and/or bottom of this container
+         * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
          */
-        extraPadding?: ('top' | 'bottom')[] | null;
+        extraPadding?: ('top' | 'bottom' | 'top-negative' | 'bottom-negative')[] | null;
         /**
-         * Add extra vertical margin to the top and/or bottom of this container
+         * Add extra vertical margin to the top and/or bottom of this container. Negative options pull the container closer to adjacent elements.
          */
-        extraMargin?: ('top' | 'bottom')[] | null;
+        extraMargin?: ('top' | 'bottom' | 'top-negative' | 'bottom-negative')[] | null;
         /**
          * Select one or more CSS styles to apply to this container
          */
@@ -892,13 +892,13 @@ export interface Page {
                 }
               | {
                   /**
-                   * Add extra vertical padding to the top and/or bottom of this container
+                   * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
                    */
-                  extraPadding?: ('top' | 'bottom')[] | null;
+                  extraPadding?: ('top' | 'bottom' | 'top-negative' | 'bottom-negative')[] | null;
                   /**
-                   * Add extra vertical margin to the top and/or bottom of this container
+                   * Add extra vertical margin to the top and/or bottom of this container. Negative options pull the container closer to adjacent elements.
                    */
-                  extraMargin?: ('top' | 'bottom')[] | null;
+                  extraMargin?: ('top' | 'bottom' | 'top-negative' | 'bottom-negative')[] | null;
                   /**
                    * Select one or more CSS styles to apply to this container
                    */
@@ -1421,13 +1421,13 @@ export interface Page {
                           }
                         | {
                             /**
-                             * Add extra vertical padding to the top and/or bottom of this container
+                             * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
                              */
-                            extraPadding?: ('top' | 'bottom')[] | null;
+                            extraPadding?: ('top' | 'bottom' | 'top-negative' | 'bottom-negative')[] | null;
                             /**
-                             * Add extra vertical margin to the top and/or bottom of this container
+                             * Add extra vertical margin to the top and/or bottom of this container. Negative options pull the container closer to adjacent elements.
                              */
-                            extraMargin?: ('top' | 'bottom')[] | null;
+                            extraMargin?: ('top' | 'bottom' | 'top-negative' | 'bottom-negative')[] | null;
                             /**
                              * Select one or more CSS styles to apply to this container
                              */
@@ -1950,13 +1950,13 @@ export interface Page {
                                     }
                                   | {
                                       /**
-                                       * Add extra vertical padding to the top and/or bottom of this container
+                                       * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
                                        */
-                                      extraPadding?: ('top' | 'bottom')[] | null;
+                                      extraPadding?: ('top' | 'bottom' | 'top-negative' | 'bottom-negative')[] | null;
                                       /**
-                                       * Add extra vertical margin to the top and/or bottom of this container
+                                       * Add extra vertical margin to the top and/or bottom of this container. Negative options pull the container closer to adjacent elements.
                                        */
-                                      extraMargin?: ('top' | 'bottom')[] | null;
+                                      extraMargin?: ('top' | 'bottom' | 'top-negative' | 'bottom-negative')[] | null;
                                       /**
                                        * Select one or more CSS styles to apply to this container
                                        */
