@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import type { Page } from '@/payload-types'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 
@@ -9,9 +9,10 @@ type CTAFooterBlock = Extract<Page['blocks'][number], { blockType: 'ctaFooter' }
 
 interface CTAFooterProps {
   block: CTAFooterBlock
+  constantLinksMap?: ConstantLinksMap
 }
 
-export default function CTAFooter({ block }: CTAFooterProps) {
+export default function CTAFooter({ block, constantLinksMap }: CTAFooterProps) {
   const heading = block.heading || 'Ready to make your next move?'
   const subheading = block.subheading
   const buttons = block.buttons || [
@@ -27,7 +28,7 @@ export default function CTAFooter({ block }: CTAFooterProps) {
     const secondaryClasses = "bg-transparent text-[#1b2e28] hover:bg-[#1b2e28] hover:text-white"
     const className = `${baseClasses} ${isPrimary ? primaryClasses : secondaryClasses}`
 
-    const href = resolveLinkUrl(button as any)
+    const href = resolveLinkUrl(button as any, constantLinksMap)
     const openInNewTab = shouldOpenInNewTab(button as any)
     if (href) {
       const isInternal = isInternalLink(href) && !openInNewTab

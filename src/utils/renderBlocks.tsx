@@ -32,6 +32,7 @@ import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
+import { getConstantLinksMap } from '@/utils/linkResolver'
 
 // Type for any block from a Page (also compatible with Container blocks)
 type PageBlock = Page['blocks'][number]
@@ -44,8 +45,8 @@ export interface RenderBlocksOptions {
       defaultSpacing?: 'none' | 'small' | 'medium' | 'large' | 'xlarge'
     }
   }
-  /** Pre-fetched constant links map for resolving constant link types */
-  constantLinksMap?: import('@/utils/linkResolver').ConstantLinksMap
+  /** Pre-fetched constant links map to avoid redundant fetches */
+  constantLinksMap?: import('./linkResolver').ConstantLinksMap
 }
 
 /**
@@ -59,7 +60,7 @@ export async function renderBlock(
   options?: RenderBlocksOptions
 ): Promise<React.ReactNode> {
   if (block.blockType === 'hero') {
-    return <HeroWrapper key={index} block={block} />
+    return <HeroWrapper key={index} block={block} constantLinksMap={options?.constantLinksMap} />
   }
   if (block.blockType === 'flippedM') {
     return <FlippedM key={index} block={block} />
@@ -726,7 +727,7 @@ export async function renderBlock(
     return <AgentsByCategory key={index} block={{ ...block, categories, heading, description } as any} />
   }
   if (block.blockType === 'ctaFooter') {
-    return <CTAFooter key={index} block={block} />
+    return <CTAFooter key={index} block={block} constantLinksMap={options?.constantLinksMap} />
   }
   if (block.blockType === 'cardOnBackground') {
     return <CardOnBackground key={index} block={block} />
@@ -957,6 +958,22 @@ export async function renderBlocks(
     } catch (error) {
       console.warn('[renderBlocks] Error fetching site settings, using default spacing:', error)
       resolvedOptions = { siteSettings: { blockSpacing: { defaultSpacing: 'medium' } } }
+    }
+  }
+
+  // Fetch constant links if not already provided
+  let constantLinksMap = options?.constantLinksMap
+  if (!constantLinksMap && payload) {
+    try {
+      constantLinksMap = await getConstantLinksMap(payload)
+      // Add to resolved options for nested calls
+      resolvedOptions = {
+        ...resolvedOptions,
+        constantLinksMap,
+      }
+    } catch (error) {
+      console.warn('[renderBlocks] Error fetching constant links:', error)
+      constantLinksMap = new Map()
     }
   }
 

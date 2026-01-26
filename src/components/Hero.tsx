@@ -329,18 +329,18 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
 
   // Resolve CTA links using the new linkType structure
   const primaryCtaLink = resolveLinkUrl({
-    ctaPrimaryLinkType: (block as any).ctaPrimaryLinkType,
-    ctaPrimaryPage: (block as any).ctaPrimaryPage,
-    ctaPrimaryCustomUrl: (block as any).ctaPrimaryCustomUrl,
-    ctaPrimaryConstantLink: (block as any).ctaPrimaryConstantLink,
+    linkType: (block as any).ctaPrimaryLinkType,
+    page: (block as any).ctaPrimaryPage,
+    customUrl: (block as any).ctaPrimaryCustomUrl,
+    constantLink: (block as any).ctaPrimaryConstantLink,
     ctaPrimaryLink: (block as any).ctaPrimaryLink, // Legacy support
   }, constantLinksMap)
 
   const secondaryCtaLink = resolveLinkUrl({
-    ctaSecondaryLinkType: (block as any).ctaSecondaryLinkType,
-    ctaSecondaryPage: (block as any).ctaSecondaryPage,
-    ctaSecondaryCustomUrl: (block as any).ctaSecondaryCustomUrl,
-    ctaSecondaryConstantLink: (block as any).ctaSecondaryConstantLink,
+    linkType: (block as any).ctaSecondaryLinkType,
+    page: (block as any).ctaSecondaryPage,
+    customUrl: (block as any).ctaSecondaryCustomUrl,
+    constantLink: (block as any).ctaSecondaryConstantLink,
     ctaSecondaryLink: (block as any).ctaSecondaryLink, // Legacy support
   }, constantLinksMap)
 
