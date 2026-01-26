@@ -265,7 +265,7 @@ export default function BlogSearchFilters({
                       <option value="">All Authors</option>
                       {authors.map((author) => (
                         <option key={author.id} value={author.id}>
-                          {author.email?.split('@')[0] || author.email}
+                          {author.username || author.email?.split('@')[0] || author.email || 'Unknown'}
                         </option>
                       ))}
                     </select>
@@ -386,7 +386,7 @@ export default function BlogSearchFilters({
           )}
           {filters.author && (
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-stone-100 text-stone-700 text-xs rounded-full">
-              Author: {authors.find((a) => a.id === filters.author)?.email?.split('@')[0] || 'Unknown'}
+              Author: {authors.find((a) => a.id === filters.author)?.username || authors.find((a) => a.id === filters.author)?.email?.split('@')[0] || 'Unknown'}
               <button
                 onClick={() => handleFilterChange({ ...filters, author: null })}
                 className="hover:text-stone-900"

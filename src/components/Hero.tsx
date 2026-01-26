@@ -375,7 +375,7 @@ const resolveHeroContent = (block: HeroBlock) => {
     // Blog specific
     blogAuthor: block.blogAuthor
       ? typeof block.blogAuthor === 'object' && block.blogAuthor !== null
-        ? (block.blogAuthor as any).email || (block.blogAuthor as any).name || 'Unknown Author'
+        ? (block.blogAuthor as any).username || (block.blogAuthor as any).email || (block.blogAuthor as any).name || 'Unknown Author'
         : block.blogAuthor
       : undefined,
     blogDate: block.blogDate,

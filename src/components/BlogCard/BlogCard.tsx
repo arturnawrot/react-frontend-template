@@ -22,7 +22,7 @@ const getImageUrl = (media: string | Media | null | undefined): string => {
 const getAuthorName = (author: string | User | null | undefined): string => {
   if (!author) return 'Unknown Author'
   if (typeof author === 'string') return 'Unknown Author'
-  return author.email?.split('@')[0] || 'Unknown Author'
+  return author.username || author.email?.split('@')[0] || 'Unknown Author'
 }
 
 // Helper to get category names
