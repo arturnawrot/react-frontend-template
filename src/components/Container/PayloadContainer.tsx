@@ -52,15 +52,21 @@ export default async function PayloadContainer({ block, payload, options }: Cont
   // Pass options through to avoid redundant siteSettings fetches
   const blocks = await renderBlocks(block.blocks as any, payload, options)
 
-  // Build padding classes based on extraPadding selection
-  const paddingClasses: string[] = []
+  // Build spacing classes based on extraPadding and extraMargin selections
+  const spacingClasses: string[] = []
   if (block.extraPadding?.includes('top')) {
-    paddingClasses.push('pt-12 md:pt-20')
+    spacingClasses.push('pt-12 md:pt-20')
   }
   if (block.extraPadding?.includes('bottom')) {
-    paddingClasses.push('pb-12 md:pb-20')
+    spacingClasses.push('pb-12 md:pb-20')
   }
-  const spacingClass = paddingClasses.join(' ')
+  if (block.extraMargin?.includes('top')) {
+    spacingClasses.push('mt-12 md:mt-20')
+  }
+  if (block.extraMargin?.includes('bottom')) {
+    spacingClasses.push('mb-12 md:mb-20')
+  }
+  const spacingClass = spacingClasses.join(' ')
 
   return (
     <div className="relative">

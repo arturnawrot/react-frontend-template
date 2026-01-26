@@ -78,6 +78,19 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
         },
       },
       {
+        name: 'extraMargin',
+        type: 'select',
+        hasMany: true,
+        label: 'Extra Margin',
+        options: [
+          { label: 'Top', value: 'top' },
+          { label: 'Bottom', value: 'bottom' },
+        ],
+        admin: {
+          description: 'Add extra vertical margin to the top and/or bottom of this container',
+        },
+      },
+      {
         name: 'cssStyles',
         type: 'relationship',
         relationTo: 'css-styles',

@@ -367,6 +367,10 @@ export interface Page {
          */
         extraPadding?: ('top' | 'bottom')[] | null;
         /**
+         * Add extra vertical margin to the top and/or bottom of this container
+         */
+        extraMargin?: ('top' | 'bottom')[] | null;
+        /**
          * Select one or more CSS styles to apply to this container
          */
         cssStyles?: (string | CssStyle)[] | null;
@@ -891,6 +895,10 @@ export interface Page {
                    * Add extra vertical padding to the top and/or bottom of this container
                    */
                   extraPadding?: ('top' | 'bottom')[] | null;
+                  /**
+                   * Add extra vertical margin to the top and/or bottom of this container
+                   */
+                  extraMargin?: ('top' | 'bottom')[] | null;
                   /**
                    * Select one or more CSS styles to apply to this container
                    */
@@ -1417,6 +1425,10 @@ export interface Page {
                              */
                             extraPadding?: ('top' | 'bottom')[] | null;
                             /**
+                             * Add extra vertical margin to the top and/or bottom of this container
+                             */
+                            extraMargin?: ('top' | 'bottom')[] | null;
+                            /**
                              * Select one or more CSS styles to apply to this container
                              */
                             cssStyles?: (string | CssStyle)[] | null;
@@ -1941,6 +1953,10 @@ export interface Page {
                                        * Add extra vertical padding to the top and/or bottom of this container
                                        */
                                       extraPadding?: ('top' | 'bottom')[] | null;
+                                      /**
+                                       * Add extra vertical margin to the top and/or bottom of this container
+                                       */
+                                      extraMargin?: ('top' | 'bottom')[] | null;
                                       /**
                                        * Select one or more CSS styles to apply to this container
                                        */
@@ -3615,6 +3631,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               extraPadding?: T;
+              extraMargin?: T;
               cssStyles?: T;
               blocks?:
                 | T
@@ -3910,6 +3927,7 @@ export interface PagesSelect<T extends boolean = true> {
                       | T
                       | {
                           extraPadding?: T;
+                          extraMargin?: T;
                           cssStyles?: T;
                           blocks?:
                             | T
@@ -4205,6 +4223,7 @@ export interface PagesSelect<T extends boolean = true> {
                                   | T
                                   | {
                                       extraPadding?: T;
+                                      extraMargin?: T;
                                       cssStyles?: T;
                                       blocks?:
                                         | T
@@ -4500,6 +4519,7 @@ export interface PagesSelect<T extends boolean = true> {
                                               | T
                                               | {
                                                   extraPadding?: T;
+                                                  extraMargin?: T;
                                                   cssStyles?: T;
                                                   blocks?:
                                                     | T
