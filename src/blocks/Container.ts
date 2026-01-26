@@ -13,6 +13,7 @@ import { PropertySearch } from './PropertySearch'
 import { AgentCarousel } from './AgentCarousel'
 import { AgentIconsSection } from './AgentIconsSection'
 import { AgentDecoration } from './AgentDecoration'
+import { AgentDirectory } from './AgentDirectory'
 import { CTAFooter } from './CTAFooter'
 import { CardOnBackground } from './CardOnBackground'
 import { Footer } from './Footer'
@@ -42,6 +43,7 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
     AgentCarousel,
     AgentIconsSection,
     AgentDecoration,
+    AgentDirectory,
     CTAFooter,
     CardOnBackground,
     Footer,
@@ -64,6 +66,14 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
       plural: 'Containers',
     },
     fields: [
+      {
+        name: 'id',
+        type: 'text',
+        label: 'ID',
+        admin: {
+          description: 'Optional HTML id attribute for this container (useful for anchor links and CSS targeting)',
+        },
+      },
       {
         name: 'extraPadding',
         type: 'select',

@@ -368,6 +368,7 @@ export interface Page {
         blockType: 'flippedM';
       }
     | {
+        id?: string | null;
         /**
          * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
          */
@@ -788,6 +789,16 @@ export interface Page {
                 }
               | {
                   heading?: string | null;
+                  /**
+                   * Number of agents to display per page
+                   */
+                  itemsPerPage?: number | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'agentDirectory';
+                }
+              | {
+                  heading?: string | null;
                   subheading?: string | null;
                   buttons?:
                     | {
@@ -905,6 +916,7 @@ export interface Page {
                   blockType: 'officeLocations';
                 }
               | {
+                  id?: string | null;
                   /**
                    * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
                    */
@@ -1325,6 +1337,16 @@ export interface Page {
                           }
                         | {
                             heading?: string | null;
+                            /**
+                             * Number of agents to display per page
+                             */
+                            itemsPerPage?: number | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'agentDirectory';
+                          }
+                        | {
+                            heading?: string | null;
                             subheading?: string | null;
                             buttons?:
                               | {
@@ -1442,6 +1464,7 @@ export interface Page {
                             blockType: 'officeLocations';
                           }
                         | {
+                            id?: string | null;
                             /**
                              * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
                              */
@@ -1862,6 +1885,16 @@ export interface Page {
                                     }
                                   | {
                                       heading?: string | null;
+                                      /**
+                                       * Number of agents to display per page
+                                       */
+                                      itemsPerPage?: number | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'agentDirectory';
+                                    }
+                                  | {
+                                      heading?: string | null;
                                       subheading?: string | null;
                                       buttons?:
                                         | {
@@ -1979,6 +2012,7 @@ export interface Page {
                                       blockType: 'officeLocations';
                                     }
                                   | {
+                                      id?: string | null;
                                       /**
                                        * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
                                        */
@@ -2399,6 +2433,16 @@ export interface Page {
                                               }
                                             | {
                                                 heading?: string | null;
+                                                /**
+                                                 * Number of agents to display per page
+                                                 */
+                                                itemsPerPage?: number | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'agentDirectory';
+                                              }
+                                            | {
+                                                heading?: string | null;
                                                 subheading?: string | null;
                                                 buttons?:
                                                   | {
@@ -2517,25 +2561,21 @@ export interface Page {
                                               }
                                           )[]
                                         | null;
-                                      id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'container';
                                     }
                                 )[]
                               | null;
-                            id?: string | null;
                             blockName?: string | null;
                             blockType: 'container';
                           }
                       )[]
                     | null;
-                  id?: string | null;
                   blockName?: string | null;
                   blockType: 'container';
                 }
             )[]
           | null;
-        id?: string | null;
         blockName?: string | null;
         blockType: 'container';
       }
@@ -3682,6 +3722,7 @@ export interface PagesSelect<T extends boolean = true> {
         container?:
           | T
           | {
+              id?: T;
               extraPadding?: T;
               extraMargin?: T;
               cssStyles?: T;
@@ -3900,6 +3941,14 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    agentDirectory?:
+                      | T
+                      | {
+                          heading?: T;
+                          itemsPerPage?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
                     ctaFooter?:
                       | T
                       | {
@@ -3980,6 +4029,7 @@ export interface PagesSelect<T extends boolean = true> {
                     container?:
                       | T
                       | {
+                          id?: T;
                           extraPadding?: T;
                           extraMargin?: T;
                           cssStyles?: T;
@@ -4198,6 +4248,14 @@ export interface PagesSelect<T extends boolean = true> {
                                       id?: T;
                                       blockName?: T;
                                     };
+                                agentDirectory?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      itemsPerPage?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
                                 ctaFooter?:
                                   | T
                                   | {
@@ -4278,6 +4336,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 container?:
                                   | T
                                   | {
+                                      id?: T;
                                       extraPadding?: T;
                                       extraMargin?: T;
                                       cssStyles?: T;
@@ -4496,6 +4555,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            agentDirectory?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  itemsPerPage?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             ctaFooter?:
                                               | T
                                               | {
@@ -4576,6 +4643,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             container?:
                                               | T
                                               | {
+                                                  id?: T;
                                                   extraPadding?: T;
                                                   extraMargin?: T;
                                                   cssStyles?: T;
@@ -4794,6 +4862,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                               id?: T;
                                                               blockName?: T;
                                                             };
+                                                        agentDirectory?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              itemsPerPage?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
                                                         ctaFooter?:
                                                           | T
                                                           | {
@@ -4872,19 +4948,15 @@ export interface PagesSelect<T extends boolean = true> {
                                                               blockName?: T;
                                                             };
                                                       };
-                                                  id?: T;
                                                   blockName?: T;
                                                 };
                                           };
-                                      id?: T;
                                       blockName?: T;
                                     };
                               };
-                          id?: T;
                           blockName?: T;
                         };
                   };
-              id?: T;
               blockName?: T;
             };
         cardSection?:

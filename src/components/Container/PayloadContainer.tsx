@@ -90,7 +90,10 @@ export default async function PayloadContainer({ block, payload, options }: Cont
           }}
         />
       )}
-      <div className={[spacingClass, combinedClasses].filter(Boolean).join(' ') || undefined}>
+      <div
+        id={block.id || undefined}
+        className={[spacingClass, combinedClasses].filter(Boolean).join(' ') || undefined}
+      >
         {blocks}
       </div>
     </div>
