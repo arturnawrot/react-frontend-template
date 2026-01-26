@@ -149,7 +149,7 @@ const TrackRecord = () => {
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 mb-16">
         <div className="flex flex-col md:flex-row items-center justify-between relative">
           {/* Title Centered */}
-          <div className="w-full text-center md:absolute md:left-1/2 md:-translate-x-1/2">
+          <div className="w-full text-center">
             <h2 className="text-5xl md:text-6xl font-serif text-[#1a2e2a]">Proven Track Record</h2>
           </div>
 

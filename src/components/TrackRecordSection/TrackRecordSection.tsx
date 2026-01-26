@@ -136,7 +136,7 @@ export default function TrackRecordSection({ block, items = [] }: TrackRecordSec
     <div className="max-w-[1600px] mx-auto px-6 md:px-12 mb-16">
       <div className="flex flex-col md:flex-row items-center justify-between relative">
         {/* Title Centered */}
-        <div className="w-full text-center md:absolute md:left-1/2 md:-translate-x-1/2">
+        <div className="w-full text-center">
           <SectionHeading align="center">
             {heading}
           </SectionHeading>
