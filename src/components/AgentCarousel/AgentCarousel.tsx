@@ -10,6 +10,7 @@ import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import { Carousel, CarouselTrackElement } from '../Carousel'
 import styles from './AgentCarousel.module.scss'
+import ResponsiveText from '../ResponsiveText'
 
 type AgentCarouselBlock = Extract<Page['blocks'][number], { blockType: 'agentCarousel' }>
 
@@ -71,6 +72,13 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
   const linkText = block.linkText || 'Find an Agent'
   const linkHref = resolveLinkUrl(block as any)
   const openInNewTab = shouldOpenInNewTab(block as any)
+  const colorVariant = block.colorVariant || 'default'
+  const verticalAlignment = block.verticalAlignment || 'center'
+
+  const isWhiteVariant = colorVariant === 'white'
+  const whiteColor = 'rgba(250, 249, 247, 1)'
+  const textColorStyle = isWhiteVariant ? { color: whiteColor } : {}
+  const alignmentClass = verticalAlignment === 'start' ? 'items-start' : 'items-center'
 
   if (agents.length === 0) {
     return null
@@ -82,25 +90,27 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
     const { handleNext, handlePrev, setIsPaused } = renderProps
 
     return (
-      <Container className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <Container className={`w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 ${alignmentClass}`}>
         {/* LEFT SECTION: Content */}
-        <div className="lg:col-span-4 flex flex-col gap-6 lg:gap-8 lg:pr-8 z-10">
-          <h3 className={`${styles.preHeading} text-gray-500`}>
+        <div className="lg:col-span-4 flex flex-col gap-6 lg:gap-8 lg:pr-8 z-10" style={textColorStyle}>
+          <h3 className={`${styles.preHeading} ${isWhiteVariant ? '' : 'text-gray-500'}`}>
             {preHeading}
           </h3>
 
-          <SectionHeading as="h1">
-            {heading}
+          <SectionHeading as="h2">
+            <span style={textColorStyle}>
+              {heading}
+            </span>
           </SectionHeading>
 
-          <p className={`${styles.description} text-gray-600`}>
+          <p className={`${styles.description} ${isWhiteVariant ? '' : 'text-gray-600'}`}>
             {description}
           </p>
 
           {linkText && linkHref && (() => {
             const isInternal = isInternalLink(linkHref) && !openInNewTab
             const LinkComponent = isInternal ? Link : 'a'
-            const linkClassName = `${styles.link} group inline-flex items-center text-[#1a2e28] hover:opacity-70 transition-opacity mt-2`
+            const linkClassName = `${styles.link} group inline-flex items-center ${isWhiteVariant ? '' : 'text-[#1a2e28]'} hover:opacity-70 transition-opacity mt-2`
             const linkProps = isInternal
               ? { href: linkHref, className: linkClassName }
               : {
@@ -125,7 +135,8 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
                 handlePrev()
                 setTimeout(() => setIsPaused(false), 5000)
               }}
-              className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
+              className={`flex items-center justify-center hover:opacity-70 ${isWhiteVariant ? '' : 'text-[#1a2e28]'} transition-opacity`}
+              style={textColorStyle}
             >
               <Arrow direction="up" variant="triangle" size={12} />
             </button>
@@ -135,7 +146,8 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
                 handleNext()
                 setTimeout(() => setIsPaused(false), 5000)
               }}
-              className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
+              className={`flex items-center justify-center hover:opacity-70 ${isWhiteVariant ? '' : 'text-[#1a2e28]'} transition-opacity`}
+              style={textColorStyle}
             >
               <Arrow direction="down" variant="triangle" size={12} />
             </button>
@@ -155,7 +167,8 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
               handlePrev()
               setTimeout(() => setIsPaused(false), 5000)
             }}
-            className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
+            className={`flex items-center justify-center hover:opacity-70 ${isWhiteVariant ? '' : 'text-[#1a2e28]'} transition-opacity`}
+            style={textColorStyle}
           >
             <Arrow direction="up" variant="triangle" size={12} />
           </button>
@@ -165,7 +178,8 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
               handleNext()
               setTimeout(() => setIsPaused(false), 5000)
             }}
-            className="flex items-center justify-center hover:opacity-70 text-[#1a2e28] transition-opacity"
+            className={`flex items-center justify-center hover:opacity-70 ${isWhiteVariant ? '' : 'text-[#1a2e28]'} transition-opacity`}
+            style={textColorStyle}
           >
             <Arrow direction="down" variant="triangle" size={12} />
           </button>

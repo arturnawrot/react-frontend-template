@@ -690,6 +690,14 @@ export interface Page {
                    * Select a featured agents set from the global sets. Defaults to "default" set.
                    */
                   featuredAgentSetName: string;
+                  /**
+                   * Choose the color variant for text and arrows. White variant uses rgba(250, 249, 247, 1).
+                   */
+                  colorVariant?: ('default' | 'white') | null;
+                  /**
+                   * Vertically align the first column with the start of the center column.
+                   */
+                  verticalAlignment?: ('center' | 'start') | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'agentCarousel';
@@ -1219,6 +1227,14 @@ export interface Page {
                              * Select a featured agents set from the global sets. Defaults to "default" set.
                              */
                             featuredAgentSetName: string;
+                            /**
+                             * Choose the color variant for text and arrows. White variant uses rgba(250, 249, 247, 1).
+                             */
+                            colorVariant?: ('default' | 'white') | null;
+                            /**
+                             * Vertically align the first column with the start of the center column.
+                             */
+                            verticalAlignment?: ('center' | 'start') | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'agentCarousel';
@@ -1748,6 +1764,14 @@ export interface Page {
                                        * Select a featured agents set from the global sets. Defaults to "default" set.
                                        */
                                       featuredAgentSetName: string;
+                                      /**
+                                       * Choose the color variant for text and arrows. White variant uses rgba(250, 249, 247, 1).
+                                       */
+                                      colorVariant?: ('default' | 'white') | null;
+                                      /**
+                                       * Vertically align the first column with the start of the center column.
+                                       */
+                                      verticalAlignment?: ('center' | 'start') | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'agentCarousel';
@@ -2277,6 +2301,14 @@ export interface Page {
                                                  * Select a featured agents set from the global sets. Defaults to "default" set.
                                                  */
                                                 featuredAgentSetName: string;
+                                                /**
+                                                 * Choose the color variant for text and arrows. White variant uses rgba(250, 249, 247, 1).
+                                                 */
+                                                colorVariant?: ('default' | 'white') | null;
+                                                /**
+                                                 * Vertically align the first column with the start of the center column.
+                                                 */
+                                                verticalAlignment?: ('center' | 'start') | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'agentCarousel';
@@ -2677,6 +2709,14 @@ export interface Page {
          * Select a featured agents set from the global sets. Defaults to "default" set.
          */
         featuredAgentSetName: string;
+        /**
+         * Choose the color variant for text and arrows. White variant uses rgba(250, 249, 247, 1).
+         */
+        colorVariant?: ('default' | 'white') | null;
+        /**
+         * Vertically align the first column with the start of the center column.
+         */
+        verticalAlignment?: ('center' | 'start') | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'agentCarousel';
@@ -3808,6 +3848,8 @@ export interface PagesSelect<T extends boolean = true> {
                           customUrl?: T;
                           openInNewTab?: T;
                           featuredAgentSetName?: T;
+                          colorVariant?: T;
+                          verticalAlignment?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -4104,6 +4146,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       customUrl?: T;
                                       openInNewTab?: T;
                                       featuredAgentSetName?: T;
+                                      colorVariant?: T;
+                                      verticalAlignment?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -4400,6 +4444,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   customUrl?: T;
                                                   openInNewTab?: T;
                                                   featuredAgentSetName?: T;
+                                                  colorVariant?: T;
+                                                  verticalAlignment?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -4696,6 +4742,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               customUrl?: T;
                                                               openInNewTab?: T;
                                                               featuredAgentSetName?: T;
+                                                              colorVariant?: T;
+                                                              verticalAlignment?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -4937,6 +4985,8 @@ export interface PagesSelect<T extends boolean = true> {
               customUrl?: T;
               openInNewTab?: T;
               featuredAgentSetName?: T;
+              colorVariant?: T;
+              verticalAlignment?: T;
               id?: T;
               blockName?: T;
             };
