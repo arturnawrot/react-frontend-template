@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { Menu, X, Mail, Phone, Linkedin } from 'lucide-react'
 import Navbar, { type NavbarLink } from './Navbar/Navbar'
 import CollapsingMenuMobile from './CollapsingMenuMobile/CollapsingMenuMobile'
+import PrimaryButton from './PrimaryButton/PrimaryButton'
+import SecondaryButton from './PrimaryButton/SecondaryButton'
 import type { Page } from '@/payload-types'
 import styles from './Hero.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
@@ -132,8 +134,8 @@ const ActionButtons = ({
   secondaryLink,
   onPrimary,
   onSecondary,
-  primaryClass,
-  secondaryClass,
+  primaryClassName,
+  secondaryClassName,
   primaryOpenInNewTab,
   secondaryOpenInNewTab,
   align = 'center',
@@ -144,8 +146,8 @@ const ActionButtons = ({
   secondaryLink?: string
   onPrimary?: () => void
   onSecondary?: () => void
-  primaryClass: string
-  secondaryClass: string
+  primaryClassName?: string
+  secondaryClassName?: string
   primaryOpenInNewTab?: boolean
   secondaryOpenInNewTab?: boolean
   align?: 'center' | 'start'
@@ -162,46 +164,26 @@ const ActionButtons = ({
   return (
     <div className={`mt-6 flex flex-col md:flex-row md:flex-wrap ${justifyClass} gap-3 md:gap-4 w-full`}>
       {hasPrimary && (
-        onPrimary ? (
-          <button onClick={onPrimary} className={primaryClass}>
-            {primaryLabel}
-          </button>
-        ) : primaryLink ? (
-          (() => {
-            const isInternal = isInternalLink(primaryLink) && !primaryOpenInNewTab
-            const LinkComponent = isInternal ? Link : 'a'
-            const linkProps = isInternal
-              ? { href: primaryLink, className: primaryClass }
-              : {
-                  href: primaryLink,
-                  target: primaryOpenInNewTab ? '_blank' : undefined,
-                  rel: primaryOpenInNewTab ? 'noopener noreferrer' : undefined,
-                  className: primaryClass,
-                }
-            return <LinkComponent {...linkProps}>{primaryLabel}</LinkComponent>
-          })()
-        ) : null
+        <PrimaryButton
+          href={primaryLink ?? null}
+          onClick={onPrimary}
+          openInNewTab={primaryOpenInNewTab}
+          className={primaryClassName}
+          fullWidth
+        >
+          {primaryLabel}
+        </PrimaryButton>
       )}
       {hasSecondary && (
-        onSecondary ? (
-          <button onClick={onSecondary} className={secondaryClass}>
-            {secondaryLabel}
-          </button>
-        ) : secondaryLink ? (
-          (() => {
-            const isInternal = isInternalLink(secondaryLink) && !secondaryOpenInNewTab
-            const LinkComponent = isInternal ? Link : 'a'
-            const linkProps = isInternal
-              ? { href: secondaryLink, className: secondaryClass }
-              : {
-                  href: secondaryLink,
-                  target: secondaryOpenInNewTab ? '_blank' : undefined,
-                  rel: secondaryOpenInNewTab ? 'noopener noreferrer' : undefined,
-                  className: secondaryClass,
-                }
-            return <LinkComponent {...linkProps}>{secondaryLabel}</LinkComponent>
-          })()
-        ) : null
+        <SecondaryButton
+          href={secondaryLink ?? null}
+          onClick={onSecondary}
+          openInNewTab={secondaryOpenInNewTab}
+          className={secondaryClassName}
+          fullWidth
+        >
+          {secondaryLabel}
+        </SecondaryButton>
       )}
     </div>
   )
@@ -545,8 +527,8 @@ const SideBySideLayout = (
   // Styling configuration - same for both split and agent variants
   const headingClass = `${styles.splitHeading} text-left mb-4 z-10 relative leading-tight`
   const subClass = `${styles.splitSubheading} text-white/90 font-light w-full md:max-w-xl text-left leading-relaxed`
-  const btnPrimaryClass = 'bg-[#DAE684] text-[#0F231D] font-semibold hover:bg-[#cdd876] transition-colors rounded-full px-8 py-3 text-base w-full md:w-auto text-center'
-  const btnSecondaryClass = 'border border-white bg-[var(--strong-green)] text-white font-semibold hover:bg-white/10 transition-colors rounded-full px-8 py-3 text-base w-full md:w-auto flex items-center justify-center'
+  const btnPrimaryClass = '!bg-[#DAE684] !text-[#0F231D] hover:!bg-[#cdd876]'
+  const btnSecondaryClass = '!border-white !bg-[var(--strong-green)] !text-white hover:!bg-white/10'
 
   return (
     <div className={`relative w-full ${containerBg}`}>
@@ -587,8 +569,8 @@ const SideBySideLayout = (
               secondaryLabel={secondaryCta}
               secondaryLink={secondaryCtaLink ?? undefined}
               secondaryOpenInNewTab={secondaryCtaOpenInNewTab}
-              primaryClass={btnPrimaryClass}
-              secondaryClass={btnSecondaryClass}
+              primaryClassName={btnPrimaryClass}
+              secondaryClassName={btnSecondaryClass}
               align="start"
             />
           </div>
@@ -702,8 +684,8 @@ const CenteredLayout = (
     ? `${styles.meybohmSubheading} max-w-4xl mx-auto text-left md:text-center`
     : `${styles.heroSubheading} w-full text-left md:text-center max-w-[1200px] max-[1150px]:max-w-[800px] max-[768px]:max-w-[400px]`
 
-  const btnPrimaryClass = 'sale-button px-6 py-3 text-base w-full md:w-auto shadow-md block md:inline-block text-center'
-  const btnSecondaryClass = 'px-6 py-3 rounded-full border border-white/70 bg-[var(--strong-green)] text-white w-full md:w-auto hover:bg-white/10 transition text-base flex items-center justify-center'
+  const btnPrimaryClass = 'shadow-md'
+  const btnSecondaryClass = '!border-white/70 !bg-[var(--strong-green)] !text-white hover:!bg-white/10'
 
   return (
     <>
@@ -759,8 +741,8 @@ const CenteredLayout = (
               secondaryLabel={secondaryCta}
               secondaryLink={secondaryCtaLink ?? undefined}
               secondaryOpenInNewTab={secondaryCtaOpenInNewTab}
-              primaryClass={btnPrimaryClass}
-              secondaryClass={btnSecondaryClass}
+              primaryClassName={btnPrimaryClass}
+              secondaryClassName={btnSecondaryClass}
               align="center"
             />
           </div>
