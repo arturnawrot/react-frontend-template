@@ -146,6 +146,27 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     ? `/property-search?search=${encodeURIComponent(property.city)}`
     : '/property-search';
 
+  // Fetch custom HTML for property page contact form
+  let customContactFormHTML: string | null = null
+  try {
+    const { docs } = await payload.find({
+      collection: 'custom-html',
+      where: {
+        name: {
+          equals: 'property-page-contact-form',
+        },
+      },
+      limit: 1,
+    })
+    
+    if (docs.length > 0) {
+      const customHTML = docs[0] as { html: string }
+      customContactFormHTML = customHTML.html
+    }
+  } catch (error) {
+    console.error('Error fetching custom HTML:', error)
+  }
+
   return (
     <>
         <div className="bg-transparent md:bg-[var(--strong-green)]">
@@ -155,6 +176,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           property={property} 
           brokers={propertyBrokers}
           brokerIdToAgentSlug={brokerIdToAgentSlug}
+          customContactFormHTML={customContactFormHTML}
         />
         {nearbyPropertyCards.length > 0 && (
           <div className="bg-[#dad6cc] py-30">
