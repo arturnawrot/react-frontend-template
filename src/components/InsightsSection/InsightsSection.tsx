@@ -6,6 +6,7 @@ import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import ArrowLink from '@/components/ArrowLink/ArrowLink'
+import Arrow from '@/components/Arrow/Arrow'
 import { Carousel, CarouselTrackElement } from '../Carousel'
 
 type InsightsSectionBlock = Extract<Page['blocks'][number], { blockType: 'insightsSection' }>
