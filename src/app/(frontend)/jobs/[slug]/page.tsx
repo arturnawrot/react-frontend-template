@@ -12,6 +12,7 @@ import Link from 'next/link'
 import Arrow from '@/components/Arrow/Arrow'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
+import Container from '@/components/Container/Container'
 
 // Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
 export const dynamic = 'force-dynamic'
@@ -191,23 +192,26 @@ export default async function JobPage({ params }: JobPageProps) {
         </div>
       </div>
     </div>
-
     {/* Grow With a Team Section */}
-    <AgentIconsSection 
-      block={{
-        blockType: 'agentIconsSection',
-        agentIconsSetName: 'default',
-        header: "Grow With a Team That's Going Places",
-        paragraph: "We're always looking for professionals who think strategically, act decisively, and put clients first.",
-        linkText: 'Explore Careers',
-        linkType: 'custom',
-        customUrl: '/careers',
-        openInNewTab: false,
-        agents,
-      } as any}
-    />
+    <div className="mb-16 md:mb-24">
+      <AgentIconsSection 
+        block={{
+          blockType: 'agentIconsSection',
+          agentIconsSetName: 'default',
+          header: "Grow With a Team That's Going Places",
+          paragraph: "We're always looking for professionals who think strategically, act decisively, and put clients first.",
+          linkText: 'Explore Careers',
+          linkType: 'custom',
+          customUrl: '/careers',
+          openInNewTab: false,
+          agents,
+        } as any}
+      />
+    </div>
+
 
     {/* Explore More Opportunities Section */}
+    
     <CTAFooter 
       block={{
         blockType: 'ctaFooter',
