@@ -153,7 +153,7 @@ export default function OfficeLocations({ block }: OfficeLocationsProps) {
     <section className="w-full py-16 md:py-24">
       <Container>
         {/* Centered Section Heading */}
-        <SectionHeading align="center" className="mb-16">
+        <SectionHeading className="mb-16 text-center">
           {heading}
         </SectionHeading>
         
