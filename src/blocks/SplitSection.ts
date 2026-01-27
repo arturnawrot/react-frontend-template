@@ -46,6 +46,15 @@ export const SplitSection: Block = {
       },
     },
     {
+      name: 'richText',
+      type: 'richText',
+      required: false,
+      label: 'Rich Text Content',
+      admin: {
+        description: 'Rich text content with paragraph support (Enter creates new paragraphs)',
+      },
+    },
+    {
       name: 'bulletPoints',
       type: 'array',
       label: 'Bullet Points',

@@ -637,6 +637,24 @@ export interface Page {
                    * Optional paragraph text displayed between the header and bullet points
                    */
                   paragraph?: string | null;
+                  /**
+                   * Rich text content with paragraph support (Enter creates new paragraphs)
+                   */
+                  richText?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
                   bulletPoints?:
                     | {
                         text: string;
@@ -1299,6 +1317,24 @@ export interface Page {
                              * Optional paragraph text displayed between the header and bullet points
                              */
                             paragraph?: string | null;
+                            /**
+                             * Rich text content with paragraph support (Enter creates new paragraphs)
+                             */
+                            richText?: {
+                              root: {
+                                type: string;
+                                children: {
+                                  type: any;
+                                  version: number;
+                                  [k: string]: unknown;
+                                }[];
+                                direction: ('ltr' | 'rtl') | null;
+                                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                                indent: number;
+                                version: number;
+                              };
+                              [k: string]: unknown;
+                            } | null;
                             bulletPoints?:
                               | {
                                   text: string;
@@ -1961,6 +1997,24 @@ export interface Page {
                                        * Optional paragraph text displayed between the header and bullet points
                                        */
                                       paragraph?: string | null;
+                                      /**
+                                       * Rich text content with paragraph support (Enter creates new paragraphs)
+                                       */
+                                      richText?: {
+                                        root: {
+                                          type: string;
+                                          children: {
+                                            type: any;
+                                            version: number;
+                                            [k: string]: unknown;
+                                          }[];
+                                          direction: ('ltr' | 'rtl') | null;
+                                          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                                          indent: number;
+                                          version: number;
+                                        };
+                                        [k: string]: unknown;
+                                      } | null;
                                       bulletPoints?:
                                         | {
                                             text: string;
@@ -2623,6 +2677,31 @@ export interface Page {
                                                  * Optional paragraph text displayed between the header and bullet points
                                                  */
                                                 paragraph?: string | null;
+                                                /**
+                                                 * Rich text content with paragraph support (Enter creates new paragraphs)
+                                                 */
+                                                richText?: {
+                                                  root: {
+                                                    type: string;
+                                                    children: {
+                                                      type: any;
+                                                      version: number;
+                                                      [k: string]: unknown;
+                                                    }[];
+                                                    direction: ('ltr' | 'rtl') | null;
+                                                    format:
+                                                      | 'left'
+                                                      | 'start'
+                                                      | 'center'
+                                                      | 'right'
+                                                      | 'end'
+                                                      | 'justify'
+                                                      | '';
+                                                    indent: number;
+                                                    version: number;
+                                                  };
+                                                  [k: string]: unknown;
+                                                } | null;
                                                 bulletPoints?:
                                                   | {
                                                       text: string;
@@ -3135,6 +3214,24 @@ export interface Page {
          * Optional paragraph text displayed between the header and bullet points
          */
         paragraph?: string | null;
+        /**
+         * Rich text content with paragraph support (Enter creates new paragraphs)
+         */
+        richText?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
         bulletPoints?:
           | {
               text: string;
@@ -4416,6 +4513,7 @@ export interface PagesSelect<T extends boolean = true> {
                           isReversed?: T;
                           header?: T;
                           paragraph?: T;
+                          richText?: T;
                           bulletPoints?:
                             | T
                             | {
@@ -4762,6 +4860,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       isReversed?: T;
                                       header?: T;
                                       paragraph?: T;
+                                      richText?: T;
                                       bulletPoints?:
                                         | T
                                         | {
@@ -5108,6 +5207,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   isReversed?: T;
                                                   header?: T;
                                                   paragraph?: T;
+                                                  richText?: T;
                                                   bulletPoints?:
                                                     | T
                                                     | {
@@ -5454,6 +5554,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               isReversed?: T;
                                                               header?: T;
                                                               paragraph?: T;
+                                                              richText?: T;
                                                               bulletPoints?:
                                                                 | T
                                                                 | {
@@ -5736,6 +5837,7 @@ export interface PagesSelect<T extends boolean = true> {
               isReversed?: T;
               header?: T;
               paragraph?: T;
+              richText?: T;
               bulletPoints?:
                 | T
                 | {

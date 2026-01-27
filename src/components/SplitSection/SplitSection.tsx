@@ -6,6 +6,7 @@ import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import PrimaryButton from '@/components/PrimaryButton'
 import ArrowLink from '@/components/ArrowLink/ArrowLink'
+import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import styles from './SplitSection.module.scss'
 
 type SplitSectionBlock = Extract<Page['blocks'][number], { blockType: 'splitSection' }>
@@ -21,6 +22,7 @@ export default function SplitSection({ block }: SplitSectionProps) {
   const isReversed = block.isReversed || false
   const header = block.header || ''
   const paragraph = block.paragraph || ''
+  const richText = (block as any).richText || null
   const bulletPoints = block.bulletPoints || []
   const buttonText = (block as any).buttonText
   const buttonHref = resolveLinkUrl({
@@ -72,6 +74,12 @@ export default function SplitSection({ block }: SplitSectionProps) {
             <p className={styles.content}>
               {paragraph}
             </p>
+          )}
+          
+          {richText && (
+            <div className={styles.content}>
+              <LexicalRenderer content={richText} />
+            </div>
           )}
           
           {bulletPoints.length > 0 && (
