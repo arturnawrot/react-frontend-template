@@ -56,6 +56,7 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
   const linkText = block.linkText || 'Explore More Insights'
   const linkHref = resolveLinkUrl(block as any)
   const openInNewTab = shouldOpenInNewTab(block as any)
+  const transparentBackground = block.transparentBackground || false
   // Use prop articles if provided, otherwise fall back to block articles (for backward compatibility)
   const articles: Article[] = propArticles || (block as { articles?: Article[] }).articles || []
 
@@ -138,7 +139,7 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
   }
 
   return (
-    <section className="w-full bg-[#dad6cc] py-20 overflow-x-hidden">
+    <section className={`w-full ${transparentBackground ? 'bg-transparent' : 'bg-[#dad6cc]'} ${transparentBackground ? '' : 'py-20'} overflow-x-hidden`}>
       <Carousel
         items={articles}
         renderItem={renderItem}

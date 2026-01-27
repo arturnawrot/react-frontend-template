@@ -25,6 +25,15 @@ export const InsightsSection: Block = {
       label: 'Heading',
       defaultValue: 'Insights That Shape Smart Investments',
     },
+    {
+      name: 'transparentBackground',
+      type: 'checkbox',
+      label: 'Transparent Background',
+      defaultValue: false,
+      admin: {
+        description: 'When enabled, the section will have a transparent background instead of the default beige color',
+      },
+    },
     ...createLinkFields({
       linkTextLabel: 'Link Text',
       linkTextRequired: false,

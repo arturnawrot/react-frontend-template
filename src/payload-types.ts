@@ -695,6 +695,10 @@ export interface Page {
                    */
                   featuredArticleSetName?: string | null;
                   heading?: string | null;
+                  /**
+                   * When enabled, the section will have a transparent background instead of the default beige color
+                   */
+                  transparentBackground?: boolean | null;
                   linkText?: string | null;
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1333,6 +1337,10 @@ export interface Page {
                              */
                             featuredArticleSetName?: string | null;
                             heading?: string | null;
+                            /**
+                             * When enabled, the section will have a transparent background instead of the default beige color
+                             */
+                            transparentBackground?: boolean | null;
                             linkText?: string | null;
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1971,6 +1979,10 @@ export interface Page {
                                        */
                                       featuredArticleSetName?: string | null;
                                       heading?: string | null;
+                                      /**
+                                       * When enabled, the section will have a transparent background instead of the default beige color
+                                       */
+                                      transparentBackground?: boolean | null;
                                       linkText?: string | null;
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2609,6 +2621,10 @@ export interface Page {
                                                  */
                                                 featuredArticleSetName?: string | null;
                                                 heading?: string | null;
+                                                /**
+                                                 * When enabled, the section will have a transparent background instead of the default beige color
+                                                 */
+                                                transparentBackground?: boolean | null;
                                                 linkText?: string | null;
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -3097,6 +3113,10 @@ export interface Page {
          */
         featuredArticleSetName?: string | null;
         heading?: string | null;
+        /**
+         * When enabled, the section will have a transparent background instead of the default beige color
+         */
+        transparentBackground?: boolean | null;
         linkText?: string | null;
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -4342,6 +4362,7 @@ export interface PagesSelect<T extends boolean = true> {
                       | {
                           featuredArticleSetName?: T;
                           heading?: T;
+                          transparentBackground?: T;
                           linkText?: T;
                           linkType?: T;
                           page?: T;
@@ -4673,6 +4694,7 @@ export interface PagesSelect<T extends boolean = true> {
                                   | {
                                       featuredArticleSetName?: T;
                                       heading?: T;
+                                      transparentBackground?: T;
                                       linkText?: T;
                                       linkType?: T;
                                       page?: T;
@@ -5004,6 +5026,7 @@ export interface PagesSelect<T extends boolean = true> {
                                               | {
                                                   featuredArticleSetName?: T;
                                                   heading?: T;
+                                                  transparentBackground?: T;
                                                   linkText?: T;
                                                   linkType?: T;
                                                   page?: T;
@@ -5335,6 +5358,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                           | {
                                                               featuredArticleSetName?: T;
                                                               heading?: T;
+                                                              transparentBackground?: T;
                                                               linkText?: T;
                                                               linkType?: T;
                                                               page?: T;
@@ -5602,6 +5626,7 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               featuredArticleSetName?: T;
               heading?: T;
+              transparentBackground?: T;
               linkText?: T;
               linkType?: T;
               page?: T;
