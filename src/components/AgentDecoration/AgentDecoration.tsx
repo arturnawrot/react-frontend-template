@@ -1,10 +1,9 @@
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import type { Page, Media } from '@/payload-types'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
+import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import PrimaryButton from '@/components/PrimaryButton'
 
 type AgentDecorationBlock = Extract<Page['blocks'][number], { blockType: 'agentDecoration' }>
 
@@ -21,6 +20,7 @@ interface AgentDecorationProps {
   block: AgentDecorationBlock & {
     agents?: Agent[]
   }
+  constantLinksMap?: ConstantLinksMap
 }
 
 // --- Helper for Image URLs ---
@@ -55,10 +55,10 @@ const AgentCard = ({ src, alt, className }: { src: string; alt: string; classNam
   )
 }
 
-export default function AgentDecoration({ block }: AgentDecorationProps) {
+export default function AgentDecoration({ block, constantLinksMap }: AgentDecorationProps) {
   const heading = block.heading || 'Find the Right\nPartner for Your\nProperty Goals'
   const buttonText = block.buttonText
-  const linkHref = resolveLinkUrl(block as any)
+  const linkHref = resolveLinkUrl(block as any, constantLinksMap)
   const openInNewTab = shouldOpenInNewTab(block as any)
   const variant = (block as any).variant || 'full'
   const description = (block as any).description
@@ -139,26 +139,13 @@ export default function AgentDecoration({ block }: AgentDecorationProps) {
           
           {buttonText && linkHref && (
             <div className={isCompact ? 'mt-8' : ''}>
-              {(() => {
-                const isInternal = isInternalLink(linkHref) && !openInNewTab
-                const LinkComponent = isInternal ? Link : 'a'
-                const linkProps = isInternal
-                  ? { 
-                      href: linkHref, 
-                      className: 'bg-[#dce775] hover:bg-[#d2dd6e] text-[#1a3b32] font-bold py-4 px-10 rounded-full transition-colors duration-300 text-lg w-full md:w-auto shadow-sm inline-block text-center' 
-                    }
-                  : {
-                      href: linkHref,
-                      target: openInNewTab ? '_blank' : undefined,
-                      rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                      className: 'bg-[#dce775] hover:bg-[#d2dd6e] text-[#1a3b32] font-bold py-4 px-10 rounded-full transition-colors duration-300 text-lg w-full md:w-auto shadow-sm inline-block text-center',
-                    }
-                return (
-                  <LinkComponent {...linkProps}>
-                    {buttonText}
-                  </LinkComponent>
-                )
-              })()}
+              <PrimaryButton
+                href={linkHref}
+                openInNewTab={openInNewTab}
+                className="font-bold py-4 px-10 rounded-full text-lg w-full md:w-auto"
+              >
+                {buttonText}
+              </PrimaryButton>
             </div>
           )}
         </div>

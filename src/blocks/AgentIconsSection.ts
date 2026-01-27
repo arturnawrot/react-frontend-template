@@ -35,6 +35,12 @@ export const AgentIconsSection: Block = {
         description: 'Optional paragraph text displayed between the header and link',
       },
     },
+    ...createLinkFields({
+      fieldPrefix: 'button',
+      linkTextName: 'buttonText',
+      linkTextLabel: 'Button Text',
+      linkTextRequired: false,
+    }),
     ...createLinkFields(),
   ],
 }

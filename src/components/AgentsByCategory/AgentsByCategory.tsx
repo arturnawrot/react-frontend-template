@@ -2,11 +2,9 @@
 import React, { useState, useEffect } from 'react'
 import type { Page } from '@/payload-types'
 import AgentCard from '../AgentCard/AgentCard'
-import Arrow from '../Arrow/Arrow'
-import Link from 'next/link'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import ArrowLink from '@/components/ArrowLink/ArrowLink'
 
 type AgentsByCategoryBlock = Extract<Page['blocks'][number], { blockType: 'agentsByCategory' }>
 
@@ -241,33 +239,14 @@ export default function AgentsByCategory({ block }: AgentsByCategoryProps) {
                       const openInNewTab = shouldOpenInNewTab(linkData)
                       
                       if (!linkHref) {
-                        return (
-                          <div className="mt-6 md:mt-12">
-                            <span className="inline-flex items-center gap-2 text-xs font-bold text-[#1C2B28] uppercase tracking-wide">
-                              {cat.linkText}
-                              <Arrow direction="right" size="w-3 h-3" />
-                            </span>
-                          </div>
-                        )
+                        return null
                       }
-                      
-                      const isInternal = isInternalLink(linkHref) && !openInNewTab
-                      const LinkComponent = isInternal ? Link : 'a'
-                      const linkProps = isInternal
-                        ? { href: linkHref, className: 'inline-flex items-center gap-2 text-xs font-bold text-[#1C2B28] uppercase tracking-wide hover:opacity-70 transition-opacity' }
-                        : {
-                            href: linkHref,
-                            target: openInNewTab ? '_blank' : undefined,
-                            rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                            className: 'inline-flex items-center gap-2 text-xs font-bold text-[#1C2B28] uppercase tracking-wide hover:opacity-70 transition-opacity',
-                          }
                       
                       return (
                         <div className="mt-6 md:mt-12">
-                          <LinkComponent {...linkProps}>
+                          <ArrowLink href={linkHref} openInNewTab={openInNewTab}>
                             {cat.linkText}
-                            <Arrow direction="right" size="w-3 h-3" />
-                          </LinkComponent>
+                          </ArrowLink>
                         </div>
                       )
                     })()}

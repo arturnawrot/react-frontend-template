@@ -2,7 +2,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from '../Link/Link'
-import Arrow from '../Arrow/Arrow'
+import ArrowLink from '../ArrowLink/ArrowLink'
 
 interface ArticleCardProps {
   imageSrc: string
@@ -49,10 +49,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ imageSrc, title, tags = [], l
         <h3 className="text-xl md:text-2xl font-bold text-[#1a2e2a] leading-tight mb-4 font-serif">
           {title}
         </h3>
-        <Link href={link} className={readMoreClass}>
+        <ArrowLink href={link} className="group">
           Read More
-          <Arrow direction="right" variant="fill" size={16} className="transform transition-transform group-hover:translate-x-1" />
-        </Link>
+        </ArrowLink>
       </div>
     </div>
   )

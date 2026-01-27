@@ -7,6 +7,28 @@ import type { Payload } from 'payload'
 export type ConstantLinksMap = Map<string, string> | Record<string, string>
 
 /**
+ * Module-level cache for constant links map
+ * This allows resolveLinkUrl to automatically use constant links without requiring
+ * each component to pass constantLinksMap explicitly
+ */
+let cachedConstantLinksMap: ConstantLinksMap | null = null
+
+/**
+ * Sets the cached constant links map for automatic resolution
+ * Should be called once after fetching constant links (e.g., in renderBlocks)
+ */
+export function setCachedConstantLinksMap(map: ConstantLinksMap | null): void {
+  cachedConstantLinksMap = map
+}
+
+/**
+ * Gets the cached constant links map
+ */
+export function getCachedConstantLinksMap(): ConstantLinksMap | null {
+  return cachedConstantLinksMap
+}
+
+/**
  * Fetches constant links from the global and returns a map of key -> URL
  * Can be used in server components to pre-fetch constant links
  */
@@ -110,14 +132,19 @@ export function resolveLinkUrl(
   } else if (effectiveLinkType === 'custom') {
     return effectiveCustomUrl || null
   } else if (effectiveLinkType === 'constant') {
-    if (!effectiveConstantLink || !constantLinksMap) {
+    if (!effectiveConstantLink) {
+      return null
+    }
+    // Use provided map, or fall back to cached map
+    const mapToUse = constantLinksMap || cachedConstantLinksMap
+    if (!mapToUse) {
       return null
     }
     // Support both Map and Record types
-    if (constantLinksMap instanceof Map) {
-      return constantLinksMap.get(effectiveConstantLink) || null
+    if (mapToUse instanceof Map) {
+      return mapToUse.get(effectiveConstantLink) || null
     }
-    return constantLinksMap[effectiveConstantLink] || null
+    return mapToUse[effectiveConstantLink] || null
   }
 
   // Legacy support: fall back to old field names

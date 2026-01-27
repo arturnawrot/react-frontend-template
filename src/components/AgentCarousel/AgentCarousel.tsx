@@ -5,9 +5,9 @@ import Link from 'next/link'
 import type { Page, Media } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import ArrowLink from '@/components/ArrowLink/ArrowLink'
 import { Carousel, CarouselTrackElement } from '../Carousel'
 import styles from './AgentCarousel.module.scss'
 import ResponsiveText from '../ResponsiveText'
@@ -107,25 +107,13 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
             {description}
           </p>
 
-          {linkText && linkHref && (() => {
-            const isInternal = isInternalLink(linkHref) && !openInNewTab
-            const LinkComponent = isInternal ? Link : 'a'
-            const linkClassName = `${styles.link} group inline-flex items-center ${isWhiteVariant ? '' : 'text-[#1a2e28]'} hover:opacity-70 transition-opacity mt-2`
-            const linkProps = isInternal
-              ? { href: linkHref, className: linkClassName }
-              : {
-                  href: linkHref,
-                  target: openInNewTab ? '_blank' : undefined,
-                  rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                  className: linkClassName,
-                }
-            return (
-              <LinkComponent {...linkProps}>
+          {linkText && linkHref && (
+            <div className="mt-2">
+              <ArrowLink href={linkHref} openInNewTab={openInNewTab} style={textColorStyle}>
                 {linkText}
-                <Arrow direction="right" size="w-4 h-4" className="ml-2 transition-transform group-hover:translate-x-1" />
-              </LinkComponent>
-            )
-          })()}
+              </ArrowLink>
+            </div>
+          )}
 
           {/* Desktop Arrows */}
           <div className="hidden lg:flex gap-4 mt-8 justify-end">

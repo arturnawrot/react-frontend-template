@@ -32,7 +32,7 @@ import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
-import { getConstantLinksMap } from '@/utils/linkResolver'
+import { getConstantLinksMap, setCachedConstantLinksMap } from '@/utils/linkResolver'
 
 // Type for any block from a Page (also compatible with Container blocks)
 type PageBlock = Page['blocks'][number]
@@ -527,7 +527,7 @@ export async function renderBlock(
       }
     }
 
-    return <AgentDecoration key={index} block={{ ...block, agents } as any} />
+    return <AgentDecoration key={index} block={{ ...block, agents } as any} constantLinksMap={options?.constantLinksMap} />
   }
   if (block.blockType === 'faqSection') {
     // Fetch FAQs from the selected set if specified
@@ -966,6 +966,8 @@ export async function renderBlocks(
   if (!constantLinksMap && payload) {
     try {
       constantLinksMap = await getConstantLinksMap(payload)
+      // Cache it globally so resolveLinkUrl can use it automatically
+      setCachedConstantLinksMap(constantLinksMap)
       // Add to resolved options for nested calls
       resolvedOptions = {
         ...resolvedOptions,
@@ -974,7 +976,11 @@ export async function renderBlocks(
     } catch (error) {
       console.warn('[renderBlocks] Error fetching constant links:', error)
       constantLinksMap = new Map()
+      setCachedConstantLinksMap(constantLinksMap)
     }
+  } else if (constantLinksMap) {
+    // Cache provided map as well
+    setCachedConstantLinksMap(constantLinksMap)
   }
 
   // Render all blocks in parallel

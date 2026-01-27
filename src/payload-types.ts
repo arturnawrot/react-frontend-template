@@ -790,6 +790,27 @@ export interface Page {
                    * Optional paragraph text displayed between the header and link
                    */
                   paragraph?: string | null;
+                  buttonText?: string | null;
+                  /**
+                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                   */
+                  buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  /**
+                   * Select a page to link to
+                   */
+                  buttonPage?: (string | null) | Page;
+                  /**
+                   * Enter a custom URL (e.g., /contact, https://example.com)
+                   */
+                  buttonCustomUrl?: string | null;
+                  /**
+                   * Select a constant link. These links can be managed globally and updated in one place.
+                   */
+                  buttonConstantLink?: string | null;
+                  /**
+                   * Open the link in a new browser tab
+                   */
+                  buttonOpenInNewTab?: boolean | null;
                   linkText?: string | null;
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1407,6 +1428,27 @@ export interface Page {
                              * Optional paragraph text displayed between the header and link
                              */
                             paragraph?: string | null;
+                            buttonText?: string | null;
+                            /**
+                             * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                             */
+                            buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            /**
+                             * Select a page to link to
+                             */
+                            buttonPage?: (string | null) | Page;
+                            /**
+                             * Enter a custom URL (e.g., /contact, https://example.com)
+                             */
+                            buttonCustomUrl?: string | null;
+                            /**
+                             * Select a constant link. These links can be managed globally and updated in one place.
+                             */
+                            buttonConstantLink?: string | null;
+                            /**
+                             * Open the link in a new browser tab
+                             */
+                            buttonOpenInNewTab?: boolean | null;
                             linkText?: string | null;
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2024,6 +2066,27 @@ export interface Page {
                                        * Optional paragraph text displayed between the header and link
                                        */
                                       paragraph?: string | null;
+                                      buttonText?: string | null;
+                                      /**
+                                       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                                       */
+                                      buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      /**
+                                       * Select a page to link to
+                                       */
+                                      buttonPage?: (string | null) | Page;
+                                      /**
+                                       * Enter a custom URL (e.g., /contact, https://example.com)
+                                       */
+                                      buttonCustomUrl?: string | null;
+                                      /**
+                                       * Select a constant link. These links can be managed globally and updated in one place.
+                                       */
+                                      buttonConstantLink?: string | null;
+                                      /**
+                                       * Open the link in a new browser tab
+                                       */
+                                      buttonOpenInNewTab?: boolean | null;
                                       linkText?: string | null;
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2641,6 +2704,27 @@ export interface Page {
                                                  * Optional paragraph text displayed between the header and link
                                                  */
                                                 paragraph?: string | null;
+                                                buttonText?: string | null;
+                                                /**
+                                                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                                                 */
+                                                buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                /**
+                                                 * Select a page to link to
+                                                 */
+                                                buttonPage?: (string | null) | Page;
+                                                /**
+                                                 * Enter a custom URL (e.g., /contact, https://example.com)
+                                                 */
+                                                buttonCustomUrl?: string | null;
+                                                /**
+                                                 * Select a constant link. These links can be managed globally and updated in one place.
+                                                 */
+                                                buttonConstantLink?: string | null;
+                                                /**
+                                                 * Open the link in a new browser tab
+                                                 */
+                                                buttonOpenInNewTab?: boolean | null;
                                                 linkText?: string | null;
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -3108,6 +3192,27 @@ export interface Page {
          * Optional paragraph text displayed between the header and link
          */
         paragraph?: string | null;
+        buttonText?: string | null;
+        /**
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+         */
+        buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        /**
+         * Select a page to link to
+         */
+        buttonPage?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        buttonCustomUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        buttonConstantLink?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        buttonOpenInNewTab?: boolean | null;
         linkText?: string | null;
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -4281,6 +4386,12 @@ export interface PagesSelect<T extends boolean = true> {
                           agentIconsSetName?: T;
                           header?: T;
                           paragraph?: T;
+                          buttonText?: T;
+                          buttonLinkType?: T;
+                          buttonPage?: T;
+                          buttonCustomUrl?: T;
+                          buttonConstantLink?: T;
+                          buttonOpenInNewTab?: T;
                           linkText?: T;
                           linkType?: T;
                           page?: T;
@@ -4606,6 +4717,12 @@ export interface PagesSelect<T extends boolean = true> {
                                       agentIconsSetName?: T;
                                       header?: T;
                                       paragraph?: T;
+                                      buttonText?: T;
+                                      buttonLinkType?: T;
+                                      buttonPage?: T;
+                                      buttonCustomUrl?: T;
+                                      buttonConstantLink?: T;
+                                      buttonOpenInNewTab?: T;
                                       linkText?: T;
                                       linkType?: T;
                                       page?: T;
@@ -4931,6 +5048,12 @@ export interface PagesSelect<T extends boolean = true> {
                                                   agentIconsSetName?: T;
                                                   header?: T;
                                                   paragraph?: T;
+                                                  buttonText?: T;
+                                                  buttonLinkType?: T;
+                                                  buttonPage?: T;
+                                                  buttonCustomUrl?: T;
+                                                  buttonConstantLink?: T;
+                                                  buttonOpenInNewTab?: T;
                                                   linkText?: T;
                                                   linkType?: T;
                                                   page?: T;
@@ -5256,6 +5379,12 @@ export interface PagesSelect<T extends boolean = true> {
                                                               agentIconsSetName?: T;
                                                               header?: T;
                                                               paragraph?: T;
+                                                              buttonText?: T;
+                                                              buttonLinkType?: T;
+                                                              buttonPage?: T;
+                                                              buttonCustomUrl?: T;
+                                                              buttonConstantLink?: T;
+                                                              buttonOpenInNewTab?: T;
                                                               linkText?: T;
                                                               linkType?: T;
                                                               page?: T;
@@ -5517,6 +5646,12 @@ export interface PagesSelect<T extends boolean = true> {
               agentIconsSetName?: T;
               header?: T;
               paragraph?: T;
+              buttonText?: T;
+              buttonLinkType?: T;
+              buttonPage?: T;
+              buttonCustomUrl?: T;
+              buttonConstantLink?: T;
+              buttonOpenInNewTab?: T;
               linkText?: T;
               linkType?: T;
               page?: T;

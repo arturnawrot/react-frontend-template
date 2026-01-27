@@ -1,13 +1,11 @@
 'use client'
 import React from 'react'
-import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import ArticleCard from '../ArticleCard/ArticleCard'
-import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import ArrowLink from '@/components/ArrowLink/ArrowLink'
 import { Carousel, CarouselTrackElement } from '../Carousel'
 
 type InsightsSectionBlock = Extract<Page['blocks'][number], { blockType: 'insightsSection' }>
@@ -88,24 +86,11 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
               })}
             </SectionHeading>
 
-            {linkText && linkHref && (() => {
-              const isInternal = isInternalLink(linkHref) && !openInNewTab
-              const LinkComponent = isInternal ? Link : 'a'
-              const linkProps = isInternal
-                ? { href: linkHref, className: 'inline-flex items-center gap-2 font-bold uppercase tracking-wider text-xs md:text-sm text-[#1a2e2a] hover:opacity-70 transition-opacity' }
-                : {
-                    href: linkHref,
-                    target: openInNewTab ? '_blank' : undefined,
-                    rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                    className: 'inline-flex items-center gap-2 font-bold uppercase tracking-wider text-xs md:text-sm text-[#1a2e2a] hover:opacity-70 transition-opacity',
-                  }
-              return (
-                <LinkComponent {...linkProps}>
-                  {linkText}
-                  <Arrow direction="right" size={16} />
-                </LinkComponent>
-              )
-            })()}
+            {linkText && linkHref && (
+              <ArrowLink href={linkHref} openInNewTab={openInNewTab}>
+                {linkText}
+              </ArrowLink>
+            )}
           </div>
 
           {/* Desktop Arrows (positioned at bottom of left col) */}

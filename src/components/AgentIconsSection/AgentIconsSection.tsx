@@ -1,11 +1,10 @@
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import type { Page, Media } from '@/payload-types'
-import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import PrimaryButton from '@/components/PrimaryButton'
+import ArrowLink from '@/components/ArrowLink/ArrowLink'
 
 type AgentIconsSectionBlock = Extract<Page['blocks'][number], { blockType: 'agentIconsSection' }>
 
@@ -37,6 +36,19 @@ const getImageUrl = (image?: Media | string | null): string => {
 export default function AgentIconsSection({ block }: AgentIconsSectionProps) {
   const header = block.header || ''
   const paragraph = block.paragraph || ''
+  const buttonText = (block as any).buttonText
+  const buttonHref = resolveLinkUrl({
+    ...(block as any),
+    linkType: (block as any).buttonLinkType,
+    page: (block as any).buttonPage,
+    customUrl: (block as any).buttonCustomUrl,
+    constantLink: (block as any).buttonConstantLink,
+    openInNewTab: (block as any).buttonOpenInNewTab,
+  })
+  const buttonOpenInNewTab = shouldOpenInNewTab({
+    linkType: (block as any).buttonLinkType,
+    openInNewTab: (block as any).buttonOpenInNewTab,
+  })
   const linkText = block.linkText
   const linkHref = resolveLinkUrl(block as any)
   const openInNewTab = shouldOpenInNewTab(block as any)
@@ -148,7 +160,7 @@ export default function AgentIconsSection({ block }: AgentIconsSectionProps) {
 
            {/* RIGHT COLUMN: Content */}
            <div className="w-full md:w-[40vw] md:ml-[calc(10%-10vw)] flex md:justify-end">
-             <div className="space-y-4 sm:space-y-5 md:space-y-6 max-w-[580px]">
+             <div className="space-y-4 sm:space-y-5 md:space-y-6 max-w-[480px]">
                <SectionHeading>
                  {header}
                </SectionHeading>
@@ -168,28 +180,26 @@ export default function AgentIconsSection({ block }: AgentIconsSectionProps) {
                  </p>
                )}
 
-               {linkText && linkHref && (
-                 <div className="pt-2 sm:pt-3 md:pt-4">
-                   {(() => {
-                     const isInternal = isInternalLink(linkHref) && !openInNewTab
-                     const LinkComponent = isInternal ? Link : 'a'
-                     const linkProps = isInternal
-                       ? { href: linkHref, className: 'inline-flex items-center gap-2 text-[#1a2e2a] hover:opacity-70 transition-opacity' }
-                       : {
-                           href: linkHref,
-                           target: openInNewTab ? '_blank' : undefined,
-                           rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                           className: 'inline-flex items-center gap-2 text-[#1a2e2a] hover:opacity-70 transition-opacity',
-                         }
-                     return (
-                       <LinkComponent {...linkProps}>
-                         {linkText}
-                         <Arrow direction="right" variant="fill" size={16} />
-                       </LinkComponent>
-                     )
-                   })()}
+               {(buttonText && buttonHref) || (linkText && linkHref) ? (
+                 <div className="pt-2 sm:pt-3 md:pt-4 flex flex-col gap-3 md:gap-4 max-w-[325px]">
+                   {buttonText && buttonHref && (
+                     <PrimaryButton
+                       href={buttonHref}
+                       openInNewTab={buttonOpenInNewTab}
+                       fullWidth
+                     >
+                       {buttonText}
+                     </PrimaryButton>
+                   )}
+                   {linkText && linkHref && (
+                    <div className="mt-5">
+                      <ArrowLink href={linkHref} openInNewTab={openInNewTab}>
+                        {linkText}
+                      </ArrowLink>
+                    </div>
+                   )}
                  </div>
-               )}
+               ) : null}
              </div>
            </div>
 

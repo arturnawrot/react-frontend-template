@@ -1,13 +1,11 @@
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import type { Page } from '@/payload-types'
-import Arrow from '../Arrow/Arrow'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import PrimaryButton from '@/components/PrimaryButton'
+import ArrowLink from '@/components/ArrowLink/ArrowLink'
 import styles from './SplitSection.module.scss'
 
 type SplitSectionBlock = Extract<Page['blocks'][number], { blockType: 'splitSection' }>
@@ -100,24 +98,9 @@ export default function SplitSection({ block }: SplitSectionProps) {
               )}
               {linkText && linkHref && (
                 <div className="w-full md:w-auto">
-                  {(() => {
-                    const isInternal = isInternalLink(linkHref) && !openInNewTab
-                    const LinkComponent = isInternal ? Link : 'a'
-                    const linkProps = isInternal
-                      ? { href: linkHref, className: styles.link }
-                      : {
-                          href: linkHref,
-                          target: openInNewTab ? '_blank' : undefined,
-                          rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                          className: styles.link,
-                        }
-                    return (
-                      <LinkComponent {...linkProps}>
-                        {linkText}
-                        <Arrow direction="right" variant="fill" size={16} />
-                      </LinkComponent>
-                    )
-                  })()}
+                  <ArrowLink href={linkHref} openInNewTab={openInNewTab}>
+                    {linkText}
+                  </ArrowLink>
                 </div>
               )}
             </div>
