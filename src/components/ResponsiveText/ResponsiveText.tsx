@@ -63,6 +63,8 @@ export interface ResponsiveTextProps {
   breakpoint?: Breakpoint
   /** Max width constraint (e.g., '600px', '80%', '40ch') */
   maxWidth?: string
+  /** Letter spacing (e.g., 'normal', '0px', '0.5px') */
+  letterSpacing?: string
   /** Additional CSS class names */
   className?: string
   /** Additional inline styles */
@@ -106,6 +108,7 @@ export default function ResponsiveText({
   align,
   breakpoint = 'md',
   maxWidth,
+  letterSpacing = 'normal',
   className = '',
   style = {},
 }: ResponsiveTextProps) {
@@ -129,6 +132,7 @@ export default function ResponsiveText({
     ...(hasResponsiveFontWeight && { '--rt-mobile-fw': fontWeightMobile }),
     ...(!hasResponsiveFontWeight && fontWeight !== undefined && { fontWeight }),
     ...(color && { color }),
+    letterSpacing,
     // max-width requires block/inline-block display to work on inline elements like span
     ...(maxWidth && { display: 'block', maxWidth }),
     ...style,

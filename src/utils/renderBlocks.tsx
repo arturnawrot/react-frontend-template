@@ -27,6 +27,7 @@ import LocalRootsSection from '@/components/LocalRootsSection/LocalRootsSection'
 import StatsSection from '@/components/StatsSection/StatsSection'
 import AvailableRoles from '@/components/AvailableRoles/AvailableRoles'
 import OfficeLocations from '@/components/OfficeLocations/OfficeLocations'
+import CenteredSectionHeader from '@/components/CenteredSectionHeader/CenteredSectionHeader'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
@@ -915,6 +916,9 @@ export async function renderBlock(
     }
 
     return <OfficeLocations key={index} block={{ ...(block as any), locations }} />
+  }
+  if (block.blockType === 'centeredSectionHeader') {
+    return <CenteredSectionHeader key={index} block={block} />
   }
   return null
 }

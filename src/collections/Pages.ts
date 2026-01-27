@@ -27,6 +27,7 @@ import { LocalRootsSection } from '../blocks/LocalRootsSection'
 import { StatsSection } from '../blocks/StatsSection'
 import { AvailableRoles } from '../blocks/AvailableRoles'
 import { OfficeLocations } from '../blocks/OfficeLocations'
+import { CenteredSectionHeader } from '../blocks/CenteredSectionHeader'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -85,6 +86,7 @@ export const Pages: CollectionConfig = {
         StatsSection,
         AvailableRoles,
         OfficeLocations,
+        CenteredSectionHeader,
       ],
     },
     seoFields,

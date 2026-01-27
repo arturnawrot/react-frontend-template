@@ -3487,6 +3487,13 @@ export interface Page {
         blockName?: string | null;
         blockType: 'officeLocations';
       }
+    | {
+        heading: string;
+        subheading?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'centeredSectionHeader';
+      }
   )[];
   /**
    * Search engine optimization settings
@@ -5808,6 +5815,14 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               officeLocationSetName?: T;
               heading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        centeredSectionHeader?:
+          | T
+          | {
+              heading?: T;
+              subheading?: T;
               id?: T;
               blockName?: T;
             };
