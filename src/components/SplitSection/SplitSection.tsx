@@ -47,12 +47,12 @@ export default function SplitSection({ block }: SplitSectionProps) {
       className={`
         flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-20 xl:gap-30 
         ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'}
-        md:justify-between w-full
+        md:justify-between md:items-center w-full
       `}
     >
       {/* Image Column */}
-      <div className="w-full md:w-1/2 flex justify-center">
-        <div className="relative overflow-hidden rounded-2xl shadow-lg w-full max-w-[480px] md:max-w-[720px] aspect-[4/3]">
+      <div className="w-full md:w-1/2 flex justify-center items-center">
+        <div className="relative overflow-hidden rounded-2xl shadow-lg w-full max-w-[480px] md:max-w-[720px] aspect-[4/3] max-h-[540px]">
           <Image 
             src={imageUrl} 
             alt={imageAlt} 
