@@ -4,6 +4,7 @@ import { config, library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
+import { HashNavigation } from '@/components/HashNavigation'
 
 // Prevent FontAwesome from auto-adding CSS (we're using SVG core)
 config.autoAddCss = false
@@ -56,6 +57,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         />
       </head>
       <body>
+        <HashNavigation />
         <main>{children}</main>
       </body>
     </html>
