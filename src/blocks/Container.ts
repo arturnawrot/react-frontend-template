@@ -21,6 +21,7 @@ import { BlogHighlightsBlock } from './BlogHighlightsBlock'
 import { LocalRootsSection } from './LocalRootsSection'
 import { AvailableRoles } from './AvailableRoles'
 import { OfficeLocations } from './OfficeLocations'
+import { StatsSection } from './StatsSection'
 
 /**
  * Creates a Container block with nested container support
@@ -51,6 +52,7 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
     LocalRootsSection,
     AvailableRoles,
     OfficeLocations,
+    StatsSection,
   ]
 
   // Add nested Container if we haven't reached max depth

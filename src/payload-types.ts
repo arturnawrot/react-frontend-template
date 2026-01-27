@@ -1028,6 +1028,26 @@ export interface Page {
                   blockType: 'officeLocations';
                 }
               | {
+                  /**
+                   * Optional heading above the stats (e.g., "Life at Meybohm")
+                   */
+                  heading?: string | null;
+                  items: {
+                    /**
+                     * The main stat value (e.g., "1M+", "80%", "50+")
+                     */
+                    value: string;
+                    /**
+                     * Description text below the value
+                     */
+                    description: string;
+                    id?: string | null;
+                  }[];
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'statsSection';
+                }
+              | {
                   id?: string | null;
                   /**
                    * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
@@ -1668,6 +1688,26 @@ export interface Page {
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'officeLocations';
+                          }
+                        | {
+                            /**
+                             * Optional heading above the stats (e.g., "Life at Meybohm")
+                             */
+                            heading?: string | null;
+                            items: {
+                              /**
+                               * The main stat value (e.g., "1M+", "80%", "50+")
+                               */
+                              value: string;
+                              /**
+                               * Description text below the value
+                               */
+                              description: string;
+                              id?: string | null;
+                            }[];
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'statsSection';
                           }
                         | {
                             id?: string | null;
@@ -2312,6 +2352,26 @@ export interface Page {
                                       blockType: 'officeLocations';
                                     }
                                   | {
+                                      /**
+                                       * Optional heading above the stats (e.g., "Life at Meybohm")
+                                       */
+                                      heading?: string | null;
+                                      items: {
+                                        /**
+                                         * The main stat value (e.g., "1M+", "80%", "50+")
+                                         */
+                                        value: string;
+                                        /**
+                                         * Description text below the value
+                                         */
+                                        description: string;
+                                        id?: string | null;
+                                      }[];
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'statsSection';
+                                    }
+                                  | {
                                       id?: string | null;
                                       /**
                                        * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
@@ -2952,6 +3012,26 @@ export interface Page {
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'officeLocations';
+                                              }
+                                            | {
+                                                /**
+                                                 * Optional heading above the stats (e.g., "Life at Meybohm")
+                                                 */
+                                                heading?: string | null;
+                                                items: {
+                                                  /**
+                                                   * The main stat value (e.g., "1M+", "80%", "50+")
+                                                   */
+                                                  value: string;
+                                                  /**
+                                                   * Description text below the value
+                                                   */
+                                                  description: string;
+                                                  id?: string | null;
+                                                }[];
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'statsSection';
                                               }
                                           )[]
                                         | null;
@@ -4538,6 +4618,20 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    statsSection?:
+                      | T
+                      | {
+                          heading?: T;
+                          items?:
+                            | T
+                            | {
+                                value?: T;
+                                description?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
                     container?:
                       | T
                       | {
@@ -4867,6 +4961,20 @@ export interface PagesSelect<T extends boolean = true> {
                                   | {
                                       officeLocationSetName?: T;
                                       heading?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                statsSection?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      items?:
+                                        | T
+                                        | {
+                                            value?: T;
+                                            description?: T;
+                                            id?: T;
+                                          };
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -5202,6 +5310,20 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            statsSection?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  items?:
+                                                    | T
+                                                    | {
+                                                        value?: T;
+                                                        description?: T;
+                                                        id?: T;
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             container?:
                                               | T
                                               | {
@@ -5531,6 +5653,20 @@ export interface PagesSelect<T extends boolean = true> {
                                                           | {
                                                               officeLocationSetName?: T;
                                                               heading?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
+                                                        statsSection?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              items?:
+                                                                | T
+                                                                | {
+                                                                    value?: T;
+                                                                    description?: T;
+                                                                    id?: T;
+                                                                  };
                                                               id?: T;
                                                               blockName?: T;
                                                             };
