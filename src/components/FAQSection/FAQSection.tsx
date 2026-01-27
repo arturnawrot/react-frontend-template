@@ -1,12 +1,11 @@
 'use client'
 import React, { useState } from 'react'
-import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import PrimaryButton from '@/components/PrimaryButton'
 
 type FAQSectionBlock = Extract<Page['blocks'][number], { blockType: 'faqSection' }> & {
   questions?: Array<{
@@ -63,26 +62,15 @@ export default function FAQSection({ block }: FAQSectionProps) {
               {description}
             </p>
 
-            {contactButtonText && linkHref && (() => {
-              const isInternal = isInternalLink(linkHref) && !openInNewTab
-              const LinkComponent = isInternal ? Link : 'a'
-              const linkProps = isInternal
-                ? { 
-                    href: linkHref, 
-                    className: 'inline-block bg-[#DAE684] text-[#1a2e2a] font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity' 
-                  }
-                : {
-                    href: linkHref,
-                    target: openInNewTab ? '_blank' : undefined,
-                    rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                    className: 'inline-block bg-[#DAE684] text-[#1a2e2a] font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity',
-                  }
-              return (
-                <LinkComponent {...linkProps}>
-                  {contactButtonText}
-                </LinkComponent>
-              )
-            })()}
+            {contactButtonText && linkHref && (
+              <PrimaryButton
+                href={linkHref}
+                openInNewTab={openInNewTab}
+                className="font-bold px-6 py-3 rounded-lg"
+              >
+                {contactButtonText}
+              </PrimaryButton>
+            )}
           </div>
         </div>
 

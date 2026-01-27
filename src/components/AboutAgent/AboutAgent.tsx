@@ -3,6 +3,7 @@
 import { Mail, Phone, Linkedin } from 'lucide-react'
 import type { SerializedEditorState } from 'lexical'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
+import PrimaryButton from '@/components/PrimaryButton'
 
 type AboutAgentProps = {
   agentFirstName?: string
@@ -132,12 +133,13 @@ export default function AboutAgent({
               )}
 
               {/* Schedule A Consultation Button */}
-              <button
+              <PrimaryButton
                 onClick={onScheduleClick}
-                className="w-full bg-[#DAE684] text-[#0F231D] font-semibold hover:bg-[#cdd876] transition-colors rounded-full px-8 py-3 text-base text-center font-sans"
+                className="font-semibold rounded-full px-8 py-3 text-base text-center font-sans"
+                fullWidth
               >
                 Schedule A Consultation
-              </button>
+              </PrimaryButton>
             </div>
           </div>
         </div>

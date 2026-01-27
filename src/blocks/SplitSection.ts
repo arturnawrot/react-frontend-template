@@ -58,6 +58,12 @@ export const SplitSection: Block = {
         },
       ],
     },
+    ...createLinkFields({
+      fieldPrefix: 'button',
+      linkTextName: 'buttonText',
+      linkTextLabel: 'Button Text',
+      linkTextRequired: false,
+    }),
     ...createLinkFields(),
   ],
 }

@@ -1,9 +1,8 @@
 import React from 'react'
-import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import PrimaryButton, { SecondaryButton } from '@/components/PrimaryButton'
 
 type CTAFooterBlock = Extract<Page['blocks'][number], { blockType: 'ctaFooter' }>
 
@@ -23,41 +22,20 @@ export default function CTAFooter({ block, constantLinksMap }: CTAFooterProps) {
 
   const renderButton = (button: typeof buttons[0], index: number) => {
     const isPrimary = button.variant === 'primary' || (button.variant === undefined && index === 0)
-    const baseClasses = "px-8 py-3 rounded-full font-medium border border-[#1b2e28] transition outline-none"
-    const primaryClasses = "bg-[#1b2e28] text-white hover:bg-opacity-90"
-    const secondaryClasses = "bg-transparent text-[#1b2e28] hover:bg-[#1b2e28] hover:text-white"
-    const className = `${baseClasses} ${isPrimary ? primaryClasses : secondaryClasses}`
-
     const href = resolveLinkUrl(button as any, constantLinksMap)
     const openInNewTab = shouldOpenInNewTab(button as any)
-    if (href) {
-      const isInternal = isInternalLink(href) && !openInNewTab
-      const LinkComponent = isInternal ? Link : 'a'
-      const linkProps = isInternal
-        ? { href, className }
-        : {
-            href,
-            target: openInNewTab ? '_blank' : undefined,
-            rel: openInNewTab ? 'noopener noreferrer' : undefined,
-            className,
-          }
-      return (
-        <LinkComponent 
-          key={index} 
-          {...linkProps}
-        >
-          {button.label}
-        </LinkComponent>
-      )
-    }
+
+    const ButtonComponent = isPrimary ? PrimaryButton : SecondaryButton
 
     return (
-      <button 
+      <ButtonComponent
         key={index}
-        className={className}
+        href={href || undefined}
+        openInNewTab={openInNewTab}
+        variant={isPrimary ? 'dark' : undefined}
       >
         {button.label}
-      </button>
+      </ButtonComponent>
     )
   }
 

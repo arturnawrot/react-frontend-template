@@ -1,9 +1,8 @@
 import React from 'react'
-import Link from 'next/link'
 import type { Page } from '@/payload-types'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import PrimaryButton from '@/components/PrimaryButton'
 
 type CardOnBackgroundBlock = Extract<Page['blocks'][number], { blockType: 'cardOnBackground' }>
 
@@ -33,33 +32,6 @@ export default function CardOnBackground({ block }: CardOnBackgroundProps) {
   const href = resolveLinkUrl(block as any)
   const openInNewTab = shouldOpenInNewTab(block as any)
   const hasLink = href && block.linkType !== 'none'
-
-  const CTAButton = hasLink ? (
-    (() => {
-      const isInternal = isInternalLink(href) && !openInNewTab
-      const LinkComponent = isInternal ? Link : 'a'
-      const linkProps = isInternal
-        ? { href, className: "bg-[#DAE684] hover:bg-[#cdd876] text-[#1C2B28] font-semibold py-3 px-8 rounded-full transition-colors duration-300 text-base md:text-lg w-full md:w-auto inline-block text-center" }
-        : {
-            href,
-            target: openInNewTab ? '_blank' : undefined,
-            rel: openInNewTab ? 'noopener noreferrer' : undefined,
-            className: "bg-[#DAE684] hover:bg-[#cdd876] text-[#1C2B28] font-semibold py-3 px-8 rounded-full transition-colors duration-300 text-base md:text-lg w-full md:w-auto inline-block text-center",
-          }
-      return (
-        <LinkComponent {...linkProps}>
-          {ctaText}
-        </LinkComponent>
-      )
-    })()
-  ) : (
-    <button
-      className="bg-[#DAE684] hover:bg-[#cdd876] text-[#1C2B28] font-semibold py-3 px-8 rounded-full transition-colors duration-300 text-base md:text-lg w-full md:w-auto"
-      aria-label={ctaText}
-    >
-      {ctaText}
-    </button>
-  )
 
   return (
     <section className="relative w-full min-h-[600px] md:min-h-[700px] overflow-hidden bg-gray-200">
@@ -97,7 +69,16 @@ export default function CardOnBackground({ block }: CardOnBackgroundProps) {
           )}
 
           {/* CTA Button */}
-          {ctaText && CTAButton}
+          {ctaText && (
+            <PrimaryButton
+              href={hasLink ? href : undefined}
+              openInNewTab={openInNewTab}
+              className="text-base md:text-lg rounded-full"
+              fullWidth
+            >
+              {ctaText}
+            </PrimaryButton>
+          )}
         </div>
       </div>
     </section>

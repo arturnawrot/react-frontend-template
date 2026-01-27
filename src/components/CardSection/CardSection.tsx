@@ -1,14 +1,13 @@
 import React from 'react'
-import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { IconProp } from '@fortawesome/fontawesome-svg-core'
 import type { Page } from '@/payload-types'
 import styles from './CardSection.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import CardWrapper from '@/components/CardWrapper'
+import PrimaryButton from '@/components/PrimaryButton'
 
 type CardSectionBlock = Extract<Page['blocks'][number], { blockType: 'cardSection' }>
 
@@ -110,23 +109,13 @@ export default function CardSection({ block }: CardSectionProps) {
 
         {buttonText && (
           <div className="text-center mt-15">
-            {buttonLink ? (() => {
-              const isInternal = isInternalLink(buttonLink) && !openInNewTab
-              const LinkComponent = isInternal ? Link : 'a'
-              const linkProps = isInternal
-                ? { href: buttonLink, className: 'sale-button' }
-                : {
-                    href: buttonLink,
-                    target: openInNewTab ? '_blank' : undefined,
-                    rel: openInNewTab ? 'noopener noreferrer' : undefined,
-                    className: 'sale-button',
-                  }
-              return <LinkComponent {...linkProps}>{buttonText}</LinkComponent>
-            })() : (
-              <span className="sale-button">
-                {buttonText}
-              </span>
-            )}
+            <PrimaryButton
+              href={buttonLink || undefined}
+              openInNewTab={openInNewTab}
+              className="font-bold"
+            >
+              {buttonText}
+            </PrimaryButton>
           </div>
         )}
       </CardWrapper>

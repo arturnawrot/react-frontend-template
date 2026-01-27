@@ -7,6 +7,7 @@ import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import PrimaryButton from '@/components/PrimaryButton'
 
 type FlippedMBlock = Extract<Page['blocks'][number], { blockType: 'flippedM' }>
 
@@ -176,23 +177,13 @@ const ProcessSection = ({
             ))}
             {ctaText && (
               <div className="mt-30">
-                {ctaHref ? (() => {
-                  const isInternal = isInternalLink(ctaHref) && !ctaOpenInNewTab
-                  const LinkComponent = isInternal ? Link : 'a'
-                  const linkProps = isInternal
-                    ? { href: ctaHref, className: 'sale-button inline-block' }
-                    : {
-                        href: ctaHref,
-                        target: ctaOpenInNewTab ? '_blank' : undefined,
-                        rel: ctaOpenInNewTab ? 'noopener noreferrer' : undefined,
-                        className: 'sale-button inline-block',
-                      }
-                  return <LinkComponent {...linkProps}>{ctaText}</LinkComponent>
-                })() : (
-                  <span className="sale-button inline-block">
-                    {ctaText}
-                  </span>
-                )}
+                <PrimaryButton
+                  href={ctaHref || undefined}
+                  openInNewTab={ctaOpenInNewTab}
+                  className="font-bold inline-block"
+                >
+                  {ctaText}
+                </PrimaryButton>
               </div>
             )}
           </div>
