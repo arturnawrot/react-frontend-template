@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { Menu, X, Mail, Phone, Linkedin } from 'lucide-react'
 import Navbar, { type NavbarLink } from './Navbar/Navbar'
@@ -189,6 +189,22 @@ const ActionButtons = ({
     </div>
   )
 }
+
+// Custom HTML Renderer - Memoized to prevent breaking on re-renders
+const CustomHTMLRenderer = React.memo(({ html }: { html: string }) => {
+  const htmlContent = useMemo(() => ({ __html: html }), [html])
+  
+  return (
+    <FormCard className="relative w-full max-w-2xl z-10">
+      <div
+        key={html}
+        dangerouslySetInnerHTML={htmlContent}
+      />
+    </FormCard>
+  )
+})
+
+CustomHTMLRenderer.displayName = 'CustomHTMLRenderer'
 
 // Agent Contact Links
 const AgentContactInfo = ({
@@ -604,11 +620,7 @@ const SideBySideLayout = (
 
           {/* Custom HTML Content */}
           {splitCustomHTML && (
-            <FormCard className="relative w-full max-w-2xl z-10">
-              <div
-                dangerouslySetInnerHTML={{ __html: splitCustomHTML }}
-              />
-            </FormCard>
+            <CustomHTMLRenderer html={splitCustomHTML} />
           )}
 
           {/* Mobile Menu Trigger */}
