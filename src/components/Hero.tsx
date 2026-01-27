@@ -624,10 +624,10 @@ const SideBySideLayout = (
           )}
 
           {/* Mobile Menu Trigger */}
-          <div className="md:hidden absolute inset-0 flex items-center justify-center z-20">
+          <div className="md:hidden absolute inset-0 flex items-center justify-center">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="bg-[#DAE684] hover:bg-[#cdd876] text-[#0F231D] w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+              className="z-20 bg-[#DAE684] hover:bg-[#cdd876] text-[#0F231D] w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105"
               aria-label="Open Menu"
             >
               {menuOpen ? <X size={28} /> : <Menu size={28} />}
