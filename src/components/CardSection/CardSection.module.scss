@@ -64,3 +64,28 @@
   line-height: 1.5;
   color: var(--gray-600);
 }
+
+// Bullet Points List Styles (available for all variants) - matches SplitSection styling
+.bulletList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bulletItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'GT America Condensed', sans-serif;
+  font-weight: 400;
+  font-size: var(--xl);
+  color: var(--strong-green);
+}
+
+.bulletDot {
+  width: 4px;
+  height: 4px;
+  background-color: var(--strong-green);
+  border-radius: 50%;
+  flex-shrink: 0;
+}

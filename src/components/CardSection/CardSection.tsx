@@ -9,6 +9,7 @@ import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import CardWrapper from '@/components/CardWrapper'
 import PrimaryButton from '@/components/PrimaryButton'
+import ArrowLink from '@/components/ArrowLink/ArrowLink'
 
 type CardSectionBlock = Extract<Page['blocks'][number], { blockType: 'cardSection' }>
 
@@ -113,6 +114,20 @@ export default function CardSection({ block }: CardSectionProps) {
               ? 'w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]' 
               : 'w-full md:w-[30%] md:max-w-[400px]'
 
+            // Resolve card link - map prefixed fields to standard names for resolveLinkUrl
+            const cardLinkText = (card as any).linkText
+            const cardLinkData = {
+              linkType: (card as any).cardLinkType,
+              page: (card as any).cardPage,
+              customUrl: (card as any).cardCustomUrl,
+              constantLink: (card as any).cardConstantLink,
+            }
+            const cardLinkUrl = resolveLinkUrl(cardLinkData)
+            const cardOpenInNewTab = shouldOpenInNewTab({
+              linkType: (card as any).cardLinkType,
+              openInNewTab: (card as any).cardOpenInNewTab,
+            })
+
             return (
               <div key={index} className={`${textAlignClass} ${widthClass}`}>
                 {isBulletPointsVariant ? (
@@ -135,6 +150,25 @@ export default function CardSection({ block }: CardSectionProps) {
                 <h3 className={`${isBulletPointsVariant ? styles.bulletPointTitle : styles.cardColumnTitle} mt-5`}>{card.title}</h3>
                 {card.description && (
                   <p className={`${isBulletPointsVariant ? styles.bulletPointDescription : styles.cardColumnDescription} mt-5`}>{card.description}</p>
+                )}
+                {card.bulletPoints && card.bulletPoints.length > 0 && (
+                  <div className="mt-5">
+                    <ul className={`${styles.bulletList} mt-5 space-y-2`}>
+                      {card.bulletPoints.map((bulletPoint, bulletIndex) => (
+                        <li key={bulletIndex} className={styles.bulletItem}>
+                          <span className={styles.bulletDot}></span>
+                          <span>{bulletPoint.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {cardLinkText && cardLinkUrl && (
+                  <div className="mt-5">
+                    <ArrowLink href={cardLinkUrl} openInNewTab={cardOpenInNewTab}>
+                      {cardLinkText}
+                    </ArrowLink>
+                  </div>
                 )}
               </div>
             )

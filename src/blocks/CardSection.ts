@@ -96,6 +96,29 @@ export const CardSection: Block = {
           type: 'textarea',
           label: 'Description',
         },
+        {
+          name: 'bulletPoints',
+          type: 'array',
+          label: 'Bullet Points',
+          minRows: 0,
+          fields: [
+            {
+              name: 'text',
+              type: 'text',
+              required: true,
+              label: 'Bullet Point Text',
+            },
+          ],
+          admin: {
+            description: 'Optional bullet points to display below the description. Available for all variants.',
+          },
+        },
+        ...createLinkFields({
+          linkTextName: 'linkText',
+          linkTextLabel: 'Link Text',
+          linkTextRequired: false,
+          fieldPrefix: 'card',
+        }),
       ],
     },
   ],

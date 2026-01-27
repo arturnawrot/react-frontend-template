@@ -594,6 +594,36 @@ export interface Page {
                      */
                     icon?: string | null;
                     description?: string | null;
+                    /**
+                     * Optional bullet points to display below the description. Available for all variants.
+                     */
+                    bulletPoints?:
+                      | {
+                          text: string;
+                          id?: string | null;
+                        }[]
+                      | null;
+                    linkText?: string | null;
+                    /**
+                     * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                     */
+                    cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                    /**
+                     * Select a page to link to
+                     */
+                    cardPage?: (string | null) | Page;
+                    /**
+                     * Enter a custom URL (e.g., /contact, https://example.com)
+                     */
+                    cardCustomUrl?: string | null;
+                    /**
+                     * Select a constant link. These links can be managed globally and updated in one place.
+                     */
+                    cardConstantLink?: string | null;
+                    /**
+                     * Open the link in a new browser tab
+                     */
+                    cardOpenInNewTab?: boolean | null;
                     id?: string | null;
                   }[];
                   id?: string | null;
@@ -1274,6 +1304,36 @@ export interface Page {
                                */
                               icon?: string | null;
                               description?: string | null;
+                              /**
+                               * Optional bullet points to display below the description. Available for all variants.
+                               */
+                              bulletPoints?:
+                                | {
+                                    text: string;
+                                    id?: string | null;
+                                  }[]
+                                | null;
+                              linkText?: string | null;
+                              /**
+                               * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                               */
+                              cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                              /**
+                               * Select a page to link to
+                               */
+                              cardPage?: (string | null) | Page;
+                              /**
+                               * Enter a custom URL (e.g., /contact, https://example.com)
+                               */
+                              cardCustomUrl?: string | null;
+                              /**
+                               * Select a constant link. These links can be managed globally and updated in one place.
+                               */
+                              cardConstantLink?: string | null;
+                              /**
+                               * Open the link in a new browser tab
+                               */
+                              cardOpenInNewTab?: boolean | null;
                               id?: string | null;
                             }[];
                             id?: string | null;
@@ -1954,6 +2014,36 @@ export interface Page {
                                          */
                                         icon?: string | null;
                                         description?: string | null;
+                                        /**
+                                         * Optional bullet points to display below the description. Available for all variants.
+                                         */
+                                        bulletPoints?:
+                                          | {
+                                              text: string;
+                                              id?: string | null;
+                                            }[]
+                                          | null;
+                                        linkText?: string | null;
+                                        /**
+                                         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                                         */
+                                        cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                        /**
+                                         * Select a page to link to
+                                         */
+                                        cardPage?: (string | null) | Page;
+                                        /**
+                                         * Enter a custom URL (e.g., /contact, https://example.com)
+                                         */
+                                        cardCustomUrl?: string | null;
+                                        /**
+                                         * Select a constant link. These links can be managed globally and updated in one place.
+                                         */
+                                        cardConstantLink?: string | null;
+                                        /**
+                                         * Open the link in a new browser tab
+                                         */
+                                        cardOpenInNewTab?: boolean | null;
                                         id?: string | null;
                                       }[];
                                       id?: string | null;
@@ -2634,6 +2724,36 @@ export interface Page {
                                                    */
                                                   icon?: string | null;
                                                   description?: string | null;
+                                                  /**
+                                                   * Optional bullet points to display below the description. Available for all variants.
+                                                   */
+                                                  bulletPoints?:
+                                                    | {
+                                                        text: string;
+                                                        id?: string | null;
+                                                      }[]
+                                                    | null;
+                                                  linkText?: string | null;
+                                                  /**
+                                                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                                                   */
+                                                  cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                  /**
+                                                   * Select a page to link to
+                                                   */
+                                                  cardPage?: (string | null) | Page;
+                                                  /**
+                                                   * Enter a custom URL (e.g., /contact, https://example.com)
+                                                   */
+                                                  cardCustomUrl?: string | null;
+                                                  /**
+                                                   * Select a constant link. These links can be managed globally and updated in one place.
+                                                   */
+                                                  cardConstantLink?: string | null;
+                                                  /**
+                                                   * Open the link in a new browser tab
+                                                   */
+                                                  cardOpenInNewTab?: boolean | null;
                                                   id?: string | null;
                                                 }[];
                                                 id?: string | null;
@@ -3171,6 +3291,36 @@ export interface Page {
            */
           icon?: string | null;
           description?: string | null;
+          /**
+           * Optional bullet points to display below the description. Available for all variants.
+           */
+          bulletPoints?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          linkText?: string | null;
+          /**
+           * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+           */
+          cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+          /**
+           * Select a page to link to
+           */
+          cardPage?: (string | null) | Page;
+          /**
+           * Enter a custom URL (e.g., /contact, https://example.com)
+           */
+          cardCustomUrl?: string | null;
+          /**
+           * Select a constant link. These links can be managed globally and updated in one place.
+           */
+          cardConstantLink?: string | null;
+          /**
+           * Open the link in a new browser tab
+           */
+          cardOpenInNewTab?: boolean | null;
           id?: string | null;
         }[];
         id?: string | null;
@@ -4478,6 +4628,18 @@ export interface PagesSelect<T extends boolean = true> {
                                 title?: T;
                                 icon?: T;
                                 description?: T;
+                                bulletPoints?:
+                                  | T
+                                  | {
+                                      text?: T;
+                                      id?: T;
+                                    };
+                                linkText?: T;
+                                cardLinkType?: T;
+                                cardPage?: T;
+                                cardCustomUrl?: T;
+                                cardConstantLink?: T;
+                                cardOpenInNewTab?: T;
                                 id?: T;
                               };
                           id?: T;
@@ -4825,6 +4987,18 @@ export interface PagesSelect<T extends boolean = true> {
                                             title?: T;
                                             icon?: T;
                                             description?: T;
+                                            bulletPoints?:
+                                              | T
+                                              | {
+                                                  text?: T;
+                                                  id?: T;
+                                                };
+                                            linkText?: T;
+                                            cardLinkType?: T;
+                                            cardPage?: T;
+                                            cardCustomUrl?: T;
+                                            cardConstantLink?: T;
+                                            cardOpenInNewTab?: T;
                                             id?: T;
                                           };
                                       id?: T;
@@ -5172,6 +5346,18 @@ export interface PagesSelect<T extends boolean = true> {
                                                         title?: T;
                                                         icon?: T;
                                                         description?: T;
+                                                        bulletPoints?:
+                                                          | T
+                                                          | {
+                                                              text?: T;
+                                                              id?: T;
+                                                            };
+                                                        linkText?: T;
+                                                        cardLinkType?: T;
+                                                        cardPage?: T;
+                                                        cardCustomUrl?: T;
+                                                        cardConstantLink?: T;
+                                                        cardOpenInNewTab?: T;
                                                         id?: T;
                                                       };
                                                   id?: T;
@@ -5519,6 +5705,18 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     title?: T;
                                                                     icon?: T;
                                                                     description?: T;
+                                                                    bulletPoints?:
+                                                                      | T
+                                                                      | {
+                                                                          text?: T;
+                                                                          id?: T;
+                                                                        };
+                                                                    linkText?: T;
+                                                                    cardLinkType?: T;
+                                                                    cardPage?: T;
+                                                                    cardCustomUrl?: T;
+                                                                    cardConstantLink?: T;
+                                                                    cardOpenInNewTab?: T;
                                                                     id?: T;
                                                                   };
                                                               id?: T;
@@ -5802,6 +6000,18 @@ export interface PagesSelect<T extends boolean = true> {
                     title?: T;
                     icon?: T;
                     description?: T;
+                    bulletPoints?:
+                      | T
+                      | {
+                          text?: T;
+                          id?: T;
+                        };
+                    linkText?: T;
+                    cardLinkType?: T;
+                    cardPage?: T;
+                    cardCustomUrl?: T;
+                    cardConstantLink?: T;
+                    cardOpenInNewTab?: T;
                     id?: T;
                   };
               id?: T;
