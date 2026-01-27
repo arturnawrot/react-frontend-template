@@ -1,5 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
 import type { IconProp } from '@fortawesome/fontawesome-svg-core'
 import type { Page } from '@/payload-types'
 import styles from './CardSection.module.scss'
@@ -15,27 +16,33 @@ type CardSectionProps = {
   block: CardSectionBlock
 }
 
-// Helper function to parse FontAwesome icon class string to icon array format
-// Converts "fa-regular fa-handshake" to ['far', 'handshake']
-// Converts "fa-solid fa-handshake" to ['fas', 'handshake']
-// Converts "fa-brands fa-facebook" to ['fab', 'facebook']
-function parseIconString(iconString: string): IconProp | null {
+// Helper function to parse FontAwesome icon class string
+// Returns either an IconProp for React component or the original string for HTML class names
+// Supports both free and Pro styles:
+// - "fa-regular fa-handshake" -> ['far', 'handshake'] (if in library) or original string (Pro)
+// - "fa-solid fa-handshake" -> ['fas', 'handshake']
+// - "fa-brands fa-facebook" -> ['fab', 'facebook']
+// - "fa-light fa-star" -> original string (Pro - uses HTML class)
+// - "fa-thin fa-heart" -> original string (Pro - uses HTML class)
+// - "fa-duotone fa-user" -> original string (Pro - uses HTML class)
+function parseIconString(iconString: string): IconProp | string | null {
   if (!iconString) return null
 
   const parts = iconString.trim().split(/\s+/)
   if (parts.length < 2) return null
 
-  // Map style prefixes
+  // Map style prefixes (including Pro styles)
   const styleMap: Record<string, string> = {
     'fa-solid': 'fas',
     'fa-regular': 'far',
     'fa-brands': 'fab',
+    'fa-light': 'fal',      // Pro
+    'fa-thin': 'fat',        // Pro
+    'fa-duotone': 'fad',     // Pro
   }
 
-  // Find the style prefix (fa-solid, fa-regular, fa-brands)
-  const stylePrefix = parts.find((part) => 
-    part === 'fa-solid' || part === 'fa-regular' || part === 'fa-brands'
-  )
+  // Find the style prefix
+  const stylePrefix = parts.find((part) => styleMap[part])
   
   if (!stylePrefix || !styleMap[stylePrefix]) return null
 
@@ -49,7 +56,28 @@ function parseIconString(iconString: string): IconProp | null {
   const iconName = iconPart.replace(/^fa-/, '')
   if (!iconName) return null
 
-  return [styleMap[stylePrefix] as 'fas' | 'far' | 'fab', iconName] as IconProp
+  const styleKey = styleMap[stylePrefix] as 'fas' | 'far' | 'fab' | 'fal' | 'fat' | 'fad'
+  
+  // Pro-only styles (light, thin, duotone) are not in the React library
+  // Use HTML class names which the Font Awesome Pro kit handles
+  const proOnlyStyles = ['fal', 'fat', 'fad']
+  if (proOnlyStyles.includes(styleKey)) {
+    return iconString // Return original string for Pro-only styles
+  }
+
+  // For regular/solid/brands styles, try to find in React library first
+  // This works for free icons that are in the library
+  if (typeof window !== 'undefined') {
+    const iconDef = findIconDefinition({ prefix: styleKey as any, iconName: iconName as any })
+    if (iconDef) {
+      return iconDef
+    }
+  }
+
+  // If not found in React library, it might be a Pro icon
+  // Fall back to HTML class names (Font Awesome Pro kit handles all icons via classes)
+  // This covers Pro icons in regular/solid styles like "fa-regular fa-chart-line-up"
+  return iconString
 }
 
 export default function CardSection({ block }: CardSectionProps) {
@@ -92,7 +120,13 @@ export default function CardSection({ block }: CardSectionProps) {
                 ) : (
                   <span className={styles.cardColumnIcon}>
                     {iconArray ? (
-                      <FontAwesomeIcon icon={iconArray} />
+                      typeof iconArray === 'string' ? (
+                        // Pro icons: use HTML class names (handled by Font Awesome Pro kit)
+                        <i className={iconArray} />
+                      ) : (
+                        // Free icons: use React component
+                        <FontAwesomeIcon icon={iconArray} />
+                      )
                     ) : (
                       card.icon && <i className={card.icon} />
                     )}

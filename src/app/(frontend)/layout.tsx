@@ -1,4 +1,5 @@
 import React from 'react'
+import Script from 'next/script'
 import './styles.css'
 import { config, library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -57,6 +58,8 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         />
       </head>
       <body>
+        {/* Font Awesome Pro Kit */}
+        <Script src="/fontawesome/js/all.min.js" strategy="afterInteractive" />
         <HashNavigation />
         <main>{children}</main>
       </body>
