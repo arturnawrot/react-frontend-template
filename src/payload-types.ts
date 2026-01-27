@@ -72,6 +72,7 @@ export interface Config {
     pages: Page;
     'page-seo': PageSeo;
     'css-styles': CssStyle;
+    'custom-html': CustomHtml;
     agents: Agent;
     roles: Role;
     specialties: Specialty;
@@ -92,6 +93,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     'page-seo': PageSeoSelect<false> | PageSeoSelect<true>;
     'css-styles': CssStylesSelect<false> | CssStylesSelect<true>;
+    'custom-html': CustomHtmlSelect<false> | CustomHtmlSelect<true>;
     agents: AgentsSelect<false> | AgentsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
     specialties: SpecialtiesSelect<false> | SpecialtiesSelect<true>;
@@ -300,6 +302,10 @@ export interface Page {
          */
         backgroundVideo?: (string | null) | Media;
         /**
+         * Custom HTML to display in the middle of the left column (between subheading and buttons)
+         */
+        splitCustomHTML?: (string | null) | CustomHtml;
+        /**
          * Agent image (for agent variant)
          */
         agentImage?: (string | null) | Media;
@@ -469,6 +475,10 @@ export interface Page {
                    * Background video (only used for Default variant). Upload or select a video file (MP4, WebM recommended). The background image will be shown until the video loads or if the browser doesn't support video.
                    */
                   backgroundVideo?: (string | null) | Media;
+                  /**
+                   * Custom HTML to display in the middle of the left column (between subheading and buttons)
+                   */
+                  splitCustomHTML?: (string | null) | CustomHtml;
                   /**
                    * Agent image (for agent variant)
                    */
@@ -1180,6 +1190,10 @@ export interface Page {
                              */
                             backgroundVideo?: (string | null) | Media;
                             /**
+                             * Custom HTML to display in the middle of the left column (between subheading and buttons)
+                             */
+                            splitCustomHTML?: (string | null) | CustomHtml;
+                            /**
                              * Agent image (for agent variant)
                              */
                             agentImage?: (string | null) | Media;
@@ -1890,6 +1904,10 @@ export interface Page {
                                        */
                                       backgroundVideo?: (string | null) | Media;
                                       /**
+                                       * Custom HTML to display in the middle of the left column (between subheading and buttons)
+                                       */
+                                      splitCustomHTML?: (string | null) | CustomHtml;
+                                      /**
                                        * Agent image (for agent variant)
                                        */
                                       agentImage?: (string | null) | Media;
@@ -2599,6 +2617,10 @@ export interface Page {
                                                  * Background video (only used for Default variant). Upload or select a video file (MP4, WebM recommended). The background image will be shown until the video loads or if the browser doesn't support video.
                                                  */
                                                 backgroundVideo?: (string | null) | Media;
+                                                /**
+                                                 * Custom HTML to display in the middle of the left column (between subheading and buttons)
+                                                 */
+                                                splitCustomHTML?: (string | null) | CustomHtml;
                                                 /**
                                                  * Agent image (for agent variant)
                                                  */
@@ -3868,6 +3890,17 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "custom-html".
+ */
+export interface CustomHtml {
+  id: string;
+  name: string;
+  html: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "blog-categories".
  */
 export interface BlogCategory {
@@ -4343,6 +4376,10 @@ export interface PayloadLockedDocument {
         value: string | CssStyle;
       } | null)
     | ({
+        relationTo: 'custom-html';
+        value: string | CustomHtml;
+      } | null)
+    | ({
         relationTo: 'agents';
         value: string | Agent;
       } | null)
@@ -4495,6 +4532,7 @@ export interface PagesSelect<T extends boolean = true> {
               ctaSecondaryOpenInNewTab?: T;
               backgroundImage?: T;
               backgroundVideo?: T;
+              splitCustomHTML?: T;
               agentImage?: T;
               agentEmail?: T;
               agentPhone?: T;
@@ -4571,6 +4609,7 @@ export interface PagesSelect<T extends boolean = true> {
                           ctaSecondaryOpenInNewTab?: T;
                           backgroundImage?: T;
                           backgroundVideo?: T;
+                          splitCustomHTML?: T;
                           agentImage?: T;
                           agentEmail?: T;
                           agentPhone?: T;
@@ -4930,6 +4969,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       ctaSecondaryOpenInNewTab?: T;
                                       backgroundImage?: T;
                                       backgroundVideo?: T;
+                                      splitCustomHTML?: T;
                                       agentImage?: T;
                                       agentEmail?: T;
                                       agentPhone?: T;
@@ -5289,6 +5329,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   ctaSecondaryOpenInNewTab?: T;
                                                   backgroundImage?: T;
                                                   backgroundVideo?: T;
+                                                  splitCustomHTML?: T;
                                                   agentImage?: T;
                                                   agentEmail?: T;
                                                   agentPhone?: T;
@@ -5648,6 +5689,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               ctaSecondaryOpenInNewTab?: T;
                                                               backgroundImage?: T;
                                                               backgroundVideo?: T;
+                                                              splitCustomHTML?: T;
                                                               agentImage?: T;
                                                               agentEmail?: T;
                                                               agentPhone?: T;
@@ -6333,6 +6375,16 @@ export interface CssStylesSelect<T extends boolean = true> {
   cssClass?: T;
   css?: T;
   active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "custom-html_select".
+ */
+export interface CustomHtmlSelect<T extends boolean = true> {
+  name?: T;
+  html?: T;
   updatedAt?: T;
   createdAt?: T;
 }

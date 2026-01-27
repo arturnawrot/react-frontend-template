@@ -11,6 +11,7 @@ import type { Page } from '@/payload-types'
 import styles from './Hero.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import FormCard from './FormCard/FormCard'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
@@ -336,6 +337,15 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
     ctaSecondaryOpenInNewTab: (block as any).ctaSecondaryOpenInNewTab,
   })
 
+  // Resolve custom HTML for split variant
+  let splitCustomHTML: string | undefined = undefined
+  if (isSplit && (block as any).splitCustomHTML) {
+    const customHTML = (block as any).splitCustomHTML
+    if (typeof customHTML === 'object' && customHTML !== null && customHTML.html) {
+      splitCustomHTML = customHTML.html
+    }
+  }
+
   return {
     segments,
     subheading: sub,
@@ -354,6 +364,7 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
     agentEmail: block.agentEmail || undefined,
     agentPhone: block.agentPhone || undefined,
     agentLinkedin: block.agentLinkedin || undefined,
+    splitCustomHTML,
     // Blog specific
     blogAuthor: block.blogAuthor
       ? typeof block.blogAuthor === 'object' && block.blogAuthor !== null
@@ -516,6 +527,7 @@ const SideBySideLayout = (
     agentEmail,
     agentPhone,
     agentLinkedin,
+    splitCustomHTML,
     menuOpen,
     setMenuOpen,
     upperLinks,
@@ -544,7 +556,7 @@ const SideBySideLayout = (
             px-6 sm:px-10 md:px-14 lg:px-16 
             pt-[120px] pb-16 
             md:pt-60 md:pb-40
-            flex flex-col justify-center items-center
+            flex flex-col justify-start items-center
           `}
         >
           <div className="w-full max-w-2xl flex flex-col gap-6">
@@ -576,12 +588,28 @@ const SideBySideLayout = (
           </div>
         </div>
 
-        {/* Right Image */}
+        {/* Right Column */}
         <div
-          className={`relative w-full md:w-1/2 h-[50vh] md:h-auto bg-cover bg-center min-h-[400px]`}
+          className={`
+            relative w-full md:w-1/2 
+            px-6 sm:px-10 md:px-14 lg:px-16 
+            pt-[120px] pb-16 
+            md:pt-40
+            flex flex-col justify-center items-center
+            bg-cover bg-center min-h-[400px]
+          `}
           style={{ backgroundImage: `url('${finalImage}')` }}
         >
           {!isAgent && <div className="absolute inset-0 bg-[#1C2F2980]" aria-hidden />}
+
+          {/* Custom HTML Content */}
+          {splitCustomHTML && (
+            <FormCard className="relative w-full max-w-2xl z-10">
+              <div
+                dangerouslySetInnerHTML={{ __html: splitCustomHTML }}
+              />
+            </FormCard>
+          )}
 
           {/* Mobile Menu Trigger */}
           <div className="md:hidden absolute inset-0 flex items-center justify-center z-20">

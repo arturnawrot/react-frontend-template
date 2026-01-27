@@ -125,6 +125,20 @@ export const Hero: Block = {
         description: 'Background video (only used for Default variant). Upload or select a video file (MP4, WebM recommended). The background image will be shown until the video loads or if the browser doesn\'t support video.',
       },
     },
+    // Split variant specific fields
+    {
+      name: 'splitCustomHTML',
+      type: 'relationship',
+      relationTo: 'custom-html',
+      label: 'Custom HTML',
+      admin: {
+        condition: (data, siblingData) => {
+          const variant = data?.variant || siblingData?.variant
+          return variant === 'split'
+        },
+        description: 'Custom HTML to display in the middle of the left column (between subheading and buttons)',
+      },
+    },
     // Agent variant specific fields
     {
       name: 'agentImage',

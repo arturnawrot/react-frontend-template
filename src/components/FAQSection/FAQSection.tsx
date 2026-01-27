@@ -54,8 +54,10 @@ export default function FAQSection({ block }: FAQSectionProps) {
         {/* LEFT SECTION: Fixed Content (1/3 width) */}
         <div className="lg:col-span-4 flex flex-col z-10">
           <div>
-            <SectionHeading as="h1" className="text-white mb-8 whitespace-normal leading-[1.1]">
+            <SectionHeading as="h2" className="mb-8 whitespace-normal leading-[1.1]">
+              <span className="text-white">
               {heading}
+              </span>
             </SectionHeading>
             
             <p className="text-white text-base leading-relaxed mb-8">

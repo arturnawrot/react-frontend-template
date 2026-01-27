@@ -12,6 +12,7 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { PageSEO } from './collections/PageSEO'
 import { CSSStyles } from './collections/CSSStyles'
+import { CustomHTML } from './collections/CustomHTML'
 import { Agents } from './collections/Agents'
 import { Roles } from './collections/Roles'
 import { Specialties } from './collections/Specialties'
@@ -59,7 +60,7 @@ export default buildConfig({
       icons: [{ url: '/favicon.ico' }],
     },
   },
-  collections: [Users, Media, Pages, PageSEO, CSSStyles, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
+  collections: [Users, Media, Pages, PageSEO, CSSStyles, CustomHTML, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
   globals: [Navbar, Footer, SiteSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets, FAQFullPage, AgentCategories, BlogHighlights, AvailableJobSets, OfficeLocationSets, ConstantLinks],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
