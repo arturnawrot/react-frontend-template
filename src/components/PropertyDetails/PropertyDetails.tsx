@@ -15,6 +15,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import Arrow from '../Arrow/Arrow'
+import { CustomHtml } from '../CustomHtml/CustomHtml'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getPropertyTypeLabel } from '@/utils/property-types'
@@ -33,6 +34,7 @@ interface PropertyDetailsProps {
   property: BuildoutProperty
   brokers?: BuildoutBroker[]
   brokerIdToAgentSlug?: Record<number, string>
+  customContactForm?: { html: string } | null
 }
 
 // Simple AgentCard component for PropertyDetails
@@ -105,7 +107,7 @@ const AgentCard = ({
   )
 }
 
-const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [], brokerIdToAgentSlug = {} }) => {
+const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [], brokerIdToAgentSlug = {}, customContactForm = null }) => {
   const limeGreen = "bg-[#dce676]"
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isSaved, setIsSaved] = useState(false)
@@ -680,42 +682,57 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
             <h3 className="text-2xl font-serif text-gray-900 mb-2">Interested in This Property.</h3>
             <p className="text-gray-700 font-medium mb-4">Request More Info</p>
 
-            <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); }}>
-              <input 
-                type="text" 
-                placeholder="Name" 
-                className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400"
-              />
-              <input 
-                type="tel" 
-                placeholder="Phone" 
-                className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400"
-              />
-              <input 
-                type="email" 
-                placeholder="Email" 
-                className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400"
-              />
-              <input 
-                type="text" 
-                placeholder="Transaction Coordinator" 
-                className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400"
-              />
-              <textarea 
-                placeholder="Message" 
-                rows={4}
-                className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400 resize-none"
-              ></textarea>
-              
-              <p className="text-[10px] text-gray-500 mt-2">Terms of Use & Privacy Policy</p>
+            {customContactForm ? (
+              <CustomHtml html={customContactForm.html} />
+            ) : (
+              <div className="relative">
+                {/* Glassy overlay effect */}
+                <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 rounded pointer-events-none"></div>
+                
+                <form className="space-y-3 relative opacity-60" onSubmit={(e) => { e.preventDefault(); }}>
+                  <input 
+                    type="text" 
+                    placeholder="Name" 
+                    disabled
+                    className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400 cursor-not-allowed"
+                  />
+                  <input 
+                    type="tel" 
+                    placeholder="Phone" 
+                    disabled
+                    className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400 cursor-not-allowed"
+                  />
+                  <input 
+                    type="email" 
+                    placeholder="Email" 
+                    disabled
+                    className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400 cursor-not-allowed"
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="Transaction Coordinator" 
+                    disabled
+                    className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400 cursor-not-allowed"
+                  />
+                  <textarea 
+                    placeholder="Message" 
+                    rows={4}
+                    disabled
+                    className="w-full bg-gray-50 border border-gray-200 rounded p-3 text-sm focus:outline-none focus:border-gray-400 resize-none cursor-not-allowed"
+                  ></textarea>
+                  
+                  <p className="text-[10px] text-gray-500 mt-2">Terms of Use & Privacy Policy</p>
 
-              <button 
-                type="submit" 
-                className={`w-full ${limeGreen} text-black font-bold py-3 rounded-full mt-4 hover:opacity-90 transition-opacity`}
-              >
-                Submit
-              </button>
-            </form>
+                  <button 
+                    type="submit" 
+                    disabled
+                    className={`w-full ${limeGreen} text-black font-bold py-3 rounded-full mt-4 opacity-60 cursor-not-allowed`}
+                  >
+                    Submit
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
 
           {/* Social Share */}

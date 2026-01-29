@@ -1106,6 +1106,32 @@ export interface Page {
                   blockType: 'statsSection';
                 }
               | {
+                  /**
+                   * Choose the layout variant
+                   */
+                  variant: 'default' | 'withImage';
+                  /**
+                   * Image to display on the left side (only for "With Image" variant)
+                   */
+                  image?: (string | null) | Media;
+                  imageAlt?: string | null;
+                  /**
+                   * Select a custom HTML entry from the custom-html collection
+                   */
+                  customHtml: string | CustomHtml;
+                  /**
+                   * Horizontal alignment of the content
+                   */
+                  justifyContent: 'start' | 'center' | 'end';
+                  /**
+                   * Optional heading text to display inside the form card
+                   */
+                  heading?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'customHtmlBlock';
+                }
+              | {
                   id?: string | null;
                   /**
                    * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
@@ -1820,6 +1846,32 @@ export interface Page {
                             blockType: 'statsSection';
                           }
                         | {
+                            /**
+                             * Choose the layout variant
+                             */
+                            variant: 'default' | 'withImage';
+                            /**
+                             * Image to display on the left side (only for "With Image" variant)
+                             */
+                            image?: (string | null) | Media;
+                            imageAlt?: string | null;
+                            /**
+                             * Select a custom HTML entry from the custom-html collection
+                             */
+                            customHtml: string | CustomHtml;
+                            /**
+                             * Horizontal alignment of the content
+                             */
+                            justifyContent: 'start' | 'center' | 'end';
+                            /**
+                             * Optional heading text to display inside the form card
+                             */
+                            heading?: string | null;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'customHtmlBlock';
+                          }
+                        | {
                             id?: string | null;
                             /**
                              * Add extra vertical padding to the top and/or bottom of this container. Negative options apply negative margins for visual overlap.
@@ -2532,6 +2584,32 @@ export interface Page {
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'statsSection';
+                                    }
+                                  | {
+                                      /**
+                                       * Choose the layout variant
+                                       */
+                                      variant: 'default' | 'withImage';
+                                      /**
+                                       * Image to display on the left side (only for "With Image" variant)
+                                       */
+                                      image?: (string | null) | Media;
+                                      imageAlt?: string | null;
+                                      /**
+                                       * Select a custom HTML entry from the custom-html collection
+                                       */
+                                      customHtml: string | CustomHtml;
+                                      /**
+                                       * Horizontal alignment of the content
+                                       */
+                                      justifyContent: 'start' | 'center' | 'end';
+                                      /**
+                                       * Optional heading text to display inside the form card
+                                       */
+                                      heading?: string | null;
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'customHtmlBlock';
                                     }
                                   | {
                                       id?: string | null;
@@ -3254,6 +3332,32 @@ export interface Page {
                                                 blockName?: string | null;
                                                 blockType: 'statsSection';
                                               }
+                                            | {
+                                                /**
+                                                 * Choose the layout variant
+                                                 */
+                                                variant: 'default' | 'withImage';
+                                                /**
+                                                 * Image to display on the left side (only for "With Image" variant)
+                                                 */
+                                                image?: (string | null) | Media;
+                                                imageAlt?: string | null;
+                                                /**
+                                                 * Select a custom HTML entry from the custom-html collection
+                                                 */
+                                                customHtml: string | CustomHtml;
+                                                /**
+                                                 * Horizontal alignment of the content
+                                                 */
+                                                justifyContent: 'start' | 'center' | 'end';
+                                                /**
+                                                 * Optional heading text to display inside the form card
+                                                 */
+                                                heading?: string | null;
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'customHtmlBlock';
+                                              }
                                           )[]
                                         | null;
                                       blockName?: string | null;
@@ -3862,6 +3966,32 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'centeredSectionHeader';
+      }
+    | {
+        /**
+         * Choose the layout variant
+         */
+        variant: 'default' | 'withImage';
+        /**
+         * Image to display on the left side (only for "With Image" variant)
+         */
+        image?: (string | null) | Media;
+        imageAlt?: string | null;
+        /**
+         * Select a custom HTML entry from the custom-html collection
+         */
+        customHtml: string | CustomHtml;
+        /**
+         * Horizontal alignment of the content
+         */
+        justifyContent: 'start' | 'center' | 'end';
+        /**
+         * Optional heading text to display inside the form card
+         */
+        heading?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'customHtmlBlock';
       }
   )[];
   /**
@@ -4931,6 +5061,18 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    customHtmlBlock?:
+                      | T
+                      | {
+                          variant?: T;
+                          image?: T;
+                          imageAlt?: T;
+                          customHtml?: T;
+                          justifyContent?: T;
+                          heading?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
                     container?:
                       | T
                       | {
@@ -5288,6 +5430,18 @@ export interface PagesSelect<T extends boolean = true> {
                                             description?: T;
                                             id?: T;
                                           };
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                customHtmlBlock?:
+                                  | T
+                                  | {
+                                      variant?: T;
+                                      image?: T;
+                                      imageAlt?: T;
+                                      customHtml?: T;
+                                      justifyContent?: T;
+                                      heading?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -5651,6 +5805,18 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            customHtmlBlock?:
+                                              | T
+                                              | {
+                                                  variant?: T;
+                                                  image?: T;
+                                                  imageAlt?: T;
+                                                  customHtml?: T;
+                                                  justifyContent?: T;
+                                                  heading?: T;
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             container?:
                                               | T
                                               | {
@@ -6011,6 +6177,18 @@ export interface PagesSelect<T extends boolean = true> {
                                                               id?: T;
                                                               blockName?: T;
                                                             };
+                                                        customHtmlBlock?:
+                                                          | T
+                                                          | {
+                                                              variant?: T;
+                                                              image?: T;
+                                                              imageAlt?: T;
+                                                              customHtml?: T;
+                                                              justifyContent?: T;
+                                                              heading?: T;
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
                                                       };
                                                   blockName?: T;
                                                 };
@@ -6338,6 +6516,18 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               heading?: T;
               subheading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        customHtmlBlock?:
+          | T
+          | {
+              variant?: T;
+              image?: T;
+              imageAlt?: T;
+              customHtml?: T;
+              justifyContent?: T;
+              heading?: T;
               id?: T;
               blockName?: T;
             };

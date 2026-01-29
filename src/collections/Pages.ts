@@ -28,6 +28,7 @@ import { StatsSection } from '../blocks/StatsSection'
 import { AvailableRoles } from '../blocks/AvailableRoles'
 import { OfficeLocations } from '../blocks/OfficeLocations'
 import { CenteredSectionHeader } from '../blocks/CenteredSectionHeader'
+import { CustomHtmlBlock } from '../blocks/CustomHtmlBlock'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -87,6 +88,7 @@ export const Pages: CollectionConfig = {
         AvailableRoles,
         OfficeLocations,
         CenteredSectionHeader,
+        CustomHtmlBlock,
       ],
     },
     seoFields,

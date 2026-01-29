@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Menu, X, Mail, Phone, Linkedin } from 'lucide-react'
 import Navbar, { type NavbarLink } from './Navbar/Navbar'
@@ -12,6 +12,8 @@ import styles from './Hero.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import FormCard from './FormCard/FormCard'
+// Import the new component (adjust path as needed)
+import { CustomHtml } from '@/components/CustomHtml/CustomHtml' 
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
@@ -37,7 +39,7 @@ const HeroHeader = ({
   useJustifyCenter = false,
   allowWrap = false,
   rowBreakpoint = 'md',
-  responsiveMobileLeft = false, // New prop to handle mobile-left/desktop-center logic
+  responsiveMobileLeft = false,
 }: {
   segments: HeadingSegment[]
   className?: string
@@ -48,29 +50,22 @@ const HeroHeader = ({
   responsiveMobileLeft?: boolean
 }) => {
   
-  // Calculate Alignment Classes
   let containerAlign = ''
   if (responsiveMobileLeft) {
-    // Mobile: Container centered (via parent), text left-aligned; Desktop: Center/Center
     containerAlign = 'items-start text-left md:items-center md:text-center'
   } else {
-    // Standard behavior based on align prop
     containerAlign = align === 'center' ? 'items-center text-center' : 'items-start text-left'
   }
 
-  // Calculate Justify Classes
   let justifyClass = ''
   if (useJustifyCenter) {
     if (responsiveMobileLeft) {
-      // Mobile: Start (let text flow naturally), Desktop: Center
       justifyClass = 'justify-start md:justify-center'
     } else {
-      // Always Center
       justifyClass = 'justify-center'
     }
   }
 
-  // Define when the "break element" should appear (independent logic)
   const desktopPrefix = rowBreakpoint === 'min-[816px]' ? 'min-[816px]:' : 'md:'
 
   return (
@@ -84,13 +79,7 @@ const HeroHeader = ({
       >
         {segments.map((segment, idx) => {
           const isUnbreakable = !(allowWrap || segment.breakOnMobile || segment.breakOnDesktop)
-          
-          // Determine visibility of the invisible break element
           const hasBreak = segment.breakOnMobile || segment.breakOnDesktop
-
-          // Construct class string:
-          // 1. Mobile status (block if breakOnMobile, hidden otherwise)
-          // 2. Desktop status (overrides mobile via md: prefix)
           const breakElementClass = `
             w-full h-0 basis-full
             ${segment.breakOnMobile ? 'block' : 'hidden'}
@@ -114,8 +103,6 @@ const HeroHeader = ({
               >
                 {segment.text}
               </span>
-              
-              {/* Conditional Invisible Line Break */}
               {hasBreak && (
                 <div className={breakElementClass} aria-hidden="true" />
               )}
@@ -153,11 +140,9 @@ const ActionButtons = ({
   secondaryOpenInNewTab?: boolean
   align?: 'center' | 'start'
 }) => {
-  // Check if we have any valid button to display
   const hasPrimary = primaryLabel && (onPrimary || primaryLink)
   const hasSecondary = secondaryLabel && (onSecondary || secondaryLink)
   
-  // If no valid buttons, don't render anything
   if (!hasPrimary && !hasSecondary) return null
 
   const justifyClass = align === 'start' ? 'md:justify-start' : 'md:justify-center'
@@ -231,9 +216,6 @@ const AgentContactInfo = ({
   )
 }
 
-/**
- * Centralizes the logic for default text/images based on variant.
- */
 const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMap) => {
   const variant = block.variant || 'default'
   const isFullWidthColor = variant === 'full-width-color'
@@ -241,7 +223,6 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
   const isAgent = variant === 'agent'
   const isBlog = variant === 'blog'
 
-  // 1. Resolve Background
   const defaultBg = '/img/hero_section_background.png'
   const backgroundImageUrl =
     typeof block.backgroundImage === 'object' && block.backgroundImage?.url
@@ -268,7 +249,6 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
       ? undefined
       : backgroundImageUrl || defaultBg
 
-  // 2. Resolve Headings
   let segments: HeadingSegment[] = []
   if (block.headingSegments && block.headingSegments.length > 0) {
     segments = block.headingSegments.map((seg) => ({
@@ -278,25 +258,19 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
       breakOnDesktop: seg.breakOnDesktop || false,
     }))
   }
-  // DEFAULTS REMOVED
 
-  // 3. Resolve Subheading
   let sub = block.subheading
   if (!sub) {
     if (isFullWidthColor)
-      sub =
-        "Approach every deal confidently, knowing you're backed by analytical excellence, investment foresight, and personal care."
+      sub = "Approach every deal confidently, knowing you're backed by analytical excellence, investment foresight, and personal care."
     else if (isSplit)
-      sub =
-        'From investment acquisitions to site selection, we find opportunities that align with your best interests.'
+      sub = 'From investment acquisitions to site selection, we find opportunities that align with your best interests.'
     else if (isAgent) sub = 'Agent & Broker'
     else if (isBlog) sub = 'Explore market reports and investment spotlights designed to guide confident decisions.'
     else
-      sub =
-        'Advisory-led commercial real estate solutions across the Southeast. Rooted in partnership. Driven by performance. Informed by perspective.'
+      sub = 'Advisory-led commercial real estate solutions across the Southeast. Rooted in partnership. Driven by performance. Informed by perspective.'
   }
 
-  // 4. Resolve CTA Labels
   const primaryCta =
     block.ctaPrimaryLabel ??
     (isFullWidthColor
@@ -310,13 +284,12 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
   const secondaryCta =
     block.ctaSecondaryLabel ?? (isFullWidthColor ? 'Schedule a Consultation' : undefined)
 
-  // Resolve CTA links using the new linkType structure
   const primaryCtaLink = resolveLinkUrl({
     linkType: (block as any).ctaPrimaryLinkType,
     page: (block as any).ctaPrimaryPage,
     customUrl: (block as any).ctaPrimaryCustomUrl,
     constantLink: (block as any).ctaPrimaryConstantLink,
-    ctaPrimaryLink: (block as any).ctaPrimaryLink, // Legacy support
+    ctaPrimaryLink: (block as any).ctaPrimaryLink,
   }, constantLinksMap)
 
   const secondaryCtaLink = resolveLinkUrl({
@@ -324,7 +297,7 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
     page: (block as any).ctaSecondaryPage,
     customUrl: (block as any).ctaSecondaryCustomUrl,
     constantLink: (block as any).ctaSecondaryConstantLink,
-    ctaSecondaryLink: (block as any).ctaSecondaryLink, // Legacy support
+    ctaSecondaryLink: (block as any).ctaSecondaryLink,
   }, constantLinksMap)
 
   const primaryCtaOpenInNewTab = shouldOpenInNewTab({
@@ -337,7 +310,6 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
     ctaSecondaryOpenInNewTab: (block as any).ctaSecondaryOpenInNewTab,
   })
 
-  // Resolve custom HTML for split variant
   let splitCustomHTML: string | undefined = undefined
   if (isSplit && (block as any).splitCustomHTML) {
     const customHTML = (block as any).splitCustomHTML
@@ -365,7 +337,6 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
     agentPhone: block.agentPhone || undefined,
     agentLinkedin: block.agentLinkedin || undefined,
     splitCustomHTML,
-    // Blog specific
     blogAuthor: block.blogAuthor
       ? typeof block.blogAuthor === 'object' && block.blogAuthor !== null
         ? (block.blogAuthor as any).username || (block.blogAuthor as any).email || (block.blogAuthor as any).name || 'Unknown Author'
@@ -382,10 +353,6 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
   }
 }
 
-/**
- * Blog Layout
- * Matches the specific screenshot design: Left Text, Right Rounded Image, Breadcrumbs, Tags
- */
 const BlogLayout = (
   props: HeroProps & ReturnType<typeof resolveHeroContent> & { menuOpen: boolean; setMenuOpen: (v: boolean) => void },
 ) => {
@@ -402,7 +369,6 @@ const BlogLayout = (
     mainLinks,
   } = props
 
-  // Format date if present - using deterministic formatting to avoid hydration mismatch
   const formattedDate = blogDate
     ? (() => {
         const date = new Date(blogDate)
@@ -424,17 +390,11 @@ const BlogLayout = (
       </div>
 
       <div className="container mx-auto px-6 pt-[120px] pb-16 md:py-20 md:pt-[220px]">
-        {/* Center items vertically so left and right columns are aligned */}
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-          
-          {/* Left: Text Content */}
           <div className="flex-1 flex flex-col justify-center w-full min-w-0 order-1 lg:order-1">
-            {/* Breadcrumbs */}
             <div className="mb-6 text-xs font-bold tracking-[0.15em] uppercase text-white/60">
               Home <span className="mx-2">›</span> Insights & Research <span className="mx-2">›</span> Article
             </div>
-
-            {/* Heading */}
             <div className="mb-8 w-full">
                <HeroHeader 
                   segments={segments} 
@@ -443,23 +403,16 @@ const BlogLayout = (
                   allowWrap={true}
                 />
             </div>
-
-            {/* Subheading */}
             {subheading && (
               <p className="text-xl text-white/90 font-light leading-relaxed mb-12">
                 {subheading}
               </p>
             )}
-
-            {/* Footer Metadata Row */}
             <div className="mt-auto flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-t border-white/10 pt-8 lg:border-none lg:pt-0">
-              {/* Author & Date */}
               <div className="flex flex-col gap-1">
                 {blogAuthor && <span className="font-bold text-base">{blogAuthor}</span>}
                 {formattedDate && <span className="text-white/60 text-sm">{formattedDate}</span>}
               </div>
-
-              {/* Tags */}
               {blogCategories && blogCategories.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {blogCategories.map((category, i) => {
@@ -479,8 +432,6 @@ const BlogLayout = (
               )}
             </div>
           </div>
-
-          {/* Right: Image - Fixed Square Size */}
           <div className="relative w-full max-w-lg lg:max-w-xl aspect-square shrink-0 order-2 lg:order-2">
             <div 
               className="absolute inset-0 w-full h-full bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl"
@@ -488,8 +439,6 @@ const BlogLayout = (
             >
               <div className="absolute inset-0 bg-[#1C2F2980]" aria-hidden />
             </div>
-
-            {/* Mobile Menu Trigger (Centered in the square image on mobile) */}
             <div className="lg:hidden absolute inset-0 flex items-center justify-center z-20">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
@@ -508,7 +457,6 @@ const BlogLayout = (
 
 /**
  * Split View ('split', 'agent')
- * Left side text, Right side image.
  */
 const SideBySideLayout = (
   props: HeroProps & ReturnType<typeof resolveHeroContent> & { menuOpen: boolean; setMenuOpen: (v: boolean) => void },
@@ -535,8 +483,6 @@ const SideBySideLayout = (
   } = props
 
   const containerBg = 'bg-[var(--strong-green)]'
-
-  // Styling configuration - same for both split and agent variants
   const headingClass = `${styles.splitHeading} text-left mb-4 z-10 relative leading-tight`
   const subClass = `${styles.splitSubheading} text-white/90 font-light w-full md:max-w-xl text-left leading-relaxed`
   const btnPrimaryClass = '!bg-[#DAE684] !text-[#0F231D] hover:!bg-[#cdd876]'
@@ -605,17 +551,16 @@ const SideBySideLayout = (
           {/* Custom HTML Content */}
           {splitCustomHTML && (
             <FormCard className="relative w-full max-w-2xl z-10">
-              <div
-                dangerouslySetInnerHTML={{ __html: splitCustomHTML }}
-              />
+              {/* Use the new imported component */}
+              <CustomHtml html={splitCustomHTML} />
             </FormCard>
           )}
 
           {/* Mobile Menu Trigger */}
-          <div className="md:hidden absolute inset-0 flex items-center justify-center z-20">
+          <div className="md:hidden absolute inset-0 flex items-center justify-center">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="bg-[#DAE684] hover:bg-[#cdd876] text-[#0F231D] w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+              className="z-20 bg-[#DAE684] hover:bg-[#cdd876] text-[#0F231D] w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105"
               aria-label="Open Menu"
             >
               {menuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -627,9 +572,6 @@ const SideBySideLayout = (
   )
 }
 
-/**
- * Centered View ('Default', 'Full-Width-Color')
- */
 const CenteredLayout = (
   props: HeroProps & ReturnType<typeof resolveHeroContent> & { menuOpen: boolean; setMenuOpen: (v: boolean) => void },
 ) => {
@@ -655,43 +597,26 @@ const CenteredLayout = (
   const [videoError, setVideoError] = useState(false)
   const videoRef = React.useRef<HTMLVideoElement>(null)
 
-  // Check if video should be used (only for default variant, not full-width-color)
-  const useVideo = !isFullWidthColor && backgroundVideoUrl && !videoError
-
-  // Handle video load - use loadeddata event for faster, more reliable detection
-  React.useEffect(() => {
-    if (useVideo && videoRef.current) {
+  useEffect(() => {
+    if (!isFullWidthColor && backgroundVideoUrl && !videoError && videoRef.current) {
       const video = videoRef.current
       
-      const handleLoadedData = () => {
-        // Video has loaded enough data to start playing
-        setVideoReady(true)
-      }
-
-      const handleCanPlayThrough = () => {
-        // Video can play through without buffering
-        setVideoReady(true)
-      }
-
+      const handleLoadedData = () => setVideoReady(true)
+      const handleCanPlayThrough = () => setVideoReady(true)
       const handleError = () => {
         setVideoError(true)
         setVideoReady(false)
       }
 
-      // Check if video element is supported (canPlayType returns '' if not supported)
       const canPlayMp4 = video.canPlayType('video/mp4')
       const canPlayWebm = video.canPlayType('video/webm')
       
       if (canPlayMp4 === '' && canPlayWebm === '') {
-        // Browser doesn't support video formats
         setVideoError(true)
       } else {
-        // Use loadeddata for faster initial display, canplaythrough as backup
         video.addEventListener('loadeddata', handleLoadedData, { once: true })
         video.addEventListener('canplaythrough', handleCanPlayThrough, { once: true })
         video.addEventListener('error', handleError)
-        
-        // Try to load the video
         video.load()
       }
 
@@ -701,9 +626,8 @@ const CenteredLayout = (
         video.removeEventListener('error', handleError)
       }
     }
-  }, [useVideo])
+  }, [isFullWidthColor, backgroundVideoUrl, videoError])
 
-  // Styling configuration - same layout for both variants, but different CSS classes
   const wrapperClass = 'relative w-full overflow-hidden bg-[var(--strong-green)]'
   const headingClass = isFullWidthColor
     ? `${styles.meybohmHeading} text-left md:text-center w-full mt-0 md:mt-30 max-w-none`
@@ -718,16 +642,14 @@ const CenteredLayout = (
   return (
     <>
       <div className={wrapperClass}>
-        {/* Background Image - shown until video is ready or as fallback */}
-        {finalImage && (!useVideo || !videoReady) && (
+        {finalImage && ((isFullWidthColor || !backgroundVideoUrl) || !videoReady) && (
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url('${finalImage}')` }}
           />
         )}
 
-        {/* Background Video - always rendered but hidden until ready */}
-        {useVideo && (
+        {!isFullWidthColor && backgroundVideoUrl && !videoError && (
           <video
             ref={videoRef}
             className={`absolute inset-0 w-full h-full object-cover ${
@@ -792,11 +714,7 @@ const CenteredLayout = (
 
 export default function Hero({ block, upperLinks = [], mainLinks = [], constantLinksMap }: HeroProps) {
   const [menuOpen, setMenuOpen] = useState(false)
-
-  // Prepare data (content, styling flags)
   const content = resolveHeroContent(block, constantLinksMap)
-
-  // Determine Layout Strategy
   const isSideBySide = content.isSplit || content.isAgent
 
   return (
@@ -832,7 +750,6 @@ export default function Hero({ block, upperLinks = [], mainLinks = [], constantL
           mainLinks={mainLinks}
         />
       )}
-
       <CollapsingMenuMobile open={menuOpen} onClose={() => setMenuOpen(false)} mainLinks={mainLinks} />
     </div>
   )

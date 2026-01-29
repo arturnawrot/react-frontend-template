@@ -28,6 +28,7 @@ import StatsSection from '@/components/StatsSection/StatsSection'
 import AvailableRoles from '@/components/AvailableRoles/AvailableRoles'
 import OfficeLocations from '@/components/OfficeLocations/OfficeLocations'
 import CenteredSectionHeader from '@/components/CenteredSectionHeader/CenteredSectionHeader'
+import CustomHtmlBlock from '@/components/CustomHtmlBlock/CustomHtmlBlock'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
@@ -919,6 +920,9 @@ export async function renderBlock(
   }
   if (block.blockType === 'centeredSectionHeader') {
     return <CenteredSectionHeader key={index} block={block} />
+  }
+  if (block.blockType === 'customHtmlBlock') {
+    return <CustomHtmlBlock key={index} block={block} />
   }
   return null
 }
