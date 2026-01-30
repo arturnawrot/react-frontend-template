@@ -19,11 +19,11 @@ if (!BUILDOUT_API_KEY) {
 // Types & Interfaces
 // ----------------------------------------------------------------------
 
-// Import PropertyType for use in this file
-import { PropertyType, getPropertyTypeLabel } from './property-types'
+// Import PropertyType and PropertySubtype for use in this file
+import { PropertyType, PropertySubtype, getPropertyTypeLabel, getPropertySubtypeLabel, getSubtypesByPropertyType, getPropertyTypeFromSubtype } from './property-types'
 
-// Re-export PropertyType and helper from client-safe module
-export { PropertyType, getPropertyTypeLabel }
+// Re-export PropertyType, PropertySubtype and helpers from client-safe module
+export { PropertyType, PropertySubtype, getPropertyTypeLabel, getPropertySubtypeLabel, getSubtypesByPropertyType, getPropertyTypeFromSubtype }
 
 export interface BuildoutResponse<T> {
   message: string
@@ -115,7 +115,7 @@ export interface BuildoutPropertyCustomFields {
 }
 
 export interface BuildoutProperty {
-  additional_property_subtype_ids: number[]
+  additional_property_subtype_ids: PropertySubtype[]
   address: string
   adr: string | null
   amenities: string
@@ -243,7 +243,7 @@ export interface BuildoutProperty {
   power_description: string
   principal_reduction_yr_1: number | null
   property_comps: BuildoutPropertyComps
-  property_subtype_id: number
+  property_subtype_id: PropertySubtype
   property_type_id: PropertyType
   property_type_label_override: string
   property_use_id: number | null

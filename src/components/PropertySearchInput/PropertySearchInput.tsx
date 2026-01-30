@@ -5,14 +5,17 @@ import { Search, ChevronDown } from 'lucide-react'
 import { buildFilterParams } from '@/utils/filter-params'
 import LocationSearchSuggestion, { type AddressSuggestion } from '@/components/LocationSearchSuggestion/LocationSearchSuggestion'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import { PropertyType, getPropertyTypeLabel } from '@/utils/property-types'
 
-// Property types matching PropertySearchAdvanced
+// Property types using enum
 const propertyTypes = [
-  { id: 1, label: 'Office' },
-  { id: 2, label: 'Retail' },
-  { id: 3, label: 'Industrial' },
-  { id: 4, label: 'Land' },
-  { id: 5, label: 'Multi-Family' },
+  { id: PropertyType.Office, label: getPropertyTypeLabel(PropertyType.Office) },
+  { id: PropertyType.Retail, label: getPropertyTypeLabel(PropertyType.Retail) },
+  { id: PropertyType.Industrial, label: getPropertyTypeLabel(PropertyType.Industrial) },
+  { id: PropertyType.Land, label: getPropertyTypeLabel(PropertyType.Land) },
+  { id: PropertyType.Multifamily, label: getPropertyTypeLabel(PropertyType.Multifamily) },
+  { id: PropertyType.SpecialPurpose, label: getPropertyTypeLabel(PropertyType.SpecialPurpose) },
+  { id: PropertyType.Hospitality, label: getPropertyTypeLabel(PropertyType.Hospitality) },
 ]
 
 // Price ranges matching PropertySearchAdvanced

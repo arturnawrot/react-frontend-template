@@ -19,6 +19,7 @@ import { CustomHtml } from '../CustomHtml/CustomHtml'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getPropertyTypeLabel } from '@/utils/property-types'
+import { isPropertySaved, togglePropertySaved } from '@/utils/saved-properties'
 
 // Dynamically import PropertyMap with SSR disabled
 const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
@@ -173,6 +174,13 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
 
   // Get PDF URL
   const pdfUrl = property.sale_pdf_url || property.lease_pdf_url || ''
+
+  // Check if property is saved on mount and when property.id changes
+  useEffect(() => {
+    if (property.id) {
+      setIsSaved(isPropertySaved(property.id))
+    }
+  }, [property.id])
 
   // Navigation handlers with smooth transition
   const handlePreviousImage = useCallback(() => {
@@ -506,7 +514,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
               <button 
                 onClick={(e) => {
                   e.stopPropagation()
-                  setIsSaved(!isSaved)
+                  if (property.id) {
+                    const newSavedState = togglePropertySaved(property.id)
+                    setIsSaved(newSavedState)
+                  }
                 }}
                 className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 z-10"
               >

@@ -9,6 +9,7 @@ import { transformPropertyToCard, type PropertyCardData } from '@/utils/property
 import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
 import { buildFilterParams as buildFilterParamsUtil } from '@/utils/filter-params'
 import LocationSearchSuggestion, { type AddressSuggestion } from '@/components/LocationSearchSuggestion/LocationSearchSuggestion'
+import { PropertyType, getPropertyTypeLabel } from '@/utils/property-types'
 
 // Dynamically import PropertyMap with SSR disabled
 const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
@@ -22,7 +23,7 @@ const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
 
 interface FilterState {
   brokerId: number | null
-  propertyType: number | null
+  propertyType: PropertyType | null
   minPrice: number | null
   maxPrice: number | null
   saleOrLease: 'sale' | 'lease' | 'both' | null
@@ -55,7 +56,7 @@ export default function PropertySearchAdvanced({
   const getInitialState = useCallback(() => {
     const search = searchParams.get('search') || ''
     const brokerId = searchParams.get('brokerId') ? parseInt(searchParams.get('brokerId')!, 10) : null
-    const propertyType = searchParams.get('propertyType') ? parseInt(searchParams.get('propertyType')!, 10) : null
+    const propertyType = searchParams.get('propertyType') ? (parseInt(searchParams.get('propertyType')!, 10) as PropertyType) : null
     const minPrice = searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!, 10) : null
     const maxPrice = searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!, 10) : null
     const saleOrLease = searchParams.get('saleOrLease') as 'sale' | 'lease' | 'both' | null || null
@@ -379,7 +380,7 @@ export default function PropertySearchAdvanced({
     prevURLSearchRef.current = urlSearch
 
     const urlBrokerId = searchParams.get('brokerId') ? parseInt(searchParams.get('brokerId')!, 10) : null
-    const urlPropertyType = searchParams.get('propertyType') ? parseInt(searchParams.get('propertyType')!, 10) : null
+      const urlPropertyType = searchParams.get('propertyType') ? (parseInt(searchParams.get('propertyType')!, 10) as PropertyType) : null
     const urlMinPrice = searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!, 10) : null
     const urlMaxPrice = searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!, 10) : null
     const urlSaleOrLease = searchParams.get('saleOrLease') as 'sale' | 'lease' | 'both' | null || null
@@ -510,13 +511,15 @@ export default function PropertySearchAdvanced({
     // URL will be updated by the useEffect that watches these state changes
   }
 
-  // Property types (simplified - you may want to fetch these from API)
+  // Property types using enum
   const propertyTypes = [
-    { id: 1, label: 'Office' },
-    { id: 2, label: 'Retail' },
-    { id: 3, label: 'Industrial' },
-    { id: 4, label: 'Land' },
-    { id: 5, label: 'Multi-Family' },
+    { id: PropertyType.Office, label: getPropertyTypeLabel(PropertyType.Office) },
+    { id: PropertyType.Retail, label: getPropertyTypeLabel(PropertyType.Retail) },
+    { id: PropertyType.Industrial, label: getPropertyTypeLabel(PropertyType.Industrial) },
+    { id: PropertyType.Land, label: getPropertyTypeLabel(PropertyType.Land) },
+    { id: PropertyType.Multifamily, label: getPropertyTypeLabel(PropertyType.Multifamily) },
+    { id: PropertyType.SpecialPurpose, label: getPropertyTypeLabel(PropertyType.SpecialPurpose) },
+    { id: PropertyType.Hospitality, label: getPropertyTypeLabel(PropertyType.Hospitality) },
   ]
 
   const priceRanges = [
