@@ -80,7 +80,7 @@ const BulletPointComponent = ({
     .join(' ')
 
   return (
-    <div className="flex min-h-[300px]" ref={setRef}>
+    <div className="flex" ref={setRef}>
       {/* Left column: dot + line */}
       <div className="flex flex-col items-center mr-6">
         {/* Dot */}
@@ -153,7 +153,7 @@ const ProcessSection = ({
     const options = {
       root: null,
       // Slightly relaxed margin to catch elements earlier/smoother
-      rootMargin: '-40% 0px -40% 0px', 
+      rootMargin: '-60% 0px -60% 0px', 
       threshold: 0,
     }
 
