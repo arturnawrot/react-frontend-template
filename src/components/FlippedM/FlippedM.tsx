@@ -153,7 +153,7 @@ const ProcessSection = ({
     const options = {
       root: null,
       // Slightly relaxed margin to catch elements earlier/smoother
-      rootMargin: '-60% 0px -60% 0px', 
+      rootMargin: '-50% 0px -50% 0px', 
       threshold: 0,
     }
 
