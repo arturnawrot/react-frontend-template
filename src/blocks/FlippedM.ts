@@ -39,20 +39,23 @@ export const FlippedM: Block = {
           required: true,
           label: 'Description',
         },
+        // Image moved here for scroll-jacking
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+          label: 'Image',
+          admin: {
+            description: 'Image displayed when this section is active',
+          },
+        },
         ...createLinkFields({
           linkTextRequired: false,
         }),
       ],
     },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-      label: 'Image',
-      admin: {
-        description: 'Main image displayed on the right side',
-      },
-    },
+    // Top-level image removed
     ...createLinkFields({
       linkTextName: 'ctaText',
       linkTextLabel: 'CTA Button Text',
@@ -60,4 +63,3 @@ export const FlippedM: Block = {
     }),
   ],
 }
-

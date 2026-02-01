@@ -338,6 +338,10 @@ export interface Page {
           | {
               title: string;
               description: string;
+              /**
+               * Image displayed when this section is active
+               */
+              image: string | Media;
               linkText?: string | null;
               /**
                * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -362,10 +366,6 @@ export interface Page {
               id?: string | null;
             }[]
           | null;
-        /**
-         * Main image displayed on the right side
-         */
-        image?: (string | null) | Media;
         ctaText?: string | null;
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -512,6 +512,10 @@ export interface Page {
                     | {
                         title: string;
                         description: string;
+                        /**
+                         * Image displayed when this section is active
+                         */
+                        image: string | Media;
                         linkText?: string | null;
                         /**
                          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -536,10 +540,6 @@ export interface Page {
                         id?: string | null;
                       }[]
                     | null;
-                  /**
-                   * Main image displayed on the right side
-                   */
-                  image?: (string | null) | Media;
                   ctaText?: string | null;
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1252,6 +1252,10 @@ export interface Page {
                               | {
                                   title: string;
                                   description: string;
+                                  /**
+                                   * Image displayed when this section is active
+                                   */
+                                  image: string | Media;
                                   linkText?: string | null;
                                   /**
                                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1276,10 +1280,6 @@ export interface Page {
                                   id?: string | null;
                                 }[]
                               | null;
-                            /**
-                             * Main image displayed on the right side
-                             */
-                            image?: (string | null) | Media;
                             ctaText?: string | null;
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1992,6 +1992,10 @@ export interface Page {
                                         | {
                                             title: string;
                                             description: string;
+                                            /**
+                                             * Image displayed when this section is active
+                                             */
+                                            image: string | Media;
                                             linkText?: string | null;
                                             /**
                                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2016,10 +2020,6 @@ export interface Page {
                                             id?: string | null;
                                           }[]
                                         | null;
-                                      /**
-                                       * Main image displayed on the right side
-                                       */
-                                      image?: (string | null) | Media;
                                       ctaText?: string | null;
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2732,6 +2732,10 @@ export interface Page {
                                                   | {
                                                       title: string;
                                                       description: string;
+                                                      /**
+                                                       * Image displayed when this section is active
+                                                       */
+                                                      image: string | Media;
                                                       linkText?: string | null;
                                                       /**
                                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2756,10 +2760,6 @@ export interface Page {
                                                       id?: string | null;
                                                     }[]
                                                   | null;
-                                                /**
-                                                 * Main image displayed on the right side
-                                                 */
-                                                image?: (string | null) | Media;
                                                 ctaText?: string | null;
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -4683,6 +4683,7 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     title?: T;
                     description?: T;
+                    image?: T;
                     linkText?: T;
                     linkType?: T;
                     page?: T;
@@ -4691,7 +4692,6 @@ export interface PagesSelect<T extends boolean = true> {
                     openInNewTab?: T;
                     id?: T;
                   };
-              image?: T;
               ctaText?: T;
               linkType?: T;
               page?: T;
@@ -4760,6 +4760,7 @@ export interface PagesSelect<T extends boolean = true> {
                             | {
                                 title?: T;
                                 description?: T;
+                                image?: T;
                                 linkText?: T;
                                 linkType?: T;
                                 page?: T;
@@ -4768,7 +4769,6 @@ export interface PagesSelect<T extends boolean = true> {
                                 openInNewTab?: T;
                                 id?: T;
                               };
-                          image?: T;
                           ctaText?: T;
                           linkType?: T;
                           page?: T;
@@ -5132,6 +5132,7 @@ export interface PagesSelect<T extends boolean = true> {
                                         | {
                                             title?: T;
                                             description?: T;
+                                            image?: T;
                                             linkText?: T;
                                             linkType?: T;
                                             page?: T;
@@ -5140,7 +5141,6 @@ export interface PagesSelect<T extends boolean = true> {
                                             openInNewTab?: T;
                                             id?: T;
                                           };
-                                      image?: T;
                                       ctaText?: T;
                                       linkType?: T;
                                       page?: T;
@@ -5504,6 +5504,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                     | {
                                                         title?: T;
                                                         description?: T;
+                                                        image?: T;
                                                         linkText?: T;
                                                         linkType?: T;
                                                         page?: T;
@@ -5512,7 +5513,6 @@ export interface PagesSelect<T extends boolean = true> {
                                                         openInNewTab?: T;
                                                         id?: T;
                                                       };
-                                                  image?: T;
                                                   ctaText?: T;
                                                   linkType?: T;
                                                   page?: T;
@@ -5876,6 +5876,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                                 | {
                                                                     title?: T;
                                                                     description?: T;
+                                                                    image?: T;
                                                                     linkText?: T;
                                                                     linkType?: T;
                                                                     page?: T;
@@ -5884,7 +5885,6 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     openInNewTab?: T;
                                                                     id?: T;
                                                                   };
-                                                              image?: T;
                                                               ctaText?: T;
                                                               linkType?: T;
                                                               page?: T;

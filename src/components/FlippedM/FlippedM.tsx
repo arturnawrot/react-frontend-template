@@ -1,7 +1,9 @@
-import React from 'react'
+'use client' // Necessary for useState/useEffect hooks
+
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import type { Page } from '@/payload-types'
+import type { Page, Media } from '@/payload-types'
 import styles from './FlippedM.module.scss'
 import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
@@ -14,8 +16,10 @@ type FlippedMBlock = Extract<Page['blocks'][number], { blockType: 'flippedM' }>
 type BulletPoint = {
   title: string
   description: string
+  image?: string | Media | null // Image is now per bullet point
   linkText?: string | null
   linkHref?: string | null
+  openInNewTab?: boolean
 }
 
 type FlippedMProps = {
@@ -30,12 +34,19 @@ const BulletPointComponent = ({
   openInNewTab,
   isLast = false,
   isActive = false,
-}: BulletPoint & { openInNewTab?: boolean; isLast?: boolean; isActive?: boolean }) => {
+  setRef, // New prop to pass ref back to parent
+}: BulletPoint & { 
+  isLast?: boolean; 
+  isActive?: boolean; 
+  setRef?: (el: HTMLDivElement | null) => void 
+}) => {
   const headingClasses = [
     styles.bulletPointHeading,
     'text-2xl',
     'font-bold',
     'mb-2',
+    'transition-colors duration-500', // Smooth transition
+    !isActive && 'text-gray-300', // Muted color (Tailwind equivalent)
     !isActive && styles.bulletPointHeadingMuted,
   ]
     .filter(Boolean)
@@ -44,6 +55,8 @@ const BulletPointComponent = ({
   const descriptionClasses = [
     styles.bulletPointsubheading,
     'mb-4',
+    'transition-colors duration-500', // Smooth transition
+    !isActive && 'text-gray-300',
     !isActive && styles.bulletPointsubheadingMuted,
   ]
     .filter(Boolean)
@@ -51,36 +64,44 @@ const BulletPointComponent = ({
 
   const linkClasses = [
     styles.bulletPointLink,
-    isActive ? '' : styles.bulletPointLinkMuted,
+    'transition-opacity duration-500',
+    isActive ? 'opacity-100' : 'opacity-50 pointer-events-none', // Disable interaction if not active? Optional.
+    !isActive && styles.bulletPointLinkMuted,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const dotClasses = [
+    styles.bulletPointDot,
+    'transition-all duration-500',
+    isActive ? styles.bulletPointDotActive : styles.bulletPointDotMuted,
   ]
     .filter(Boolean)
     .join(' ')
 
   return (
-    <div className="flex">
+    <div className="flex min-h-[300px]" ref={setRef}>
       {/* Left column: dot + line */}
       <div className="flex flex-col items-center mr-6">
         {/* Dot */}
-        <div
-          className={[
-            styles.bulletPointDot,
-            isActive ? styles.bulletPointDotActive : styles.bulletPointDotMuted,
-          ]
-            .filter(Boolean)
-            .join(' ')}
-        ></div>
+        <div className={dotClasses}></div>
 
         {/* Line */}
         {!isLast && (
-          <div className={styles.bulletPointLineWrapper}>
-            {isActive && <div className={styles.bulletPointLineBlackSegment} />}
+          <div className={`${styles.bulletPointLineWrapper} h-full`}>
+            {isActive && (
+              <div 
+                className={`${styles.bulletPointLineBlackSegment} transition-all duration-500`} 
+                style={{ height: '99%' }} // Animated length based on scroll could go here
+              />
+            )}
             <div className={styles.bulletPointLineMuted} />
           </div>
         )}
       </div>
 
       {/* Right column: text */}
-      <div className={`${!isLast ? 'pb-10' : ''} md:ml-8`}>
+      <div className={`${!isLast ? 'pb-24' : 'pb-10'} md:ml-8 max-w-[400px]`}>
         <h2
           className={headingClasses}
           style={{ transform: 'translateY(-4px)' }}
@@ -114,9 +135,6 @@ const ProcessSection = ({
   heading,
   subheading,
   bulletPoints,
-  image,
-  imageWidth,
-  imageHeight,
   ctaText,
   ctaHref,
   ctaOpenInNewTab,
@@ -124,13 +142,63 @@ const ProcessSection = ({
   heading: React.ReactNode
   subheading?: string | null
   bulletPoints: BulletPoint[]
-  image: string
-  imageWidth?: number | null
-  imageHeight?: number | null
   ctaText?: string | null
   ctaHref?: string | null
   ctaOpenInNewTab?: boolean
 }) => {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  useEffect(() => {
+    const options = {
+      root: null,
+      // Slightly relaxed margin to catch elements earlier/smoother
+      rootMargin: '-40% 0px -40% 0px', 
+      threshold: 0,
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      // 1. Filter to find only elements currently inside our active zone
+      const visibleEntries = entries.filter((entry) => entry.isIntersecting)
+
+      if (visibleEntries.length > 0) {
+        // 2. Reduce to find the entry closest to the middle of the viewport
+        const bestCandidate = visibleEntries.reduce((prev, current) => {
+          const viewportCenter = window.innerHeight / 2
+          
+          // Calculate distance of the previous best candidate's center to viewport center
+          const prevRect = prev.boundingClientRect
+          const prevCenter = prevRect.top + prevRect.height / 2
+          const prevDiff = Math.abs(viewportCenter - prevCenter)
+
+          // Calculate distance of the current candidate's center to viewport center
+          const currentRect = current.boundingClientRect
+          const currentCenter = currentRect.top + currentRect.height / 2
+          const currentDiff = Math.abs(viewportCenter - currentCenter)
+
+          // Return the one closer to the center
+          return currentDiff < prevDiff ? current : prev
+        })
+
+        // 3. Set the active index based on the winner
+        const index = itemRefs.current.indexOf(bestCandidate.target as HTMLDivElement)
+        if (index !== -1) {
+          setActiveIndex(index)
+        }
+      }
+    }, options)
+
+    itemRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref)
+    })
+
+    return () => {
+      itemRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref)
+      })
+    }
+  }, [bulletPoints])
+
   return (
     <Container className="relative w-full flex flex-col">
       {/* SVG Background */}
@@ -146,37 +214,35 @@ const ProcessSection = ({
       </div>
 
       {/* Heading & Subheading */}
-      <div className="relative z-40 mx-auto md:mx-0 max-w-md px-5 md:px-0 mt-20">
+      <div className="relative z-40 mx-auto md:mx-0 max-w-md px-5 md:px-0 mt-20 mb-12">
         <SectionHeading>
           {heading}
         </SectionHeading>
         {subheading && (
-          <p
-            className={`${styles.subheading} text-base md:text-lg mt-4 max-w-[400px]`}
-          >
+          <p className={`${styles.subheading} text-base md:text-lg mt-4 max-w-[400px]`}>
             {subheading}
           </p>
         )}
       </div>
 
       {/* Content Grid */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-0 mt-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-2 items-start">
-          {/* Left Column - Bullets */}
-          <div className="max-w-[450px] mx-auto md:mx-0 max-w-md">
-            {bulletPoints.map((service, index) => (
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          
+          {/* Left Column - Bullets (Scrollable) */}
+          <div className="max-w-[450px] mx-auto md:mx-0 order-2 md:order-1">
+            {bulletPoints.map((bp, index) => (
               <BulletPointComponent
                 key={index}
-                title={service.title}
-                description={service.description}
-                linkText={service.linkText}
-                linkHref={service.linkHref}
+                {...bp}
                 isLast={index === bulletPoints.length - 1}
-                isActive={index === 0} // only first one is "normal"
+                isActive={index === activeIndex}
+                setRef={(el) => (itemRefs.current[index] = el)}
               />
             ))}
+            
             {ctaText && (
-              <div className="mt-30">
+              <div className="mt-10 mb-20 md:ml-14">
                 <PrimaryButton
                   href={ctaHref || undefined}
                   openInNewTab={ctaOpenInNewTab}
@@ -188,19 +254,45 @@ const ProcessSection = ({
             )}
           </div>
 
-          {/* Right Column - Image */}
-          <div className="hidden md:flex items-center justify-center">
-            <div className="relative max-w-2xl w-fit h-fit">
-              <Image
-                src={image}
-                alt=""
-                width={imageWidth || 636}
-                height={imageHeight || 636}
-                className="object-contain rounded-xl"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
+          {/* Right Column - Images (Sticky) */}
+          <div className="hidden md:block order-1 md:order-2 h-full">
+            <div className="sticky top-1/3 min-h-[500px] w-full flex justify-center items-start">
+              
+              {bulletPoints.map((bp, index) => {
+                // Resolve Image URL
+                let imageUrl = '/img/amazon_fc.png' // fallback
+                let imageWidth = 636
+                let imageHeight = 636
+
+                if (typeof bp.image === 'string') {
+                    imageUrl = bp.image
+                } else if (bp.image && typeof bp.image === 'object' && 'url' in bp.image) {
+                    imageUrl = bp.image.url || '/img/amazon_fc.png'
+                    imageWidth = bp.image.width || 636
+                    imageHeight = bp.image.height || 636
+                }
+
+                return (
+                  <div
+                    key={index}
+                    className={`absolute transition-opacity duration-500 ease-in-out ${
+                      index === activeIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                    }`}
+                  >
+                    <Image
+                      src={imageUrl}
+                      alt={bp.title || ''}
+                      width={imageWidth}
+                      height={imageHeight}
+                      className="object-contain rounded-xl shadow-lg"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                  </div>
+                )
+              })}
             </div>
           </div>
+
         </div>
       </div>
     </Container>
@@ -208,20 +300,7 @@ const ProcessSection = ({
 }
 
 export default function FlippedM({ block }: FlippedMProps) {
-  // Get image URL and dimensions - handle both string and Media object
-  let imageUrl = '/img/amazon_fc.png' // fallback
-  let imageWidth: number | null | undefined = undefined
-  let imageHeight: number | null | undefined = undefined
-
-  if (typeof block.image === 'string') {
-    imageUrl = block.image
-  } else if (block.image && typeof block.image === 'object' && 'url' in block.image) {
-    imageUrl = block.image.url || '/img/amazon_fc.png'
-    imageWidth = block.image.width
-    imageHeight = block.image.height
-  }
-
-  // Render heading - split by newlines and add <br /> tags
+  // Render heading
   const heading = block.heading ? (
     <span>
       {block.heading.split('\n').map((line, index, array) => (
@@ -238,20 +317,21 @@ export default function FlippedM({ block }: FlippedMProps) {
     </span>
   )
 
-  // Transform bullet points to include resolved URLs and openInNewTab
+  // Transform bullet points
   const bulletPoints = (block.bulletPoints || []).map((bp: any) => ({
     ...bp,
     linkHref: resolveLinkUrl(bp),
     openInNewTab: shouldOpenInNewTab(bp),
   }))
 
-  // Resolve CTA href and openInNewTab
+  // Resolve CTA
   const ctaHref = resolveLinkUrl({
     linkType: (block as any).linkType,
     page: (block as any).page,
     customUrl: (block as any).customUrl,
-    ctaHref: (block as any).ctaHref, // Legacy support
+    ctaHref: (block as any).ctaHref,
   })
+  
   const ctaOpenInNewTab = shouldOpenInNewTab({
     linkType: (block as any).linkType,
     openInNewTab: (block as any).openInNewTab,
@@ -263,9 +343,6 @@ export default function FlippedM({ block }: FlippedMProps) {
         heading={heading}
         subheading={block.subheading}
         bulletPoints={bulletPoints}
-        image={imageUrl}
-        imageWidth={imageWidth}
-        imageHeight={imageHeight}
         ctaText={block.ctaText}
         ctaHref={ctaHref}
         ctaOpenInNewTab={ctaOpenInNewTab}
