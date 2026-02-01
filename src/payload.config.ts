@@ -37,7 +37,6 @@ import { BlogHighlights } from './globals/BlogHighlights'
 import { AvailableJobSets } from './globals/AvailableJobSets'
 import { OfficeLocationSets } from './globals/OfficeLocationSets'
 import { ConstantLinks } from './globals/ConstantLinks'
-import { seedEndpoint } from './endpoints/seed'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -77,5 +76,4 @@ export default buildConfig({
       excludeCollections: ['users'],
     }),
   ],
-  endpoints: [seedEndpoint],
 })
