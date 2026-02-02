@@ -29,6 +29,7 @@ import { AvailableRoles } from '../blocks/AvailableRoles'
 import { OfficeLocations } from '../blocks/OfficeLocations'
 import { CenteredSectionHeader } from '../blocks/CenteredSectionHeader'
 import { CustomHtmlBlock } from '../blocks/CustomHtmlBlock'
+import { ComingSoon } from '../blocks/ComingSoon'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -89,6 +90,7 @@ export const Pages: CollectionConfig = {
         OfficeLocations,
         CenteredSectionHeader,
         CustomHtmlBlock,
+        ComingSoon,
       ],
     },
     seoFields,

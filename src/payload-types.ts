@@ -3993,6 +3993,56 @@ export interface Page {
         blockName?: string | null;
         blockType: 'customHtmlBlock';
       }
+    | {
+        /**
+         * Main heading text (e.g., "Coming Soon:")
+         */
+        heading: string;
+        /**
+         * Second line of heading
+         */
+        headingLine2: string;
+        /**
+         * Subheading text below the main heading
+         */
+        subheading: string;
+        /**
+         * Text above the email signup form
+         */
+        formHeader: string;
+        /**
+         * Placeholder text for the email input
+         */
+        formPlaceholder?: string | null;
+        /**
+         * Text for the submit button
+         */
+        formButtonText?: string | null;
+        offices?:
+          | {
+              /**
+               * City name (e.g., "Augusta")
+               */
+              city: string;
+              /**
+               * Full street address
+               */
+              address: string;
+              /**
+               * Phone number
+               */
+              phone?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Copyright text at the bottom
+         */
+        copyrightText?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'comingSoon';
+      }
   )[];
   /**
    * Search engine optimization settings
@@ -6528,6 +6578,27 @@ export interface PagesSelect<T extends boolean = true> {
               customHtml?: T;
               justifyContent?: T;
               heading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        comingSoon?:
+          | T
+          | {
+              heading?: T;
+              headingLine2?: T;
+              subheading?: T;
+              formHeader?: T;
+              formPlaceholder?: T;
+              formButtonText?: T;
+              offices?:
+                | T
+                | {
+                    city?: T;
+                    address?: T;
+                    phone?: T;
+                    id?: T;
+                  };
+              copyrightText?: T;
               id?: T;
               blockName?: T;
             };
