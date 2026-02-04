@@ -4007,9 +4007,13 @@ export interface Page {
          */
         subheading: string;
         /**
+         * Choose between the built-in email form or custom HTML content
+         */
+        contentType: 'form' | 'customHtml';
+        /**
          * Text above the email signup form
          */
-        formHeader: string;
+        formHeader?: string | null;
         /**
          * Placeholder text for the email input
          */
@@ -4018,6 +4022,10 @@ export interface Page {
          * Text for the submit button
          */
         formButtonText?: string | null;
+        /**
+         * Select a custom HTML entry to display instead of the form
+         */
+        customHtml?: (string | null) | CustomHtml;
         offices?:
           | {
               /**
@@ -6587,9 +6595,11 @@ export interface PagesSelect<T extends boolean = true> {
               heading?: T;
               headingLine2?: T;
               subheading?: T;
+              contentType?: T;
               formHeader?: T;
               formPlaceholder?: T;
               formButtonText?: T;
+              customHtml?: T;
               offices?:
                 | T
                 | {

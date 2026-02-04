@@ -1,6 +1,7 @@
 import React from 'react'
 import ResponsiveText from '@/components/ResponsiveText'
 import ComingSoonForm from './ComingSoonForm'
+import CustomHtml from '@/components/CustomHtml/CustomHtml'
 import styles from './ComingSoon.module.scss'
 
 interface Office {
@@ -9,14 +10,22 @@ interface Office {
   phone?: string | null
 }
 
+interface CustomHtmlDoc {
+  id: string
+  name: string
+  html: string
+}
+
 interface ComingSoonBlock {
   blockType: 'comingSoon'
   heading: string
   headingLine2: string
   subheading: string
-  formHeader: string
+  contentType?: 'form' | 'customHtml' | null
+  formHeader?: string | null
   formPlaceholder?: string | null
   formButtonText?: string | null
+  customHtml?: CustomHtmlDoc | string | null
   offices?: Office[] | null
   copyrightText?: string | null
 }
@@ -94,32 +103,40 @@ export default function ComingSoon({ block }: ComingSoonProps) {
             {block.subheading}
         </ResponsiveText>
 
-        {/* Form Header */}
-        <ResponsiveText
-            as="p"
-            desktop="36px"
-            mobile="20px"
-            desktopLineHeight="64px"
-            mobileLineHeight="70px"
-            fontFamily="GT America Condensed"
-            fontWeight={500}
-            color={textColor}
-            align="center"
-            letterSpacing="0"
-            className={styles.formHeader}
-        >
-            {block.formHeader}
-        </ResponsiveText>
+        {/* Form Header - only show when using form */}
+        {(block.contentType === 'form' || !block.contentType) && block.formHeader && (
+          <ResponsiveText
+              as="p"
+              desktop="36px"
+              mobile="20px"
+              desktopLineHeight="64px"
+              mobileLineHeight="70px"
+              fontFamily="GT America Condensed"
+              fontWeight={500}
+              color={textColor}
+              align="center"
+              letterSpacing="0"
+              className={styles.formHeader}
+          >
+              {block.formHeader}
+          </ResponsiveText>
+        )}
 
 
 
     </div>
 
-        {/* Email Form (Client Component) */}
-        <ComingSoonForm 
-        placeholder={block.formPlaceholder || undefined}
-        buttonText={block.formButtonText || undefined}
-        />
+        {/* Conditional Content: Form or Custom HTML */}
+        {block.contentType === 'customHtml' && block.customHtml && typeof block.customHtml === 'object' ? (
+          <div className={styles.customHtmlContainer}>
+            <CustomHtml html={block.customHtml.html} />
+          </div>
+        ) : (
+          <ComingSoonForm 
+            placeholder={block.formPlaceholder || undefined}
+            buttonText={block.formButtonText || undefined}
+          />
+        )}
 
 
       {/* Office Locations */}

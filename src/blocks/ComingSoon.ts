@@ -35,12 +35,30 @@ export const ComingSoon: Block = {
       },
     },
     {
+      name: 'contentType',
+      type: 'select',
+      required: true,
+      defaultValue: 'form',
+      label: 'Content Type',
+      options: [
+        { label: 'Email Signup Form', value: 'form' },
+        { label: 'Custom HTML', value: 'customHtml' },
+      ],
+      admin: {
+        description: 'Choose between the built-in email form or custom HTML content',
+      },
+    },
+    {
       name: 'formHeader',
       type: 'text',
       required: true,
       defaultValue: 'Be the first to know when we go live.',
       admin: {
         description: 'Text above the email signup form',
+        condition: (data, siblingData) => {
+          const contentType = data?.contentType || siblingData?.contentType
+          return contentType === 'form' || !contentType
+        },
       },
     },
     {
@@ -49,6 +67,10 @@ export const ComingSoon: Block = {
       defaultValue: 'Enter your email',
       admin: {
         description: 'Placeholder text for the email input',
+        condition: (data, siblingData) => {
+          const contentType = data?.contentType || siblingData?.contentType
+          return contentType === 'form' || !contentType
+        },
       },
     },
     {
@@ -57,6 +79,23 @@ export const ComingSoon: Block = {
       defaultValue: 'Notify Me',
       admin: {
         description: 'Text for the submit button',
+        condition: (data, siblingData) => {
+          const contentType = data?.contentType || siblingData?.contentType
+          return contentType === 'form' || !contentType
+        },
+      },
+    },
+    {
+      name: 'customHtml',
+      type: 'relationship',
+      relationTo: 'custom-html',
+      label: 'Custom HTML',
+      admin: {
+        description: 'Select a custom HTML entry to display instead of the form',
+        condition: (data, siblingData) => {
+          const contentType = data?.contentType || siblingData?.contentType
+          return contentType === 'customHtml'
+        },
       },
     },
     {
