@@ -7,7 +7,8 @@ import type { Metadata } from 'next'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import AboutAgent from '@/components/AboutAgent/AboutAgent'
 import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
-import TrackRecord from '@/components/TrackRecord/TrackRecord'
+import Container from '@/components/Container/Container'
+import TrackRecordSection from '@/components/TrackRecordSection/TrackRecordSection'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import type { Page } from '@/payload-types'
@@ -326,6 +327,66 @@ export default async function AgentPage({ params }: AgentPageProps) {
     ? `/property-search?brokerId=${agent.buildout_broker_id}`
     : '/property-search'
 
+  // Fetch proven track record items from the "default" set
+  let trackRecordItems: Array<{
+    image: string
+    title: string
+    address?: string
+    price?: string
+    size?: string
+    propertyType?: string
+    agent?: { name: string; image?: string }
+    link?: string
+  }> = []
+
+  try {
+    const provenTrackRecordGlobal = await payload.findGlobal({
+      slug: 'provenTrackRecordSets',
+      depth: 2, // Populate relationships (agent, image)
+    })
+
+    if (provenTrackRecordGlobal?.sets && Array.isArray(provenTrackRecordGlobal.sets)) {
+      // Use "default" set or fall back to first set
+      const set = provenTrackRecordGlobal.sets.find((s: any) => s.name === 'default') || provenTrackRecordGlobal.sets[0]
+
+      if (set?.items && Array.isArray(set.items)) {
+        trackRecordItems = set.items.map((item: any) => {
+          const image = item.image
+          const imageUrl = typeof image === 'object' && image !== null ? image.url || '' : ''
+          
+          const itemAgent = item.agent
+          let agentData: { name: string; image?: string } | undefined
+          
+          if (itemAgent && typeof itemAgent === 'object') {
+            const agentName = itemAgent.fullName || `${itemAgent.firstName || ''} ${itemAgent.lastName || ''}`.trim()
+            const agentImage = itemAgent.cardImage || itemAgent.backgroundImage
+            const agentImageUrl = typeof agentImage === 'object' && agentImage !== null ? agentImage.url : undefined
+            
+            if (agentName) {
+              agentData = {
+                name: agentName,
+                image: agentImageUrl,
+              }
+            }
+          }
+
+          return {
+            image: imageUrl,
+            title: item.title || '',
+            address: item.address || undefined,
+            price: item.price || undefined,
+            size: item.size || undefined,
+            propertyType: item.propertyType || undefined,
+            agent: agentData,
+            link: item.link || undefined,
+          }
+        })
+      }
+    }
+  } catch (error) {
+    console.error('[Agent Page] Error fetching proven track record items:', error)
+  }
+
   return (
     <>
       <HeroWrapper block={heroBlock} />
@@ -341,12 +402,21 @@ export default async function AgentPage({ params }: AgentPageProps) {
         about={agent.about || null}
       />
       <div className="tan-linear-background pt-20">
-        <FeaturedProperties
-          properties={transformedFeaturedProperties}
-          seeAllLink={propertySearchUrl}
-          seeAllLinkText="See All Listings By This Agent"
+        <Container className="mb-12 md:mb-20">
+          <FeaturedProperties
+            properties={transformedFeaturedProperties}
+            seeAllLink={propertySearchUrl}
+            seeAllLinkText="See All Listings By This Agent"
+          />
+        </Container>
+        <TrackRecordSection
+          block={{
+            blockType: 'trackRecordSection',
+            heading: 'Proven Track Record',
+            provenTrackRecordSetName: 'default',
+          }}
+          items={trackRecordItems}
         />
-        <TrackRecord />
       </div>
       <CTAFooter
         block={{
@@ -355,8 +425,8 @@ export default async function AgentPage({ params }: AgentPageProps) {
           subheading: 'Get in touch to explore listings, strategies, or your next move.',
           buttons: [
             { label: 'Schedule A Consultation', variant: 'primary' },
-            { label: 'Get Matched with a Agent', variant: 'secondary' },
-            { label: 'Search Listings', variant: 'secondary' },
+            // { label: 'Get Matched with a Agent', variant: 'secondary' },
+            // { label: 'Search Listings', variant: 'secondary' },
           ],
           id: 'agent-cta-footer',
         }}

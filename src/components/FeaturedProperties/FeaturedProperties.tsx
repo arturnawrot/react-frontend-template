@@ -5,7 +5,7 @@ import PropertyCard from '../PropertyCard/PropertyCard'
 import Arrow from '../Arrow/Arrow'
 import type { PropertyCardData } from '@/utils/property-transform'
 import Container from '@/components/Container/Container'
-import SectionHeading from '@/components/SectionHeading/SectionHeading'
+import ResponsiveText from '@/components/ResponsiveText'
 
 type FeaturedPropertiesBlock = Extract<Page['blocks'][number], { blockType: 'featuredProperties' }>
 
@@ -56,10 +56,21 @@ export default function FeaturedProperties({ block, properties, heading, seeAllL
     <Container className="font-sans text-[#1C2B28]">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <p className="text-sm font-semibold tracking-[0.08em] uppercase text-stone-500 mb-2">
+          {/* <p className="text-sm font-semibold tracking-[0.08em] uppercase text-stone-500 mb-2">
             Featured
-          </p>
-          <SectionHeading>{displayHeading}</SectionHeading>
+          </p> */}
+          <ResponsiveText
+            as="h2"
+            desktop="40px"
+            mobile="24px"
+            desktopLineHeight="40px"
+            mobileLineHeight="24px"
+            fontFamily="GT America Condensed"
+            fontWeight={500}
+            color="var(--strong-green)"
+          >
+            {displayHeading}
+          </ResponsiveText>
         </div>
 
         <Link
