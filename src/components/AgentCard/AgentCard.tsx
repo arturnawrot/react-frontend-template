@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Arrow from '../Arrow/Arrow'
 import CopyableContactLink from '../CopyableContactLink'
+import ResponsiveText from '../ResponsiveText/ResponsiveText'
 
 interface AgentCardProps {
   name: string
@@ -40,7 +41,7 @@ export default function AgentCard({
     return (
       <div className="flex flex-col h-full">
         {/* Agent Image with Service Tags Overlay */}
-        <div className="relative w-full aspect-square bg-gray-300 rounded-[16px] overflow-hidden mb-4">
+        <div className="relative w-full aspect-[328/388] bg-gray-300 rounded-[16px] overflow-hidden mb-4">
           {image && (
             <Image
               src={image}
@@ -67,16 +68,65 @@ export default function AgentCard({
         </div>
         
         {/* Agent Name */}
-        <h3 className="font-serif font-bold text-xl text-[#1C2B28] mb-1">{name}</h3>
+        <ResponsiveText
+          as="h3"
+          desktop="--headline1"
+          mobile="--headline1"
+          desktopLineHeight="40px"
+          mobileLineHeight="40px"
+          fontFamily="GT America Condensed"
+          fontWeight={500}
+          color="var(--strong-green)"
+          letterSpacing="0px"
+          className="mb-1"
+        >
+          {name}
+        </ResponsiveText>
         
         {/* Agent Title */}
-        <p className="text-sm text-gray-600 mb-3">{role}</p>
+        <ResponsiveText
+          as="p"
+          desktop="--l"
+          mobile="--l"
+          desktopLineHeight="24px"
+          mobileLineHeight="24px"
+          fontFamily="GT America Condensed"
+          fontWeight={500}
+          color="var(--strong-green)"
+          letterSpacing="0px"
+          className="mb-3"
+        >
+          {role}
+        </ResponsiveText>
         
         {/* Serving Locations */}
         {servingLocations.length > 0 && (
           <div className="mb-4">
-            <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-1">SERVING</p>
-            <p className="text-sm text-gray-700">{servingLocations.join(', ')}</p>
+            <ResponsiveText
+              as="p"
+              desktop="--xs"
+              mobile="--xs"
+              fontFamily="GT America Condensed"
+              fontWeight={400}
+              color="var(--strong-green)"
+              letterSpacing="3px"
+              className="uppercase mb-1"
+            >
+              SERVING
+            </ResponsiveText>
+            <ResponsiveText
+              as="p"
+              desktop="--l"
+              mobile="--l"
+              desktopLineHeight="24px"
+              mobileLineHeight="24px"
+              fontFamily="GT America Condensed"
+              fontWeight={400}
+              color="var(--strong-green)"
+              letterSpacing="0px"
+            >
+              {servingLocations.join(', ')}
+            </ResponsiveText>
           </div>
         )}
 
@@ -86,11 +136,16 @@ export default function AgentCard({
             <CopyableContactLink
               type="email"
               value={email}
-              className="flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:opacity-70"
+              className="flex items-center gap-2 font-[GT_America_Condensed] font-normal leading-none tracking-normal text-[length:var(--l)] text-[rgba(28,47,41,1)] hover:opacity-70"
             />
           )}
           {linkedin && (
-            <a href={linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:opacity-70">
+            <a 
+              href={linkedin} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex items-center gap-2 font-[GT_America_Condensed] font-normal leading-none tracking-normal text-[length:var(--l)] text-[rgba(28,47,41,1)] hover:opacity-70"
+            >
               <Linkedin className="w-4 h-4" /> LinkedIn
             </a>
           )}
@@ -98,7 +153,7 @@ export default function AgentCard({
             <CopyableContactLink
               type="phone"
               value={phone}
-              className="flex items-center gap-2 text-sm font-semibold text-[#1C2B28] hover:opacity-70"
+              className="flex items-center gap-2 font-[GT_America_Condensed] font-normal leading-none tracking-normal text-[length:var(--l)] text-[rgba(28,47,41,1)] hover:opacity-70"
             />
           )}
         </div>
@@ -107,7 +162,10 @@ export default function AgentCard({
         <div className="flex-grow" />
 
         {/* View Bio Link */}
-        <Link href={agentHref} className="mt-8 flex items-center gap-1 text-sm font-semibold text-[#1C2B28] hover:opacity-70 group">
+        <Link 
+          href={agentHref} 
+          className="mt-8 flex items-center gap-1 font-[GT_America_Condensed] font-normal leading-none text-[length:var(--l)] text-[rgba(28,47,41,1)] hover:opacity-70 group"
+        >
           View Bio
           <Arrow direction="right" size="w-4 h-4" className="transition-transform group-hover:translate-x-1" />
         </Link>
@@ -134,15 +192,15 @@ export default function AgentCard({
       </div>
       
       <div className="flex flex-col justify-start">
-        <h3 className="font-sans font-semibold text-lg text-gray-900">{name}</h3>
-        <p className="text-xs text-gray-800 font-medium">{role}</p>
+        <h3 className="font-[GT_America_Condensed] font-medium text-lg text-[var(--strong-green)] leading-[40px] tracking-[0px]">{name}</h3>
+        <p className="font-[GT_America_Condensed] font-medium text-xs text-[var(--strong-green)] leading-[24px] tracking-[0px]">{role}</p>
         
         <div className="flex items-center justify-between w-full mt-1">
-          <Link href={agentHref} className="text-xs text-gray-600 hover:text-black flex items-center gap-1 font-medium group">
+          <Link href={agentHref} className="text-xs font-[GT_America_Condensed] font-normal leading-none text-[rgba(28,47,41,1)] hover:opacity-70 flex items-center gap-1 group">
             View Agent Profile 
             <Arrow direction="right" size="w-3 h-3" className="transition-transform group-hover:translate-x-1" />
           </Link>
-          {license && <span className="text-[10px] text-gray-500 uppercase tracking-wide ml-4">{license}</span>}
+          {license && <span className="text-[10px] font-[GT_America_Condensed] font-normal text-[var(--strong-green)] uppercase tracking-[3px] ml-4">{license}</span>}
         </div>
 
         <div className="flex gap-4 mt-3">
@@ -150,18 +208,18 @@ export default function AgentCard({
             <CopyableContactLink
               type="email"
               value={email}
-              className="flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-black"
+              className="flex items-center gap-1 text-xs font-[GT_America_Condensed] font-normal leading-none tracking-normal text-[rgba(28,47,41,1)] hover:opacity-70"
             />
           )}
           {phone && (
             <CopyableContactLink
               type="phone"
               value={phone}
-              className="flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-black"
+              className="flex items-center gap-1 text-xs font-[GT_America_Condensed] font-normal leading-none tracking-normal text-[rgba(28,47,41,1)] hover:opacity-70"
             />
           )}
           {linkedin && (
-            <a href={linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-black">
+            <a href={linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-[GT_America_Condensed] font-normal leading-none tracking-normal text-[rgba(28,47,41,1)] hover:opacity-70">
               <Linkedin className="w-4 h-4" /> LinkedIn
             </a>
           )}
