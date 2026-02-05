@@ -1,9 +1,10 @@
 'use client'
 
-import { Mail, Phone, Linkedin } from 'lucide-react'
+import { Linkedin } from 'lucide-react'
 import type { SerializedEditorState } from 'lexical'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import PrimaryButton from '@/components/PrimaryButton'
+import CopyableContactLink from '@/components/CopyableContactLink'
 
 type AboutAgentProps = {
   agentFirstName?: string
@@ -103,20 +104,18 @@ export default function AboutAgent({
                 <div className="mb-8">
                   <div className="flex flex-wrap gap-6">
                     {email && (
-                      <a
-                        href={`mailto:${email}`}
+                      <CopyableContactLink
+                        type="email"
+                        value={email}
                         className="flex items-center gap-2 text-sm font-sans text-[#1a2e2a] hover:opacity-70 transition-opacity"
-                      >
-                        <Mail className="w-4 h-4" /> Email
-                      </a>
+                      />
                     )}
                     {phone && (
-                      <a
-                        href={`tel:${phone}`}
+                      <CopyableContactLink
+                        type="phone"
+                        value={phone}
                         className="flex items-center gap-2 text-sm font-sans text-[#1a2e2a] hover:opacity-70 transition-opacity"
-                      >
-                        <Phone className="w-4 h-4" /> Phone
-                      </a>
+                      />
                     )}
                     {linkedin && (
                       <a

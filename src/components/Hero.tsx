@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X, Mail, Phone, Linkedin } from 'lucide-react'
+import { Menu, X, Linkedin } from 'lucide-react'
 import Navbar, { type NavbarLink } from './Navbar/Navbar'
 import CollapsingMenuMobile from './CollapsingMenuMobile/CollapsingMenuMobile'
 import PrimaryButton from './PrimaryButton/PrimaryButton'
@@ -13,7 +13,8 @@ import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/uti
 import { isInternalLink } from '@/utils/link-utils'
 import FormCard from './FormCard/FormCard'
 // Import the new component (adjust path as needed)
-import { CustomHtml } from '@/components/CustomHtml/CustomHtml' 
+import { CustomHtml } from '@/components/CustomHtml/CustomHtml'
+import CopyableContactLink from '@/components/CopyableContactLink'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
@@ -193,14 +194,22 @@ const AgentContactInfo = ({
   return (
     <div className="flex flex-row gap-6 mb-8 flex-wrap">
       {email && (
-        <a href={`mailto:${email}`} className={linkClass}>
-          <Mail className="w-4 h-4" /> Email
-        </a>
+        <CopyableContactLink
+          type="email"
+          value={email}
+          className={linkClass}
+          tooltipBgClass="bg-white"
+          tooltipTextClass="text-[#1a2e2a]"
+        />
       )}
       {phone && (
-        <a href={`tel:${phone}`} className={linkClass}>
-          <Phone className="w-4 h-4" /> Phone
-        </a>
+        <CopyableContactLink
+          type="phone"
+          value={phone}
+          className={linkClass}
+          tooltipBgClass="bg-white"
+          tooltipTextClass="text-[#1a2e2a]"
+        />
       )}
       {linkedin && (
         <a

@@ -3,8 +3,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { 
   Heart, 
   Download, 
-  Mail, 
-  Phone, 
+  Mail,
   Linkedin, 
   Instagram,
   Facebook,
@@ -15,6 +14,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import Arrow from '../Arrow/Arrow'
+import CopyableContactLink from '../CopyableContactLink'
 import { CustomHtml } from '../CustomHtml/CustomHtml'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
@@ -88,14 +88,18 @@ const AgentCard = ({
 
         <div className="flex gap-4 mt-3">
           {email && (
-            <a href={`mailto:${email}`} className="flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-black">
-              <Mail className="w-4 h-4" /> Email
-            </a>
+            <CopyableContactLink
+              type="email"
+              value={email}
+              className="flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-black"
+            />
           )}
           {phone && (
-            <a href={`tel:${phone}`} className="flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-black">
-              <Phone className="w-4 h-4" /> Phone
-            </a>
+            <CopyableContactLink
+              type="phone"
+              value={phone}
+              className="flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-black"
+            />
           )}
           {linkedin && (
             <a href={linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-black">
