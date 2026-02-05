@@ -94,7 +94,7 @@ export default function SplitSection({ block }: SplitSectionProps) {
           )}
 
           {(buttonText && buttonHref) || (linkText && linkHref) ? (
-            <div className="pt-2 sm:pt-3 md:pt-4 flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+            <div className="pt-10 flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
               {buttonText && buttonHref && (
                 <PrimaryButton
                   href={buttonHref}
