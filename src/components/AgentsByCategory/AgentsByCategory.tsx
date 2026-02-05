@@ -257,7 +257,7 @@ export default function AgentsByCategory({ block }: AgentsByCategoryProps) {
                     <div className="flex-grow">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
                         {cat.agents.map((agent) => (
-                          <div key={agent.id} className="w-full">
+                          <div key={agent.id} className="w-full h-full">
                             <AgentCard
                               variant={isMobile ? "horizontal" : "vertical"}
                               name={agent.name}

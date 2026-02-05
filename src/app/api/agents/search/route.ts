@@ -14,8 +14,8 @@ export async function GET(request: Request) {
     
     // Filters
     const searchQuery = searchParams.get('search') || ''
-    const specialtyId = searchParams.get('specialty')
-    const servingLocationId = searchParams.get('servingLocation')
+    const specialtyName = searchParams.get('specialty')
+    const regionName = searchParams.get('region')
     
     // Pagination defaults
     const limit = limitParam ? parseInt(limitParam, 10) : 12
@@ -25,6 +25,42 @@ export async function GET(request: Request) {
     const page = Math.floor(offset / limit) + 1
     
     const payload = await getPayload({ config })
+    
+    // Fetch filter options (specialties and serving locations)
+    const [specialtiesResult, locationsResult] = await Promise.all([
+      payload.find({
+        collection: 'specialties',
+        limit: 1000,
+        sort: 'name',
+      }),
+      payload.find({
+        collection: 'serving-locations',
+        limit: 1000,
+        sort: 'name',
+      }),
+    ])
+    
+    // Look up IDs from names (case-insensitive)
+    let specialtyId: string | null = null
+    let servingLocationId: string | null = null
+    
+    if (specialtyName) {
+      const match = specialtiesResult.docs.find(
+        (s) => s.name.toLowerCase() === specialtyName.toLowerCase()
+      )
+      if (match) {
+        specialtyId = match.id
+      }
+    }
+    
+    if (regionName) {
+      const match = locationsResult.docs.find(
+        (l) => l.name.toLowerCase() === regionName.toLowerCase()
+      )
+      if (match) {
+        servingLocationId = match.id
+      }
+    }
     
     // Build where clause
     const whereConditions: any[] = []
@@ -73,20 +109,6 @@ export async function GET(request: Request) {
       depth: 2, // Populate relationships
       sort: 'fullName',
     })
-    
-    // Fetch filter options (specialties and serving locations)
-    const [specialtiesResult, locationsResult] = await Promise.all([
-      payload.find({
-        collection: 'specialties',
-        limit: 1000,
-        sort: 'name',
-      }),
-      payload.find({
-        collection: 'serving-locations',
-        limit: 1000,
-        sort: 'name',
-      }),
-    ])
     
     const specialties = specialtiesResult.docs.map((s) => ({
       id: s.id,

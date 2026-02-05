@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Search, ChevronDown } from 'lucide-react'
 import type { Page } from '@/payload-types'
 import AgentCard from '../AgentCard/AgentCard'
@@ -30,9 +31,12 @@ interface AgentDirectoryProps {
 }
 
 export default function AgentDirectory({ block }: AgentDirectoryProps) {
+  const searchParams = useSearchParams()
+  
+  // Initialize state from URL parameters (using names)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
-  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null)
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(() => searchParams.get('region'))
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(() => searchParams.get('specialty'))
   const [isMobile, setIsMobile] = useState(false)
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(false)
@@ -89,7 +93,7 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
       }
 
       if (selectedRegion) {
-        params.append('servingLocation', selectedRegion)
+        params.append('region', selectedRegion)
       }
 
       const response = await fetch(`/api/agents/search?${params.toString()}`)
@@ -179,13 +183,8 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, selectedSpecialty, selectedRegion])
 
-  const selectedRegionName = selectedRegion 
-    ? servingLocations.find(l => l.id === selectedRegion)?.name || 'Region'
-    : 'Region'
-
-  const selectedSpecialtyName = selectedSpecialty
-    ? specialties.find(s => s.id === selectedSpecialty)?.name || 'Specialty'
-    : 'Specialty'
+  const selectedRegionName = selectedRegion || 'Region'
+  const selectedSpecialtyName = selectedSpecialty || 'Specialty'
 
   return (
     <div className="w-full py-12 md:py-16 px-4 md:px-8 bg-white">
@@ -247,7 +246,7 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
                         <button
                           key={location.id}
                           onClick={() => {
-                            setSelectedRegion(location.id)
+                            setSelectedRegion(location.name)
                             setShowRegionDropdown(false)
                           }}
                           className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
@@ -292,7 +291,7 @@ export default function AgentDirectory({ block }: AgentDirectoryProps) {
                         <button
                           key={specialty.id}
                           onClick={() => {
-                            setSelectedSpecialty(specialty.id)
+                            setSelectedSpecialty(specialty.name)
                             setShowSpecialtyDropdown(false)
                           }}
                           className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"

@@ -38,9 +38,9 @@ export default function AgentCard({
 
   if (isVertical) {
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col h-full">
         {/* Agent Image with Service Tags Overlay */}
-        <div className="relative w-full aspect-square bg-gray-300 rounded-sm overflow-hidden mb-4">
+        <div className="relative w-full aspect-square bg-gray-300 rounded-[16px] overflow-hidden mb-4">
           {image && (
             <Image
               src={image}
@@ -103,8 +103,11 @@ export default function AgentCard({
           )}
         </div>
 
+        {/* Spacer to push View Bio to bottom */}
+        <div className="flex-grow" />
+
         {/* View Bio Link */}
-        <Link href={agentHref} className="flex items-center gap-1 text-sm font-semibold text-[#1C2B28] hover:opacity-70 group mt-auto">
+        <Link href={agentHref} className="mt-8 flex items-center gap-1 text-sm font-semibold text-[#1C2B28] hover:opacity-70 group">
           View Bio
           <Arrow direction="right" size="w-4 h-4" className="transition-transform group-hover:translate-x-1" />
         </Link>
@@ -116,7 +119,7 @@ export default function AgentCard({
   return (
     <div className="flex gap-4 mb-6">
       {/* Agent Image Placeholder */}
-      <div className="relative w-24 h-24 bg-gray-300 rounded-sm flex-shrink-0 overflow-hidden">
+      <div className="relative w-24 h-24 bg-gray-300 rounded-[16px] flex-shrink-0 overflow-hidden">
         {image && (
           <Image
             src={image}
