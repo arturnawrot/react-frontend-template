@@ -227,14 +227,14 @@ export default function PropertySearch({ block }: PropertySearchProps) {
                   <Loader2 className="h-4 w-4 text-stone-600 animate-spin" />
                 )}
               </div>
-              <div className="flex gap-2 items-center">
+              {/* <div className="flex gap-2 items-center">
                  <div className="hidden sm:flex bg-white rounded border border-stone-200 p-1">
                    <button className="p-1 hover:bg-stone-100 rounded text-stone-600"><List size={18} /></button>
                    <button className="p-1 hover:bg-stone-100 rounded text-stone-400"><Grid size={18} /></button>
                  </div>
                  <button className="text-xs font-medium bg-stone-100 px-3 py-1.5 rounded hover:bg-stone-200 text-stone-600">Last Updated</button>
                  <button className="p-1.5 hover:bg-stone-100 rounded text-stone-600 border border-transparent hover:border-stone-200"><Share2 size={16} /></button>
-              </div>
+              </div> */}
             </div>
 
             {/* Cards Stack - Fixed height container, no scrolling */}

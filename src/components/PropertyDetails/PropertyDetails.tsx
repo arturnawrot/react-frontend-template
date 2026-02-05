@@ -3,10 +3,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { 
   Heart, 
   Download, 
-  Mail,
   Linkedin, 
-  Instagram,
-  Facebook,
   X,
   Maximize2,
 } from 'lucide-react'
@@ -16,6 +13,7 @@ import dynamic from 'next/dynamic'
 import Arrow from '../Arrow/Arrow'
 import CopyableContactLink from '../CopyableContactLink'
 import { CustomHtml } from '../CustomHtml/CustomHtml'
+import ShareButtons from '../ShareButtons/ShareButtons'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getPropertyTypeLabel } from '@/utils/property-types'
@@ -752,13 +750,13 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
 
           {/* Social Share */}
           <div className="flex items-center justify-between mt-8">
-            <span className="text-sm font-medium text-gray-900">Share</span>
-            <div className="flex gap-4 text-gray-800">
-              <Linkedin className="w-6 h-6 cursor-pointer hover:text-black" />
-              <Instagram className="w-6 h-6 cursor-pointer hover:text-black" />
-              <Facebook className="w-6 h-6 cursor-pointer hover:text-black" />
-              <Mail className="w-6 h-6 cursor-pointer hover:text-black" />
-            </div>
+            <ShareButtons 
+              title={address}
+              description={`${address}${cityStateZip ? `, ${cityStateZip}` : ''} - ${price}`}
+              showLabel={true}
+              iconSize={24}
+              className="w-full justify-between"
+            />
           </div>
 
         </div>

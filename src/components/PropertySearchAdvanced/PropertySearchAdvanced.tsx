@@ -1120,7 +1120,7 @@ export default function PropertySearchAdvanced({
               <h2 className="text-lg font-medium text-stone-700 text-white">
                 {propertiesCountText}
               </h2>
-              <div className="flex gap-2 items-center">
+              {/* <div className="flex gap-2 items-center">
                  <div className="hidden sm:flex bg-white rounded border border-stone-300 p-1">
                    <button className="p-1.5 hover:bg-stone-100 rounded text-stone-600"><List size={18} /></button>
                    <button className="p-1.5 bg-stone-100 rounded text-stone-800 shadow-sm"><Grid size={18} /></button>
@@ -1129,7 +1129,7 @@ export default function PropertySearchAdvanced({
                     <RotateCcw size={12}/> Last Updated
                  </button>
                  <button className="p-2 hover:bg-stone-100 rounded-full text-stone-600 border border-stone-200"><Share2 size={16} /></button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
