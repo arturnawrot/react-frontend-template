@@ -131,7 +131,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
 
   // Get property images
   const images = property.photos && property.photos.length > 0 
-    ? property.photos.map(photo => photo.formats?.large || photo.url || photo.original_file_url)
+    ? property.photos.map(photo => photo.formats?.xlarge || photo.url || photo.original_file_url)
     : []
 
   // Format address
