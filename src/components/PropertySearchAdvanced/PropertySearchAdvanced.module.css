@@ -1,0 +1,33 @@
+.searchInput {
+  background-color: var(--base-white);
+  border-radius: 4px;
+  font-family: "GT America Condensed", sans-serif;
+  font-weight: 400;
+  font-size: var(--m);
+  line-height: 21px;
+}
+
+.searchInput::placeholder {
+  font-family: "GT America Condensed", sans-serif;
+  font-weight: 400;
+  font-size: var(--m);
+  line-height: 21px;
+}
+
+.filterButton {
+  background-color: var(--base-white2);
+  border-radius: 4px;
+  font-family: "GT America Condensed", sans-serif;
+  font-size: var(--m);
+  line-height: 21px;
+}
+
+.resetButton {
+  background-color: transparent;
+  border: 1px solid var(--base-white2);
+  border-radius: 4px;
+  font-family: "GT America Condensed", sans-serif;
+  font-size: var(--m);
+  line-height: 21px;
+  font-weight: 400;
+}

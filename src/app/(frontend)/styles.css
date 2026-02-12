@@ -17,6 +17,8 @@
 
   --strong-green: #1C2F29;
   --sale-green: #DAE684;
+  --base-white: rgba(233, 229, 221, 1);
+  --base-white2: rgba(215, 209, 196, 1);
 
   /* FlippedM component variables */
   --flippedMHeadingSize: var(--display4);

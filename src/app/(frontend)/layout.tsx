@@ -6,6 +6,10 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { HashNavigation } from '@/components/HashNavigation'
+import { PasswordGate } from '@/components/PasswordGate'
+import { getPayload } from 'payload'
+import payloadConfig from '@/payload.config'
+import { cookies } from 'next/headers'
 
 // Prevent FontAwesome from auto-adding CSS (we're using SVG core)
 config.autoAddCss = false
@@ -23,6 +27,37 @@ export const metadata = {
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
+
+  // Check if user is unlocked via HTTP-only cookie
+  const cookieStore = await cookies()
+  const isUnlocked = cookieStore.get('meybohm_site_unlocked')?.value === 'true'
+
+  // Fetch site lock settings (excluding password - never sent to client)
+  let siteLockSettings: {
+    enabled?: boolean | null
+    lockScreenTitle?: string | null
+    lockScreenMessage?: string | null
+    excludedPages?: Array<{ slug: string } | string> | null
+  } | null = null
+
+  try {
+    const payload = await getPayload({ config: payloadConfig })
+    const fullSettings = await payload.findGlobal({
+      slug: 'siteLock',
+      depth: 1, // Get page slugs for excluded pages
+    })
+    
+    // Only pass safe settings to client (NO PASSWORD)
+    siteLockSettings = {
+      enabled: fullSettings.enabled,
+      lockScreenTitle: fullSettings.lockScreenTitle,
+      lockScreenMessage: fullSettings.lockScreenMessage,
+      excludedPages: fullSettings.excludedPages as Array<{ slug: string } | string> | null,
+    }
+  } catch (error) {
+    // If fetch fails, don't block the site - just disable the lock
+    console.error('Failed to fetch site lock settings:', error)
+  }
 
   return (
     <html lang="en">
@@ -61,7 +96,9 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         {/* Font Awesome Pro Kit */}
         <Script src="/fontawesome/js/all.min.js" strategy="afterInteractive" />
         <HashNavigation />
-        <main>{children}</main>
+        <PasswordGate siteLockSettings={siteLockSettings} isUnlocked={isUnlocked}>
+          <main>{children}</main>
+        </PasswordGate>
       </body>
     </html>
   )

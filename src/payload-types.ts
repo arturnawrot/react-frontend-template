@@ -115,6 +115,7 @@ export interface Config {
     navbar: Navbar;
     footer: Footer;
     siteSettings: SiteSetting;
+    siteLock: SiteLock;
     featuredPropertiesSets: FeaturedPropertiesSet;
     featuredAgentsSets: FeaturedAgentsSet;
     agentIconsSets: AgentIconsSet;
@@ -133,6 +134,7 @@ export interface Config {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    siteLock: SiteLockSelect<false> | SiteLockSelect<true>;
     featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
     featuredAgentsSets: FeaturedAgentsSetsSelect<false> | FeaturedAgentsSetsSelect<true>;
     agentIconsSets: AgentIconsSetsSelect<false> | AgentIconsSetsSelect<true>;
@@ -7000,6 +7002,37 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
+ * Password protect the entire site while allowing specific pages to be accessible
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteLock".
+ */
+export interface SiteLock {
+  id: string;
+  /**
+   * When enabled, visitors must enter a password to access the site
+   */
+  enabled?: boolean | null;
+  /**
+   * The password required to access the locked site
+   */
+  password?: string | null;
+  /**
+   * Title displayed on the lock screen
+   */
+  lockScreenTitle?: string | null;
+  /**
+   * Message displayed on the lock screen
+   */
+  lockScreenMessage?: string | null;
+  /**
+   * Select pages that should be accessible without a password. All other pages will be locked.
+   */
+  excludedPages?: (string | Page)[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Create and manage sets of featured properties. Each set can contain up to 4 properties and can be assigned to agents.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -7590,6 +7623,20 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         defaultSpacing?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteLock_select".
+ */
+export interface SiteLockSelect<T extends boolean = true> {
+  enabled?: T;
+  password?: T;
+  lockScreenTitle?: T;
+  lockScreenMessage?: T;
+  excludedPages?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -10,6 +10,7 @@ import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
 import { buildFilterParams as buildFilterParamsUtil } from '@/utils/filter-params'
 import LocationSearchSuggestion, { type AddressSuggestion } from '@/components/LocationSearchSuggestion/LocationSearchSuggestion'
 import { PropertyType, getPropertyTypeLabel } from '@/utils/property-types'
+import styles from './PropertySearchAdvanced.module.css'
 
 // Dynamically import PropertyMap with SSR disabled
 const PropertyMap = dynamic(() => import('../PropertyMap/PropertyMap'), {
@@ -645,7 +646,7 @@ export default function PropertySearchAdvanced({
                   showSearchIcon={true}
                   searchIconClassName="text-stone-500"
                   wrapperClassName=""
-                  inputClassName="block w-full pr-4 py-3 border-none rounded bg-[#EBEBE8] text-stone-900 placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-[#CDDC39] text-sm font-medium"
+                  inputClassName={`block w-full pr-4 py-3 border-none text-stone-900 placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-[#CDDC39] ${styles.searchInput}`}
                 />
               </div>
 
@@ -655,7 +656,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['brokers'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'brokers' ? null : 'brokers')}
-                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[200px]"
+                    className={`flex items-center justify-between gap-2 text-stone-900 px-4 py-3 transition-colors min-w-[120px] max-w-[200px] ${styles.filterButton}`}
                   >
                     <span className="truncate">{getFilterLabel('brokerId')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -685,7 +686,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['propertyType'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'propertyType' ? null : 'propertyType')}
-                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
+                    className={`flex items-center justify-between gap-2 text-stone-900 px-4 py-3 transition-colors min-w-[120px] max-w-[180px] ${styles.filterButton}`}
                   >
                     <span className="truncate">{getFilterLabel('propertyType')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -715,7 +716,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['priceRange'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'priceRange' ? null : 'priceRange')}
-                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
+                    className={`flex items-center justify-between gap-2 text-stone-900 px-4 py-3 transition-colors min-w-[120px] max-w-[180px] ${styles.filterButton}`}
                   >
                     <span className="truncate">{getFilterLabel('minPrice')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -751,7 +752,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['saleOrLease'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'saleOrLease' ? null : 'saleOrLease')}
-                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[150px]"
+                    className={`flex items-center justify-between gap-2 text-stone-900 px-4 py-3 transition-colors min-w-[120px] max-w-[150px] ${styles.filterButton}`}
                   >
                     <span className="truncate">{getFilterLabel('saleOrLease')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -784,7 +785,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['capRate'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'capRate' ? null : 'capRate')}
-                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[150px]"
+                    className={`flex items-center justify-between gap-2 text-stone-900 px-4 py-3 transition-colors min-w-[120px] max-w-[150px] ${styles.filterButton}`}
                   >
                     <span className="truncate">{getFilterLabel('minCapRate')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -820,7 +821,7 @@ export default function PropertySearchAdvanced({
                 <div className="relative" ref={(el) => { dropdownRefs.current['squareFootage'] = el }}>
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'squareFootage' ? null : 'squareFootage')}
-                    className="flex items-center justify-between gap-2 bg-[#1C2B28] hover:bg-[#2A3D38] text-white px-4 py-3 rounded text-sm font-semibold transition-colors min-w-[120px] max-w-[180px]"
+                    className={`flex items-center justify-between gap-2 text-stone-900 px-4 py-3 transition-colors min-w-[120px] max-w-[180px] ${styles.filterButton}`}
                   >
                     <span className="truncate">{getFilterLabel('minSquareFootage')}</span>
                     <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
@@ -854,7 +855,7 @@ export default function PropertySearchAdvanced({
                  
                 <button 
                   onClick={handleResetFilters}
-                  className="whitespace-nowrap bg-transparent border border-white/30 hover:border-white text-white hover:text-white px-6 py-3 rounded text-sm font-medium ml-auto xl:ml-2 transition-colors"
+                  className={`whitespace-nowrap text-white hover:opacity-80 px-6 py-3 ml-auto xl:ml-2 transition-colors ${styles.resetButton}`}
                 >
                   Reset Filters
                 </button>
@@ -873,7 +874,7 @@ export default function PropertySearchAdvanced({
                 
                 <button 
                   onClick={handleResetFilters}
-                  className="whitespace-nowrap bg-transparent border border-white/30 hover:border-white text-white hover:text-white px-4 py-3 rounded text-sm font-medium transition-colors"
+                  className={`whitespace-nowrap text-white hover:opacity-80 px-4 py-3 transition-colors ${styles.resetButton}`}
                 >
                   Reset
                 </button>
