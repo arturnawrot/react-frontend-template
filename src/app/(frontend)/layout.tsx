@@ -7,9 +7,11 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { HashNavigation } from '@/components/HashNavigation'
 import { PasswordGate } from '@/components/PasswordGate'
+import { HeadScripts, HeadTags, BodyScripts } from '@/components/ScriptInjection'
 import { getPayload } from 'payload'
 import payloadConfig from '@/payload.config'
 import { cookies } from 'next/headers'
+import type { ScriptInjection } from '@/payload-types'
 
 // Prevent FontAwesome from auto-adding CSS (we're using SVG core)
 config.autoAddCss = false
@@ -40,12 +42,20 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
     excludedPages?: Array<{ slug: string } | string> | null
   } | null = null
 
+  // Fetch script injection settings
+  let scriptInjection: ScriptInjection | null = null
+
   try {
     const payload = await getPayload({ config: payloadConfig })
-    const fullSettings = await payload.findGlobal({
-      slug: 'siteLock',
-      depth: 1, // Get page slugs for excluded pages
-    })
+    const [fullSettings, scripts] = await Promise.all([
+      payload.findGlobal({
+        slug: 'siteLock',
+        depth: 1, // Get page slugs for excluded pages
+      }),
+      payload.findGlobal({
+        slug: 'scriptInjection',
+      }),
+    ])
     
     // Only pass safe settings to client (NO PASSWORD)
     siteLockSettings = {
@@ -54,9 +64,11 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
       lockScreenMessage: fullSettings.lockScreenMessage,
       excludedPages: fullSettings.excludedPages as Array<{ slug: string } | string> | null,
     }
+    
+    scriptInjection = scripts
   } catch (error) {
     // If fetch fails, don't block the site - just disable the lock
-    console.error('Failed to fetch site lock settings:', error)
+    console.error('Failed to fetch site settings:', error)
   }
 
   return (
@@ -91,14 +103,22 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
             `,
           }}
         />
+        {/* Custom head tags from CMS (meta, link, style) */}
+        <HeadTags tags={scriptInjection?.headTags} />
+        {/* Custom head scripts from CMS */}
+        <HeadScripts scripts={scriptInjection?.headScripts} />
       </head>
       <body>
+        {/* Custom body start scripts from CMS */}
+        <BodyScripts scripts={scriptInjection?.bodyStartScripts} position="start" />
         {/* Font Awesome Pro Kit */}
         <Script src="/fontawesome/js/all.min.js" strategy="afterInteractive" />
         <HashNavigation />
         <PasswordGate siteLockSettings={siteLockSettings} isUnlocked={isUnlocked}>
           <main>{children}</main>
         </PasswordGate>
+        {/* Custom body end scripts from CMS */}
+        <BodyScripts scripts={scriptInjection?.bodyEndScripts} position="end" />
       </body>
     </html>
   )

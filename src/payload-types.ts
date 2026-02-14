@@ -116,6 +116,7 @@ export interface Config {
     footer: Footer;
     siteSettings: SiteSetting;
     siteLock: SiteLock;
+    scriptInjection: ScriptInjection;
     featuredPropertiesSets: FeaturedPropertiesSet;
     featuredAgentsSets: FeaturedAgentsSet;
     agentIconsSets: AgentIconsSet;
@@ -135,6 +136,7 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     siteLock: SiteLockSelect<false> | SiteLockSelect<true>;
+    scriptInjection: ScriptInjectionSelect<false> | ScriptInjectionSelect<true>;
     featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
     featuredAgentsSets: FeaturedAgentsSetsSelect<false> | FeaturedAgentsSetsSelect<true>;
     agentIconsSets: AgentIconsSetsSelect<false> | AgentIconsSetsSelect<true>;
@@ -7033,6 +7035,126 @@ export interface SiteLock {
   createdAt?: string | null;
 }
 /**
+ * Add custom scripts, meta tags, and HTML to your site. Useful for analytics, tracking pixels, chat widgets, and other third-party integrations.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scriptInjection".
+ */
+export interface ScriptInjection {
+  id: string;
+  /**
+   * Add scripts that should load in the head. For meta tags, use the "Head Tags" tab.
+   */
+  headScripts?:
+    | {
+        /**
+         * A descriptive name (e.g., "Google Analytics", "Facebook Pixel")
+         */
+        name: string;
+        /**
+         * Toggle this script on/off without deleting it
+         */
+        enabled?: boolean | null;
+        type: 'external' | 'inline';
+        /**
+         * The URL of the external script file
+         */
+        src?: string | null;
+        /**
+         * Paste your JavaScript code here (without <script> tags). Example: console.log("Hello");
+         */
+        code?: string | null;
+        /**
+         * When should this script load?
+         */
+        loadStrategy?: ('beforeInteractive' | 'afterInteractive' | 'lazyOnload') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add meta tags, link tags, or other head elements.
+   */
+  headTags?:
+    | {
+        /**
+         * A descriptive name (e.g., "Open Graph Tags", "Favicon")
+         */
+        name: string;
+        enabled?: boolean | null;
+        tagType: 'meta' | 'link' | 'raw';
+        /**
+         * The name or property attribute (e.g., "description", "og:title")
+         */
+        metaName?: string | null;
+        /**
+         * The content attribute value
+         */
+        metaContent?: string | null;
+        /**
+         * The rel attribute (e.g., "stylesheet", "preconnect", "icon")
+         */
+        linkRel?: string | null;
+        /**
+         * The href attribute (URL)
+         */
+        linkHref?: string | null;
+        /**
+         * Paste raw HTML tags here (e.g., <style>...</style>). Note: Not all HTML is valid in head.
+         */
+        rawHtml?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Scripts or HTML that load immediately after <body> opens. Common for noscript fallbacks.
+   */
+  bodyStartScripts?:
+    | {
+        /**
+         * A descriptive name for this content
+         */
+        name: string;
+        enabled?: boolean | null;
+        type: 'inline' | 'external';
+        /**
+         * Paste your HTML here (e.g., <noscript>...</noscript>)
+         */
+        code?: string | null;
+        /**
+         * The URL of the external script file
+         */
+        src?: string | null;
+        loadStrategy?: ('beforeInteractive' | 'afterInteractive' | 'lazyOnload') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Scripts or HTML at the end of the page. Best for non-critical scripts like chat widgets.
+   */
+  bodyEndScripts?:
+    | {
+        /**
+         * A descriptive name for this content
+         */
+        name: string;
+        enabled?: boolean | null;
+        type: 'inline' | 'external';
+        /**
+         * Paste your HTML or script tags here
+         */
+        code?: string | null;
+        /**
+         * The URL of the external script file
+         */
+        src?: string | null;
+        loadStrategy?: ('afterInteractive' | 'lazyOnload') | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Create and manage sets of featured properties. Each set can contain up to 4 properties and can be assigned to agents.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -7637,6 +7759,61 @@ export interface SiteLockSelect<T extends boolean = true> {
   lockScreenTitle?: T;
   lockScreenMessage?: T;
   excludedPages?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scriptInjection_select".
+ */
+export interface ScriptInjectionSelect<T extends boolean = true> {
+  headScripts?:
+    | T
+    | {
+        name?: T;
+        enabled?: T;
+        type?: T;
+        src?: T;
+        code?: T;
+        loadStrategy?: T;
+        id?: T;
+      };
+  headTags?:
+    | T
+    | {
+        name?: T;
+        enabled?: T;
+        tagType?: T;
+        metaName?: T;
+        metaContent?: T;
+        linkRel?: T;
+        linkHref?: T;
+        rawHtml?: T;
+        id?: T;
+      };
+  bodyStartScripts?:
+    | T
+    | {
+        name?: T;
+        enabled?: T;
+        type?: T;
+        code?: T;
+        src?: T;
+        loadStrategy?: T;
+        id?: T;
+      };
+  bodyEndScripts?:
+    | T
+    | {
+        name?: T;
+        enabled?: T;
+        type?: T;
+        code?: T;
+        src?: T;
+        loadStrategy?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

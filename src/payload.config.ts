@@ -38,6 +38,7 @@ import { AvailableJobSets } from './globals/AvailableJobSets'
 import { OfficeLocationSets } from './globals/OfficeLocationSets'
 import { ConstantLinks } from './globals/ConstantLinks'
 import { SiteLock } from './globals/SiteLock'
+import { ScriptInjection } from './globals/ScriptInjection'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -61,7 +62,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, PageSEO, CSSStyles, CustomHTML, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
-  globals: [Navbar, Footer, SiteSettings, SiteLock, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets, FAQFullPage, AgentCategories, BlogHighlights, AvailableJobSets, OfficeLocationSets, ConstantLinks],
+  globals: [Navbar, Footer, SiteSettings, SiteLock, ScriptInjection, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets, FAQFullPage, AgentCategories, BlogHighlights, AvailableJobSets, OfficeLocationSets, ConstantLinks],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
