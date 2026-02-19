@@ -32,5 +32,10 @@
     line-height: 21px;
     font-size: 14px;
     color: #FAF9F7;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: var(--sale-green);
+    }
 }
 
