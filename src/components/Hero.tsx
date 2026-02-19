@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Menu, X, Linkedin } from 'lucide-react'
-import Navbar, { type NavbarLink } from './Navbar/Navbar'
+import Navbar from './Navbar/Navbar'
+import type { NavbarLinkWithDropdown } from '@/utils/navbar'
 import CollapsingMenuMobile from './CollapsingMenuMobile/CollapsingMenuMobile'
 import PrimaryButton from './PrimaryButton/PrimaryButton'
 import SecondaryButton from './PrimaryButton/SecondaryButton'
@@ -27,8 +28,9 @@ type HeadingSegment = {
 
 type HeroProps = {
   block: HeroBlock
-  upperLinks?: NavbarLink[]
-  mainLinks?: NavbarLink[]
+  upperLinks?: NavbarLinkWithDropdown[]
+  mainLinks?: NavbarLinkWithDropdown[]
+  dropdownQuote?: import('@/utils/navbar').DropdownQuote
   constantLinksMap?: ConstantLinksMap
 }
 
@@ -350,6 +352,7 @@ const BlogLayout = (
     setMenuOpen,
     upperLinks,
     mainLinks,
+    dropdownQuote,
   } = props
 
   const formattedDate = blogDate
@@ -369,7 +372,7 @@ const BlogLayout = (
   return (
     <div className="relative w-full bg-[var(--strong-green)] text-white overflow-hidden min-h-screen lg:min-h-0">
       <div className="absolute inset-x-0 top-0 z-30">
-        <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
+        <Navbar upperLinks={upperLinks} mainLinks={mainLinks} dropdownQuote={dropdownQuote} />
       </div>
 
       <div className="container mx-auto px-6 pt-[120px] pb-16 md:py-20 md:pt-[220px]">
@@ -461,6 +464,7 @@ const SideBySideLayout = (
     setMenuOpen,
     upperLinks,
     mainLinks,
+    dropdownQuote,
   } = props
 
   const containerBg = 'bg-[var(--strong-green)]'
@@ -472,7 +476,7 @@ const SideBySideLayout = (
   return (
     <div className={`relative w-full ${containerBg}`}>
       <div className="absolute inset-x-0 top-0 z-30">
-        <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
+        <Navbar upperLinks={upperLinks} mainLinks={mainLinks} dropdownQuote={dropdownQuote} />
       </div>
 
       <div className="relative w-full flex flex-col md:flex-row">
@@ -568,6 +572,7 @@ const CenteredLayout = (
     setMenuOpen,
     upperLinks,
     mainLinks,
+    dropdownQuote,
   } = props
 
   const [videoReady, setVideoReady] = useState(false)
@@ -647,7 +652,7 @@ const CenteredLayout = (
         {!isFullWidthColor && <div className="absolute inset-0 bg-[#1C2F2980]" />}
 
         <div className="relative z-10 flex flex-col h-full pb-10 w-full">
-          <Navbar upperLinks={upperLinks} mainLinks={mainLinks} />
+          <Navbar upperLinks={upperLinks} mainLinks={mainLinks} dropdownQuote={dropdownQuote} />
 
           <div className={`${!isFullWidthColor ? 'md:py-50' : ''} mt-10 md:mt-0 md:flex-1 md:flex md:flex-col md:items-center md:justify-center px-6 flex flex-col items-start md:items-center text-left md:text-center gap-6 mx-auto max-w-md md:max-w-none`}>
             <HeroHeader 
@@ -687,7 +692,7 @@ const CenteredLayout = (
   )
 }
 
-export default function Hero({ block, upperLinks = [], mainLinks = [], constantLinksMap }: HeroProps) {
+export default function Hero({ block, upperLinks = [], mainLinks = [], dropdownQuote, constantLinksMap }: HeroProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const content = resolveHeroContent(block, constantLinksMap)
   const isSideBySide = content.isSplit || content.isAgent
@@ -705,6 +710,7 @@ export default function Hero({ block, upperLinks = [], mainLinks = [], constantL
           setMenuOpen={setMenuOpen}
           upperLinks={upperLinks}
           mainLinks={mainLinks}
+          dropdownQuote={dropdownQuote}
         />
       ) : isSideBySide ? (
         <SideBySideLayout
@@ -714,6 +720,7 @@ export default function Hero({ block, upperLinks = [], mainLinks = [], constantL
           setMenuOpen={setMenuOpen}
           upperLinks={upperLinks}
           mainLinks={mainLinks}
+          dropdownQuote={dropdownQuote}
         />
       ) : (
         <CenteredLayout
@@ -723,6 +730,7 @@ export default function Hero({ block, upperLinks = [], mainLinks = [], constantL
           setMenuOpen={setMenuOpen}
           upperLinks={upperLinks}
           mainLinks={mainLinks}
+          dropdownQuote={dropdownQuote}
         />
       )}
       <CollapsingMenuMobile open={menuOpen} onClose={() => setMenuOpen(false)} mainLinks={mainLinks} />

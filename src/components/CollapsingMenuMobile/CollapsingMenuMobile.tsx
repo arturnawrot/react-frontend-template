@@ -5,7 +5,7 @@ import { X } from 'lucide-react'
 import {
   CollapsingMenuMobileLink,
 } from '../NavbarLink/NavbarLink'
-import type { NavbarLink } from '../Navbar/Navbar'
+import type { NavbarLinkWithDropdown } from '@/utils/navbar'
 import LocationSearchSuggestion, { type AddressSuggestion } from '../LocationSearchSuggestion/LocationSearchSuggestion'
 import styles from './CollapsingMenuMobile.module.scss'
 
@@ -16,7 +16,7 @@ export default function CollapsingMenuMobile({
 }: {
   open: boolean
   onClose: () => void
-  mainLinks?: NavbarLink[]
+  mainLinks?: NavbarLinkWithDropdown[]
 }) {
   const [searchValue, setSearchValue] = useState('')
 

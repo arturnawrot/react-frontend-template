@@ -7232,7 +7232,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Configure the navigation bar links
+ * Configure the navigation bar links and dropdown menus
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar".
@@ -7240,7 +7240,22 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Navbar {
   id: string;
   /**
-   * Links shown in the top bar (e.g., Schedule, Contact Us, Login)
+   * Quote displayed in the left side of dropdown panels
+   */
+  dropdownQuote?: {
+    /**
+     * The main quote text (without quotation marks)
+     */
+    text?: string | null;
+    /**
+     * Part of the quote to highlight in green (must be exact match within quote)
+     */
+    highlightedText?: string | null;
+    author?: string | null;
+    company?: string | null;
+  };
+  /**
+   * Links shown in the top bar (e.g., Search, Schedule, Contact Us, Login)
    */
   upperLinks?:
     | {
@@ -7257,6 +7272,47 @@ export interface Navbar {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Enable dropdown menu on hover (e.g., for Search)
+         */
+        hasDropdown?: boolean | null;
+        /**
+         * Configure columns for the dropdown menu
+         */
+        dropdownColumns?:
+          | {
+              /**
+               * e.g., "Needs", "Property Types", "Frequently Used Links"
+               */
+              columnName: string;
+              links?:
+                | {
+                    label: string;
+                    linkType: 'page' | 'custom';
+                    page?: (string | null) | Page;
+                    /**
+                     * Enter a custom URL (e.g., /services, https://example.com)
+                     */
+                    customUrl?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              /**
+               * Optional "See All..." link at the bottom of the column
+               */
+              bottomLink?: {
+                enabled?: boolean | null;
+                /**
+                 * e.g., "See All Property Types"
+                 */
+                label?: string | null;
+                linkType?: ('page' | 'custom') | null;
+                page?: (string | null) | Page;
+                customUrl?: string | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -7278,6 +7334,47 @@ export interface Navbar {
          * Enter a custom URL (e.g., /buy, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Enable dropdown menu on hover
+         */
+        hasDropdown?: boolean | null;
+        /**
+         * Configure columns for the dropdown menu
+         */
+        dropdownColumns?:
+          | {
+              /**
+               * e.g., "Needs", "Property Types", "Frequently Used Links"
+               */
+              columnName: string;
+              links?:
+                | {
+                    label: string;
+                    linkType: 'page' | 'custom';
+                    page?: (string | null) | Page;
+                    /**
+                     * Enter a custom URL (e.g., /services, https://example.com)
+                     */
+                    customUrl?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              /**
+               * Optional "See All..." link at the bottom of the column
+               */
+              bottomLink?: {
+                enabled?: boolean | null;
+                /**
+                 * e.g., "See All Property Types"
+                 */
+                label?: string | null;
+                linkType?: ('page' | 'custom') | null;
+                page?: (string | null) | Page;
+                customUrl?: string | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -8048,6 +8145,14 @@ export interface ConstantLink {
  * via the `definition` "navbar_select".
  */
 export interface NavbarSelect<T extends boolean = true> {
+  dropdownQuote?:
+    | T
+    | {
+        text?: T;
+        highlightedText?: T;
+        author?: T;
+        company?: T;
+      };
   upperLinks?:
     | T
     | {
@@ -8055,6 +8160,31 @@ export interface NavbarSelect<T extends boolean = true> {
         linkType?: T;
         page?: T;
         customUrl?: T;
+        hasDropdown?: T;
+        dropdownColumns?:
+          | T
+          | {
+              columnName?: T;
+              links?:
+                | T
+                | {
+                    label?: T;
+                    linkType?: T;
+                    page?: T;
+                    customUrl?: T;
+                    id?: T;
+                  };
+              bottomLink?:
+                | T
+                | {
+                    enabled?: T;
+                    label?: T;
+                    linkType?: T;
+                    page?: T;
+                    customUrl?: T;
+                  };
+              id?: T;
+            };
         id?: T;
       };
   mainLinks?:
@@ -8064,6 +8194,31 @@ export interface NavbarSelect<T extends boolean = true> {
         linkType?: T;
         page?: T;
         customUrl?: T;
+        hasDropdown?: T;
+        dropdownColumns?:
+          | T
+          | {
+              columnName?: T;
+              links?:
+                | T
+                | {
+                    label?: T;
+                    linkType?: T;
+                    page?: T;
+                    customUrl?: T;
+                    id?: T;
+                  };
+              bottomLink?:
+                | T
+                | {
+                    enabled?: T;
+                    label?: T;
+                    linkType?: T;
+                    page?: T;
+                    customUrl?: T;
+                  };
+              id?: T;
+            };
         id?: T;
       };
   updatedAt?: T;

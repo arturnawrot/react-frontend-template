@@ -5,3 +5,56 @@
     color: #FAF9F7 !important;
 }
 
+// Dark variant styles for when dropdown is active
+.upperNavbarLinkDark {
+    font-weight: 200;
+    line-height: 21px;
+    font-size: 14px;
+    color: var(--strong-green);
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: var(--sale-green);
+    }
+}
+
+.mainNavbarLinkDark {
+    font-family: "GT America Condensed", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 16px;
+    color: var(--strong-green);
+    white-space: nowrap;
+
+    @media (max-width: 1024px) {
+        font-size: 14px;
+        line-height: 14px;
+    }
+
+    @media (max-width: 900px) {
+        font-size: 13px;
+        line-height: 13px;
+    }
+}
+
+// Links with dropdown menus get an underline on hover to indicate interaction
+.hasDropdown {
+    position: relative;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: currentColor;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+    
+    &:hover::after {
+        opacity: 0.5;
+    }
+}
+

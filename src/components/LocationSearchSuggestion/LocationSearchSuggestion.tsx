@@ -20,7 +20,8 @@ interface LocationSearchSuggestionProps {
   className?: string
   inputClassName?: string
   label?: string
-  showSearchIcon?: boolean // Show search icon on the left
+  showSearchIcon?: boolean // Show search icon
+  searchIconPosition?: 'left' | 'right' // Position of search icon (default: left)
   searchIconClassName?: string // Custom styling for search icon
   wrapperClassName?: string // Custom wrapper div className (for positioning icon)
   handleRedirect?: boolean // Whether to handle redirect internally (default: true)
@@ -36,6 +37,7 @@ export default function LocationSearchSuggestion({
   inputClassName = '',
   label,
   showSearchIcon = false,
+  searchIconPosition = 'left',
   searchIconClassName = '',
   wrapperClassName = '',
   handleRedirect = true, // Default to handling redirect internally
@@ -218,7 +220,9 @@ export default function LocationSearchSuggestion({
       )}
       <div className={`relative ${wrapperClassName}`}>
         {showSearchIcon && (
-          <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-3">
+          <div className={`absolute inset-y-0 flex items-center pointer-events-none ${
+            searchIconPosition === 'right' ? 'right-0 pr-0' : 'left-0 pl-3'
+          }`}>
             <Search className={searchIconClassName || 'text-stone-500 w-5 h-5'} size={18} />
           </div>
         )}
@@ -230,7 +234,13 @@ export default function LocationSearchSuggestion({
           onFocus={handleInputFocus}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className={`w-full text-stone-700 placeholder-stone-400 focus:outline-none bg-transparent text-sm md:text-base ${inputClassName} ${showSearchIcon && !inputClassName.includes('pl-') ? 'pl-10' : ''}`}
+          className={`w-full text-stone-700 placeholder-stone-400 focus:outline-none bg-transparent text-sm md:text-base ${inputClassName} ${
+            showSearchIcon 
+              ? (searchIconPosition === 'right' 
+                  ? (!inputClassName.includes('pr-') ? 'pr-8' : '')
+                  : (!inputClassName.includes('pl-') ? 'pl-10' : ''))
+              : ''
+          }`}
         />
       </div>
 

@@ -11,8 +11,16 @@ interface HeroWrapperProps {
 }
 
 export default async function HeroWrapper({ block, constantLinksMap }: HeroWrapperProps) {
-  const { upperLinks, mainLinks } = await getNavbarLinks()
+  const { upperLinks, mainLinks, dropdownQuote } = await getNavbarLinks()
 
-  return <Hero block={block} upperLinks={upperLinks} mainLinks={mainLinks} constantLinksMap={constantLinksMap} />
+  return (
+    <Hero
+      block={block}
+      upperLinks={upperLinks}
+      mainLinks={mainLinks}
+      dropdownQuote={dropdownQuote}
+      constantLinksMap={constantLinksMap}
+    />
+  )
 }
 
