@@ -9,6 +9,7 @@ interface SecondaryButtonProps {
   openInNewTab?: boolean
   className?: string
   fullWidth?: boolean
+  disabled?: boolean
 }
 
 export default function SecondaryButton({
@@ -18,6 +19,7 @@ export default function SecondaryButton({
   openInNewTab = false,
   className = '',
   fullWidth = false,
+  disabled = false,
 }: SecondaryButtonProps) {
   const fullWidthClass = fullWidth ? styles.fullWidth : ''
   const combinedClassName = `${styles.button} ${fullWidthClass} ${className}`.trim()
@@ -29,6 +31,7 @@ export default function SecondaryButton({
       openInNewTab={openInNewTab}
       className={combinedClassName}
       fullWidth={fullWidth}
+      disabled={disabled}
     >
       {children}
     </BaseButton>

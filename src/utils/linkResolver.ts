@@ -186,3 +186,119 @@ export function shouldOpenInNewTab(linkData: {
 
   return false
 }
+
+/**
+ * Checks if a link is disabled (renders as non-clickable text)
+ * Supports both the new structure and legacy (defaults to false)
+ */
+export function isLinkDisabled(linkData: {
+  linkType?: 'none' | 'page' | 'custom' | 'constant'
+  disabled?: boolean
+  // Field prefixes for multiple links
+  ctaPrimaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaPrimaryDisabled?: boolean
+  ctaSecondaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaSecondaryDisabled?: boolean
+}): boolean {
+  // Check for prefixed fields first (for Hero CTAs)
+  if (linkData.ctaPrimaryLinkType && linkData.ctaPrimaryLinkType !== 'none') {
+    return linkData.ctaPrimaryDisabled || false
+  }
+  if (linkData.ctaSecondaryLinkType && linkData.ctaSecondaryLinkType !== 'none') {
+    return linkData.ctaSecondaryDisabled || false
+  }
+
+  // Check standard field
+  if (linkData.linkType && linkData.linkType !== 'none') {
+    return linkData.disabled || false
+  }
+
+  return false
+}
+
+/**
+ * Resolved link properties for rendering
+ */
+export interface ResolvedLink {
+  href: string | null
+  openInNewTab: boolean
+  disabled: boolean
+}
+
+/**
+ * Link data input type - supports all link field variations
+ */
+export type LinkData = {
+  linkType?: 'none' | 'page' | 'custom' | 'constant'
+  page?: string | { slug?: string; id?: string } | null
+  customUrl?: string | null
+  constantLink?: string | null
+  openInNewTab?: boolean
+  disabled?: boolean
+  // Field prefixes for multiple links
+  ctaPrimaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaPrimaryPage?: string | { slug?: string; id?: string } | null
+  ctaPrimaryCustomUrl?: string | null
+  ctaPrimaryConstantLink?: string | null
+  ctaPrimaryOpenInNewTab?: boolean
+  ctaPrimaryDisabled?: boolean
+  ctaSecondaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaSecondaryPage?: string | { slug?: string; id?: string } | null
+  ctaSecondaryCustomUrl?: string | null
+  ctaSecondaryConstantLink?: string | null
+  ctaSecondaryOpenInNewTab?: boolean
+  ctaSecondaryDisabled?: boolean
+  // Legacy support
+  href?: string | null
+  linkHref?: string | null
+  ctaHref?: string | null
+  ctaPrimaryLink?: string | null
+  ctaSecondaryLink?: string | null
+}
+
+/**
+ * Unified link resolver - returns all link properties in one call
+ * Use this instead of calling resolveLinkUrl, shouldOpenInNewTab, and isLinkDisabled separately
+ * 
+ * @example
+ * const link = resolveLink(block)
+ * // link = { href: '/about', openInNewTab: false, disabled: false }
+ * 
+ * <PrimaryButton href={link.href} openInNewTab={link.openInNewTab} disabled={link.disabled}>
+ *   Click me
+ * </PrimaryButton>
+ */
+export function resolveLink(
+  linkData: LinkData,
+  constantLinksMap?: ConstantLinksMap
+): ResolvedLink {
+  return {
+    href: resolveLinkUrl(linkData, constantLinksMap),
+    openInNewTab: shouldOpenInNewTab(linkData),
+    disabled: isLinkDisabled(linkData),
+  }
+}
+
+/**
+ * Resolves link with a specific field prefix
+ * Useful for blocks with multiple links (e.g., buttonLinkType, buttonPage, etc.)
+ * 
+ * @example
+ * const buttonLink = resolvePrefixedLink(block, 'button')
+ * // Reads buttonLinkType, buttonPage, buttonCustomUrl, buttonConstantLink, buttonOpenInNewTab, buttonDisabled
+ */
+export function resolvePrefixedLink(
+  data: Record<string, unknown>,
+  prefix: string,
+  constantLinksMap?: ConstantLinksMap
+): ResolvedLink {
+  const linkData: LinkData = {
+    linkType: data[`${prefix}LinkType`] as LinkData['linkType'],
+    page: data[`${prefix}Page`] as LinkData['page'],
+    customUrl: data[`${prefix}CustomUrl`] as LinkData['customUrl'],
+    constantLink: data[`${prefix}ConstantLink`] as LinkData['constantLink'],
+    openInNewTab: data[`${prefix}OpenInNewTab`] as boolean,
+    disabled: data[`${prefix}Disabled`] as boolean,
+  }
+  return resolveLink(linkData, constantLinksMap)
+}

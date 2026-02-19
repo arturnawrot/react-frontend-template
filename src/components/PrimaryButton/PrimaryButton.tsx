@@ -10,6 +10,7 @@ interface PrimaryButtonProps {
   className?: string
   fullWidth?: boolean
   variant?: 'default' | 'dark'
+  disabled?: boolean
 }
 
 export default function PrimaryButton({
@@ -20,6 +21,7 @@ export default function PrimaryButton({
   className = '',
   fullWidth = false,
   variant = 'default',
+  disabled = false,
 }: PrimaryButtonProps) {
   const variantClass = variant === 'dark' ? styles.buttonDark : styles.button
   const fullWidthClass = fullWidth ? styles.fullWidth : ''
@@ -32,6 +34,7 @@ export default function PrimaryButton({
       openInNewTab={openInNewTab}
       className={combinedClassName}
       fullWidth={fullWidth}
+      disabled={disabled}
     >
       {children}
     </BaseButton>

@@ -6,19 +6,31 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string
   children: React.ReactNode
   openInNewTab?: boolean
+  disabled?: boolean
 }
 
 /**
  * Universal Link component that automatically uses Next.js Link for internal links
  * and regular <a> tag for external links, mailto:, tel:, etc.
+ * When disabled, renders as a span with the same styling but non-clickable.
  */
 export default function Link({ 
   href, 
   children, 
   className,
   openInNewTab,
+  disabled,
   ...props 
 }: LinkProps) {
+  // If disabled, render as a span (non-clickable)
+  if (disabled) {
+    return (
+      <span className={className} aria-disabled="true" {...props}>
+        {children}
+      </span>
+    )
+  }
+
   // Force external if openInNewTab is explicitly set
   const isInternal = isInternalLink(href) && !openInNewTab
 

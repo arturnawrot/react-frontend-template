@@ -21,6 +21,7 @@ export function createLinkFields(options?: {
   const constantLinkName = prefix ? `${prefix}ConstantLink` : 'constantLink'
 
   const openInNewTabName = prefix ? `${prefix}OpenInNewTab` : 'openInNewTab'
+  const disabledName = prefix ? `${prefix}Disabled` : 'disabled'
 
   return [
     {
@@ -107,6 +108,19 @@ export function createLinkFields(options?: {
           return linkType !== 'none' && linkType !== undefined && linkType !== null
         },
         description: 'Open the link in a new browser tab',
+      },
+    },
+    {
+      name: disabledName,
+      type: 'checkbox',
+      label: 'Disabled',
+      defaultValue: false,
+      admin: {
+        condition: (data, siblingData) => {
+          const linkType = siblingData?.[linkTypeName]
+          return linkType !== 'none' && linkType !== undefined && linkType !== null
+        },
+        description: 'Disable the link (renders as non-clickable text)',
       },
     },
   ]

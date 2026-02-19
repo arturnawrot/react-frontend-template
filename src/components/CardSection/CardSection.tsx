@@ -4,7 +4,7 @@ import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
 import type { IconProp } from '@fortawesome/fontawesome-svg-core'
 import type { Page } from '@/payload-types'
 import styles from './CardSection.module.scss'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLink, resolvePrefixedLink } from '@/utils/linkResolver'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import CardWrapper from '@/components/CardWrapper'
@@ -86,8 +86,7 @@ export default function CardSection({ block }: CardSectionProps) {
   const title = block.title || 'Relationships Built for the Long Game'
   const description = block.description || ''
   const buttonText = block.buttonText
-  const buttonLink = resolveLinkUrl(block as any)
-  const openInNewTab = shouldOpenInNewTab(block as any)
+  const buttonLink = resolveLink(block as any)
   const cards = block.cards || []
   const cardTextAlign = block.cardTextAlign || 'left'
 
@@ -114,19 +113,9 @@ export default function CardSection({ block }: CardSectionProps) {
               ? 'w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]' 
               : 'w-full md:w-[30%] md:max-w-[400px]'
 
-            // Resolve card link - map prefixed fields to standard names for resolveLinkUrl
+            // Resolve card link with prefixed fields
             const cardLinkText = (card as any).linkText
-            const cardLinkData = {
-              linkType: (card as any).cardLinkType,
-              page: (card as any).cardPage,
-              customUrl: (card as any).cardCustomUrl,
-              constantLink: (card as any).cardConstantLink,
-            }
-            const cardLinkUrl = resolveLinkUrl(cardLinkData)
-            const cardOpenInNewTab = shouldOpenInNewTab({
-              linkType: (card as any).cardLinkType,
-              openInNewTab: (card as any).cardOpenInNewTab,
-            })
+            const cardLink = resolvePrefixedLink(card as Record<string, unknown>, 'card')
 
             return (
               <div key={index} className={`${textAlignClass} ${widthClass}`}>
@@ -163,9 +152,9 @@ export default function CardSection({ block }: CardSectionProps) {
                     </ul>
                   </div>
                 )}
-                {cardLinkText && cardLinkUrl && (
+                {cardLinkText && cardLink.href && (
                   <div className="mt-5">
-                    <ArrowLink href={cardLinkUrl} openInNewTab={cardOpenInNewTab}>
+                    <ArrowLink href={cardLink.href} openInNewTab={cardLink.openInNewTab} disabled={cardLink.disabled}>
                       {cardLinkText}
                     </ArrowLink>
                   </div>
@@ -178,8 +167,9 @@ export default function CardSection({ block }: CardSectionProps) {
         {buttonText && (
           <div className="text-center mt-15">
             <PrimaryButton
-              href={buttonLink || undefined}
-              openInNewTab={openInNewTab}
+              href={buttonLink.href || undefined}
+              openInNewTab={buttonLink.openInNewTab}
+              disabled={buttonLink.disabled}
               className="font-bold"
             >
               {buttonText}

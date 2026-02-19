@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Page, Media } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLink } from '@/utils/linkResolver'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import ArrowLink from '@/components/ArrowLink/ArrowLink'
@@ -70,8 +70,7 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
   const heading = block.heading || 'Experience that Performs'
   const description = block.description || "We're proud to bring a wealth of knowledge and relational capital to every deal and partnership."
   const linkText = block.linkText || 'Find an Agent'
-  const linkHref = resolveLinkUrl(block as any)
-  const openInNewTab = shouldOpenInNewTab(block as any)
+  const link = resolveLink(block as any)
   const colorVariant = block.colorVariant || 'default'
   const verticalAlignment = block.verticalAlignment || 'center'
 
@@ -107,9 +106,9 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
             {description}
           </p>
 
-          {linkText && linkHref && (
+          {linkText && link.href && (
             <div className="mt-2">
-              <ArrowLink href={linkHref} openInNewTab={openInNewTab} style={textColorStyle}>
+              <ArrowLink href={link.href} openInNewTab={link.openInNewTab} disabled={link.disabled} style={textColorStyle}>
                 {linkText}
               </ArrowLink>
             </div>

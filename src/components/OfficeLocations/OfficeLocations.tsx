@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLink } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 
 interface OfficeLocation {
@@ -43,9 +43,8 @@ function OfficeLocationCard({ location }: { location: OfficeLocation }) {
     ? location.image.alt || location.header
     : location.header
 
-  const linkHref = resolveLinkUrl(location as any)
-  const openInNewTab = shouldOpenInNewTab(location as any)
-  const isInternal = linkHref ? isInternalLink(linkHref) && !openInNewTab : false
+  const link = resolveLink(location as any)
+  const isInternal = link.href ? isInternalLink(link.href) && !link.openInNewTab : false
 
   // Parse subheader for bullet points (split by newline or • character)
   const subheaderLines = location.subheader
@@ -107,10 +106,18 @@ function OfficeLocationCard({ location }: { location: OfficeLocation }) {
         )}
         
         {/* Link */}
-        {location.linkText && linkHref && (
-          isInternal ? (
+        {location.linkText && link.href && (
+          link.disabled ? (
+            <span
+              className="text-sm font-medium text-[var(--strong-green)] opacity-50 cursor-not-allowed inline-flex items-center gap-1"
+              aria-disabled="true"
+            >
+              {location.linkText}
+              <span aria-hidden="true">→</span>
+            </span>
+          ) : isInternal ? (
             <Link
-              href={linkHref}
+              href={link.href}
               className="text-sm font-medium text-[var(--strong-green)] hover:underline inline-flex items-center gap-1"
             >
               {location.linkText}
@@ -118,9 +125,9 @@ function OfficeLocationCard({ location }: { location: OfficeLocation }) {
             </Link>
           ) : (
             <a
-              href={linkHref}
-              target={openInNewTab ? '_blank' : undefined}
-              rel={openInNewTab ? 'noopener noreferrer' : undefined}
+              href={link.href}
+              target={link.openInNewTab ? '_blank' : undefined}
+              rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
               className="text-sm font-medium text-[var(--strong-green)] hover:underline inline-flex items-center gap-1"
             >
               {location.linkText}

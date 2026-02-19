@@ -2,7 +2,7 @@
 import React from 'react'
 import type { Page } from '@/payload-types'
 import ArticleCard from '../ArticleCard/ArticleCard'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLink } from '@/utils/linkResolver'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import ArrowLink from '@/components/ArrowLink/ArrowLink'
@@ -54,8 +54,7 @@ const ArticleCardWrapper = ({ article }: { article: Article }) => {
 export default function InsightsSection({ block, articles: propArticles }: InsightsSectionProps) {
   const heading = block.heading || 'Insights That Shape Smart Investments'
   const linkText = block.linkText || 'Explore More Insights'
-  const linkHref = resolveLinkUrl(block as any)
-  const openInNewTab = shouldOpenInNewTab(block as any)
+  const link = resolveLink(block as any)
   const transparentBackground = block.transparentBackground || false
   // Use prop articles if provided, otherwise fall back to block articles (for backward compatibility)
   const articles: Article[] = propArticles || (block as { articles?: Article[] }).articles || []
@@ -88,8 +87,8 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
               })}
             </SectionHeading>
 
-            {linkText && linkHref && (
-              <ArrowLink href={linkHref} openInNewTab={openInNewTab}>
+            {linkText && link.href && (
+              <ArrowLink href={link.href} openInNewTab={link.openInNewTab} disabled={link.disabled}>
                 {linkText}
               </ArrowLink>
             )}

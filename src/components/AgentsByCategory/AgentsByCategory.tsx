@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import type { Page } from '@/payload-types'
 import AgentCard from '../AgentCard/AgentCard'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLink } from '@/utils/linkResolver'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import ArrowLink from '@/components/ArrowLink/ArrowLink'
 
@@ -229,22 +229,15 @@ export default function AgentsByCategory({ block }: AgentsByCategoryProps) {
 
                     {/* Only show link if open */}
                     {isOpen && cat.linkText && (() => {
-                      // Convert Category to match utility function types (null -> undefined)
-                      const linkData = {
-                        ...cat,
-                        linkType: cat.linkType ?? undefined,
-                        openInNewTab: cat.openInNewTab ?? undefined,
-                      }
-                      const linkHref = resolveLinkUrl(linkData)
-                      const openInNewTab = shouldOpenInNewTab(linkData)
+                      const link = resolveLink(cat as any)
                       
-                      if (!linkHref) {
+                      if (!link.href) {
                         return null
                       }
                       
                       return (
                         <div className="mt-6 md:mt-12">
-                          <ArrowLink href={linkHref} openInNewTab={openInNewTab}>
+                          <ArrowLink href={link.href} openInNewTab={link.openInNewTab} disabled={link.disabled}>
                             {cat.linkText}
                           </ArrowLink>
                         </div>

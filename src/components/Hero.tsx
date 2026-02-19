@@ -9,7 +9,7 @@ import PrimaryButton from './PrimaryButton/PrimaryButton'
 import SecondaryButton from './PrimaryButton/SecondaryButton'
 import type { Page } from '@/payload-types'
 import styles from './Hero.module.scss'
-import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
+import { resolvePrefixedLink, type ConstantLinksMap, type ResolvedLink } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import FormCard from './FormCard/FormCard'
 // Import the new component (adjust path as needed)
@@ -125,24 +125,20 @@ const ActionButtons = ({
   onSecondary,
   primaryClassName,
   secondaryClassName,
-  primaryOpenInNewTab,
-  secondaryOpenInNewTab,
   align = 'center',
 }: {
   primaryLabel?: string
-  primaryLink?: string
+  primaryLink?: ResolvedLink
   secondaryLabel?: string
-  secondaryLink?: string
+  secondaryLink?: ResolvedLink
   onPrimary?: () => void
   onSecondary?: () => void
   primaryClassName?: string
   secondaryClassName?: string
-  primaryOpenInNewTab?: boolean
-  secondaryOpenInNewTab?: boolean
   align?: 'center' | 'start'
 }) => {
-  const hasPrimary = primaryLabel && (onPrimary || primaryLink)
-  const hasSecondary = secondaryLabel && (onSecondary || secondaryLink)
+  const hasPrimary = primaryLabel && (onPrimary || primaryLink?.href)
+  const hasSecondary = secondaryLabel && (onSecondary || secondaryLink?.href)
   
   if (!hasPrimary && !hasSecondary) return null
 
@@ -152,22 +148,24 @@ const ActionButtons = ({
     <div className={`mt-6 flex flex-col md:flex-row md:flex-wrap ${justifyClass} gap-3 md:gap-4 w-full`}>
       {hasPrimary && (
         <PrimaryButton
-          href={primaryLink ?? null}
+          href={primaryLink?.href ?? null}
           onClick={onPrimary}
-          openInNewTab={primaryOpenInNewTab}
+          openInNewTab={primaryLink?.openInNewTab}
           className={primaryClassName}
           fullWidth
+          disabled={primaryLink?.disabled}
         >
           {primaryLabel}
         </PrimaryButton>
       )}
       {hasSecondary && (
         <SecondaryButton
-          href={secondaryLink ?? null}
+          href={secondaryLink?.href ?? null}
           onClick={onSecondary}
-          openInNewTab={secondaryOpenInNewTab}
+          openInNewTab={secondaryLink?.openInNewTab}
           className={secondaryClassName}
           fullWidth
+          disabled={secondaryLink?.disabled}
         >
           {secondaryLabel}
         </SecondaryButton>
@@ -293,31 +291,9 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
   const secondaryCta =
     block.ctaSecondaryLabel ?? (isFullWidthColor ? 'Schedule a Consultation' : undefined)
 
-  const primaryCtaLink = resolveLinkUrl({
-    linkType: (block as any).ctaPrimaryLinkType,
-    page: (block as any).ctaPrimaryPage,
-    customUrl: (block as any).ctaPrimaryCustomUrl,
-    constantLink: (block as any).ctaPrimaryConstantLink,
-    ctaPrimaryLink: (block as any).ctaPrimaryLink,
-  }, constantLinksMap)
-
-  const secondaryCtaLink = resolveLinkUrl({
-    linkType: (block as any).ctaSecondaryLinkType,
-    page: (block as any).ctaSecondaryPage,
-    customUrl: (block as any).ctaSecondaryCustomUrl,
-    constantLink: (block as any).ctaSecondaryConstantLink,
-    ctaSecondaryLink: (block as any).ctaSecondaryLink,
-  }, constantLinksMap)
-
-  const primaryCtaOpenInNewTab = shouldOpenInNewTab({
-    ctaPrimaryLinkType: (block as any).ctaPrimaryLinkType,
-    ctaPrimaryOpenInNewTab: (block as any).ctaPrimaryOpenInNewTab,
-  })
-
-  const secondaryCtaOpenInNewTab = shouldOpenInNewTab({
-    ctaSecondaryLinkType: (block as any).ctaSecondaryLinkType,
-    ctaSecondaryOpenInNewTab: (block as any).ctaSecondaryOpenInNewTab,
-  })
+  // Unified link resolution - one call returns href, openInNewTab, and disabled
+  const primaryCtaLinkData = resolvePrefixedLink(block as Record<string, unknown>, 'ctaPrimary', constantLinksMap)
+  const secondaryCtaLinkData = resolvePrefixedLink(block as Record<string, unknown>, 'ctaSecondary', constantLinksMap)
 
   let splitCustomHTML: string | undefined = undefined
   if (isSplit && (block as any).splitCustomHTML) {
@@ -331,11 +307,9 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
     segments,
     subheading: sub,
     primaryCta,
-    primaryCtaLink: primaryCtaLink !== '#' ? primaryCtaLink : undefined,
-    primaryCtaOpenInNewTab,
+    primaryCtaLink: primaryCtaLinkData,
     secondaryCta,
-    secondaryCtaLink: secondaryCtaLink !== '#' ? secondaryCtaLink : undefined,
-    secondaryCtaOpenInNewTab,
+    secondaryCtaLink: secondaryCtaLinkData,
     finalImage,
     backgroundVideoUrl,
     isFullWidthColor,
@@ -476,10 +450,8 @@ const SideBySideLayout = (
     subheading,
     primaryCta,
     primaryCtaLink,
-    primaryCtaOpenInNewTab,
     secondaryCta,
     secondaryCtaLink,
-    secondaryCtaOpenInNewTab,
     finalImage,
     agentEmail,
     agentPhone,
@@ -531,11 +503,9 @@ const SideBySideLayout = (
 
             <ActionButtons
               primaryLabel={primaryCta}
-              primaryLink={primaryCtaLink ?? undefined}
-              primaryOpenInNewTab={primaryCtaOpenInNewTab}
+              primaryLink={primaryCtaLink}
               secondaryLabel={secondaryCta}
-              secondaryLink={secondaryCtaLink ?? undefined}
-              secondaryOpenInNewTab={secondaryCtaOpenInNewTab}
+              secondaryLink={secondaryCtaLink}
               primaryClassName={btnPrimaryClass}
               secondaryClassName={btnSecondaryClass}
               align="start"
@@ -590,10 +560,8 @@ const CenteredLayout = (
     subheading,
     primaryCta,
     primaryCtaLink,
-    primaryCtaOpenInNewTab,
     secondaryCta,
     secondaryCtaLink,
-    secondaryCtaOpenInNewTab,
     finalImage,
     backgroundVideoUrl,
     menuOpen,
@@ -695,11 +663,9 @@ const CenteredLayout = (
 
             <ActionButtons
               primaryLabel={primaryCta}
-              primaryLink={primaryCtaLink ?? undefined}
-              primaryOpenInNewTab={primaryCtaOpenInNewTab}
+              primaryLink={primaryCtaLink}
               secondaryLabel={secondaryCta}
-              secondaryLink={secondaryCtaLink ?? undefined}
-              secondaryOpenInNewTab={secondaryCtaOpenInNewTab}
+              secondaryLink={secondaryCtaLink}
               primaryClassName={btnPrimaryClass}
               secondaryClassName={btnSecondaryClass}
               align="center"

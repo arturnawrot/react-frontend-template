@@ -276,6 +276,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         ctaPrimaryOpenInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        ctaPrimaryDisabled?: boolean | null;
         ctaSecondaryLabel?: string | null;
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -297,6 +301,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         ctaSecondaryOpenInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        ctaSecondaryDisabled?: boolean | null;
         /**
          * Background image (or Featured image for Blog). Used as fallback for video.
          */
@@ -367,6 +375,10 @@ export interface Page {
                * Open the link in a new browser tab
                */
               openInNewTab?: boolean | null;
+              /**
+               * Disable the link (renders as non-clickable text)
+               */
+              disabled?: boolean | null;
               id?: string | null;
             }[]
           | null;
@@ -391,6 +403,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'flippedM';
@@ -450,6 +466,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   ctaPrimaryOpenInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  ctaPrimaryDisabled?: boolean | null;
                   ctaSecondaryLabel?: string | null;
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -471,6 +491,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   ctaSecondaryOpenInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  ctaSecondaryDisabled?: boolean | null;
                   /**
                    * Background image (or Featured image for Blog). Used as fallback for video.
                    */
@@ -541,6 +565,10 @@ export interface Page {
                          * Open the link in a new browser tab
                          */
                         openInNewTab?: boolean | null;
+                        /**
+                         * Disable the link (renders as non-clickable text)
+                         */
+                        disabled?: boolean | null;
                         id?: string | null;
                       }[]
                     | null;
@@ -565,6 +593,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   openInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  disabled?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'flippedM';
@@ -597,6 +629,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   openInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  disabled?: boolean | null;
                   /**
                    * Controls the text alignment of card content (icon, title, and description)
                    */
@@ -638,6 +674,10 @@ export interface Page {
                      * Open the link in a new browser tab
                      */
                     cardOpenInNewTab?: boolean | null;
+                    /**
+                     * Disable the link (renders as non-clickable text)
+                     */
+                    cardDisabled?: boolean | null;
                     id?: string | null;
                   }[];
                   id?: string | null;
@@ -726,6 +766,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   buttonOpenInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  buttonDisabled?: boolean | null;
                   linkText?: string | null;
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -747,6 +791,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   openInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  disabled?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'splitSection';
@@ -782,6 +830,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   openInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  disabled?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'insightsSection';
@@ -831,6 +883,10 @@ export interface Page {
                    */
                   openInNewTab?: boolean | null;
                   /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  disabled?: boolean | null;
+                  /**
                    * Select a featured agents set from the global sets. Defaults to "default" set.
                    */
                   featuredAgentSetName: string;
@@ -877,6 +933,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   buttonOpenInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  buttonDisabled?: boolean | null;
                   linkText?: string | null;
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -898,6 +958,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   openInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  disabled?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'agentIconsSection';
@@ -949,6 +1013,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   openInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  disabled?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'agentDecoration';
@@ -989,6 +1057,10 @@ export interface Page {
                          * Open the link in a new browser tab
                          */
                         openInNewTab?: boolean | null;
+                        /**
+                         * Disable the link (renders as non-clickable text)
+                         */
+                        disabled?: boolean | null;
                         variant?: ('primary' | 'secondary') | null;
                         id?: string | null;
                       }[]
@@ -1025,6 +1097,10 @@ export interface Page {
                    * Open the link in a new browser tab
                    */
                   openInNewTab?: boolean | null;
+                  /**
+                   * Disable the link (renders as non-clickable text)
+                   */
+                  disabled?: boolean | null;
                   /**
                    * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
                    */
@@ -1190,6 +1266,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             ctaPrimaryOpenInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            ctaPrimaryDisabled?: boolean | null;
                             ctaSecondaryLabel?: string | null;
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1211,6 +1291,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             ctaSecondaryOpenInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            ctaSecondaryDisabled?: boolean | null;
                             /**
                              * Background image (or Featured image for Blog). Used as fallback for video.
                              */
@@ -1281,6 +1365,10 @@ export interface Page {
                                    * Open the link in a new browser tab
                                    */
                                   openInNewTab?: boolean | null;
+                                  /**
+                                   * Disable the link (renders as non-clickable text)
+                                   */
+                                  disabled?: boolean | null;
                                   id?: string | null;
                                 }[]
                               | null;
@@ -1305,6 +1393,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             openInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            disabled?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'flippedM';
@@ -1337,6 +1429,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             openInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            disabled?: boolean | null;
                             /**
                              * Controls the text alignment of card content (icon, title, and description)
                              */
@@ -1378,6 +1474,10 @@ export interface Page {
                                * Open the link in a new browser tab
                                */
                               cardOpenInNewTab?: boolean | null;
+                              /**
+                               * Disable the link (renders as non-clickable text)
+                               */
+                              cardDisabled?: boolean | null;
                               id?: string | null;
                             }[];
                             id?: string | null;
@@ -1466,6 +1566,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             buttonOpenInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            buttonDisabled?: boolean | null;
                             linkText?: string | null;
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1487,6 +1591,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             openInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            disabled?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'splitSection';
@@ -1522,6 +1630,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             openInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            disabled?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'insightsSection';
@@ -1571,6 +1683,10 @@ export interface Page {
                              */
                             openInNewTab?: boolean | null;
                             /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            disabled?: boolean | null;
+                            /**
                              * Select a featured agents set from the global sets. Defaults to "default" set.
                              */
                             featuredAgentSetName: string;
@@ -1617,6 +1733,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             buttonOpenInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            buttonDisabled?: boolean | null;
                             linkText?: string | null;
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1638,6 +1758,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             openInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            disabled?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'agentIconsSection';
@@ -1689,6 +1813,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             openInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            disabled?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'agentDecoration';
@@ -1729,6 +1857,10 @@ export interface Page {
                                    * Open the link in a new browser tab
                                    */
                                   openInNewTab?: boolean | null;
+                                  /**
+                                   * Disable the link (renders as non-clickable text)
+                                   */
+                                  disabled?: boolean | null;
                                   variant?: ('primary' | 'secondary') | null;
                                   id?: string | null;
                                 }[]
@@ -1765,6 +1897,10 @@ export interface Page {
                              * Open the link in a new browser tab
                              */
                             openInNewTab?: boolean | null;
+                            /**
+                             * Disable the link (renders as non-clickable text)
+                             */
+                            disabled?: boolean | null;
                             /**
                              * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
                              */
@@ -1930,6 +2066,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       ctaPrimaryOpenInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      ctaPrimaryDisabled?: boolean | null;
                                       ctaSecondaryLabel?: string | null;
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -1951,6 +2091,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       ctaSecondaryOpenInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      ctaSecondaryDisabled?: boolean | null;
                                       /**
                                        * Background image (or Featured image for Blog). Used as fallback for video.
                                        */
@@ -2021,6 +2165,10 @@ export interface Page {
                                              * Open the link in a new browser tab
                                              */
                                             openInNewTab?: boolean | null;
+                                            /**
+                                             * Disable the link (renders as non-clickable text)
+                                             */
+                                            disabled?: boolean | null;
                                             id?: string | null;
                                           }[]
                                         | null;
@@ -2045,6 +2193,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       openInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      disabled?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'flippedM';
@@ -2077,6 +2229,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       openInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      disabled?: boolean | null;
                                       /**
                                        * Controls the text alignment of card content (icon, title, and description)
                                        */
@@ -2118,6 +2274,10 @@ export interface Page {
                                          * Open the link in a new browser tab
                                          */
                                         cardOpenInNewTab?: boolean | null;
+                                        /**
+                                         * Disable the link (renders as non-clickable text)
+                                         */
+                                        cardDisabled?: boolean | null;
                                         id?: string | null;
                                       }[];
                                       id?: string | null;
@@ -2206,6 +2366,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       buttonOpenInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      buttonDisabled?: boolean | null;
                                       linkText?: string | null;
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2227,6 +2391,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       openInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      disabled?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'splitSection';
@@ -2262,6 +2430,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       openInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      disabled?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'insightsSection';
@@ -2311,6 +2483,10 @@ export interface Page {
                                        */
                                       openInNewTab?: boolean | null;
                                       /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      disabled?: boolean | null;
+                                      /**
                                        * Select a featured agents set from the global sets. Defaults to "default" set.
                                        */
                                       featuredAgentSetName: string;
@@ -2357,6 +2533,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       buttonOpenInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      buttonDisabled?: boolean | null;
                                       linkText?: string | null;
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2378,6 +2558,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       openInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      disabled?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'agentIconsSection';
@@ -2429,6 +2613,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       openInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      disabled?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'agentDecoration';
@@ -2469,6 +2657,10 @@ export interface Page {
                                              * Open the link in a new browser tab
                                              */
                                             openInNewTab?: boolean | null;
+                                            /**
+                                             * Disable the link (renders as non-clickable text)
+                                             */
+                                            disabled?: boolean | null;
                                             variant?: ('primary' | 'secondary') | null;
                                             id?: string | null;
                                           }[]
@@ -2505,6 +2697,10 @@ export interface Page {
                                        * Open the link in a new browser tab
                                        */
                                       openInNewTab?: boolean | null;
+                                      /**
+                                       * Disable the link (renders as non-clickable text)
+                                       */
+                                      disabled?: boolean | null;
                                       /**
                                        * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
                                        */
@@ -2670,6 +2866,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 ctaPrimaryOpenInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                ctaPrimaryDisabled?: boolean | null;
                                                 ctaSecondaryLabel?: string | null;
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2691,6 +2891,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 ctaSecondaryOpenInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                ctaSecondaryDisabled?: boolean | null;
                                                 /**
                                                  * Background image (or Featured image for Blog). Used as fallback for video.
                                                  */
@@ -2761,6 +2965,10 @@ export interface Page {
                                                        * Open the link in a new browser tab
                                                        */
                                                       openInNewTab?: boolean | null;
+                                                      /**
+                                                       * Disable the link (renders as non-clickable text)
+                                                       */
+                                                      disabled?: boolean | null;
                                                       id?: string | null;
                                                     }[]
                                                   | null;
@@ -2785,6 +2993,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 openInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                disabled?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'flippedM';
@@ -2817,6 +3029,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 openInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                disabled?: boolean | null;
                                                 /**
                                                  * Controls the text alignment of card content (icon, title, and description)
                                                  */
@@ -2858,6 +3074,10 @@ export interface Page {
                                                    * Open the link in a new browser tab
                                                    */
                                                   cardOpenInNewTab?: boolean | null;
+                                                  /**
+                                                   * Disable the link (renders as non-clickable text)
+                                                   */
+                                                  cardDisabled?: boolean | null;
                                                   id?: string | null;
                                                 }[];
                                                 id?: string | null;
@@ -2953,6 +3173,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 buttonOpenInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                buttonDisabled?: boolean | null;
                                                 linkText?: string | null;
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -2974,6 +3198,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 openInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                disabled?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'splitSection';
@@ -3009,6 +3237,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 openInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                disabled?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'insightsSection';
@@ -3058,6 +3290,10 @@ export interface Page {
                                                  */
                                                 openInNewTab?: boolean | null;
                                                 /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                disabled?: boolean | null;
+                                                /**
                                                  * Select a featured agents set from the global sets. Defaults to "default" set.
                                                  */
                                                 featuredAgentSetName: string;
@@ -3104,6 +3340,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 buttonOpenInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                buttonDisabled?: boolean | null;
                                                 linkText?: string | null;
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -3125,6 +3365,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 openInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                disabled?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'agentIconsSection';
@@ -3176,6 +3420,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 openInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                disabled?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'agentDecoration';
@@ -3216,6 +3464,10 @@ export interface Page {
                                                        * Open the link in a new browser tab
                                                        */
                                                       openInNewTab?: boolean | null;
+                                                      /**
+                                                       * Disable the link (renders as non-clickable text)
+                                                       */
+                                                      disabled?: boolean | null;
                                                       variant?: ('primary' | 'secondary') | null;
                                                       id?: string | null;
                                                     }[]
@@ -3252,6 +3504,10 @@ export interface Page {
                                                  * Open the link in a new browser tab
                                                  */
                                                 openInNewTab?: boolean | null;
+                                                /**
+                                                 * Disable the link (renders as non-clickable text)
+                                                 */
+                                                disabled?: boolean | null;
                                                 /**
                                                  * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
                                                  */
@@ -3411,6 +3667,10 @@ export interface Page {
          */
         openInNewTab?: boolean | null;
         /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
+        /**
          * Controls the text alignment of card content (icon, title, and description)
          */
         cardTextAlign?: ('left' | 'center' | 'right') | null;
@@ -3451,6 +3711,10 @@ export interface Page {
            * Open the link in a new browser tab
            */
           cardOpenInNewTab?: boolean | null;
+          /**
+           * Disable the link (renders as non-clickable text)
+           */
+          cardDisabled?: boolean | null;
           id?: string | null;
         }[];
         id?: string | null;
@@ -3539,6 +3803,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         buttonOpenInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        buttonDisabled?: boolean | null;
         linkText?: string | null;
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -3560,6 +3828,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'splitSection';
@@ -3595,6 +3867,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'insightsSection';
@@ -3644,6 +3920,10 @@ export interface Page {
          */
         openInNewTab?: boolean | null;
         /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
+        /**
          * Select a featured agents set from the global sets. Defaults to "default" set.
          */
         featuredAgentSetName: string;
@@ -3690,6 +3970,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         buttonOpenInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        buttonDisabled?: boolean | null;
         linkText?: string | null;
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
@@ -3711,6 +3995,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'agentIconsSection';
@@ -3762,6 +4050,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'agentDecoration';
@@ -3809,6 +4101,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'faqSection';
@@ -3844,6 +4140,10 @@ export interface Page {
                * Open the link in a new browser tab
                */
               openInNewTab?: boolean | null;
+              /**
+               * Disable the link (renders as non-clickable text)
+               */
+              disabled?: boolean | null;
               variant?: ('primary' | 'secondary') | null;
               id?: string | null;
             }[]
@@ -3880,6 +4180,10 @@ export interface Page {
          * Open the link in a new browser tab
          */
         openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         /**
          * When enabled, this block will not have default spacing applied (useful for full-width sections that should connect with adjacent blocks)
          */
@@ -4716,12 +5020,14 @@ export interface PagesSelect<T extends boolean = true> {
               ctaPrimaryCustomUrl?: T;
               ctaPrimaryConstantLink?: T;
               ctaPrimaryOpenInNewTab?: T;
+              ctaPrimaryDisabled?: T;
               ctaSecondaryLabel?: T;
               ctaSecondaryLinkType?: T;
               ctaSecondaryPage?: T;
               ctaSecondaryCustomUrl?: T;
               ctaSecondaryConstantLink?: T;
               ctaSecondaryOpenInNewTab?: T;
+              ctaSecondaryDisabled?: T;
               backgroundImage?: T;
               backgroundVideo?: T;
               splitCustomHTML?: T;
@@ -4752,6 +5058,7 @@ export interface PagesSelect<T extends boolean = true> {
                     customUrl?: T;
                     constantLink?: T;
                     openInNewTab?: T;
+                    disabled?: T;
                     id?: T;
                   };
               ctaText?: T;
@@ -4760,6 +5067,7 @@ export interface PagesSelect<T extends boolean = true> {
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               id?: T;
               blockName?: T;
             };
@@ -4793,12 +5101,14 @@ export interface PagesSelect<T extends boolean = true> {
                           ctaPrimaryCustomUrl?: T;
                           ctaPrimaryConstantLink?: T;
                           ctaPrimaryOpenInNewTab?: T;
+                          ctaPrimaryDisabled?: T;
                           ctaSecondaryLabel?: T;
                           ctaSecondaryLinkType?: T;
                           ctaSecondaryPage?: T;
                           ctaSecondaryCustomUrl?: T;
                           ctaSecondaryConstantLink?: T;
                           ctaSecondaryOpenInNewTab?: T;
+                          ctaSecondaryDisabled?: T;
                           backgroundImage?: T;
                           backgroundVideo?: T;
                           splitCustomHTML?: T;
@@ -4829,6 +5139,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 customUrl?: T;
                                 constantLink?: T;
                                 openInNewTab?: T;
+                                disabled?: T;
                                 id?: T;
                               };
                           ctaText?: T;
@@ -4837,6 +5148,7 @@ export interface PagesSelect<T extends boolean = true> {
                           customUrl?: T;
                           constantLink?: T;
                           openInNewTab?: T;
+                          disabled?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -4852,6 +5164,7 @@ export interface PagesSelect<T extends boolean = true> {
                           customUrl?: T;
                           constantLink?: T;
                           openInNewTab?: T;
+                          disabled?: T;
                           cardTextAlign?: T;
                           cards?:
                             | T
@@ -4871,6 +5184,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 cardCustomUrl?: T;
                                 cardConstantLink?: T;
                                 cardOpenInNewTab?: T;
+                                cardDisabled?: T;
                                 id?: T;
                               };
                           id?: T;
@@ -4919,12 +5233,14 @@ export interface PagesSelect<T extends boolean = true> {
                           buttonCustomUrl?: T;
                           buttonConstantLink?: T;
                           buttonOpenInNewTab?: T;
+                          buttonDisabled?: T;
                           linkText?: T;
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
                           openInNewTab?: T;
+                          disabled?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -4940,6 +5256,7 @@ export interface PagesSelect<T extends boolean = true> {
                           customUrl?: T;
                           constantLink?: T;
                           openInNewTab?: T;
+                          disabled?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -4973,6 +5290,7 @@ export interface PagesSelect<T extends boolean = true> {
                           customUrl?: T;
                           constantLink?: T;
                           openInNewTab?: T;
+                          disabled?: T;
                           featuredAgentSetName?: T;
                           colorVariant?: T;
                           verticalAlignment?: T;
@@ -4991,12 +5309,14 @@ export interface PagesSelect<T extends boolean = true> {
                           buttonCustomUrl?: T;
                           buttonConstantLink?: T;
                           buttonOpenInNewTab?: T;
+                          buttonDisabled?: T;
                           linkText?: T;
                           linkType?: T;
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
                           openInNewTab?: T;
+                          disabled?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -5019,6 +5339,7 @@ export interface PagesSelect<T extends boolean = true> {
                           customUrl?: T;
                           constantLink?: T;
                           openInNewTab?: T;
+                          disabled?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -5044,6 +5365,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 customUrl?: T;
                                 constantLink?: T;
                                 openInNewTab?: T;
+                                disabled?: T;
                                 variant?: T;
                                 id?: T;
                               };
@@ -5062,6 +5384,7 @@ export interface PagesSelect<T extends boolean = true> {
                           customUrl?: T;
                           constantLink?: T;
                           openInNewTab?: T;
+                          disabled?: T;
                           excludeSpacing?: T;
                           id?: T;
                           blockName?: T;
@@ -5165,12 +5488,14 @@ export interface PagesSelect<T extends boolean = true> {
                                       ctaPrimaryCustomUrl?: T;
                                       ctaPrimaryConstantLink?: T;
                                       ctaPrimaryOpenInNewTab?: T;
+                                      ctaPrimaryDisabled?: T;
                                       ctaSecondaryLabel?: T;
                                       ctaSecondaryLinkType?: T;
                                       ctaSecondaryPage?: T;
                                       ctaSecondaryCustomUrl?: T;
                                       ctaSecondaryConstantLink?: T;
                                       ctaSecondaryOpenInNewTab?: T;
+                                      ctaSecondaryDisabled?: T;
                                       backgroundImage?: T;
                                       backgroundVideo?: T;
                                       splitCustomHTML?: T;
@@ -5201,6 +5526,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             customUrl?: T;
                                             constantLink?: T;
                                             openInNewTab?: T;
+                                            disabled?: T;
                                             id?: T;
                                           };
                                       ctaText?: T;
@@ -5209,6 +5535,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       customUrl?: T;
                                       constantLink?: T;
                                       openInNewTab?: T;
+                                      disabled?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -5224,6 +5551,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       customUrl?: T;
                                       constantLink?: T;
                                       openInNewTab?: T;
+                                      disabled?: T;
                                       cardTextAlign?: T;
                                       cards?:
                                         | T
@@ -5243,6 +5571,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             cardCustomUrl?: T;
                                             cardConstantLink?: T;
                                             cardOpenInNewTab?: T;
+                                            cardDisabled?: T;
                                             id?: T;
                                           };
                                       id?: T;
@@ -5291,12 +5620,14 @@ export interface PagesSelect<T extends boolean = true> {
                                       buttonCustomUrl?: T;
                                       buttonConstantLink?: T;
                                       buttonOpenInNewTab?: T;
+                                      buttonDisabled?: T;
                                       linkText?: T;
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
                                       openInNewTab?: T;
+                                      disabled?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -5312,6 +5643,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       customUrl?: T;
                                       constantLink?: T;
                                       openInNewTab?: T;
+                                      disabled?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -5345,6 +5677,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       customUrl?: T;
                                       constantLink?: T;
                                       openInNewTab?: T;
+                                      disabled?: T;
                                       featuredAgentSetName?: T;
                                       colorVariant?: T;
                                       verticalAlignment?: T;
@@ -5363,12 +5696,14 @@ export interface PagesSelect<T extends boolean = true> {
                                       buttonCustomUrl?: T;
                                       buttonConstantLink?: T;
                                       buttonOpenInNewTab?: T;
+                                      buttonDisabled?: T;
                                       linkText?: T;
                                       linkType?: T;
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
                                       openInNewTab?: T;
+                                      disabled?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -5391,6 +5726,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       customUrl?: T;
                                       constantLink?: T;
                                       openInNewTab?: T;
+                                      disabled?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -5416,6 +5752,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             customUrl?: T;
                                             constantLink?: T;
                                             openInNewTab?: T;
+                                            disabled?: T;
                                             variant?: T;
                                             id?: T;
                                           };
@@ -5434,6 +5771,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       customUrl?: T;
                                       constantLink?: T;
                                       openInNewTab?: T;
+                                      disabled?: T;
                                       excludeSpacing?: T;
                                       id?: T;
                                       blockName?: T;
@@ -5537,12 +5875,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                   ctaPrimaryCustomUrl?: T;
                                                   ctaPrimaryConstantLink?: T;
                                                   ctaPrimaryOpenInNewTab?: T;
+                                                  ctaPrimaryDisabled?: T;
                                                   ctaSecondaryLabel?: T;
                                                   ctaSecondaryLinkType?: T;
                                                   ctaSecondaryPage?: T;
                                                   ctaSecondaryCustomUrl?: T;
                                                   ctaSecondaryConstantLink?: T;
                                                   ctaSecondaryOpenInNewTab?: T;
+                                                  ctaSecondaryDisabled?: T;
                                                   backgroundImage?: T;
                                                   backgroundVideo?: T;
                                                   splitCustomHTML?: T;
@@ -5573,6 +5913,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                         customUrl?: T;
                                                         constantLink?: T;
                                                         openInNewTab?: T;
+                                                        disabled?: T;
                                                         id?: T;
                                                       };
                                                   ctaText?: T;
@@ -5581,6 +5922,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   customUrl?: T;
                                                   constantLink?: T;
                                                   openInNewTab?: T;
+                                                  disabled?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -5596,6 +5938,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   customUrl?: T;
                                                   constantLink?: T;
                                                   openInNewTab?: T;
+                                                  disabled?: T;
                                                   cardTextAlign?: T;
                                                   cards?:
                                                     | T
@@ -5615,6 +5958,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                         cardCustomUrl?: T;
                                                         cardConstantLink?: T;
                                                         cardOpenInNewTab?: T;
+                                                        cardDisabled?: T;
                                                         id?: T;
                                                       };
                                                   id?: T;
@@ -5663,12 +6007,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                   buttonCustomUrl?: T;
                                                   buttonConstantLink?: T;
                                                   buttonOpenInNewTab?: T;
+                                                  buttonDisabled?: T;
                                                   linkText?: T;
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
                                                   openInNewTab?: T;
+                                                  disabled?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -5684,6 +6030,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   customUrl?: T;
                                                   constantLink?: T;
                                                   openInNewTab?: T;
+                                                  disabled?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -5717,6 +6064,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   customUrl?: T;
                                                   constantLink?: T;
                                                   openInNewTab?: T;
+                                                  disabled?: T;
                                                   featuredAgentSetName?: T;
                                                   colorVariant?: T;
                                                   verticalAlignment?: T;
@@ -5735,12 +6083,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                   buttonCustomUrl?: T;
                                                   buttonConstantLink?: T;
                                                   buttonOpenInNewTab?: T;
+                                                  buttonDisabled?: T;
                                                   linkText?: T;
                                                   linkType?: T;
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
                                                   openInNewTab?: T;
+                                                  disabled?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -5763,6 +6113,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   customUrl?: T;
                                                   constantLink?: T;
                                                   openInNewTab?: T;
+                                                  disabled?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -5788,6 +6139,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                         customUrl?: T;
                                                         constantLink?: T;
                                                         openInNewTab?: T;
+                                                        disabled?: T;
                                                         variant?: T;
                                                         id?: T;
                                                       };
@@ -5806,6 +6158,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   customUrl?: T;
                                                   constantLink?: T;
                                                   openInNewTab?: T;
+                                                  disabled?: T;
                                                   excludeSpacing?: T;
                                                   id?: T;
                                                   blockName?: T;
@@ -5909,12 +6262,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                               ctaPrimaryCustomUrl?: T;
                                                               ctaPrimaryConstantLink?: T;
                                                               ctaPrimaryOpenInNewTab?: T;
+                                                              ctaPrimaryDisabled?: T;
                                                               ctaSecondaryLabel?: T;
                                                               ctaSecondaryLinkType?: T;
                                                               ctaSecondaryPage?: T;
                                                               ctaSecondaryCustomUrl?: T;
                                                               ctaSecondaryConstantLink?: T;
                                                               ctaSecondaryOpenInNewTab?: T;
+                                                              ctaSecondaryDisabled?: T;
                                                               backgroundImage?: T;
                                                               backgroundVideo?: T;
                                                               splitCustomHTML?: T;
@@ -5945,6 +6300,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     customUrl?: T;
                                                                     constantLink?: T;
                                                                     openInNewTab?: T;
+                                                                    disabled?: T;
                                                                     id?: T;
                                                                   };
                                                               ctaText?: T;
@@ -5953,6 +6309,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               customUrl?: T;
                                                               constantLink?: T;
                                                               openInNewTab?: T;
+                                                              disabled?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -5968,6 +6325,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               customUrl?: T;
                                                               constantLink?: T;
                                                               openInNewTab?: T;
+                                                              disabled?: T;
                                                               cardTextAlign?: T;
                                                               cards?:
                                                                 | T
@@ -5987,6 +6345,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     cardCustomUrl?: T;
                                                                     cardConstantLink?: T;
                                                                     cardOpenInNewTab?: T;
+                                                                    cardDisabled?: T;
                                                                     id?: T;
                                                                   };
                                                               id?: T;
@@ -6035,12 +6394,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                               buttonCustomUrl?: T;
                                                               buttonConstantLink?: T;
                                                               buttonOpenInNewTab?: T;
+                                                              buttonDisabled?: T;
                                                               linkText?: T;
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
                                                               openInNewTab?: T;
+                                                              disabled?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -6056,6 +6417,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               customUrl?: T;
                                                               constantLink?: T;
                                                               openInNewTab?: T;
+                                                              disabled?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -6089,6 +6451,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               customUrl?: T;
                                                               constantLink?: T;
                                                               openInNewTab?: T;
+                                                              disabled?: T;
                                                               featuredAgentSetName?: T;
                                                               colorVariant?: T;
                                                               verticalAlignment?: T;
@@ -6107,12 +6470,14 @@ export interface PagesSelect<T extends boolean = true> {
                                                               buttonCustomUrl?: T;
                                                               buttonConstantLink?: T;
                                                               buttonOpenInNewTab?: T;
+                                                              buttonDisabled?: T;
                                                               linkText?: T;
                                                               linkType?: T;
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
                                                               openInNewTab?: T;
+                                                              disabled?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -6135,6 +6500,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               customUrl?: T;
                                                               constantLink?: T;
                                                               openInNewTab?: T;
+                                                              disabled?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -6160,6 +6526,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     customUrl?: T;
                                                                     constantLink?: T;
                                                                     openInNewTab?: T;
+                                                                    disabled?: T;
                                                                     variant?: T;
                                                                     id?: T;
                                                                   };
@@ -6178,6 +6545,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               customUrl?: T;
                                                               constantLink?: T;
                                                               openInNewTab?: T;
+                                                              disabled?: T;
                                                               excludeSpacing?: T;
                                                               id?: T;
                                                               blockName?: T;
@@ -6275,6 +6643,7 @@ export interface PagesSelect<T extends boolean = true> {
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               cardTextAlign?: T;
               cards?:
                 | T
@@ -6294,6 +6663,7 @@ export interface PagesSelect<T extends boolean = true> {
                     cardCustomUrl?: T;
                     cardConstantLink?: T;
                     cardOpenInNewTab?: T;
+                    cardDisabled?: T;
                     id?: T;
                   };
               id?: T;
@@ -6342,12 +6712,14 @@ export interface PagesSelect<T extends boolean = true> {
               buttonCustomUrl?: T;
               buttonConstantLink?: T;
               buttonOpenInNewTab?: T;
+              buttonDisabled?: T;
               linkText?: T;
               linkType?: T;
               page?: T;
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               id?: T;
               blockName?: T;
             };
@@ -6363,6 +6735,7 @@ export interface PagesSelect<T extends boolean = true> {
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               id?: T;
               blockName?: T;
             };
@@ -6396,6 +6769,7 @@ export interface PagesSelect<T extends boolean = true> {
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               featuredAgentSetName?: T;
               colorVariant?: T;
               verticalAlignment?: T;
@@ -6414,12 +6788,14 @@ export interface PagesSelect<T extends boolean = true> {
               buttonCustomUrl?: T;
               buttonConstantLink?: T;
               buttonOpenInNewTab?: T;
+              buttonDisabled?: T;
               linkText?: T;
               linkType?: T;
               page?: T;
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               id?: T;
               blockName?: T;
             };
@@ -6442,6 +6818,7 @@ export interface PagesSelect<T extends boolean = true> {
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               id?: T;
               blockName?: T;
             };
@@ -6471,6 +6848,7 @@ export interface PagesSelect<T extends boolean = true> {
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               id?: T;
               blockName?: T;
             };
@@ -6494,6 +6872,7 @@ export interface PagesSelect<T extends boolean = true> {
                     customUrl?: T;
                     constantLink?: T;
                     openInNewTab?: T;
+                    disabled?: T;
                     variant?: T;
                     id?: T;
                   };
@@ -6512,6 +6891,7 @@ export interface PagesSelect<T extends boolean = true> {
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               excludeSpacing?: T;
               id?: T;
               blockName?: T;
@@ -7464,6 +7844,10 @@ export interface AgentCategory {
          */
         openInNewTab?: boolean | null;
         /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
+        /**
          * Select exactly 3 agents to display for this category
          */
         agents: (string | Agent)[];
@@ -7615,6 +7999,10 @@ export interface OfficeLocationSet {
                * Open the link in a new browser tab
                */
               openInNewTab?: boolean | null;
+              /**
+               * Disable the link (renders as non-clickable text)
+               */
+              disabled?: boolean | null;
               id?: string | null;
             }[]
           | null;
@@ -7995,6 +8383,7 @@ export interface AgentCategoriesSelect<T extends boolean = true> {
         customUrl?: T;
         constantLink?: T;
         openInNewTab?: T;
+        disabled?: T;
         agents?: T;
         id?: T;
       };
@@ -8077,6 +8466,7 @@ export interface OfficeLocationSetsSelect<T extends boolean = true> {
               customUrl?: T;
               constantLink?: T;
               openInNewTab?: T;
+              disabled?: T;
               id?: T;
             };
         id?: T;

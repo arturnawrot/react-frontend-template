@@ -9,11 +9,13 @@ interface BaseButtonProps {
   openInNewTab?: boolean
   className?: string
   fullWidth?: boolean
+  disabled?: boolean
 }
 
 /**
  * Base button component that handles both link and button rendering
  * Used by PrimaryButton and SecondaryButton to avoid code duplication
+ * When disabled, renders as a span (for links) or disabled button
  */
 export default function BaseButton({
   children,
@@ -22,12 +24,23 @@ export default function BaseButton({
   openInNewTab = false,
   className = '',
   fullWidth = false,
+  disabled = false,
 }: BaseButtonProps) {
   const fullWidthClass = fullWidth ? 'w-full md:w-auto' : ''
-  const baseClassName = `${className} ${fullWidthClass}`.trim()
+  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : ''
+  const baseClassName = `${className} ${fullWidthClass} ${disabledClass}`.trim()
 
-  // If href is provided, render as link
+  // If href is provided, render as link (or span if disabled)
   if (href) {
+    // If disabled, render as span instead of link
+    if (disabled) {
+      return (
+        <span className={baseClassName} aria-disabled="true">
+          {children}
+        </span>
+      )
+    }
+
     const isInternal = isInternalLink(href) && !openInNewTab
     const LinkComponent = isInternal ? Link : 'a'
     const linkProps = isInternal
@@ -43,7 +56,7 @@ export default function BaseButton({
 
   // Otherwise render as button
   return (
-    <button onClick={onClick} className={baseClassName} type="button">
+    <button onClick={onClick} className={baseClassName} type="button" disabled={disabled}>
       {children}
     </button>
   )

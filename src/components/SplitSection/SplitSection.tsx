@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import type { Page } from '@/payload-types'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLink, resolvePrefixedLink } from '@/utils/linkResolver'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import PrimaryButton from '@/components/PrimaryButton'
@@ -25,22 +25,11 @@ export default function SplitSection({ block }: SplitSectionProps) {
   const richText = (block as any).richText || null
   const bulletPoints = block.bulletPoints || []
   const buttonText = (block as any).buttonText
-  const buttonHref = resolveLinkUrl({
-    ...(block as any),
-    linkType: (block as any).buttonLinkType,
-    page: (block as any).buttonPage,
-    customUrl: (block as any).buttonCustomUrl,
-    constantLink: (block as any).buttonConstantLink,
-    openInNewTab: (block as any).buttonOpenInNewTab,
-  })
-  const buttonOpenInNewTab = shouldOpenInNewTab({
-    linkType: (block as any).buttonLinkType,
-    openInNewTab: (block as any).buttonOpenInNewTab,
-  })
   
+  // Unified link resolution - one call gets href, openInNewTab, and disabled
+  const buttonLink = resolvePrefixedLink(block as Record<string, unknown>, 'button')
+  const link = resolveLink(block as any)
   const linkText = block.linkText
-  const linkHref = resolveLinkUrl(block as any)
-  const openInNewTab = shouldOpenInNewTab(block as any)
 
   return (
     <Container 
@@ -93,20 +82,21 @@ export default function SplitSection({ block }: SplitSectionProps) {
             </ul>
           )}
 
-          {(buttonText && buttonHref) || (linkText && linkHref) ? (
+          {(buttonText && buttonLink.href) || (linkText && link.href) ? (
             <div className="pt-10 flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
-              {buttonText && buttonHref && (
+              {buttonText && buttonLink.href && (
                 <PrimaryButton
-                  href={buttonHref}
-                  openInNewTab={buttonOpenInNewTab}
+                  href={buttonLink.href}
+                  openInNewTab={buttonLink.openInNewTab}
+                  disabled={buttonLink.disabled}
                   fullWidth
                 >
                   {buttonText}
                 </PrimaryButton>
               )}
-              {linkText && linkHref && (
+              {linkText && link.href && (
                 <div className="w-full md:w-auto">
-                  <ArrowLink href={linkHref} openInNewTab={openInNewTab}>
+                  <ArrowLink href={link.href} openInNewTab={link.openInNewTab} disabled={link.disabled}>
                     {linkText}
                   </ArrowLink>
                 </div>

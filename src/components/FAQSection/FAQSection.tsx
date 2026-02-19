@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import type { Page } from '@/payload-types'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLink } from '@/utils/linkResolver'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
@@ -24,8 +24,7 @@ export default function FAQSection({ block }: FAQSectionProps) {
   const heading = block.heading || 'FAQs'
   const description = block.description || 'Common questions from our clients. Feel free to reach out with more.'
   const contactButtonText = block.contactButtonText || 'Contact Us'
-  const linkHref = resolveLinkUrl(block as any)
-  const openInNewTab = shouldOpenInNewTab(block as any)
+  const link = resolveLink(block as any)
 
   // Use questions from the block (fetched from global set in renderBlocks)
   const questions = block.questions || []
@@ -64,10 +63,11 @@ export default function FAQSection({ block }: FAQSectionProps) {
               {description}
             </p>
 
-            {contactButtonText && linkHref && (
+            {contactButtonText && link.href && (
               <PrimaryButton
-                href={linkHref}
-                openInNewTab={openInNewTab}
+                href={link.href}
+                openInNewTab={link.openInNewTab}
+                disabled={link.disabled}
                 className="font-bold px-6 py-3 rounded-lg"
               >
                 {contactButtonText}

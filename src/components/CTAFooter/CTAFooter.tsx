@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Page } from '@/payload-types'
-import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
+import { resolveLink, type ConstantLinksMap } from '@/utils/linkResolver'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import PrimaryButton, { SecondaryButton } from '@/components/PrimaryButton'
 
@@ -22,16 +22,16 @@ export default function CTAFooter({ block, constantLinksMap }: CTAFooterProps) {
 
   const renderButton = (button: typeof buttons[0], index: number) => {
     const isPrimary = button.variant === 'primary' || (button.variant === undefined && index === 0)
-    const href = resolveLinkUrl(button as any, constantLinksMap)
-    const openInNewTab = shouldOpenInNewTab(button as any)
+    const link = resolveLink(button as any, constantLinksMap)
 
     const ButtonComponent = isPrimary ? PrimaryButton : SecondaryButton
 
     return (
       <ButtonComponent
         key={index}
-        href={href || undefined}
-        openInNewTab={openInNewTab}
+        href={link.href || undefined}
+        openInNewTab={link.openInNewTab}
+        disabled={link.disabled}
         variant={isPrimary ? 'dark' : undefined}
       >
         {button.label}

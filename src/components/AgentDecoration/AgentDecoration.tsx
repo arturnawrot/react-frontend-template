@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import type { Page, Media } from '@/payload-types'
-import { resolveLinkUrl, shouldOpenInNewTab, type ConstantLinksMap } from '@/utils/linkResolver'
+import { resolveLink, type ConstantLinksMap } from '@/utils/linkResolver'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import PrimaryButton from '@/components/PrimaryButton'
 
@@ -58,8 +58,7 @@ const AgentCard = ({ src, alt, className }: { src: string; alt: string; classNam
 export default function AgentDecoration({ block, constantLinksMap }: AgentDecorationProps) {
   const heading = block.heading || 'Find the Right\nPartner for Your\nProperty Goals'
   const buttonText = block.buttonText
-  const linkHref = resolveLinkUrl(block as any, constantLinksMap)
-  const openInNewTab = shouldOpenInNewTab(block as any)
+  const link = resolveLink(block as any, constantLinksMap)
   const variant = (block as any).variant || 'full'
   const description = (block as any).description
   const bulletPoints = (block as any).bulletPoints || []
@@ -137,11 +136,12 @@ export default function AgentDecoration({ block, constantLinksMap }: AgentDecora
             </div>
           )}
           
-          {buttonText && linkHref && (
+          {buttonText && link.href && (
             <div className={isCompact ? 'mt-8' : ''}>
               <PrimaryButton
-                href={linkHref}
-                openInNewTab={openInNewTab}
+                href={link.href}
+                openInNewTab={link.openInNewTab}
+                disabled={link.disabled}
                 className="font-bold py-4 px-10 rounded-full text-lg w-full md:w-auto"
               >
                 {buttonText}

@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Page } from '@/payload-types'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLink } from '@/utils/linkResolver'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import PrimaryButton from '@/components/PrimaryButton'
 
@@ -29,9 +29,8 @@ export default function CardOnBackground({ block }: CardOnBackgroundProps) {
         : defaultBackgroundImage
 
   // Handle CTA link
-  const href = resolveLinkUrl(block as any)
-  const openInNewTab = shouldOpenInNewTab(block as any)
-  const hasLink = href && block.linkType !== 'none'
+  const link = resolveLink(block as any)
+  const hasLink = link.href && block.linkType !== 'none'
 
   return (
     <section className="relative w-full min-h-[600px] md:min-h-[700px] overflow-hidden bg-gray-200">
@@ -71,8 +70,9 @@ export default function CardOnBackground({ block }: CardOnBackgroundProps) {
           {/* CTA Button */}
           {ctaText && (
             <PrimaryButton
-              href={hasLink ? href : undefined}
-              openInNewTab={openInNewTab}
+              href={hasLink ? link.href : undefined}
+              openInNewTab={link.openInNewTab}
+              disabled={link.disabled}
               className="text-base md:text-lg rounded-full"
               fullWidth
             >

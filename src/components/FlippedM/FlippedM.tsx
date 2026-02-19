@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Page, Media } from '@/payload-types'
 import styles from './FlippedM.module.scss'
-import { resolveLinkUrl, shouldOpenInNewTab } from '@/utils/linkResolver'
+import { resolveLink, type ResolvedLink } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
@@ -136,15 +136,13 @@ const ProcessSection = ({
   subheading,
   bulletPoints,
   ctaText,
-  ctaHref,
-  ctaOpenInNewTab,
+  ctaLink,
 }: {
   heading: React.ReactNode
   subheading?: string | null
   bulletPoints: BulletPoint[]
   ctaText?: string | null
-  ctaHref?: string | null
-  ctaOpenInNewTab?: boolean
+  ctaLink?: ResolvedLink
 }) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -241,11 +239,12 @@ const ProcessSection = ({
               />
             ))}
             
-            {ctaText && (
+            {ctaText && ctaLink?.href && (
               <div className="mt-10 mb-20 md:ml-14">
                 <PrimaryButton
-                  href={ctaHref || undefined}
-                  openInNewTab={ctaOpenInNewTab}
+                  href={ctaLink.href}
+                  openInNewTab={ctaLink.openInNewTab}
+                  disabled={ctaLink.disabled}
                   className="font-bold inline-block"
                 >
                   {ctaText}
@@ -317,25 +316,18 @@ export default function FlippedM({ block }: FlippedMProps) {
     </span>
   )
 
-  // Transform bullet points
-  const bulletPoints = (block.bulletPoints || []).map((bp: any) => ({
-    ...bp,
-    linkHref: resolveLinkUrl(bp),
-    openInNewTab: shouldOpenInNewTab(bp),
-  }))
+  // Transform bullet points - resolve links for each
+  const bulletPoints = (block.bulletPoints || []).map((bp: any) => {
+    const bpLink = resolveLink(bp)
+    return {
+      ...bp,
+      linkHref: bpLink.href,
+      openInNewTab: bpLink.openInNewTab,
+    }
+  })
 
-  // Resolve CTA
-  const ctaHref = resolveLinkUrl({
-    linkType: (block as any).linkType,
-    page: (block as any).page,
-    customUrl: (block as any).customUrl,
-    ctaHref: (block as any).ctaHref,
-  })
-  
-  const ctaOpenInNewTab = shouldOpenInNewTab({
-    linkType: (block as any).linkType,
-    openInNewTab: (block as any).openInNewTab,
-  })
+  // Resolve CTA link
+  const ctaLink = resolveLink(block as any)
 
   return (
     <div>
@@ -344,8 +336,7 @@ export default function FlippedM({ block }: FlippedMProps) {
         subheading={block.subheading}
         bulletPoints={bulletPoints}
         ctaText={block.ctaText}
-        ctaHref={ctaHref}
-        ctaOpenInNewTab={ctaOpenInNewTab}
+        ctaLink={ctaLink}
       />
     </div>
   )
