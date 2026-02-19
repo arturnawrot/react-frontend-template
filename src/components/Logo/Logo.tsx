@@ -11,7 +11,7 @@ export default function Logo({ darkVariant = false }: LogoProps) {
     <Link href="/">
       {/* Normal logo - always visible on desktop, visible on mobile when darkVariant is false */}
       <Image
-        src="/img/logo.png"
+        src="/svg/meybohm-navbar-logo-light.svg"
         alt="Logo"
         width={200}
         height={50}

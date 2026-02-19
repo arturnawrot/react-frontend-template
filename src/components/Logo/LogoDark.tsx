@@ -7,7 +7,7 @@ interface LogoDarkProps {
 export default function LogoDark({ className }: LogoDarkProps) {
   return (
     <Image
-      src="/img/logo_dark_variant.png"
+      src="/svg/meybohm-navbar-logo-dark.svg"
       alt="Logo"
       width={200}
       height={50}
