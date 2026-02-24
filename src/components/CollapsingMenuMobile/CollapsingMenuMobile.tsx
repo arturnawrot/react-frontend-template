@@ -31,7 +31,7 @@ export default function CollapsingMenuMobile({
     <>
       {/* Backdrop: click to close */}
       <div
-        className={`md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
+        className={`md:hidden fixed inset-0 bg-black/50 z-[100] transition-opacity duration-300 ${
           open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={onClose}
@@ -42,7 +42,7 @@ export default function CollapsingMenuMobile({
         role="dialog"
         aria-modal="true"
         aria-label="Mobile Navigation"
-        className={`md:hidden fixed inset-x-0 bg-[#DAE684] transition-transform duration-300 ease-in-out z-50 overflow-y-auto rounded-tl-3xl ${
+        className={`md:hidden fixed inset-x-0 bg-[#DAE684] transition-transform duration-300 ease-in-out z-[110] overflow-y-auto rounded-tl-3xl ${
           open ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{
