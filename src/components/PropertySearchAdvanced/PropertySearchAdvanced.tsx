@@ -356,29 +356,32 @@ export default function PropertySearchAdvanced({
   const prevSearchQueryRef = useRef<string>(searchQuery)
   const hasInitialFetchRef = useRef<boolean>(false)
   const isUpdatingFromURLRef = useRef<boolean>(false)
-  const prevURLSearchRef = useRef<string>('')
+  const prevURLStringRef = useRef<string>('')
 
-  // Sync state from URL params when they change externally (e.g., from navbar search)
+  // Sync state from URL params when they change externally (e.g., from navbar search or link clicks)
   useEffect(() => {
+    // Build current URL string from all params to detect any changes
+    const currentURLString = searchParams.toString()
+    
     // Skip on initial mount (already handled by initialState)
     if (isInitialMount.current) {
-      // Store initial URL search value
-      prevURLSearchRef.current = searchParams.get('search') || ''
+      // Store initial URL string
+      prevURLStringRef.current = currentURLString
       return
     }
 
-    // Read current URL params
-    const urlSearch = searchParams.get('search') || ''
-    
     // Only sync if URL actually changed externally (not from our own updates)
-    const urlSearchChanged = urlSearch !== prevURLSearchRef.current
-    if (!urlSearchChanged) {
+    const urlChanged = currentURLString !== prevURLStringRef.current
+    if (!urlChanged) {
       // URL didn't change externally, don't sync
       return
     }
 
     // Update the ref to track the new URL value
-    prevURLSearchRef.current = urlSearch
+    prevURLStringRef.current = currentURLString
+
+    // Read current URL params
+    const urlSearch = searchParams.get('search') || ''
 
     const urlBrokerId = searchParams.get('brokerId') ? parseInt(searchParams.get('brokerId')!, 10) : null
       const urlPropertyType = searchParams.get('propertyType') ? (parseInt(searchParams.get('propertyType')!, 10) as PropertyType) : null
@@ -412,6 +415,9 @@ export default function PropertySearchAdvanced({
     if (searchChanged || filtersChanged || pageChanged) {
       isUpdatingFromURLRef.current = true
       
+      // If search or filters changed, reset to page 1 (unless page is explicitly set in URL)
+      const shouldResetPage = (searchChanged || filtersChanged) && !searchParams.has('page')
+      
       if (searchChanged) {
         setSearchQuery(urlSearch)
       }
@@ -422,6 +428,9 @@ export default function PropertySearchAdvanced({
       
       if (pageChanged) {
         setCurrentPage(newPage)
+      } else if (shouldResetPage && currentPage !== 1) {
+        // Reset to page 1 if filters/search changed but page wasn't in URL
+        setCurrentPage(1)
       }
       
       // Reset flag after state updates
