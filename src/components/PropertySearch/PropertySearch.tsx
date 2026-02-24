@@ -45,7 +45,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
 
   // Use a ref to store a stable random sort value for each property ID 
   // to avoid erratic flickering when panning the map
-  const randomSortRef = useRef<Map<string, number>>(new Map())
+  const randomSortRef = useRef<Map<number, number>>(new Map())
 
   // Fetch all properties in chunks of 50, updating incrementally
   useEffect(() => {
