@@ -83,9 +83,18 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     property.broker_ids?.includes(broker.id)
   )
 
-  // Look up agent slugs for each broker
+  // Look up agent data for each broker from Agents collection
   const payload = await getPayload({ config })
   const brokerIdToAgentSlug: Record<number, string> = {}
+  const brokerIdToAgentData: Record<number, {
+    slug?: string
+    cardImage?: string | null
+    email?: string | null
+    phone?: string | null
+    linkedin?: string | null
+    fullName?: string
+    displayTitle?: string | null
+  }> = {}
   
   for (const broker of propertyBrokers) {
     try {
@@ -97,11 +106,29 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           },
         },
         limit: 1,
+        depth: 1, // Populate cardImage relationship
       })
       
       if (docs.length > 0) {
-        const agent = docs[0] as { slug: string }
-        brokerIdToAgentSlug[broker.id] = agent.slug
+        const agent = docs[0] as any
+        if (agent.slug) {
+          brokerIdToAgentSlug[broker.id] = agent.slug
+        }
+        
+        // Extract agent data
+        const cardImageUrl = agent.cardImage && typeof agent.cardImage === 'object' && 'url' in agent.cardImage
+          ? agent.cardImage.url
+          : null
+        
+        brokerIdToAgentData[broker.id] = {
+          slug: agent.slug,
+          cardImage: cardImageUrl,
+          email: agent.email || null,
+          phone: agent.phone || null,
+          linkedin: agent.linkedin || null,
+          fullName: agent.fullName || `${agent.firstName || ''} ${agent.lastName || ''}`.trim(),
+          displayTitle: agent.displayTitle || null,
+        }
       }
     } catch (error) {
       console.error(`Error looking up agent for broker ${broker.id}:`, error)
@@ -173,6 +200,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           property={property} 
           brokers={propertyBrokers}
           brokerIdToAgentSlug={brokerIdToAgentSlug}
+          brokerIdToAgentData={brokerIdToAgentData}
           customContactForm={customContactForm}
         />
         {nearbyPropertyCards.length > 0 && (

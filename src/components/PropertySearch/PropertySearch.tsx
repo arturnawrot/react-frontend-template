@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { List, Grid, Share2, Loader2 } from 'lucide-react'
@@ -42,6 +42,10 @@ export default function PropertySearch({ block }: PropertySearchProps) {
   const [loading, setLoading] = useState(true)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Use a ref to store a stable random sort value for each property ID 
+  // to avoid erratic flickering when panning the map
+  const randomSortRef = useRef<Map<string, number>>(new Map())
 
   // Fetch all properties in chunks of 50, updating incrementally
   useEffect(() => {
@@ -135,7 +139,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
     fetchAllProperties()
   }, [])
 
-  // Handle map bounds change - filter properties and show 4
+  // Handle map bounds change - randomly filter properties and show 4
   interface LeafletBounds {
     north: number
     south: number
@@ -144,8 +148,20 @@ export default function PropertySearch({ block }: PropertySearchProps) {
   }
 
   const handleBoundsChange = React.useCallback((bounds: LeafletBounds, visible: PropertyCardData[]) => {
-    // Show up to 4 properties from the visible area
-    const limited = visible.slice(0, 4)
+    // Assign a persistent random sorting number to new properties
+    visible.forEach(p => {
+      if (!randomSortRef.current.has(p.id)) {
+        randomSortRef.current.set(p.id, Math.random())
+      }
+    })
+
+    // Randomize the visible properties list stably using our mapped values
+    const randomizedVisible = [...visible].sort((a, b) => {
+      return (randomSortRef.current.get(a.id) || 0) - (randomSortRef.current.get(b.id) || 0)
+    })
+
+    // Show up to 4 randomly selected properties from the visible area
+    const limited = randomizedVisible.slice(0, 4)
     
     // Only update if the visible properties have actually changed
     setVisibleProperties(prev => {
@@ -227,14 +243,6 @@ export default function PropertySearch({ block }: PropertySearchProps) {
                   <Loader2 className="h-4 w-4 text-stone-600 animate-spin" />
                 )}
               </div>
-              {/* <div className="flex gap-2 items-center">
-                 <div className="hidden sm:flex bg-white rounded border border-stone-200 p-1">
-                   <button className="p-1 hover:bg-stone-100 rounded text-stone-600"><List size={18} /></button>
-                   <button className="p-1 hover:bg-stone-100 rounded text-stone-400"><Grid size={18} /></button>
-                 </div>
-                 <button className="text-xs font-medium bg-stone-100 px-3 py-1.5 rounded hover:bg-stone-200 text-stone-600">Last Updated</button>
-                 <button className="p-1.5 hover:bg-stone-100 rounded text-stone-600 border border-transparent hover:border-stone-200"><Share2 size={16} /></button>
-              </div> */}
             </div>
 
             {/* Cards Stack - Fixed height container, no scrolling */}
@@ -258,4 +266,3 @@ export default function PropertySearch({ block }: PropertySearchProps) {
     </Container>
   )
 }
-

@@ -33,6 +33,15 @@ interface PropertyDetailsProps {
   property: BuildoutProperty
   brokers?: BuildoutBroker[]
   brokerIdToAgentSlug?: Record<number, string>
+  brokerIdToAgentData?: Record<number, {
+    slug?: string
+    cardImage?: string | null
+    email?: string | null
+    phone?: string | null
+    linkedin?: string | null
+    fullName?: string
+    displayTitle?: string | null
+  }>
   customContactForm?: { html: string } | null
 }
 
@@ -110,7 +119,7 @@ const AgentCard = ({
   )
 }
 
-const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [], brokerIdToAgentSlug = {}, customContactForm = null }) => {
+const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [], brokerIdToAgentSlug = {}, brokerIdToAgentData = {}, customContactForm = null }) => {
   const limeGreen = "bg-[#dce676]"
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isSaved, setIsSaved] = useState(false)
@@ -670,22 +679,61 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
           {propertyBrokers.length > 0 && (
             <div className="mb-10">
               {propertyBrokers.map((broker) => {
-                const agentSlug = brokerIdToAgentSlug[broker.id]
-                return (
-                  <AgentCard 
-                    key={broker.id}
-                    name={`${broker.first_name} ${broker.last_name}`}
-                    role={broker.job_title || 'Agent & Broker'}
-                    license={broker.licenses && broker.licenses.length > 0 
-                      ? `${broker.licenses[0].state} #${broker.licenses[0].number}`
-                      : undefined}
-                    image={broker.profile_photo_url || undefined}
-                    email={broker.email}
-                    phone={broker.phone_number || broker.cell_phone}
-                    linkedin={broker.linked_in_url || undefined}
-                    agentSlug={agentSlug}
-                  />
-                )
+                const agentData = brokerIdToAgentData[broker.id]
+                const agentSlug = agentData?.slug || brokerIdToAgentSlug[broker.id]
+                
+                // If agent found locally, use ONLY local data (no fallback to broker data)
+                // If agent not found locally, use broker data
+                if (agentData) {
+                  // Agent found locally - use only local data
+                  const name = agentData.fullName || `${broker.first_name} ${broker.last_name}`
+                  const role = agentData.displayTitle || broker.job_title || 'Agent & Broker'
+                  const image = agentData.cardImage || undefined
+                  // Only use local values if they exist and are not empty strings
+                  const email = (agentData.email && agentData.email.trim()) || undefined
+                  const phone = (agentData.phone && agentData.phone.trim()) || undefined
+                  const linkedin = (agentData.linkedin && agentData.linkedin.trim()) || undefined
+                  
+                  return (
+                    <AgentCard 
+                      key={broker.id}
+                      name={name}
+                      role={role}
+                      license={broker.licenses && broker.licenses.length > 0 
+                        ? `${broker.licenses[0].state} #${broker.licenses[0].number}`
+                        : undefined}
+                      image={image}
+                      email={email}
+                      phone={phone}
+                      linkedin={linkedin}
+                      agentSlug={agentSlug}
+                    />
+                  )
+                } else {
+                  // Agent not found locally - use broker data
+                  const name = `${broker.first_name} ${broker.last_name}`
+                  const role = broker.job_title || 'Agent & Broker'
+                  const image = broker.profile_photo_url || undefined
+                  const email = (broker.email && broker.email.trim()) || undefined
+                  const phone = (broker.phone_number && broker.phone_number.trim()) || (broker.cell_phone && broker.cell_phone.trim()) || undefined
+                  const linkedin = (broker.linked_in_url && broker.linked_in_url.trim()) || undefined
+                  
+                  return (
+                    <AgentCard 
+                      key={broker.id}
+                      name={name}
+                      role={role}
+                      license={broker.licenses && broker.licenses.length > 0 
+                        ? `${broker.licenses[0].state} #${broker.licenses[0].number}`
+                        : undefined}
+                      image={image}
+                      email={email}
+                      phone={phone}
+                      linkedin={linkedin}
+                      agentSlug={agentSlug}
+                    />
+                  )
+                }
               })}
             </div>
           )}

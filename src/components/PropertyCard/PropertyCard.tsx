@@ -6,6 +6,7 @@ import { Heart } from 'lucide-react'
 import { isPropertySaved, togglePropertySaved } from '@/utils/saved-properties'
 import { addressToSlug } from '@/utils/address-slug'
 import { useAgentSlugMap } from '@/hooks/useAgentSlugMap'
+import { useAgentAvatar } from '@/hooks/useAgentAvatar'
 import styles from './PropertyCard.module.scss'
 
 interface PropertyCardProps {
@@ -30,6 +31,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
   const isVertical = variant === 'vertical'
   const [isSaved, setIsSaved] = useState(false)
   const agentSlugMap = useAgentSlugMap()
+  const agentAvatarFromDb = useAgentAvatar(property.brokerId)
 
   // Get agent slug from brokerId if available, otherwise use provided agentSlug
   const agentSlug = useMemo(() => {
@@ -41,6 +43,20 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
     }
     return null
   }, [property.agentSlug, property.brokerId, agentSlugMap])
+
+  // Get agent avatar from brokerId if available, otherwise use provided agentImage
+  const agentImage = useMemo(() => {
+    // First try to get from database using brokerId
+    if (agentAvatarFromDb) {
+      return agentAvatarFromDb
+    }
+    // Fallback to provided agentImage
+    if (property.agentImage) {
+      return property.agentImage
+    }
+    // Final fallback to placeholder
+    return 'https://i.pravatar.cc/100?img=5'
+  }, [agentAvatarFromDb, property.agentImage])
 
   // Check if property is saved on mount and when property.id changes
   useEffect(() => {
@@ -124,7 +140,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
               <>
                 <div className="w-4 h-4 rounded-full bg-stone-200 overflow-hidden flex-shrink-0 relative">
                   <Image 
-                    src={property.agentImage || 'https://i.pravatar.cc/100?img=5'} 
+                    src={agentImage} 
                     alt={property.agent} 
                     fill
                     className="object-cover" 
