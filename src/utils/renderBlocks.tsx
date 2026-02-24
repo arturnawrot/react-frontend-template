@@ -27,6 +27,7 @@ import LocalRootsSection from '@/components/LocalRootsSection/LocalRootsSection'
 import StatsSection from '@/components/StatsSection/StatsSection'
 import AvailableRoles from '@/components/AvailableRoles/AvailableRoles'
 import OfficeLocations from '@/components/OfficeLocations/OfficeLocations'
+import AssetTypeCard from '@/components/AssetTypeCard/AssetTypeCard'
 import CenteredSectionHeader from '@/components/CenteredSectionHeader/CenteredSectionHeader'
 import CustomHtmlBlock from '@/components/CustomHtmlBlock/CustomHtmlBlock'
 import ComingSoon from '@/components/ComingSoon/ComingSoon'
@@ -920,6 +921,9 @@ export async function renderBlock(
     }
 
     return <OfficeLocations key={index} block={{ ...(block as any), locations }} />
+  }
+  if (block.blockType === 'assetTypeCard') {
+    return <AssetTypeCard key={index} block={block} />
   }
   if (block.blockType === 'centeredSectionHeader') {
     return <CenteredSectionHeader key={index} block={block} />

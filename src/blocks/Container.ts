@@ -21,6 +21,7 @@ import { BlogHighlightsBlock } from './BlogHighlightsBlock'
 import { LocalRootsSection } from './LocalRootsSection'
 import { AvailableRoles } from './AvailableRoles'
 import { OfficeLocations } from './OfficeLocations'
+import { AssetTypeCard } from './AssetTypeCard'
 import { StatsSection } from './StatsSection'
 import { CustomHtmlBlock } from './CustomHtmlBlock'
 
@@ -53,6 +54,7 @@ const getContainerBlock = (maxDepth: number = 3): Block => {
     LocalRootsSection,
     AvailableRoles,
     OfficeLocations,
+    AssetTypeCard,
     StatsSection,
     CustomHtmlBlock,
   ]

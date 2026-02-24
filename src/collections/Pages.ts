@@ -27,6 +27,7 @@ import { LocalRootsSection } from '../blocks/LocalRootsSection'
 import { StatsSection } from '../blocks/StatsSection'
 import { AvailableRoles } from '../blocks/AvailableRoles'
 import { OfficeLocations } from '../blocks/OfficeLocations'
+import { AssetTypeCard } from '../blocks/AssetTypeCard'
 import { CenteredSectionHeader } from '../blocks/CenteredSectionHeader'
 import { CustomHtmlBlock } from '../blocks/CustomHtmlBlock'
 import { ComingSoon } from '../blocks/ComingSoon'
@@ -90,6 +91,7 @@ export const Pages: CollectionConfig = {
         StatsSection,
         AvailableRoles,
         OfficeLocations,
+        AssetTypeCard,
         CenteredSectionHeader,
         CustomHtmlBlock,
         ComingSoon,

@@ -429,7 +429,17 @@ export default async function AgentPage({ params }: AgentPageProps) {
           heading: `Ready to Talk with ${firstName}?`,
           subheading: 'Get in touch to explore listings, strategies, or your next move.',
           buttons: [
-            { label: 'Schedule A Consultation', variant: 'primary' },
+            {
+              label: 'Schedule A Consultation',
+              variant: 'primary',
+              ...(agent.consultationUrl
+                ? {
+                    linkType: 'custom' as const,
+                    customUrl: agent.consultationUrl,
+                    openInNewTab: agent.consultationOpenInNewTab ?? true,
+                  }
+                : {}),
+            },
             // { label: 'Get Matched with a Agent', variant: 'secondary' },
             // { label: 'Search Listings', variant: 'secondary' },
           ],

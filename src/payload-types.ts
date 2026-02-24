@@ -1169,6 +1169,55 @@ export interface Page {
                 }
               | {
                   /**
+                   * Optional main heading for the section (uses SectionHeading styling)
+                   */
+                  heading?: string | null;
+                  cards: {
+                    /**
+                     * Background image for the card
+                     */
+                    image: string | Media;
+                    /**
+                     * Card header text - will be displayed using SectionHeader styling
+                     */
+                    header: string;
+                    /**
+                     * Enter each bullet point on a new line. They will be displayed as a bulleted list.
+                     */
+                    subheader?: string | null;
+                    linkText?: string | null;
+                    /**
+                     * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                     */
+                    linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                    /**
+                     * Select a page to link to
+                     */
+                    page?: (string | null) | Page;
+                    /**
+                     * Enter a custom URL (e.g., /contact, https://example.com)
+                     */
+                    customUrl?: string | null;
+                    /**
+                     * Select a constant link. These links can be managed globally and updated in one place.
+                     */
+                    constantLink?: string | null;
+                    /**
+                     * Open the link in a new browser tab
+                     */
+                    openInNewTab?: boolean | null;
+                    /**
+                     * Disable the link (renders as non-clickable text)
+                     */
+                    disabled?: boolean | null;
+                    id?: string | null;
+                  }[];
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'assetTypeCard';
+                }
+              | {
+                  /**
                    * Optional heading above the stats (e.g., "Life at Meybohm")
                    */
                   heading?: string | null;
@@ -1969,6 +2018,55 @@ export interface Page {
                           }
                         | {
                             /**
+                             * Optional main heading for the section (uses SectionHeading styling)
+                             */
+                            heading?: string | null;
+                            cards: {
+                              /**
+                               * Background image for the card
+                               */
+                              image: string | Media;
+                              /**
+                               * Card header text - will be displayed using SectionHeader styling
+                               */
+                              header: string;
+                              /**
+                               * Enter each bullet point on a new line. They will be displayed as a bulleted list.
+                               */
+                              subheader?: string | null;
+                              linkText?: string | null;
+                              /**
+                               * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                               */
+                              linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                              /**
+                               * Select a page to link to
+                               */
+                              page?: (string | null) | Page;
+                              /**
+                               * Enter a custom URL (e.g., /contact, https://example.com)
+                               */
+                              customUrl?: string | null;
+                              /**
+                               * Select a constant link. These links can be managed globally and updated in one place.
+                               */
+                              constantLink?: string | null;
+                              /**
+                               * Open the link in a new browser tab
+                               */
+                              openInNewTab?: boolean | null;
+                              /**
+                               * Disable the link (renders as non-clickable text)
+                               */
+                              disabled?: boolean | null;
+                              id?: string | null;
+                            }[];
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'assetTypeCard';
+                          }
+                        | {
+                            /**
                              * Optional heading above the stats (e.g., "Life at Meybohm")
                              */
                             heading?: string | null;
@@ -2766,6 +2864,55 @@ export interface Page {
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'officeLocations';
+                                    }
+                                  | {
+                                      /**
+                                       * Optional main heading for the section (uses SectionHeading styling)
+                                       */
+                                      heading?: string | null;
+                                      cards: {
+                                        /**
+                                         * Background image for the card
+                                         */
+                                        image: string | Media;
+                                        /**
+                                         * Card header text - will be displayed using SectionHeader styling
+                                         */
+                                        header: string;
+                                        /**
+                                         * Enter each bullet point on a new line. They will be displayed as a bulleted list.
+                                         */
+                                        subheader?: string | null;
+                                        linkText?: string | null;
+                                        /**
+                                         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                                         */
+                                        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                        /**
+                                         * Select a page to link to
+                                         */
+                                        page?: (string | null) | Page;
+                                        /**
+                                         * Enter a custom URL (e.g., /contact, https://example.com)
+                                         */
+                                        customUrl?: string | null;
+                                        /**
+                                         * Select a constant link. These links can be managed globally and updated in one place.
+                                         */
+                                        constantLink?: string | null;
+                                        /**
+                                         * Open the link in a new browser tab
+                                         */
+                                        openInNewTab?: boolean | null;
+                                        /**
+                                         * Disable the link (renders as non-clickable text)
+                                         */
+                                        disabled?: boolean | null;
+                                        id?: string | null;
+                                      }[];
+                                      id?: string | null;
+                                      blockName?: string | null;
+                                      blockType: 'assetTypeCard';
                                     }
                                   | {
                                       /**
@@ -3576,6 +3723,55 @@ export interface Page {
                                               }
                                             | {
                                                 /**
+                                                 * Optional main heading for the section (uses SectionHeading styling)
+                                                 */
+                                                heading?: string | null;
+                                                cards: {
+                                                  /**
+                                                   * Background image for the card
+                                                   */
+                                                  image: string | Media;
+                                                  /**
+                                                   * Card header text - will be displayed using SectionHeader styling
+                                                   */
+                                                  header: string;
+                                                  /**
+                                                   * Enter each bullet point on a new line. They will be displayed as a bulleted list.
+                                                   */
+                                                  subheader?: string | null;
+                                                  linkText?: string | null;
+                                                  /**
+                                                   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                                                   */
+                                                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                  /**
+                                                   * Select a page to link to
+                                                   */
+                                                  page?: (string | null) | Page;
+                                                  /**
+                                                   * Enter a custom URL (e.g., /contact, https://example.com)
+                                                   */
+                                                  customUrl?: string | null;
+                                                  /**
+                                                   * Select a constant link. These links can be managed globally and updated in one place.
+                                                   */
+                                                  constantLink?: string | null;
+                                                  /**
+                                                   * Open the link in a new browser tab
+                                                   */
+                                                  openInNewTab?: boolean | null;
+                                                  /**
+                                                   * Disable the link (renders as non-clickable text)
+                                                   */
+                                                  disabled?: boolean | null;
+                                                  id?: string | null;
+                                                }[];
+                                                id?: string | null;
+                                                blockName?: string | null;
+                                                blockType: 'assetTypeCard';
+                                              }
+                                            | {
+                                                /**
                                                  * Optional heading above the stats (e.g., "Life at Meybohm")
                                                  */
                                                 heading?: string | null;
@@ -4269,6 +4465,55 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'officeLocations';
+      }
+    | {
+        /**
+         * Optional main heading for the section (uses SectionHeading styling)
+         */
+        heading?: string | null;
+        cards: {
+          /**
+           * Background image for the card
+           */
+          image: string | Media;
+          /**
+           * Card header text - will be displayed using SectionHeader styling
+           */
+          header: string;
+          /**
+           * Enter each bullet point on a new line. They will be displayed as a bulleted list.
+           */
+          subheader?: string | null;
+          linkText?: string | null;
+          /**
+           * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+           */
+          linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+          /**
+           * Select a page to link to
+           */
+          page?: (string | null) | Page;
+          /**
+           * Enter a custom URL (e.g., /contact, https://example.com)
+           */
+          customUrl?: string | null;
+          /**
+           * Select a constant link. These links can be managed globally and updated in one place.
+           */
+          constantLink?: string | null;
+          /**
+           * Open the link in a new browser tab
+           */
+          openInNewTab?: boolean | null;
+          /**
+           * Disable the link (renders as non-clickable text)
+           */
+          disabled?: boolean | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'assetTypeCard';
       }
     | {
         heading: string;
@@ -5474,6 +5719,28 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                           blockName?: T;
                         };
+                    assetTypeCard?:
+                      | T
+                      | {
+                          heading?: T;
+                          cards?:
+                            | T
+                            | {
+                                image?: T;
+                                header?: T;
+                                subheader?: T;
+                                linkText?: T;
+                                linkType?: T;
+                                page?: T;
+                                customUrl?: T;
+                                constantLink?: T;
+                                openInNewTab?: T;
+                                disabled?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                          blockName?: T;
+                        };
                     statsSection?:
                       | T
                       | {
@@ -5858,6 +6125,28 @@ export interface PagesSelect<T extends boolean = true> {
                                   | {
                                       officeLocationSetName?: T;
                                       heading?: T;
+                                      id?: T;
+                                      blockName?: T;
+                                    };
+                                assetTypeCard?:
+                                  | T
+                                  | {
+                                      heading?: T;
+                                      cards?:
+                                        | T
+                                        | {
+                                            image?: T;
+                                            header?: T;
+                                            subheader?: T;
+                                            linkText?: T;
+                                            linkType?: T;
+                                            page?: T;
+                                            customUrl?: T;
+                                            constantLink?: T;
+                                            openInNewTab?: T;
+                                            disabled?: T;
+                                            id?: T;
+                                          };
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -6248,6 +6537,28 @@ export interface PagesSelect<T extends boolean = true> {
                                                   id?: T;
                                                   blockName?: T;
                                                 };
+                                            assetTypeCard?:
+                                              | T
+                                              | {
+                                                  heading?: T;
+                                                  cards?:
+                                                    | T
+                                                    | {
+                                                        image?: T;
+                                                        header?: T;
+                                                        subheader?: T;
+                                                        linkText?: T;
+                                                        linkType?: T;
+                                                        page?: T;
+                                                        customUrl?: T;
+                                                        constantLink?: T;
+                                                        openInNewTab?: T;
+                                                        disabled?: T;
+                                                        id?: T;
+                                                      };
+                                                  id?: T;
+                                                  blockName?: T;
+                                                };
                                             statsSection?:
                                               | T
                                               | {
@@ -6635,6 +6946,28 @@ export interface PagesSelect<T extends boolean = true> {
                                                               id?: T;
                                                               blockName?: T;
                                                             };
+                                                        assetTypeCard?:
+                                                          | T
+                                                          | {
+                                                              heading?: T;
+                                                              cards?:
+                                                                | T
+                                                                | {
+                                                                    image?: T;
+                                                                    header?: T;
+                                                                    subheader?: T;
+                                                                    linkText?: T;
+                                                                    linkType?: T;
+                                                                    page?: T;
+                                                                    customUrl?: T;
+                                                                    constantLink?: T;
+                                                                    openInNewTab?: T;
+                                                                    disabled?: T;
+                                                                    id?: T;
+                                                                  };
+                                                              id?: T;
+                                                              blockName?: T;
+                                                            };
                                                         statsSection?:
                                                           | T
                                                           | {
@@ -6992,6 +7325,28 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               officeLocationSetName?: T;
               heading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        assetTypeCard?:
+          | T
+          | {
+              heading?: T;
+              cards?:
+                | T
+                | {
+                    image?: T;
+                    header?: T;
+                    subheader?: T;
+                    linkText?: T;
+                    linkType?: T;
+                    page?: T;
+                    customUrl?: T;
+                    constantLink?: T;
+                    openInNewTab?: T;
+                    disabled?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };
