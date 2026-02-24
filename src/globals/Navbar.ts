@@ -1,45 +1,160 @@
-import type { GlobalConfig } from 'payload'
+import type { GlobalConfig, Field } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
 
-// Reusable link fields for columns
-const columnLinkFields = [
+// Reusable link fields for dropdown column links (uses same pattern as createLinkFields but with label instead of linkText)
+const columnLinkFields: Field[] = [
   {
     name: 'label',
-    type: 'text' as const,
+    type: 'text',
     required: true,
+    label: 'Link Label',
   },
   {
     name: 'linkType',
-    type: 'select' as const,
-    required: true,
-    defaultValue: 'custom',
+    type: 'select',
+    required: false,
     options: [
+      { label: 'None', value: 'none' },
       { label: 'Page', value: 'page' },
       { label: 'Custom URL', value: 'custom' },
+      { label: 'Constant Link', value: 'constant' },
     ],
+    defaultValue: 'custom',
+    admin: {
+      description: 'Choose whether to link to an existing page, a custom URL, a constant link, or no link',
+    },
   },
   {
     name: 'page',
-    type: 'relationship' as const,
-    relationTo: 'pages' as const,
+    type: 'relationship',
+    relationTo: 'pages',
+    required: false,
     admin: {
-      condition: (_data: unknown, siblingData: { linkType?: string }) => siblingData?.linkType === 'page',
+      condition: (_data, siblingData) => siblingData?.linkType === 'page',
+      description: 'Select a page to link to',
     },
   },
   {
     name: 'customUrl',
-    type: 'text' as const,
+    type: 'text',
+    required: false,
     admin: {
-      condition: (_data: unknown, siblingData: { linkType?: string }) => siblingData?.linkType === 'custom',
-      description: 'Enter a custom URL (e.g., /services, https://example.com)',
+      condition: (_data, siblingData) => siblingData?.linkType === 'custom',
+      description: 'Enter a custom URL (e.g., /contact, https://example.com)',
+    },
+  },
+  {
+    name: 'constantLink',
+    type: 'text',
+    required: false,
+    admin: {
+      condition: (_data, siblingData) => siblingData?.linkType === 'constant',
+      description: 'Select a constant link. These links can be managed globally and updated in one place.',
+      components: {
+        Field: '/components/ConstantLinkSelector/ConstantLinkSelector',
+      },
+    },
+  },
+  {
+    name: 'openInNewTab',
+    type: 'checkbox',
+    label: 'Open in New Tab',
+    defaultValue: false,
+    admin: {
+      condition: (_data, siblingData) => {
+        const linkType = siblingData?.linkType
+        return linkType !== 'none' && linkType !== undefined && linkType !== null
+      },
+      description: 'Open the link in a new browser tab',
+    },
+  },
+]
+
+// Bottom link fields with enabled toggle
+const bottomLinkFields: Field[] = [
+  {
+    name: 'enabled',
+    type: 'checkbox',
+    label: 'Show Bottom Link',
+    defaultValue: false,
+  },
+  {
+    name: 'label',
+    type: 'text',
+    label: 'Link Label',
+    admin: {
+      condition: (_data, siblingData) => siblingData?.enabled === true,
+      description: 'e.g., "See All Property Types"',
+    },
+  },
+  {
+    name: 'linkType',
+    type: 'select',
+    required: false,
+    options: [
+      { label: 'None', value: 'none' },
+      { label: 'Page', value: 'page' },
+      { label: 'Custom URL', value: 'custom' },
+      { label: 'Constant Link', value: 'constant' },
+    ],
+    defaultValue: 'custom',
+    admin: {
+      condition: (_data, siblingData) => siblingData?.enabled === true,
+      description: 'Choose whether to link to an existing page, a custom URL, a constant link, or no link',
+    },
+  },
+  {
+    name: 'page',
+    type: 'relationship',
+    relationTo: 'pages',
+    required: false,
+    admin: {
+      condition: (_data, siblingData) => siblingData?.enabled === true && siblingData?.linkType === 'page',
+      description: 'Select a page to link to',
+    },
+  },
+  {
+    name: 'customUrl',
+    type: 'text',
+    required: false,
+    admin: {
+      condition: (_data, siblingData) => siblingData?.enabled === true && siblingData?.linkType === 'custom',
+      description: 'Enter a custom URL (e.g., /contact, https://example.com)',
+    },
+  },
+  {
+    name: 'constantLink',
+    type: 'text',
+    required: false,
+    admin: {
+      condition: (_data, siblingData) => siblingData?.enabled === true && siblingData?.linkType === 'constant',
+      description: 'Select a constant link. These links can be managed globally and updated in one place.',
+      components: {
+        Field: '/components/ConstantLinkSelector/ConstantLinkSelector',
+      },
+    },
+  },
+  {
+    name: 'openInNewTab',
+    type: 'checkbox',
+    label: 'Open in New Tab',
+    defaultValue: false,
+    admin: {
+      condition: (_data, siblingData) => {
+        if (!siblingData?.enabled) return false
+        const linkType = siblingData?.linkType
+        return linkType !== 'none' && linkType !== undefined && linkType !== null
+      },
+      description: 'Open the link in a new browser tab',
     },
   },
 ]
 
 // Dropdown column fields (reused for both upper and main links)
-const dropdownColumnFields = [
+const dropdownColumnFields: Field[] = [
   {
     name: 'columnName',
-    type: 'text' as const,
+    type: 'text',
     required: true,
     label: 'Column Title',
     admin: {
@@ -48,62 +163,18 @@ const dropdownColumnFields = [
   },
   {
     name: 'links',
-    type: 'array' as const,
+    type: 'array',
     label: 'Column Links',
     fields: columnLinkFields,
   },
   {
     name: 'bottomLink',
-    type: 'group' as const,
+    type: 'group',
     label: 'Bottom Link (Optional)',
     admin: {
       description: 'Optional "See All..." link at the bottom of the column',
     },
-    fields: [
-      {
-        name: 'enabled',
-        type: 'checkbox' as const,
-        label: 'Show Bottom Link',
-        defaultValue: false,
-      },
-      {
-        name: 'label',
-        type: 'text' as const,
-        admin: {
-          condition: (_data: unknown, siblingData: { enabled?: boolean }) => siblingData?.enabled === true,
-          description: 'e.g., "See All Property Types"',
-        },
-      },
-      {
-        name: 'linkType',
-        type: 'select' as const,
-        defaultValue: 'custom',
-        options: [
-          { label: 'Page', value: 'page' },
-          { label: 'Custom URL', value: 'custom' },
-        ],
-        admin: {
-          condition: (_data: unknown, siblingData: { enabled?: boolean }) => siblingData?.enabled === true,
-        },
-      },
-      {
-        name: 'page',
-        type: 'relationship' as const,
-        relationTo: 'pages' as const,
-        admin: {
-          condition: (_data: unknown, siblingData: { enabled?: boolean; linkType?: string }) =>
-            siblingData?.enabled === true && siblingData?.linkType === 'page',
-        },
-      },
-      {
-        name: 'customUrl',
-        type: 'text' as const,
-        admin: {
-          condition: (_data: unknown, siblingData: { enabled?: boolean; linkType?: string }) =>
-            siblingData?.enabled === true && siblingData?.linkType === 'custom',
-        },
-      },
-    ],
+    fields: bottomLinkFields,
   },
 ]
 
@@ -162,41 +233,11 @@ export const Navbar: GlobalConfig = {
         description: 'Links shown in the top bar (e.g., Search, Schedule, Contact Us, Login)',
       },
       fields: [
-        {
-          name: 'label',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'linkType',
-          type: 'select',
-          required: true,
-          defaultValue: 'custom',
-          options: [
-            { label: 'Page', value: 'page' },
-            { label: 'Custom URL', value: 'custom' },
-          ],
-          admin: {
-            description: 'Choose whether to link to an existing page or a custom URL',
-          },
-        },
-        {
-          name: 'page',
-          type: 'relationship',
-          relationTo: 'pages',
-          admin: {
-            condition: (_data, siblingData) => siblingData?.linkType === 'page',
-            description: 'Select a page to link to',
-          },
-        },
-        {
-          name: 'customUrl',
-          type: 'text',
-          admin: {
-            condition: (_data, siblingData) => siblingData?.linkType === 'custom',
-            description: 'Enter a custom URL (e.g., /contact, https://example.com)',
-          },
-        },
+        ...createLinkFields({
+          linkTextName: 'label',
+          linkTextLabel: 'Link Label',
+          linkTextRequired: true,
+        }),
         // Dropdown configuration for upper links
         {
           name: 'hasDropdown',
@@ -228,41 +269,11 @@ export const Navbar: GlobalConfig = {
         description: 'Links shown in the main navigation bar (e.g., Buy, Lease, Sell)',
       },
       fields: [
-        {
-          name: 'label',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'linkType',
-          type: 'select',
-          required: true,
-          defaultValue: 'custom',
-          options: [
-            { label: 'Page', value: 'page' },
-            { label: 'Custom URL', value: 'custom' },
-          ],
-          admin: {
-            description: 'Choose whether to link to an existing page or a custom URL',
-          },
-        },
-        {
-          name: 'page',
-          type: 'relationship',
-          relationTo: 'pages',
-          admin: {
-            condition: (_data, siblingData) => siblingData?.linkType === 'page',
-            description: 'Select a page to link to',
-          },
-        },
-        {
-          name: 'customUrl',
-          type: 'text',
-          admin: {
-            condition: (_data, siblingData) => siblingData?.linkType === 'custom',
-            description: 'Enter a custom URL (e.g., /buy, https://example.com)',
-          },
-        },
+        ...createLinkFields({
+          linkTextName: 'label',
+          linkTextLabel: 'Link Label',
+          linkTextRequired: true,
+        }),
         // Dropdown configuration for main links
         {
           name: 'hasDropdown',
@@ -287,4 +298,3 @@ export const Navbar: GlobalConfig = {
     },
   ],
 }
-

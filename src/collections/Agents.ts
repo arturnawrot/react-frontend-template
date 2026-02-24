@@ -23,6 +23,14 @@ export const Agents: CollectionConfig = {
       required: true,
     },
     {
+      name: 'displayTitle',
+      type: 'text',
+      required: false,
+      admin: {
+        description: 'Display title shown under agent name (e.g., "Senior Associate", "Managing Director")',
+      },
+    },
+    {
       name: 'slug',
       type: 'text',
       required: true,
@@ -104,6 +112,22 @@ export const Agents: CollectionConfig = {
       required: false,
       admin: {
         description: 'LinkedIn profile URL',
+      },
+    },
+    {
+      name: 'consultationUrl',
+      type: 'text',
+      required: false,
+      admin: {
+        description: 'External URL for "Schedule A Consultation" button (e.g., Calendly link)',
+      },
+    },
+    {
+      name: 'consultationOpenInNewTab',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        description: 'Open consultation link in a new tab',
       },
     },
     {

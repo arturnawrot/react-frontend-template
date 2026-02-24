@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import BlogAllContent from '@/components/BlogAllContent/BlogAllContent'
 import type { Blog, BlogCategory, User, BlogHighlight as BlogHighlightsType } from '@/payload-types'
-import NavbarWrapper from '@/components/Navbar/NavbarWrapper'
+import DarkNavbar from '@/components/Navbar/DarkNavbar'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 
@@ -74,9 +74,7 @@ export default async function AllContentPage() {
 
   return (
     <>
-      <div className="bg-transparent md:bg-[var(--strong-green)]">
-          <NavbarWrapper darkVariant={true} />
-      </div>
+      <DarkNavbar />
       <BlogAllContent
         initialBlogs={initialBlogsResult.docs as Blog[]}
         initialTotalCount={initialBlogsResult.totalDocs}

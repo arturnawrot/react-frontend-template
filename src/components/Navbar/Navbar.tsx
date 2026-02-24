@@ -135,6 +135,7 @@ export default function Navbar({
                   className={`${isAnyDropdownActive ? styles.upperNavbarLinkDark : linkStyles.upperNavbarLink} ${
                     activeUpperDropdown === index ? styles.activeLink : ''
                   } ${link.hasDropdown ? styles.hasDropdown : ''}`}
+                  {...(link.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 >
                   {link.label}
                 </Link>
@@ -185,6 +186,7 @@ export default function Navbar({
                   className={`${isAnyDropdownActive ? styles.mainNavbarLinkDark : linkStyles.mainNavbarLink} ${
                     activeMainDropdown === index ? styles.activeLink : ''
                   } ${link.hasDropdown ? styles.hasDropdown : ''}`}
+                  {...(link.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 >
                   {link.label}
                 </Link>

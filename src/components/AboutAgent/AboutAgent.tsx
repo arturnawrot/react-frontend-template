@@ -16,7 +16,8 @@ type AboutAgentProps = {
   phone?: string
   linkedin?: string
   about?: SerializedEditorState | null
-  onScheduleClick?: () => void
+  consultationUrl?: string
+  consultationOpenInNewTab?: boolean
 }
 
 export default function AboutAgent({
@@ -29,7 +30,8 @@ export default function AboutAgent({
   phone,
   linkedin,
   about,
-  onScheduleClick,
+  consultationUrl,
+  consultationOpenInNewTab = true,
 }: AboutAgentProps) {
   return (
     <section className="w-full pt-20 md:pt-24 pb-16 md:pb-24 px-6 md:px-12">
@@ -133,7 +135,8 @@ export default function AboutAgent({
 
               {/* Schedule A Consultation Button */}
               <PrimaryButton
-                onClick={onScheduleClick}
+                href={consultationUrl || undefined}
+                openInNewTab={consultationOpenInNewTab}
                 className="font-semibold rounded-full px-8 py-3 text-base text-center font-sans"
                 fullWidth
               >

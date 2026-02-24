@@ -41,13 +41,13 @@ export default function AgentCard({
     return (
       <div className="flex flex-col h-full">
         {/* Agent Image with Service Tags Overlay */}
-        <div className="relative w-full aspect-[328/388] bg-gray-300 rounded-[16px] overflow-hidden mb-4">
+        <Link href={agentHref} className="block relative w-full aspect-[328/388] bg-gray-300 rounded-[16px] overflow-hidden mb-4 group">
           {image && (
             <Image
               src={image}
               alt={name}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               quality={75}
               loading="lazy"
@@ -65,23 +65,25 @@ export default function AgentCard({
               ))}
             </div>
           )}
-        </div>
+        </Link>
         
         {/* Agent Name */}
-        <ResponsiveText
-          as="h3"
-          desktop="--headline1"
-          mobile="--headline1"
-          desktopLineHeight="40px"
-          mobileLineHeight="40px"
-          fontFamily="GT America Condensed"
-          fontWeight={500}
-          color="var(--strong-green)"
-          letterSpacing="0px"
-          className="mb-1"
-        >
-          {name}
-        </ResponsiveText>
+        <Link href={agentHref} className="hover:opacity-70 transition-opacity">
+          <ResponsiveText
+            as="h3"
+            desktop="--headline1"
+            mobile="--headline1"
+            desktopLineHeight="40px"
+            mobileLineHeight="40px"
+            fontFamily="GT America Condensed"
+            fontWeight={500}
+            color="var(--strong-green)"
+            letterSpacing="0px"
+            className="mb-1"
+          >
+            {name}
+          </ResponsiveText>
+        </Link>
         
         {/* Agent Title */}
         <ResponsiveText
@@ -177,22 +179,24 @@ export default function AgentCard({
   return (
     <div className="flex gap-4 mb-6">
       {/* Agent Image Placeholder */}
-      <div className="relative w-24 h-24 bg-gray-300 rounded-[16px] flex-shrink-0 overflow-hidden">
+      <Link href={agentHref} className="relative w-24 h-24 bg-gray-300 rounded-[16px] flex-shrink-0 overflow-hidden group">
         {image && (
           <Image
             src={image}
             alt={name}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="96px"
             quality={70}
             loading="lazy"
           />
         )}
-      </div>
+      </Link>
       
       <div className="flex flex-col justify-start">
-        <h3 className="font-[GT_America_Condensed] font-medium text-lg text-[var(--strong-green)] leading-[40px] tracking-[0px]">{name}</h3>
+        <Link href={agentHref} className="hover:opacity-70 transition-opacity">
+          <h3 className="font-[GT_America_Condensed] font-medium text-lg text-[var(--strong-green)] leading-[40px] tracking-[0px]">{name}</h3>
+        </Link>
         <p className="font-[GT_America_Condensed] font-medium text-xs text-[var(--strong-green)] leading-[24px] tracking-[0px]">{role}</p>
         
         <div className="flex items-center justify-between w-full mt-1">

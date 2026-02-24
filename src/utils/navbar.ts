@@ -2,11 +2,13 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import type { Navbar as NavbarType, Page } from '@/payload-types'
 import { getPageUrl } from './getPageUrl'
+import { getConstantLinksMap, type ConstantLinksMap } from './linkResolver'
 
 // Types for dropdown columns
 export interface DropdownLink {
   label: string
   href: string
+  openInNewTab?: boolean
 }
 
 export interface DropdownColumn {
@@ -15,6 +17,7 @@ export interface DropdownColumn {
   bottomLink?: {
     label: string
     href: string
+    openInNewTab?: boolean
   }
 }
 
@@ -28,6 +31,7 @@ export interface DropdownQuote {
 export interface NavbarLinkWithDropdown {
   label: string
   href: string
+  openInNewTab?: boolean
   hasDropdown: boolean
   dropdownColumns?: DropdownColumn[]
 }
@@ -38,16 +42,26 @@ export interface NavbarData {
   dropdownQuote?: DropdownQuote
 }
 
-// Helper to resolve page or custom URL
+// Helper to resolve page, custom URL, or constant link
 function resolveHref(
-  linkType: 'page' | 'custom' | null | undefined,
+  linkType: 'none' | 'page' | 'custom' | 'constant' | null | undefined,
   page: (string | null) | Page | undefined,
   customUrl: string | null | undefined,
+  constantLink: string | null | undefined,
+  constantLinksMap: ConstantLinksMap,
 ): string {
-  if (linkType === 'page' && typeof page === 'object' && page !== null) {
+  if (linkType === 'none') {
+    return '#'
+  } else if (linkType === 'page' && typeof page === 'object' && page !== null) {
     return getPageUrl(page.slug)
   } else if (linkType === 'custom' && customUrl) {
     return customUrl
+  } else if (linkType === 'constant' && constantLink) {
+    // Look up constant link from the map
+    if (constantLinksMap instanceof Map) {
+      return constantLinksMap.get(constantLink) || '#'
+    }
+    return constantLinksMap[constantLink] || '#'
   }
   return '#'
 }
@@ -55,19 +69,22 @@ function resolveHref(
 // Transform raw dropdown columns from Payload
 function transformDropdownColumns(
   rawColumns: NonNullable<NonNullable<NavbarType['mainLinks']>[number]['dropdownColumns']>,
+  constantLinksMap: ConstantLinksMap,
 ): DropdownColumn[] {
   return rawColumns.map((col) => ({
     columnName: col.columnName || '',
     links:
       col.links?.map((link) => ({
         label: link.label || '',
-        href: resolveHref(link.linkType, link.page, link.customUrl),
+        href: resolveHref(link.linkType, link.page, link.customUrl, link.constantLink, constantLinksMap),
+        openInNewTab: link.openInNewTab || false,
       })) || [],
     bottomLink:
       col.bottomLink?.enabled && col.bottomLink.label
         ? {
             label: col.bottomLink.label,
-            href: resolveHref(col.bottomLink.linkType, col.bottomLink.page, col.bottomLink.customUrl),
+            href: resolveHref(col.bottomLink.linkType, col.bottomLink.page, col.bottomLink.customUrl, col.bottomLink.constantLink, constantLinksMap),
+            openInNewTab: col.bottomLink.openInNewTab || false,
           }
         : undefined,
   }))
@@ -88,6 +105,9 @@ export async function getNavbarLinks(): Promise<NavbarData> {
   } catch (error) {
     console.error('Error fetching navbar:', error)
   }
+
+  // Fetch constant links for resolving constant link types
+  const constantLinksMap = await getConstantLinksMap(payload)
 
   // Transform dropdown quote - check for non-empty text and author
   const rawQuote = navbar?.dropdownQuote
@@ -114,10 +134,11 @@ export async function getNavbarLinks(): Promise<NavbarData> {
   const upperLinks: NavbarLinkWithDropdown[] =
     navbar?.upperLinks?.map((link) => ({
       label: link.label || '',
-      href: resolveHref(link.linkType, link.page, link.customUrl),
+      href: resolveHref(link.linkType, link.page, link.customUrl, link.constantLink, constantLinksMap),
+      openInNewTab: link.openInNewTab || false,
       hasDropdown: link.hasDropdown || false,
       dropdownColumns: link.hasDropdown && link.dropdownColumns
-        ? transformDropdownColumns(link.dropdownColumns)
+        ? transformDropdownColumns(link.dropdownColumns, constantLinksMap)
         : undefined,
     })) || []
 
@@ -125,10 +146,11 @@ export async function getNavbarLinks(): Promise<NavbarData> {
   const mainLinks: NavbarLinkWithDropdown[] =
     navbar?.mainLinks?.map((link) => ({
       label: link.label || '',
-      href: resolveHref(link.linkType, link.page, link.customUrl),
+      href: resolveHref(link.linkType, link.page, link.customUrl, link.constantLink, constantLinksMap),
+      openInNewTab: link.openInNewTab || false,
       hasDropdown: link.hasDropdown || false,
       dropdownColumns: link.hasDropdown && link.dropdownColumns
-        ? transformDropdownColumns(link.dropdownColumns)
+        ? transformDropdownColumns(link.dropdownColumns, constantLinksMap)
         : undefined,
     })) || []
 

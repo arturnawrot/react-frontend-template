@@ -101,7 +101,11 @@ export default function NavbarDropdown({
               <ul className={styles.linkList}>
                 {column.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <Link href={link.href} className={styles.dropdownLink}>
+                    <Link
+                      href={link.href}
+                      className={styles.dropdownLink}
+                      {...(link.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
                       <span>{link.label}</span>
                       <Arrow direction="right" variant="fill" size={16} />
                     </Link>
@@ -109,7 +113,11 @@ export default function NavbarDropdown({
                 ))}
               </ul>
               {column.bottomLink && (
-                <Link href={column.bottomLink.href} className={styles.bottomLink}>
+                <Link
+                  href={column.bottomLink.href}
+                  className={styles.bottomLink}
+                  {...(column.bottomLink.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
                   {column.bottomLink.label}
                 </Link>
               )}

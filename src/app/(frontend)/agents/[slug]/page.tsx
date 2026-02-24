@@ -134,8 +134,11 @@ export default async function AgentPage({ params }: AgentPageProps) {
         id: 'agent-name',
       },
     ],
-    subheading: roles.length > 0 ? roles.join(' & ') : 'Agent & Broker',
+    subheading: agent.displayTitle || 'Agent & Broker',
     ctaPrimaryLabel: 'Schedule A Consultation',
+    ctaPrimaryLinkType: agent.consultationUrl ? 'custom' : undefined,
+    ctaPrimaryCustomUrl: agent.consultationUrl || undefined,
+    ctaPrimaryOpenInNewTab: agent.consultationOpenInNewTab ?? true,
     agentImage: agent.backgroundImage || undefined, // Use backgroundImage for hero background
     agentEmail: agent.email || undefined,
     agentPhone: agent.phone || undefined,
@@ -400,6 +403,8 @@ export default async function AgentPage({ params }: AgentPageProps) {
         phone={agent.phone || undefined}
         linkedin={agent.linkedin || undefined}
         about={agent.about || null}
+        consultationUrl={agent.consultationUrl || undefined}
+        consultationOpenInNewTab={agent.consultationOpenInNewTab ?? true}
       />
       <div className="tan-linear-background pt-20">
         <Container className="mb-12 md:mb-20">

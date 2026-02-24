@@ -75,7 +75,7 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
       }
 
       return (
-        <p key={`para-${index}`} className="text-lg leading-relaxed font-sans mb-6 whitespace-pre-line">
+        <p key={`para-${index}`} className="text-lg leading-relaxed mb-6">
           {children}
         </p>
       )
@@ -94,19 +94,19 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
 
       switch (headingTag) {
         case 1:
-          return <h1 key={key} className="text-4xl font-serif mb-4 mt-8">{children}</h1>
+          return <h1 key={key} className="text-4xl font-bold mb-4 mt-8">{children}</h1>
         case 2:
-          return <h2 key={key} className="text-3xl font-serif mb-4 mt-8">{children}</h2>
+          return <h2 key={key} className="text-3xl font-bold mb-4 mt-8">{children}</h2>
         case 3:
-          return <h3 key={key} className="text-2xl font-serif mb-4 mt-8">{children}</h3>
+          return <h3 key={key} className="text-2xl font-semibold mb-4 mt-8">{children}</h3>
         case 4:
-          return <h4 key={key} className="text-xl font-serif mb-4 mt-8">{children}</h4>
+          return <h4 key={key} className="text-xl font-semibold mb-4 mt-8">{children}</h4>
         case 5:
-          return <h5 key={key} className="text-lg font-serif mb-4 mt-8">{children}</h5>
+          return <h5 key={key} className="text-lg font-medium mb-4 mt-8">{children}</h5>
         case 6:
-          return <h6 key={key} className="text-base font-serif mb-4 mt-8">{children}</h6>
+          return <h6 key={key} className="text-base font-medium mb-4 mt-8">{children}</h6>
         default:
-          return <h2 key={key} className="text-3xl font-serif mb-4 mt-8">{children}</h2>
+          return <h2 key={key} className="text-3xl font-bold mb-4 mt-8">{children}</h2>
       }
     }
 

@@ -6,7 +6,7 @@ import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import type { Job } from '@/payload-types'
 import ShareButtons from '@/components/ShareButtons/ShareButtons'
 import JobApplicationForm from '@/components/JobApplicationForm/JobApplicationForm'
-import NavbarWrapper from '@/components/Navbar/NavbarWrapper'
+import DarkNavbar from '@/components/Navbar/DarkNavbar'
 import AgentIconsSection from '@/components/AgentIconsSection/AgentIconsSection'
 import Link from 'next/link'
 import Arrow from '@/components/Arrow/Arrow'
@@ -94,9 +94,7 @@ export default async function JobPage({ params }: JobPageProps) {
 
   return (
     <>
-    <div className="bg-transparent md:bg-[var(--strong-green)]">
-        <NavbarWrapper darkVariant={true} />
-    </div>
+    <DarkNavbar />
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back to Careers Link */}

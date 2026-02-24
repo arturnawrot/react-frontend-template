@@ -30,6 +30,8 @@ import { OfficeLocations } from '../blocks/OfficeLocations'
 import { CenteredSectionHeader } from '../blocks/CenteredSectionHeader'
 import { CustomHtmlBlock } from '../blocks/CustomHtmlBlock'
 import { ComingSoon } from '../blocks/ComingSoon'
+import { DarkNavbar } from '../blocks/DarkNavbar'
+import { ContentBlock } from '../blocks/ContentBlock'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -91,6 +93,8 @@ export const Pages: CollectionConfig = {
         CenteredSectionHeader,
         CustomHtmlBlock,
         ComingSoon,
+        DarkNavbar,
+        ContentBlock,
       ],
     },
     seoFields,

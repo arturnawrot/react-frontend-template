@@ -145,7 +145,7 @@ export async function GET(request: Request) {
       return {
         id: agent.id,
         name: agent.fullName || `${agent.firstName} ${agent.lastName}`,
-        role: roles.length > 0 ? roles.join(' & ') : 'Agent & Broker',
+        role: agent.displayTitle || 'Agent & Broker',
         image: cardImage,
         servingLocations,
         serviceTags: specialties,

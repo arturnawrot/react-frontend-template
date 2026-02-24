@@ -146,7 +146,7 @@ export default function AgentsByCategory({ block }: AgentsByCategoryProps) {
                   return {
                     id: agent.id,
                     name: agent.fullName || `${agent.firstName} ${agent.lastName}`,
-                    role: roles.length > 0 ? roles.join(' & ') : 'Agent & Broker',
+                    role: agent.displayTitle || 'Agent & Broker',
                     image: cardImage,
                     servingLocations,
                     serviceTags: specialties,

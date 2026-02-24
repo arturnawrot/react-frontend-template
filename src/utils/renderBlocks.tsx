@@ -30,6 +30,8 @@ import OfficeLocations from '@/components/OfficeLocations/OfficeLocations'
 import CenteredSectionHeader from '@/components/CenteredSectionHeader/CenteredSectionHeader'
 import CustomHtmlBlock from '@/components/CustomHtmlBlock/CustomHtmlBlock'
 import ComingSoon from '@/components/ComingSoon/ComingSoon'
+import DarkNavbar from '@/components/Navbar/DarkNavbar'
+import ContentBlock from '@/components/ContentBlock/ContentBlock'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
 import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
@@ -389,7 +391,7 @@ export async function renderBlock(
 
               return {
                 name: agent.fullName || `${agent.firstName} ${agent.lastName}`,
-                role: roles.length > 0 ? roles.join(' & ') : 'Agent & Broker',
+                role: agent.displayTitle || 'Agent & Broker',
                 location: servingLocations.length > 0 ? servingLocations.join(', ') : '',
                 image: agent.cardImage || agent.backgroundImage,
                 slug: agent.slug,
@@ -697,7 +699,7 @@ export async function renderBlock(
                 return {
                   id: agent.id,
                   name: agent.fullName || `${agent.firstName} ${agent.lastName}`,
-                  role: roles.length > 0 ? roles.join(' & ') : 'Agent & Broker',
+                  role: agent.displayTitle || 'Agent & Broker',
                   image: cardImage,
                   servingLocations,
                   serviceTags: specialties,
@@ -927,6 +929,12 @@ export async function renderBlock(
   }
   if ((block as any).blockType === 'comingSoon') {
     return <ComingSoon key={index} block={block as any} />
+  }
+  if ((block as any).blockType === 'darkNavbar') {
+    return <DarkNavbar key={index} />
+  }
+  if ((block as any).blockType === 'contentBlock') {
+    return <ContentBlock key={index} block={block as any} />
   }
   return null
 }

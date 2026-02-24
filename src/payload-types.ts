@@ -117,6 +117,7 @@ export interface Config {
     siteSettings: SiteSetting;
     siteLock: SiteLock;
     scriptInjection: ScriptInjection;
+    seoSettings: SeoSetting;
     featuredPropertiesSets: FeaturedPropertiesSet;
     featuredAgentsSets: FeaturedAgentsSet;
     agentIconsSets: AgentIconsSet;
@@ -137,6 +138,7 @@ export interface Config {
     siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     siteLock: SiteLockSelect<false> | SiteLockSelect<true>;
     scriptInjection: ScriptInjectionSelect<false> | ScriptInjectionSelect<true>;
+    seoSettings: SeoSettingsSelect<false> | SeoSettingsSelect<true>;
     featuredPropertiesSets: FeaturedPropertiesSetsSelect<false> | FeaturedPropertiesSetsSelect<true>;
     featuredAgentsSets: FeaturedAgentsSetsSelect<false> | FeaturedAgentsSetsSelect<true>;
     agentIconsSets: AgentIconsSetsSelect<false> | AgentIconsSetsSelect<true>;
@@ -4359,6 +4361,34 @@ export interface Page {
         blockName?: string | null;
         blockType: 'comingSoon';
       }
+    | {
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'darkNavbar';
+      }
+    | {
+        /**
+         * Rich text content with full formatting support
+         */
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'contentBlock';
+      }
   )[];
   /**
    * Search engine optimization settings
@@ -4477,6 +4507,10 @@ export interface Agent {
   firstName: string;
   lastName: string;
   /**
+   * Display title shown under agent name (e.g., "Senior Associate", "Managing Director")
+   */
+  displayTitle?: string | null;
+  /**
    * URL slug (auto-generated from firstname-lastname)
    */
   slug: string;
@@ -4524,6 +4558,14 @@ export interface Agent {
    * LinkedIn profile URL
    */
   linkedin?: string | null;
+  /**
+   * External URL for "Schedule A Consultation" button (e.g., Calendly link)
+   */
+  consultationUrl?: string | null;
+  /**
+   * Open consultation link in a new tab
+   */
+  consultationOpenInNewTab?: boolean | null;
   /**
    * Enter broker email address to automatically fetch Buildout broker ID
    */
@@ -6996,6 +7038,19 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        darkNavbar?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
+        contentBlock?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -7050,6 +7105,7 @@ export interface CustomHtmlSelect<T extends boolean = true> {
 export interface AgentsSelect<T extends boolean = true> {
   firstName?: T;
   lastName?: T;
+  displayTitle?: T;
   slug?: T;
   backgroundImage?: T;
   cardImage?: T;
@@ -7060,6 +7116,8 @@ export interface AgentsSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   linkedin?: T;
+  consultationUrl?: T;
+  consultationOpenInNewTab?: T;
   buildout_broker_id?: T;
   featuredPropertySetName?: T;
   featuredPropertyIds?: T;
@@ -7261,9 +7319,9 @@ export interface Navbar {
     | {
         label: string;
         /**
-         * Choose whether to link to an existing page or a custom URL
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType: 'page' | 'custom';
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
@@ -7272,6 +7330,18 @@ export interface Navbar {
          * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         /**
          * Enable dropdown menu on hover (e.g., for Search)
          */
@@ -7288,12 +7358,26 @@ export interface Navbar {
               links?:
                 | {
                     label: string;
-                    linkType: 'page' | 'custom';
+                    /**
+                     * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                     */
+                    linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                    /**
+                     * Select a page to link to
+                     */
                     page?: (string | null) | Page;
                     /**
-                     * Enter a custom URL (e.g., /services, https://example.com)
+                     * Enter a custom URL (e.g., /contact, https://example.com)
                      */
                     customUrl?: string | null;
+                    /**
+                     * Select a constant link. These links can be managed globally and updated in one place.
+                     */
+                    constantLink?: string | null;
+                    /**
+                     * Open the link in a new browser tab
+                     */
+                    openInNewTab?: boolean | null;
                     id?: string | null;
                   }[]
                 | null;
@@ -7306,9 +7390,26 @@ export interface Navbar {
                  * e.g., "See All Property Types"
                  */
                 label?: string | null;
-                linkType?: ('page' | 'custom') | null;
+                /**
+                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                 */
+                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                /**
+                 * Select a page to link to
+                 */
                 page?: (string | null) | Page;
+                /**
+                 * Enter a custom URL (e.g., /contact, https://example.com)
+                 */
                 customUrl?: string | null;
+                /**
+                 * Select a constant link. These links can be managed globally and updated in one place.
+                 */
+                constantLink?: string | null;
+                /**
+                 * Open the link in a new browser tab
+                 */
+                openInNewTab?: boolean | null;
               };
               id?: string | null;
             }[]
@@ -7323,17 +7424,29 @@ export interface Navbar {
     | {
         label: string;
         /**
-         * Choose whether to link to an existing page or a custom URL
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType: 'page' | 'custom';
+        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
         /**
          * Select a page to link to
          */
         page?: (string | null) | Page;
         /**
-         * Enter a custom URL (e.g., /buy, https://example.com)
+         * Enter a custom URL (e.g., /contact, https://example.com)
          */
         customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         /**
          * Enable dropdown menu on hover
          */
@@ -7350,12 +7463,26 @@ export interface Navbar {
               links?:
                 | {
                     label: string;
-                    linkType: 'page' | 'custom';
+                    /**
+                     * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                     */
+                    linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                    /**
+                     * Select a page to link to
+                     */
                     page?: (string | null) | Page;
                     /**
-                     * Enter a custom URL (e.g., /services, https://example.com)
+                     * Enter a custom URL (e.g., /contact, https://example.com)
                      */
                     customUrl?: string | null;
+                    /**
+                     * Select a constant link. These links can be managed globally and updated in one place.
+                     */
+                    constantLink?: string | null;
+                    /**
+                     * Open the link in a new browser tab
+                     */
+                    openInNewTab?: boolean | null;
                     id?: string | null;
                   }[]
                 | null;
@@ -7368,9 +7495,26 @@ export interface Navbar {
                  * e.g., "See All Property Types"
                  */
                 label?: string | null;
-                linkType?: ('page' | 'custom') | null;
+                /**
+                 * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+                 */
+                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                /**
+                 * Select a page to link to
+                 */
                 page?: (string | null) | Page;
+                /**
+                 * Enter a custom URL (e.g., /contact, https://example.com)
+                 */
                 customUrl?: string | null;
+                /**
+                 * Select a constant link. These links can be managed globally and updated in one place.
+                 */
+                constantLink?: string | null;
+                /**
+                 * Open the link in a new browser tab
+                 */
+                openInNewTab?: boolean | null;
               };
               id?: string | null;
             }[]
@@ -7628,6 +7772,71 @@ export interface ScriptInjection {
         id?: string | null;
       }[]
     | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Configure SEO settings including robots.txt and sitemap.xml
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seoSettings".
+ */
+export interface SeoSetting {
+  id: string;
+  /**
+   * Configure the robots.txt file for search engine crawlers
+   */
+  robotsConfig?: {
+    /**
+     * When enabled, a robots.txt file will be served at /robots.txt
+     */
+    enabled?: boolean | null;
+    /**
+     * Custom robots.txt content. The sitemap URL will be automatically appended if sitemap is enabled.
+     */
+    content?: string | null;
+  };
+  /**
+   * Configure the sitemap.xml file for search engines
+   */
+  sitemapConfig?: {
+    /**
+     * When enabled, a sitemap.xml file will be served at /sitemap.xml
+     */
+    enabled?: boolean | null;
+    /**
+     * Include pages from the Pages collection
+     */
+    includePages?: boolean | null;
+    /**
+     * Include agent profiles from the Agents collection
+     */
+    includeAgents?: boolean | null;
+    /**
+     * Include properties from the Buildout API
+     */
+    includeProperties?: boolean | null;
+    /**
+     * Include articles, market reports, and investment spotlights
+     */
+    includeBlogs?: boolean | null;
+    /**
+     * Include job listings from the Jobs collection
+     */
+    includeJobs?: boolean | null;
+    /**
+     * Include static pages like property-search, saved-properties, etc.
+     */
+    includeStaticPages?: boolean | null;
+    /**
+     * How frequently pages are likely to change
+     */
+    defaultChangeFrequency?: ('always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never') | null;
+    /**
+     * Default priority for pages (0.0 to 1.0)
+     */
+    defaultPriority?: number | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -8160,6 +8369,9 @@ export interface NavbarSelect<T extends boolean = true> {
         linkType?: T;
         page?: T;
         customUrl?: T;
+        constantLink?: T;
+        openInNewTab?: T;
+        disabled?: T;
         hasDropdown?: T;
         dropdownColumns?:
           | T
@@ -8172,6 +8384,8 @@ export interface NavbarSelect<T extends boolean = true> {
                     linkType?: T;
                     page?: T;
                     customUrl?: T;
+                    constantLink?: T;
+                    openInNewTab?: T;
                     id?: T;
                   };
               bottomLink?:
@@ -8182,6 +8396,8 @@ export interface NavbarSelect<T extends boolean = true> {
                     linkType?: T;
                     page?: T;
                     customUrl?: T;
+                    constantLink?: T;
+                    openInNewTab?: T;
                   };
               id?: T;
             };
@@ -8194,6 +8410,9 @@ export interface NavbarSelect<T extends boolean = true> {
         linkType?: T;
         page?: T;
         customUrl?: T;
+        constantLink?: T;
+        openInNewTab?: T;
+        disabled?: T;
         hasDropdown?: T;
         dropdownColumns?:
           | T
@@ -8206,6 +8425,8 @@ export interface NavbarSelect<T extends boolean = true> {
                     linkType?: T;
                     page?: T;
                     customUrl?: T;
+                    constantLink?: T;
+                    openInNewTab?: T;
                     id?: T;
                   };
               bottomLink?:
@@ -8216,6 +8437,8 @@ export interface NavbarSelect<T extends boolean = true> {
                     linkType?: T;
                     page?: T;
                     customUrl?: T;
+                    constantLink?: T;
+                    openInNewTab?: T;
                   };
               id?: T;
             };
@@ -8356,6 +8579,34 @@ export interface ScriptInjectionSelect<T extends boolean = true> {
         src?: T;
         loadStrategy?: T;
         id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seoSettings_select".
+ */
+export interface SeoSettingsSelect<T extends boolean = true> {
+  robotsConfig?:
+    | T
+    | {
+        enabled?: T;
+        content?: T;
+      };
+  sitemapConfig?:
+    | T
+    | {
+        enabled?: T;
+        includePages?: T;
+        includeAgents?: T;
+        includeProperties?: T;
+        includeBlogs?: T;
+        includeJobs?: T;
+        includeStaticPages?: T;
+        defaultChangeFrequency?: T;
+        defaultPriority?: T;
       };
   updatedAt?: T;
   createdAt?: T;
