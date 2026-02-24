@@ -13,7 +13,6 @@ import styles from './Hero.module.scss'
 import { resolvePrefixedLink, type ConstantLinksMap, type ResolvedLink } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 import FormCard from './FormCard/FormCard'
-// Import the new component (adjust path as needed)
 import { CustomHtml } from '@/components/CustomHtml/CustomHtml'
 import CopyableContactLink from '@/components/CopyableContactLink'
 
@@ -293,7 +292,6 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
   const secondaryCta =
     block.ctaSecondaryLabel ?? (isFullWidthColor ? 'Schedule a Consultation' : undefined)
 
-  // Unified link resolution - one call returns href, openInNewTab, and disabled
   const primaryCtaLinkData = resolvePrefixedLink(block as Record<string, unknown>, 'ctaPrimary', constantLinksMap)
   const secondaryCtaLinkData = resolvePrefixedLink(block as Record<string, unknown>, 'ctaSecondary', constantLinksMap)
 
@@ -370,7 +368,7 @@ const BlogLayout = (
     : ''
 
   return (
-    <div className="relative w-full bg-[var(--strong-green)] text-white overflow-hidden min-h-screen lg:min-h-0">
+    <div className="relative w-full bg-[var(--strong-green)] text-white overflow-x-clip min-h-screen lg:min-h-0 z-[100]">
       <div className="absolute inset-x-0 top-0 z-30">
         <Navbar upperLinks={upperLinks} mainLinks={mainLinks} dropdownQuote={dropdownQuote} />
       </div>
@@ -441,9 +439,6 @@ const BlogLayout = (
   )
 }
 
-/**
- * Split View ('split', 'agent')
- */
 const SideBySideLayout = (
   props: HeroProps & ReturnType<typeof resolveHeroContent> & { menuOpen: boolean; setMenuOpen: (v: boolean) => void },
 ) => {
@@ -474,7 +469,7 @@ const SideBySideLayout = (
   const btnSecondaryClass = '!border-white !bg-[var(--strong-green)] !text-white hover:!bg-white/10'
 
   return (
-    <div className={`relative w-full ${containerBg}`}>
+    <div className={`relative w-full ${containerBg} z-[100]`}>
       <div className="absolute inset-x-0 top-0 z-30">
         <Navbar upperLinks={upperLinks} mainLinks={mainLinks} dropdownQuote={dropdownQuote} />
       </div>
@@ -534,7 +529,6 @@ const SideBySideLayout = (
           {/* Custom HTML Content */}
           {splitCustomHTML && (
             <FormCard className="relative w-full max-w-2xl z-10">
-              {/* Use the new imported component */}
               <CustomHtml html={splitCustomHTML} />
             </FormCard>
           )}
@@ -610,7 +604,7 @@ const CenteredLayout = (
     }
   }, [isFullWidthColor, backgroundVideoUrl, videoError])
 
-  const wrapperClass = 'relative w-full overflow-hidden bg-[var(--strong-green)]'
+  const wrapperClass = 'relative w-full overflow-x-clip bg-[var(--strong-green)] z-[100]'
   const headingClass = isFullWidthColor
     ? `${styles.meybohmHeading} text-left md:text-center w-full mt-0 md:mt-30 max-w-none`
     : `text-white text-4xl md:text-7xl font-bold ${styles.heroHeading} w-full max-w-[400px] md:max-w-none text-left md:text-center`
@@ -699,7 +693,7 @@ export default function Hero({ block, upperLinks = [], mainLinks = [], dropdownQ
 
   return (
     <div
-      className="relative w-full overflow-x-hidden"
+      className="relative w-full overflow-x-clip z-[100]"
       style={{ backgroundColor: 'var(--strong-green)' }}
     >
       {content.isBlog ? (

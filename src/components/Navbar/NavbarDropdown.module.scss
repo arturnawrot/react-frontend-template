@@ -9,6 +9,10 @@
   transform: translateY(-10px);
   transition: all 0.25s ease;
   z-index: 100;
+  height: auto;
+  min-height: auto;
+  max-height: none;
+  overflow: visible;
 
   &.visible {
     opacity: 1;
@@ -17,14 +21,12 @@
   }
 
   &.upper {
-    // Upper navbar dropdown styling
     .dropdownInner {
       padding: 3rem 5%;
     }
   }
 
   &.main {
-    // Main navbar dropdown styling
     .dropdownInner {
       padding: 3rem 5%;
     }
