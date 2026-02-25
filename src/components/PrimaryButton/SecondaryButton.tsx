@@ -10,6 +10,8 @@ interface SecondaryButtonProps {
   className?: string
   fullWidth?: boolean
   disabled?: boolean
+  calLink?: string | null
+  calNamespace?: string | null
 }
 
 export default function SecondaryButton({
@@ -20,6 +22,8 @@ export default function SecondaryButton({
   className = '',
   fullWidth = false,
   disabled = false,
+  calLink,
+  calNamespace,
 }: SecondaryButtonProps) {
   const fullWidthClass = fullWidth ? styles.fullWidth : ''
   const combinedClassName = `${styles.button} ${fullWidthClass} ${className}`.trim()
@@ -32,6 +36,8 @@ export default function SecondaryButton({
       className={combinedClassName}
       fullWidth={fullWidth}
       disabled={disabled}
+      calLink={calLink}
+      calNamespace={calNamespace}
     >
       {children}
     </BaseButton>

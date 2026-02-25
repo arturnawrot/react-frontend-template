@@ -16,6 +16,7 @@ import { buildoutApi } from '@/utils/buildout-api'
 import type { BuildoutProperty } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
+import { resolvePrefixedLink } from '@/utils/linkResolver'
 
 // Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
 export const dynamic = 'force-dynamic'
@@ -123,11 +124,14 @@ export default async function AgentPage({ params }: AgentPageProps) {
     })
     .filter((name): name is string => Boolean(name))
 
+  // Resolve the agent's consultation link using the linkType system
+  const consultationLink = resolvePrefixedLink(agent as any, 'consultation')
+
   // Create Hero block structure for agent variant
   // Use backgroundImage for the hero background
-  const heroBlock: Extract<Page['blocks'][number], { blockType: 'hero' }> = {
-    blockType: 'hero',
-    variant: 'agent',
+  const heroBlock = {
+    blockType: 'hero' as const,
+    variant: 'agent' as const,
     headingSegments: [
       {
         text: agent.fullName || `${agent.firstName} ${agent.lastName}`,
@@ -136,15 +140,17 @@ export default async function AgentPage({ params }: AgentPageProps) {
     ],
     subheading: agent.displayTitle || 'Agent & Broker',
     ctaPrimaryLabel: 'Schedule A Consultation',
-    ctaPrimaryLinkType: agent.consultationUrl ? 'custom' : undefined,
-    ctaPrimaryCustomUrl: agent.consultationUrl || undefined,
-    ctaPrimaryOpenInNewTab: agent.consultationOpenInNewTab ?? true,
-    agentImage: agent.backgroundImage || undefined, // Use backgroundImage for hero background
+    ctaPrimaryLinkType: (agent as any).consultationLinkType || undefined,
+    ctaPrimaryCustomUrl: (agent as any).consultationCustomUrl || undefined,
+    ctaPrimaryCalLink: (agent as any).consultationCalLink || undefined,
+    ctaPrimaryCalNamespace: (agent as any).consultationCalNamespace || undefined,
+    ctaPrimaryOpenInNewTab: (agent as any).consultationOpenInNewTab ?? false,
+    agentImage: agent.backgroundImage || undefined,
     agentEmail: agent.email || undefined,
     agentPhone: agent.phone || undefined,
     agentLinkedin: agent.linkedin || undefined,
     id: 'agent-hero',
-  }
+  } as Extract<Page['blocks'][number], { blockType: 'hero' }>
 
   // Get first name for CTA footer
   const firstName = agent.firstName || 'Agent'
@@ -403,8 +409,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
         phone={agent.phone || undefined}
         linkedin={agent.linkedin || undefined}
         about={agent.about || null}
-        consultationUrl={agent.consultationUrl || undefined}
-        consultationOpenInNewTab={agent.consultationOpenInNewTab ?? true}
+        consultationLink={consultationLink}
       />
       <div className="tan-linear-background pt-20">
         <Container className="mb-12 md:mb-20">
@@ -432,13 +437,11 @@ export default async function AgentPage({ params }: AgentPageProps) {
             {
               label: 'Schedule A Consultation',
               variant: 'primary',
-              ...(agent.consultationUrl
-                ? {
-                    linkType: 'custom' as const,
-                    customUrl: agent.consultationUrl,
-                    openInNewTab: agent.consultationOpenInNewTab ?? true,
-                  }
-                : {}),
+              linkType: (agent as any).consultationLinkType || undefined,
+              customUrl: (agent as any).consultationCustomUrl || undefined,
+              calLink: (agent as any).consultationCalLink || undefined,
+              calNamespace: (agent as any).consultationCalNamespace || undefined,
+              openInNewTab: (agent as any).consultationOpenInNewTab ?? false,
             },
             // { label: 'Get Matched with a Agent', variant: 'secondary' },
             // { label: 'Search Listings', variant: 'secondary' },

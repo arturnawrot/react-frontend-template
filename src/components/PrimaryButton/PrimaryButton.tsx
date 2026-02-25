@@ -11,6 +11,8 @@ interface PrimaryButtonProps {
   fullWidth?: boolean
   variant?: 'default' | 'dark'
   disabled?: boolean
+  calLink?: string | null
+  calNamespace?: string | null
 }
 
 export default function PrimaryButton({
@@ -22,6 +24,8 @@ export default function PrimaryButton({
   fullWidth = false,
   variant = 'default',
   disabled = false,
+  calLink,
+  calNamespace,
 }: PrimaryButtonProps) {
   const variantClass = variant === 'dark' ? styles.buttonDark : styles.button
   const fullWidthClass = fullWidth ? styles.fullWidth : ''
@@ -35,6 +39,8 @@ export default function PrimaryButton({
       className={combinedClassName}
       fullWidth={fullWidth}
       disabled={disabled}
+      calLink={calLink}
+      calNamespace={calNamespace}
     >
       {children}
     </BaseButton>

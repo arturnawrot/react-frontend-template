@@ -261,7 +261,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -275,6 +275,14 @@ export interface Page {
          */
         ctaPrimaryConstantLink?: string | null;
         /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        ctaPrimaryCalLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        ctaPrimaryCalNamespace?: string | null;
+        /**
          * Open the link in a new browser tab
          */
         ctaPrimaryOpenInNewTab?: boolean | null;
@@ -286,7 +294,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -299,6 +307,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         ctaSecondaryConstantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        ctaSecondaryCalLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        ctaSecondaryCalNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -360,7 +376,7 @@ export interface Page {
               /**
                * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                */
-              linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+              linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
               /**
                * Select a page to link to
                */
@@ -373,6 +389,14 @@ export interface Page {
                * Select a constant link. These links can be managed globally and updated in one place.
                */
               constantLink?: string | null;
+              /**
+               * Cal.com link path (e.g., team/meybohm/consult)
+               */
+              calLink?: string | null;
+              /**
+               * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+               */
+              calNamespace?: string | null;
               /**
                * Open the link in a new browser tab
                */
@@ -388,7 +412,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -401,6 +425,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -451,7 +483,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -465,6 +497,14 @@ export interface Page {
                    */
                   ctaPrimaryConstantLink?: string | null;
                   /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  ctaPrimaryCalLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  ctaPrimaryCalNamespace?: string | null;
+                  /**
                    * Open the link in a new browser tab
                    */
                   ctaPrimaryOpenInNewTab?: boolean | null;
@@ -476,7 +516,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -489,6 +529,14 @@ export interface Page {
                    * Select a constant link. These links can be managed globally and updated in one place.
                    */
                   ctaSecondaryConstantLink?: string | null;
+                  /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  ctaSecondaryCalLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  ctaSecondaryCalNamespace?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -550,7 +598,7 @@ export interface Page {
                         /**
                          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                          */
-                        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                         /**
                          * Select a page to link to
                          */
@@ -563,6 +611,14 @@ export interface Page {
                          * Select a constant link. These links can be managed globally and updated in one place.
                          */
                         constantLink?: string | null;
+                        /**
+                         * Cal.com link path (e.g., team/meybohm/consult)
+                         */
+                        calLink?: string | null;
+                        /**
+                         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                         */
+                        calNamespace?: string | null;
                         /**
                          * Open the link in a new browser tab
                          */
@@ -578,7 +634,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -591,6 +647,14 @@ export interface Page {
                    * Select a constant link. These links can be managed globally and updated in one place.
                    */
                   constantLink?: string | null;
+                  /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  calLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  calNamespace?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -614,7 +678,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -627,6 +691,14 @@ export interface Page {
                    * Select a constant link. These links can be managed globally and updated in one place.
                    */
                   constantLink?: string | null;
+                  /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  calLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  calNamespace?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -659,7 +731,7 @@ export interface Page {
                     /**
                      * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                      */
-                    cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                    cardLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                     /**
                      * Select a page to link to
                      */
@@ -672,6 +744,14 @@ export interface Page {
                      * Select a constant link. These links can be managed globally and updated in one place.
                      */
                     cardConstantLink?: string | null;
+                    /**
+                     * Cal.com link path (e.g., team/meybohm/consult)
+                     */
+                    cardCalLink?: string | null;
+                    /**
+                     * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                     */
+                    cardCalNamespace?: string | null;
                     /**
                      * Open the link in a new browser tab
                      */
@@ -751,7 +831,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  buttonLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -765,6 +845,14 @@ export interface Page {
                    */
                   buttonConstantLink?: string | null;
                   /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  buttonCalLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  buttonCalNamespace?: string | null;
+                  /**
                    * Open the link in a new browser tab
                    */
                   buttonOpenInNewTab?: boolean | null;
@@ -776,7 +864,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -789,6 +877,14 @@ export interface Page {
                    * Select a constant link. These links can be managed globally and updated in one place.
                    */
                   constantLink?: string | null;
+                  /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  calLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  calNamespace?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -815,7 +911,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -828,6 +924,14 @@ export interface Page {
                    * Select a constant link. These links can be managed globally and updated in one place.
                    */
                   constantLink?: string | null;
+                  /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  calLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  calNamespace?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -867,7 +971,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -880,6 +984,14 @@ export interface Page {
                    * Select a constant link. These links can be managed globally and updated in one place.
                    */
                   constantLink?: string | null;
+                  /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  calLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  calNamespace?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -918,7 +1030,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  buttonLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -932,6 +1044,14 @@ export interface Page {
                    */
                   buttonConstantLink?: string | null;
                   /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  buttonCalLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  buttonCalNamespace?: string | null;
+                  /**
                    * Open the link in a new browser tab
                    */
                   buttonOpenInNewTab?: boolean | null;
@@ -943,7 +1063,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -956,6 +1076,14 @@ export interface Page {
                    * Select a constant link. These links can be managed globally and updated in one place.
                    */
                   constantLink?: string | null;
+                  /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  calLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  calNamespace?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -998,7 +1126,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -1011,6 +1139,14 @@ export interface Page {
                    * Select a constant link. These links can be managed globally and updated in one place.
                    */
                   constantLink?: string | null;
+                  /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  calLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  calNamespace?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -1042,7 +1178,7 @@ export interface Page {
                         /**
                          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                          */
-                        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                         /**
                          * Select a page to link to
                          */
@@ -1055,6 +1191,14 @@ export interface Page {
                          * Select a constant link. These links can be managed globally and updated in one place.
                          */
                         constantLink?: string | null;
+                        /**
+                         * Cal.com link path (e.g., team/meybohm/consult)
+                         */
+                        calLink?: string | null;
+                        /**
+                         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                         */
+                        calNamespace?: string | null;
                         /**
                          * Open the link in a new browser tab
                          */
@@ -1082,7 +1226,7 @@ export interface Page {
                   /**
                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                    */
-                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                   /**
                    * Select a page to link to
                    */
@@ -1095,6 +1239,14 @@ export interface Page {
                    * Select a constant link. These links can be managed globally and updated in one place.
                    */
                   constantLink?: string | null;
+                  /**
+                   * Cal.com link path (e.g., team/meybohm/consult)
+                   */
+                  calLink?: string | null;
+                  /**
+                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                   */
+                  calNamespace?: string | null;
                   /**
                    * Open the link in a new browser tab
                    */
@@ -1189,7 +1341,7 @@ export interface Page {
                     /**
                      * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                      */
-                    linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                    linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                     /**
                      * Select a page to link to
                      */
@@ -1202,6 +1354,14 @@ export interface Page {
                      * Select a constant link. These links can be managed globally and updated in one place.
                      */
                     constantLink?: string | null;
+                    /**
+                     * Cal.com link path (e.g., team/meybohm/consult)
+                     */
+                    calLink?: string | null;
+                    /**
+                     * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                     */
+                    calNamespace?: string | null;
                     /**
                      * Open the link in a new browser tab
                      */
@@ -1300,7 +1460,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1314,6 +1474,14 @@ export interface Page {
                              */
                             ctaPrimaryConstantLink?: string | null;
                             /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            ctaPrimaryCalLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            ctaPrimaryCalNamespace?: string | null;
+                            /**
                              * Open the link in a new browser tab
                              */
                             ctaPrimaryOpenInNewTab?: boolean | null;
@@ -1325,7 +1493,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1338,6 +1506,14 @@ export interface Page {
                              * Select a constant link. These links can be managed globally and updated in one place.
                              */
                             ctaSecondaryConstantLink?: string | null;
+                            /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            ctaSecondaryCalLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            ctaSecondaryCalNamespace?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1399,7 +1575,7 @@ export interface Page {
                                   /**
                                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                    */
-                                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                   /**
                                    * Select a page to link to
                                    */
@@ -1412,6 +1588,14 @@ export interface Page {
                                    * Select a constant link. These links can be managed globally and updated in one place.
                                    */
                                   constantLink?: string | null;
+                                  /**
+                                   * Cal.com link path (e.g., team/meybohm/consult)
+                                   */
+                                  calLink?: string | null;
+                                  /**
+                                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                   */
+                                  calNamespace?: string | null;
                                   /**
                                    * Open the link in a new browser tab
                                    */
@@ -1427,7 +1611,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1440,6 +1624,14 @@ export interface Page {
                              * Select a constant link. These links can be managed globally and updated in one place.
                              */
                             constantLink?: string | null;
+                            /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            calLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            calNamespace?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1463,7 +1655,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1476,6 +1668,14 @@ export interface Page {
                              * Select a constant link. These links can be managed globally and updated in one place.
                              */
                             constantLink?: string | null;
+                            /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            calLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            calNamespace?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1508,7 +1708,7 @@ export interface Page {
                               /**
                                * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                */
-                              cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                              cardLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                               /**
                                * Select a page to link to
                                */
@@ -1521,6 +1721,14 @@ export interface Page {
                                * Select a constant link. These links can be managed globally and updated in one place.
                                */
                               cardConstantLink?: string | null;
+                              /**
+                               * Cal.com link path (e.g., team/meybohm/consult)
+                               */
+                              cardCalLink?: string | null;
+                              /**
+                               * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                               */
+                              cardCalNamespace?: string | null;
                               /**
                                * Open the link in a new browser tab
                                */
@@ -1600,7 +1808,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            buttonLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1614,6 +1822,14 @@ export interface Page {
                              */
                             buttonConstantLink?: string | null;
                             /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            buttonCalLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            buttonCalNamespace?: string | null;
+                            /**
                              * Open the link in a new browser tab
                              */
                             buttonOpenInNewTab?: boolean | null;
@@ -1625,7 +1841,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1638,6 +1854,14 @@ export interface Page {
                              * Select a constant link. These links can be managed globally and updated in one place.
                              */
                             constantLink?: string | null;
+                            /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            calLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            calNamespace?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1664,7 +1888,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1677,6 +1901,14 @@ export interface Page {
                              * Select a constant link. These links can be managed globally and updated in one place.
                              */
                             constantLink?: string | null;
+                            /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            calLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            calNamespace?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1716,7 +1948,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1729,6 +1961,14 @@ export interface Page {
                              * Select a constant link. These links can be managed globally and updated in one place.
                              */
                             constantLink?: string | null;
+                            /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            calLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            calNamespace?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1767,7 +2007,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            buttonLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1781,6 +2021,14 @@ export interface Page {
                              */
                             buttonConstantLink?: string | null;
                             /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            buttonCalLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            buttonCalNamespace?: string | null;
+                            /**
                              * Open the link in a new browser tab
                              */
                             buttonOpenInNewTab?: boolean | null;
@@ -1792,7 +2040,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1805,6 +2053,14 @@ export interface Page {
                              * Select a constant link. These links can be managed globally and updated in one place.
                              */
                             constantLink?: string | null;
+                            /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            calLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            calNamespace?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1847,7 +2103,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1860,6 +2116,14 @@ export interface Page {
                              * Select a constant link. These links can be managed globally and updated in one place.
                              */
                             constantLink?: string | null;
+                            /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            calLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            calNamespace?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -1891,7 +2155,7 @@ export interface Page {
                                   /**
                                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                    */
-                                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                   /**
                                    * Select a page to link to
                                    */
@@ -1904,6 +2168,14 @@ export interface Page {
                                    * Select a constant link. These links can be managed globally and updated in one place.
                                    */
                                   constantLink?: string | null;
+                                  /**
+                                   * Cal.com link path (e.g., team/meybohm/consult)
+                                   */
+                                  calLink?: string | null;
+                                  /**
+                                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                   */
+                                  calNamespace?: string | null;
                                   /**
                                    * Open the link in a new browser tab
                                    */
@@ -1931,7 +2203,7 @@ export interface Page {
                             /**
                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                              */
-                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                             /**
                              * Select a page to link to
                              */
@@ -1944,6 +2216,14 @@ export interface Page {
                              * Select a constant link. These links can be managed globally and updated in one place.
                              */
                             constantLink?: string | null;
+                            /**
+                             * Cal.com link path (e.g., team/meybohm/consult)
+                             */
+                            calLink?: string | null;
+                            /**
+                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                             */
+                            calNamespace?: string | null;
                             /**
                              * Open the link in a new browser tab
                              */
@@ -2038,7 +2318,7 @@ export interface Page {
                               /**
                                * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                */
-                              linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                              linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                               /**
                                * Select a page to link to
                                */
@@ -2051,6 +2331,14 @@ export interface Page {
                                * Select a constant link. These links can be managed globally and updated in one place.
                                */
                               constantLink?: string | null;
+                              /**
+                               * Cal.com link path (e.g., team/meybohm/consult)
+                               */
+                              calLink?: string | null;
+                              /**
+                               * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                               */
+                              calNamespace?: string | null;
                               /**
                                * Open the link in a new browser tab
                                */
@@ -2149,7 +2437,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2163,6 +2451,14 @@ export interface Page {
                                        */
                                       ctaPrimaryConstantLink?: string | null;
                                       /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      ctaPrimaryCalLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      ctaPrimaryCalNamespace?: string | null;
+                                      /**
                                        * Open the link in a new browser tab
                                        */
                                       ctaPrimaryOpenInNewTab?: boolean | null;
@@ -2174,7 +2470,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2187,6 +2483,14 @@ export interface Page {
                                        * Select a constant link. These links can be managed globally and updated in one place.
                                        */
                                       ctaSecondaryConstantLink?: string | null;
+                                      /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      ctaSecondaryCalLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      ctaSecondaryCalNamespace?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2248,7 +2552,7 @@ export interface Page {
                                             /**
                                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                              */
-                                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                             /**
                                              * Select a page to link to
                                              */
@@ -2261,6 +2565,14 @@ export interface Page {
                                              * Select a constant link. These links can be managed globally and updated in one place.
                                              */
                                             constantLink?: string | null;
+                                            /**
+                                             * Cal.com link path (e.g., team/meybohm/consult)
+                                             */
+                                            calLink?: string | null;
+                                            /**
+                                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                             */
+                                            calNamespace?: string | null;
                                             /**
                                              * Open the link in a new browser tab
                                              */
@@ -2276,7 +2588,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2289,6 +2601,14 @@ export interface Page {
                                        * Select a constant link. These links can be managed globally and updated in one place.
                                        */
                                       constantLink?: string | null;
+                                      /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      calLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      calNamespace?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2312,7 +2632,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2325,6 +2645,14 @@ export interface Page {
                                        * Select a constant link. These links can be managed globally and updated in one place.
                                        */
                                       constantLink?: string | null;
+                                      /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      calLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      calNamespace?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2357,7 +2685,7 @@ export interface Page {
                                         /**
                                          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                          */
-                                        cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                        cardLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                         /**
                                          * Select a page to link to
                                          */
@@ -2370,6 +2698,14 @@ export interface Page {
                                          * Select a constant link. These links can be managed globally and updated in one place.
                                          */
                                         cardConstantLink?: string | null;
+                                        /**
+                                         * Cal.com link path (e.g., team/meybohm/consult)
+                                         */
+                                        cardCalLink?: string | null;
+                                        /**
+                                         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                         */
+                                        cardCalNamespace?: string | null;
                                         /**
                                          * Open the link in a new browser tab
                                          */
@@ -2449,7 +2785,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      buttonLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2463,6 +2799,14 @@ export interface Page {
                                        */
                                       buttonConstantLink?: string | null;
                                       /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      buttonCalLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      buttonCalNamespace?: string | null;
+                                      /**
                                        * Open the link in a new browser tab
                                        */
                                       buttonOpenInNewTab?: boolean | null;
@@ -2474,7 +2818,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2487,6 +2831,14 @@ export interface Page {
                                        * Select a constant link. These links can be managed globally and updated in one place.
                                        */
                                       constantLink?: string | null;
+                                      /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      calLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      calNamespace?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2513,7 +2865,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2526,6 +2878,14 @@ export interface Page {
                                        * Select a constant link. These links can be managed globally and updated in one place.
                                        */
                                       constantLink?: string | null;
+                                      /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      calLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      calNamespace?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2565,7 +2925,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2578,6 +2938,14 @@ export interface Page {
                                        * Select a constant link. These links can be managed globally and updated in one place.
                                        */
                                       constantLink?: string | null;
+                                      /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      calLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      calNamespace?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2616,7 +2984,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      buttonLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2630,6 +2998,14 @@ export interface Page {
                                        */
                                       buttonConstantLink?: string | null;
                                       /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      buttonCalLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      buttonCalNamespace?: string | null;
+                                      /**
                                        * Open the link in a new browser tab
                                        */
                                       buttonOpenInNewTab?: boolean | null;
@@ -2641,7 +3017,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2654,6 +3030,14 @@ export interface Page {
                                        * Select a constant link. These links can be managed globally and updated in one place.
                                        */
                                       constantLink?: string | null;
+                                      /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      calLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      calNamespace?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2696,7 +3080,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2709,6 +3093,14 @@ export interface Page {
                                        * Select a constant link. These links can be managed globally and updated in one place.
                                        */
                                       constantLink?: string | null;
+                                      /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      calLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      calNamespace?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2740,7 +3132,7 @@ export interface Page {
                                             /**
                                              * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                              */
-                                            linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                            linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                             /**
                                              * Select a page to link to
                                              */
@@ -2753,6 +3145,14 @@ export interface Page {
                                              * Select a constant link. These links can be managed globally and updated in one place.
                                              */
                                             constantLink?: string | null;
+                                            /**
+                                             * Cal.com link path (e.g., team/meybohm/consult)
+                                             */
+                                            calLink?: string | null;
+                                            /**
+                                             * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                             */
+                                            calNamespace?: string | null;
                                             /**
                                              * Open the link in a new browser tab
                                              */
@@ -2780,7 +3180,7 @@ export interface Page {
                                       /**
                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                        */
-                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                       /**
                                        * Select a page to link to
                                        */
@@ -2793,6 +3193,14 @@ export interface Page {
                                        * Select a constant link. These links can be managed globally and updated in one place.
                                        */
                                       constantLink?: string | null;
+                                      /**
+                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                       */
+                                      calLink?: string | null;
+                                      /**
+                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                       */
+                                      calNamespace?: string | null;
                                       /**
                                        * Open the link in a new browser tab
                                        */
@@ -2887,7 +3295,7 @@ export interface Page {
                                         /**
                                          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                          */
-                                        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                         /**
                                          * Select a page to link to
                                          */
@@ -2900,6 +3308,14 @@ export interface Page {
                                          * Select a constant link. These links can be managed globally and updated in one place.
                                          */
                                         constantLink?: string | null;
+                                        /**
+                                         * Cal.com link path (e.g., team/meybohm/consult)
+                                         */
+                                        calLink?: string | null;
+                                        /**
+                                         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                         */
+                                        calNamespace?: string | null;
                                         /**
                                          * Open the link in a new browser tab
                                          */
@@ -2998,7 +3414,9 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                ctaPrimaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                ctaPrimaryLinkType?:
+                                                  | ('none' | 'page' | 'custom' | 'constant' | 'cal')
+                                                  | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3012,6 +3430,14 @@ export interface Page {
                                                  */
                                                 ctaPrimaryConstantLink?: string | null;
                                                 /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                ctaPrimaryCalLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                ctaPrimaryCalNamespace?: string | null;
+                                                /**
                                                  * Open the link in a new browser tab
                                                  */
                                                 ctaPrimaryOpenInNewTab?: boolean | null;
@@ -3023,7 +3449,9 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                ctaSecondaryLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                ctaSecondaryLinkType?:
+                                                  | ('none' | 'page' | 'custom' | 'constant' | 'cal')
+                                                  | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3036,6 +3464,14 @@ export interface Page {
                                                  * Select a constant link. These links can be managed globally and updated in one place.
                                                  */
                                                 ctaSecondaryConstantLink?: string | null;
+                                                /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                ctaSecondaryCalLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                ctaSecondaryCalNamespace?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -3097,7 +3533,9 @@ export interface Page {
                                                       /**
                                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                        */
-                                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                      linkType?:
+                                                        | ('none' | 'page' | 'custom' | 'constant' | 'cal')
+                                                        | null;
                                                       /**
                                                        * Select a page to link to
                                                        */
@@ -3110,6 +3548,14 @@ export interface Page {
                                                        * Select a constant link. These links can be managed globally and updated in one place.
                                                        */
                                                       constantLink?: string | null;
+                                                      /**
+                                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                                       */
+                                                      calLink?: string | null;
+                                                      /**
+                                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                       */
+                                                      calNamespace?: string | null;
                                                       /**
                                                        * Open the link in a new browser tab
                                                        */
@@ -3125,7 +3571,7 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3138,6 +3584,14 @@ export interface Page {
                                                  * Select a constant link. These links can be managed globally and updated in one place.
                                                  */
                                                 constantLink?: string | null;
+                                                /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                calLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                calNamespace?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -3161,7 +3615,7 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3174,6 +3628,14 @@ export interface Page {
                                                  * Select a constant link. These links can be managed globally and updated in one place.
                                                  */
                                                 constantLink?: string | null;
+                                                /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                calLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                calNamespace?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -3206,7 +3668,9 @@ export interface Page {
                                                   /**
                                                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                    */
-                                                  cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                  cardLinkType?:
+                                                    | ('none' | 'page' | 'custom' | 'constant' | 'cal')
+                                                    | null;
                                                   /**
                                                    * Select a page to link to
                                                    */
@@ -3219,6 +3683,14 @@ export interface Page {
                                                    * Select a constant link. These links can be managed globally and updated in one place.
                                                    */
                                                   cardConstantLink?: string | null;
+                                                  /**
+                                                   * Cal.com link path (e.g., team/meybohm/consult)
+                                                   */
+                                                  cardCalLink?: string | null;
+                                                  /**
+                                                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                   */
+                                                  cardCalNamespace?: string | null;
                                                   /**
                                                    * Open the link in a new browser tab
                                                    */
@@ -3305,7 +3777,9 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                buttonLinkType?:
+                                                  | ('none' | 'page' | 'custom' | 'constant' | 'cal')
+                                                  | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3319,6 +3793,14 @@ export interface Page {
                                                  */
                                                 buttonConstantLink?: string | null;
                                                 /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                buttonCalLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                buttonCalNamespace?: string | null;
+                                                /**
                                                  * Open the link in a new browser tab
                                                  */
                                                 buttonOpenInNewTab?: boolean | null;
@@ -3330,7 +3812,7 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3343,6 +3825,14 @@ export interface Page {
                                                  * Select a constant link. These links can be managed globally and updated in one place.
                                                  */
                                                 constantLink?: string | null;
+                                                /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                calLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                calNamespace?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -3369,7 +3859,7 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3382,6 +3872,14 @@ export interface Page {
                                                  * Select a constant link. These links can be managed globally and updated in one place.
                                                  */
                                                 constantLink?: string | null;
+                                                /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                calLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                calNamespace?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -3421,7 +3919,7 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3434,6 +3932,14 @@ export interface Page {
                                                  * Select a constant link. These links can be managed globally and updated in one place.
                                                  */
                                                 constantLink?: string | null;
+                                                /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                calLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                calNamespace?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -3472,7 +3978,9 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                buttonLinkType?:
+                                                  | ('none' | 'page' | 'custom' | 'constant' | 'cal')
+                                                  | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3486,6 +3994,14 @@ export interface Page {
                                                  */
                                                 buttonConstantLink?: string | null;
                                                 /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                buttonCalLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                buttonCalNamespace?: string | null;
+                                                /**
                                                  * Open the link in a new browser tab
                                                  */
                                                 buttonOpenInNewTab?: boolean | null;
@@ -3497,7 +4013,7 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3510,6 +4026,14 @@ export interface Page {
                                                  * Select a constant link. These links can be managed globally and updated in one place.
                                                  */
                                                 constantLink?: string | null;
+                                                /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                calLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                calNamespace?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -3552,7 +4076,7 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3565,6 +4089,14 @@ export interface Page {
                                                  * Select a constant link. These links can be managed globally and updated in one place.
                                                  */
                                                 constantLink?: string | null;
+                                                /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                calLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                calNamespace?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -3596,7 +4128,9 @@ export interface Page {
                                                       /**
                                                        * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                        */
-                                                      linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                      linkType?:
+                                                        | ('none' | 'page' | 'custom' | 'constant' | 'cal')
+                                                        | null;
                                                       /**
                                                        * Select a page to link to
                                                        */
@@ -3609,6 +4143,14 @@ export interface Page {
                                                        * Select a constant link. These links can be managed globally and updated in one place.
                                                        */
                                                       constantLink?: string | null;
+                                                      /**
+                                                       * Cal.com link path (e.g., team/meybohm/consult)
+                                                       */
+                                                      calLink?: string | null;
+                                                      /**
+                                                       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                       */
+                                                      calNamespace?: string | null;
                                                       /**
                                                        * Open the link in a new browser tab
                                                        */
@@ -3636,7 +4178,7 @@ export interface Page {
                                                 /**
                                                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                  */
-                                                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                                 /**
                                                  * Select a page to link to
                                                  */
@@ -3649,6 +4191,14 @@ export interface Page {
                                                  * Select a constant link. These links can be managed globally and updated in one place.
                                                  */
                                                 constantLink?: string | null;
+                                                /**
+                                                 * Cal.com link path (e.g., team/meybohm/consult)
+                                                 */
+                                                calLink?: string | null;
+                                                /**
+                                                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                 */
+                                                calNamespace?: string | null;
                                                 /**
                                                  * Open the link in a new browser tab
                                                  */
@@ -3743,7 +4293,7 @@ export interface Page {
                                                   /**
                                                    * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                                                    */
-                                                  linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                                                  linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                                                   /**
                                                    * Select a page to link to
                                                    */
@@ -3756,6 +4306,14 @@ export interface Page {
                                                    * Select a constant link. These links can be managed globally and updated in one place.
                                                    */
                                                   constantLink?: string | null;
+                                                  /**
+                                                   * Cal.com link path (e.g., team/meybohm/consult)
+                                                   */
+                                                  calLink?: string | null;
+                                                  /**
+                                                   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                                                   */
+                                                  calNamespace?: string | null;
                                                   /**
                                                    * Open the link in a new browser tab
                                                    */
@@ -3847,7 +4405,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -3860,6 +4418,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -3892,7 +4458,7 @@ export interface Page {
           /**
            * Choose whether to link to an existing page, a custom URL, a constant link, or no link
            */
-          cardLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+          cardLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
           /**
            * Select a page to link to
            */
@@ -3905,6 +4471,14 @@ export interface Page {
            * Select a constant link. These links can be managed globally and updated in one place.
            */
           cardConstantLink?: string | null;
+          /**
+           * Cal.com link path (e.g., team/meybohm/consult)
+           */
+          cardCalLink?: string | null;
+          /**
+           * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+           */
+          cardCalNamespace?: string | null;
           /**
            * Open the link in a new browser tab
            */
@@ -3984,7 +4558,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        buttonLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -3998,6 +4572,14 @@ export interface Page {
          */
         buttonConstantLink?: string | null;
         /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        buttonCalLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        buttonCalNamespace?: string | null;
+        /**
          * Open the link in a new browser tab
          */
         buttonOpenInNewTab?: boolean | null;
@@ -4009,7 +4591,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -4022,6 +4604,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -4048,7 +4638,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -4061,6 +4651,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -4100,7 +4698,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -4113,6 +4711,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -4151,7 +4757,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        buttonLinkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        buttonLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -4165,6 +4771,14 @@ export interface Page {
          */
         buttonConstantLink?: string | null;
         /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        buttonCalLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        buttonCalNamespace?: string | null;
+        /**
          * Open the link in a new browser tab
          */
         buttonOpenInNewTab?: boolean | null;
@@ -4176,7 +4790,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -4189,6 +4803,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -4231,7 +4853,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -4244,6 +4866,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -4282,7 +4912,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -4295,6 +4925,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -4321,7 +4959,7 @@ export interface Page {
               /**
                * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                */
-              linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+              linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
               /**
                * Select a page to link to
                */
@@ -4334,6 +4972,14 @@ export interface Page {
                * Select a constant link. These links can be managed globally and updated in one place.
                */
               constantLink?: string | null;
+              /**
+               * Cal.com link path (e.g., team/meybohm/consult)
+               */
+              calLink?: string | null;
+              /**
+               * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+               */
+              calNamespace?: string | null;
               /**
                * Open the link in a new browser tab
                */
@@ -4361,7 +5007,7 @@ export interface Page {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -4374,6 +5020,14 @@ export interface Page {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -4488,7 +5142,7 @@ export interface Page {
           /**
            * Choose whether to link to an existing page, a custom URL, a constant link, or no link
            */
-          linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+          linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
           /**
            * Select a page to link to
            */
@@ -4501,6 +5155,14 @@ export interface Page {
            * Select a constant link. These links can be managed globally and updated in one place.
            */
           constantLink?: string | null;
+          /**
+           * Cal.com link path (e.g., team/meybohm/consult)
+           */
+          calLink?: string | null;
+          /**
+           * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+           */
+          calNamespace?: string | null;
           /**
            * Open the link in a new browser tab
            */
@@ -4804,13 +5466,37 @@ export interface Agent {
    */
   linkedin?: string | null;
   /**
-   * External URL for "Schedule A Consultation" button (e.g., Calendly link)
+   * Choose whether to link to an existing page, a custom URL, a constant link, or no link
    */
-  consultationUrl?: string | null;
+  consultationLinkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
   /**
-   * Open consultation link in a new tab
+   * Select a page to link to
+   */
+  consultationPage?: (string | null) | Page;
+  /**
+   * Enter a custom URL (e.g., /contact, https://example.com)
+   */
+  consultationCustomUrl?: string | null;
+  /**
+   * Select a constant link. These links can be managed globally and updated in one place.
+   */
+  consultationConstantLink?: string | null;
+  /**
+   * Cal.com link path (e.g., team/meybohm/consult)
+   */
+  consultationCalLink?: string | null;
+  /**
+   * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+   */
+  consultationCalNamespace?: string | null;
+  /**
+   * Open the link in a new browser tab
    */
   consultationOpenInNewTab?: boolean | null;
+  /**
+   * Disable the link (renders as non-clickable text)
+   */
+  consultationDisabled?: boolean | null;
   /**
    * Enter broker email address to automatically fetch Buildout broker ID
    */
@@ -5306,6 +5992,8 @@ export interface PagesSelect<T extends boolean = true> {
               ctaPrimaryPage?: T;
               ctaPrimaryCustomUrl?: T;
               ctaPrimaryConstantLink?: T;
+              ctaPrimaryCalLink?: T;
+              ctaPrimaryCalNamespace?: T;
               ctaPrimaryOpenInNewTab?: T;
               ctaPrimaryDisabled?: T;
               ctaSecondaryLabel?: T;
@@ -5313,6 +6001,8 @@ export interface PagesSelect<T extends boolean = true> {
               ctaSecondaryPage?: T;
               ctaSecondaryCustomUrl?: T;
               ctaSecondaryConstantLink?: T;
+              ctaSecondaryCalLink?: T;
+              ctaSecondaryCalNamespace?: T;
               ctaSecondaryOpenInNewTab?: T;
               ctaSecondaryDisabled?: T;
               backgroundImage?: T;
@@ -5344,6 +6034,8 @@ export interface PagesSelect<T extends boolean = true> {
                     page?: T;
                     customUrl?: T;
                     constantLink?: T;
+                    calLink?: T;
+                    calNamespace?: T;
                     openInNewTab?: T;
                     disabled?: T;
                     id?: T;
@@ -5353,6 +6045,8 @@ export interface PagesSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               id?: T;
@@ -5387,6 +6081,8 @@ export interface PagesSelect<T extends boolean = true> {
                           ctaPrimaryPage?: T;
                           ctaPrimaryCustomUrl?: T;
                           ctaPrimaryConstantLink?: T;
+                          ctaPrimaryCalLink?: T;
+                          ctaPrimaryCalNamespace?: T;
                           ctaPrimaryOpenInNewTab?: T;
                           ctaPrimaryDisabled?: T;
                           ctaSecondaryLabel?: T;
@@ -5394,6 +6090,8 @@ export interface PagesSelect<T extends boolean = true> {
                           ctaSecondaryPage?: T;
                           ctaSecondaryCustomUrl?: T;
                           ctaSecondaryConstantLink?: T;
+                          ctaSecondaryCalLink?: T;
+                          ctaSecondaryCalNamespace?: T;
                           ctaSecondaryOpenInNewTab?: T;
                           ctaSecondaryDisabled?: T;
                           backgroundImage?: T;
@@ -5425,6 +6123,8 @@ export interface PagesSelect<T extends boolean = true> {
                                 page?: T;
                                 customUrl?: T;
                                 constantLink?: T;
+                                calLink?: T;
+                                calNamespace?: T;
                                 openInNewTab?: T;
                                 disabled?: T;
                                 id?: T;
@@ -5434,6 +6134,8 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
+                          calLink?: T;
+                          calNamespace?: T;
                           openInNewTab?: T;
                           disabled?: T;
                           id?: T;
@@ -5450,6 +6152,8 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
+                          calLink?: T;
+                          calNamespace?: T;
                           openInNewTab?: T;
                           disabled?: T;
                           cardTextAlign?: T;
@@ -5470,6 +6174,8 @@ export interface PagesSelect<T extends boolean = true> {
                                 cardPage?: T;
                                 cardCustomUrl?: T;
                                 cardConstantLink?: T;
+                                cardCalLink?: T;
+                                cardCalNamespace?: T;
                                 cardOpenInNewTab?: T;
                                 cardDisabled?: T;
                                 id?: T;
@@ -5519,6 +6225,8 @@ export interface PagesSelect<T extends boolean = true> {
                           buttonPage?: T;
                           buttonCustomUrl?: T;
                           buttonConstantLink?: T;
+                          buttonCalLink?: T;
+                          buttonCalNamespace?: T;
                           buttonOpenInNewTab?: T;
                           buttonDisabled?: T;
                           linkText?: T;
@@ -5526,6 +6234,8 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
+                          calLink?: T;
+                          calNamespace?: T;
                           openInNewTab?: T;
                           disabled?: T;
                           id?: T;
@@ -5542,6 +6252,8 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
+                          calLink?: T;
+                          calNamespace?: T;
                           openInNewTab?: T;
                           disabled?: T;
                           id?: T;
@@ -5576,6 +6288,8 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
+                          calLink?: T;
+                          calNamespace?: T;
                           openInNewTab?: T;
                           disabled?: T;
                           featuredAgentSetName?: T;
@@ -5595,6 +6309,8 @@ export interface PagesSelect<T extends boolean = true> {
                           buttonPage?: T;
                           buttonCustomUrl?: T;
                           buttonConstantLink?: T;
+                          buttonCalLink?: T;
+                          buttonCalNamespace?: T;
                           buttonOpenInNewTab?: T;
                           buttonDisabled?: T;
                           linkText?: T;
@@ -5602,6 +6318,8 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
+                          calLink?: T;
+                          calNamespace?: T;
                           openInNewTab?: T;
                           disabled?: T;
                           id?: T;
@@ -5625,6 +6343,8 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
+                          calLink?: T;
+                          calNamespace?: T;
                           openInNewTab?: T;
                           disabled?: T;
                           id?: T;
@@ -5651,6 +6371,8 @@ export interface PagesSelect<T extends boolean = true> {
                                 page?: T;
                                 customUrl?: T;
                                 constantLink?: T;
+                                calLink?: T;
+                                calNamespace?: T;
                                 openInNewTab?: T;
                                 disabled?: T;
                                 variant?: T;
@@ -5670,6 +6392,8 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           customUrl?: T;
                           constantLink?: T;
+                          calLink?: T;
+                          calNamespace?: T;
                           openInNewTab?: T;
                           disabled?: T;
                           excludeSpacing?: T;
@@ -5734,6 +6458,8 @@ export interface PagesSelect<T extends boolean = true> {
                                 page?: T;
                                 customUrl?: T;
                                 constantLink?: T;
+                                calLink?: T;
+                                calNamespace?: T;
                                 openInNewTab?: T;
                                 disabled?: T;
                                 id?: T;
@@ -5796,6 +6522,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       ctaPrimaryPage?: T;
                                       ctaPrimaryCustomUrl?: T;
                                       ctaPrimaryConstantLink?: T;
+                                      ctaPrimaryCalLink?: T;
+                                      ctaPrimaryCalNamespace?: T;
                                       ctaPrimaryOpenInNewTab?: T;
                                       ctaPrimaryDisabled?: T;
                                       ctaSecondaryLabel?: T;
@@ -5803,6 +6531,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       ctaSecondaryPage?: T;
                                       ctaSecondaryCustomUrl?: T;
                                       ctaSecondaryConstantLink?: T;
+                                      ctaSecondaryCalLink?: T;
+                                      ctaSecondaryCalNamespace?: T;
                                       ctaSecondaryOpenInNewTab?: T;
                                       ctaSecondaryDisabled?: T;
                                       backgroundImage?: T;
@@ -5834,6 +6564,8 @@ export interface PagesSelect<T extends boolean = true> {
                                             page?: T;
                                             customUrl?: T;
                                             constantLink?: T;
+                                            calLink?: T;
+                                            calNamespace?: T;
                                             openInNewTab?: T;
                                             disabled?: T;
                                             id?: T;
@@ -5843,6 +6575,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
+                                      calLink?: T;
+                                      calNamespace?: T;
                                       openInNewTab?: T;
                                       disabled?: T;
                                       id?: T;
@@ -5859,6 +6593,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
+                                      calLink?: T;
+                                      calNamespace?: T;
                                       openInNewTab?: T;
                                       disabled?: T;
                                       cardTextAlign?: T;
@@ -5879,6 +6615,8 @@ export interface PagesSelect<T extends boolean = true> {
                                             cardPage?: T;
                                             cardCustomUrl?: T;
                                             cardConstantLink?: T;
+                                            cardCalLink?: T;
+                                            cardCalNamespace?: T;
                                             cardOpenInNewTab?: T;
                                             cardDisabled?: T;
                                             id?: T;
@@ -5928,6 +6666,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       buttonPage?: T;
                                       buttonCustomUrl?: T;
                                       buttonConstantLink?: T;
+                                      buttonCalLink?: T;
+                                      buttonCalNamespace?: T;
                                       buttonOpenInNewTab?: T;
                                       buttonDisabled?: T;
                                       linkText?: T;
@@ -5935,6 +6675,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
+                                      calLink?: T;
+                                      calNamespace?: T;
                                       openInNewTab?: T;
                                       disabled?: T;
                                       id?: T;
@@ -5951,6 +6693,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
+                                      calLink?: T;
+                                      calNamespace?: T;
                                       openInNewTab?: T;
                                       disabled?: T;
                                       id?: T;
@@ -5985,6 +6729,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
+                                      calLink?: T;
+                                      calNamespace?: T;
                                       openInNewTab?: T;
                                       disabled?: T;
                                       featuredAgentSetName?: T;
@@ -6004,6 +6750,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       buttonPage?: T;
                                       buttonCustomUrl?: T;
                                       buttonConstantLink?: T;
+                                      buttonCalLink?: T;
+                                      buttonCalNamespace?: T;
                                       buttonOpenInNewTab?: T;
                                       buttonDisabled?: T;
                                       linkText?: T;
@@ -6011,6 +6759,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
+                                      calLink?: T;
+                                      calNamespace?: T;
                                       openInNewTab?: T;
                                       disabled?: T;
                                       id?: T;
@@ -6034,6 +6784,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
+                                      calLink?: T;
+                                      calNamespace?: T;
                                       openInNewTab?: T;
                                       disabled?: T;
                                       id?: T;
@@ -6060,6 +6812,8 @@ export interface PagesSelect<T extends boolean = true> {
                                             page?: T;
                                             customUrl?: T;
                                             constantLink?: T;
+                                            calLink?: T;
+                                            calNamespace?: T;
                                             openInNewTab?: T;
                                             disabled?: T;
                                             variant?: T;
@@ -6079,6 +6833,8 @@ export interface PagesSelect<T extends boolean = true> {
                                       page?: T;
                                       customUrl?: T;
                                       constantLink?: T;
+                                      calLink?: T;
+                                      calNamespace?: T;
                                       openInNewTab?: T;
                                       disabled?: T;
                                       excludeSpacing?: T;
@@ -6143,6 +6899,8 @@ export interface PagesSelect<T extends boolean = true> {
                                             page?: T;
                                             customUrl?: T;
                                             constantLink?: T;
+                                            calLink?: T;
+                                            calNamespace?: T;
                                             openInNewTab?: T;
                                             disabled?: T;
                                             id?: T;
@@ -6205,6 +6963,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   ctaPrimaryPage?: T;
                                                   ctaPrimaryCustomUrl?: T;
                                                   ctaPrimaryConstantLink?: T;
+                                                  ctaPrimaryCalLink?: T;
+                                                  ctaPrimaryCalNamespace?: T;
                                                   ctaPrimaryOpenInNewTab?: T;
                                                   ctaPrimaryDisabled?: T;
                                                   ctaSecondaryLabel?: T;
@@ -6212,6 +6972,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   ctaSecondaryPage?: T;
                                                   ctaSecondaryCustomUrl?: T;
                                                   ctaSecondaryConstantLink?: T;
+                                                  ctaSecondaryCalLink?: T;
+                                                  ctaSecondaryCalNamespace?: T;
                                                   ctaSecondaryOpenInNewTab?: T;
                                                   ctaSecondaryDisabled?: T;
                                                   backgroundImage?: T;
@@ -6243,6 +7005,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                         page?: T;
                                                         customUrl?: T;
                                                         constantLink?: T;
+                                                        calLink?: T;
+                                                        calNamespace?: T;
                                                         openInNewTab?: T;
                                                         disabled?: T;
                                                         id?: T;
@@ -6252,6 +7016,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
+                                                  calLink?: T;
+                                                  calNamespace?: T;
                                                   openInNewTab?: T;
                                                   disabled?: T;
                                                   id?: T;
@@ -6268,6 +7034,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
+                                                  calLink?: T;
+                                                  calNamespace?: T;
                                                   openInNewTab?: T;
                                                   disabled?: T;
                                                   cardTextAlign?: T;
@@ -6288,6 +7056,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                         cardPage?: T;
                                                         cardCustomUrl?: T;
                                                         cardConstantLink?: T;
+                                                        cardCalLink?: T;
+                                                        cardCalNamespace?: T;
                                                         cardOpenInNewTab?: T;
                                                         cardDisabled?: T;
                                                         id?: T;
@@ -6337,6 +7107,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   buttonPage?: T;
                                                   buttonCustomUrl?: T;
                                                   buttonConstantLink?: T;
+                                                  buttonCalLink?: T;
+                                                  buttonCalNamespace?: T;
                                                   buttonOpenInNewTab?: T;
                                                   buttonDisabled?: T;
                                                   linkText?: T;
@@ -6344,6 +7116,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
+                                                  calLink?: T;
+                                                  calNamespace?: T;
                                                   openInNewTab?: T;
                                                   disabled?: T;
                                                   id?: T;
@@ -6360,6 +7134,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
+                                                  calLink?: T;
+                                                  calNamespace?: T;
                                                   openInNewTab?: T;
                                                   disabled?: T;
                                                   id?: T;
@@ -6394,6 +7170,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
+                                                  calLink?: T;
+                                                  calNamespace?: T;
                                                   openInNewTab?: T;
                                                   disabled?: T;
                                                   featuredAgentSetName?: T;
@@ -6413,6 +7191,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   buttonPage?: T;
                                                   buttonCustomUrl?: T;
                                                   buttonConstantLink?: T;
+                                                  buttonCalLink?: T;
+                                                  buttonCalNamespace?: T;
                                                   buttonOpenInNewTab?: T;
                                                   buttonDisabled?: T;
                                                   linkText?: T;
@@ -6420,6 +7200,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
+                                                  calLink?: T;
+                                                  calNamespace?: T;
                                                   openInNewTab?: T;
                                                   disabled?: T;
                                                   id?: T;
@@ -6443,6 +7225,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
+                                                  calLink?: T;
+                                                  calNamespace?: T;
                                                   openInNewTab?: T;
                                                   disabled?: T;
                                                   id?: T;
@@ -6469,6 +7253,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                         page?: T;
                                                         customUrl?: T;
                                                         constantLink?: T;
+                                                        calLink?: T;
+                                                        calNamespace?: T;
                                                         openInNewTab?: T;
                                                         disabled?: T;
                                                         variant?: T;
@@ -6488,6 +7274,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                   page?: T;
                                                   customUrl?: T;
                                                   constantLink?: T;
+                                                  calLink?: T;
+                                                  calNamespace?: T;
                                                   openInNewTab?: T;
                                                   disabled?: T;
                                                   excludeSpacing?: T;
@@ -6552,6 +7340,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                         page?: T;
                                                         customUrl?: T;
                                                         constantLink?: T;
+                                                        calLink?: T;
+                                                        calNamespace?: T;
                                                         openInNewTab?: T;
                                                         disabled?: T;
                                                         id?: T;
@@ -6614,6 +7404,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               ctaPrimaryPage?: T;
                                                               ctaPrimaryCustomUrl?: T;
                                                               ctaPrimaryConstantLink?: T;
+                                                              ctaPrimaryCalLink?: T;
+                                                              ctaPrimaryCalNamespace?: T;
                                                               ctaPrimaryOpenInNewTab?: T;
                                                               ctaPrimaryDisabled?: T;
                                                               ctaSecondaryLabel?: T;
@@ -6621,6 +7413,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               ctaSecondaryPage?: T;
                                                               ctaSecondaryCustomUrl?: T;
                                                               ctaSecondaryConstantLink?: T;
+                                                              ctaSecondaryCalLink?: T;
+                                                              ctaSecondaryCalNamespace?: T;
                                                               ctaSecondaryOpenInNewTab?: T;
                                                               ctaSecondaryDisabled?: T;
                                                               backgroundImage?: T;
@@ -6652,6 +7446,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     page?: T;
                                                                     customUrl?: T;
                                                                     constantLink?: T;
+                                                                    calLink?: T;
+                                                                    calNamespace?: T;
                                                                     openInNewTab?: T;
                                                                     disabled?: T;
                                                                     id?: T;
@@ -6661,6 +7457,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
+                                                              calLink?: T;
+                                                              calNamespace?: T;
                                                               openInNewTab?: T;
                                                               disabled?: T;
                                                               id?: T;
@@ -6677,6 +7475,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
+                                                              calLink?: T;
+                                                              calNamespace?: T;
                                                               openInNewTab?: T;
                                                               disabled?: T;
                                                               cardTextAlign?: T;
@@ -6697,6 +7497,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     cardPage?: T;
                                                                     cardCustomUrl?: T;
                                                                     cardConstantLink?: T;
+                                                                    cardCalLink?: T;
+                                                                    cardCalNamespace?: T;
                                                                     cardOpenInNewTab?: T;
                                                                     cardDisabled?: T;
                                                                     id?: T;
@@ -6746,6 +7548,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               buttonPage?: T;
                                                               buttonCustomUrl?: T;
                                                               buttonConstantLink?: T;
+                                                              buttonCalLink?: T;
+                                                              buttonCalNamespace?: T;
                                                               buttonOpenInNewTab?: T;
                                                               buttonDisabled?: T;
                                                               linkText?: T;
@@ -6753,6 +7557,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
+                                                              calLink?: T;
+                                                              calNamespace?: T;
                                                               openInNewTab?: T;
                                                               disabled?: T;
                                                               id?: T;
@@ -6769,6 +7575,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
+                                                              calLink?: T;
+                                                              calNamespace?: T;
                                                               openInNewTab?: T;
                                                               disabled?: T;
                                                               id?: T;
@@ -6803,6 +7611,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
+                                                              calLink?: T;
+                                                              calNamespace?: T;
                                                               openInNewTab?: T;
                                                               disabled?: T;
                                                               featuredAgentSetName?: T;
@@ -6822,6 +7632,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               buttonPage?: T;
                                                               buttonCustomUrl?: T;
                                                               buttonConstantLink?: T;
+                                                              buttonCalLink?: T;
+                                                              buttonCalNamespace?: T;
                                                               buttonOpenInNewTab?: T;
                                                               buttonDisabled?: T;
                                                               linkText?: T;
@@ -6829,6 +7641,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
+                                                              calLink?: T;
+                                                              calNamespace?: T;
                                                               openInNewTab?: T;
                                                               disabled?: T;
                                                               id?: T;
@@ -6852,6 +7666,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
+                                                              calLink?: T;
+                                                              calNamespace?: T;
                                                               openInNewTab?: T;
                                                               disabled?: T;
                                                               id?: T;
@@ -6878,6 +7694,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     page?: T;
                                                                     customUrl?: T;
                                                                     constantLink?: T;
+                                                                    calLink?: T;
+                                                                    calNamespace?: T;
                                                                     openInNewTab?: T;
                                                                     disabled?: T;
                                                                     variant?: T;
@@ -6897,6 +7715,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                               page?: T;
                                                               customUrl?: T;
                                                               constantLink?: T;
+                                                              calLink?: T;
+                                                              calNamespace?: T;
                                                               openInNewTab?: T;
                                                               disabled?: T;
                                                               excludeSpacing?: T;
@@ -6961,6 +7781,8 @@ export interface PagesSelect<T extends boolean = true> {
                                                                     page?: T;
                                                                     customUrl?: T;
                                                                     constantLink?: T;
+                                                                    calLink?: T;
+                                                                    calNamespace?: T;
                                                                     openInNewTab?: T;
                                                                     disabled?: T;
                                                                     id?: T;
@@ -7017,6 +7839,8 @@ export interface PagesSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               cardTextAlign?: T;
@@ -7037,6 +7861,8 @@ export interface PagesSelect<T extends boolean = true> {
                     cardPage?: T;
                     cardCustomUrl?: T;
                     cardConstantLink?: T;
+                    cardCalLink?: T;
+                    cardCalNamespace?: T;
                     cardOpenInNewTab?: T;
                     cardDisabled?: T;
                     id?: T;
@@ -7086,6 +7912,8 @@ export interface PagesSelect<T extends boolean = true> {
               buttonPage?: T;
               buttonCustomUrl?: T;
               buttonConstantLink?: T;
+              buttonCalLink?: T;
+              buttonCalNamespace?: T;
               buttonOpenInNewTab?: T;
               buttonDisabled?: T;
               linkText?: T;
@@ -7093,6 +7921,8 @@ export interface PagesSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               id?: T;
@@ -7109,6 +7939,8 @@ export interface PagesSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               id?: T;
@@ -7143,6 +7975,8 @@ export interface PagesSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               featuredAgentSetName?: T;
@@ -7162,6 +7996,8 @@ export interface PagesSelect<T extends boolean = true> {
               buttonPage?: T;
               buttonCustomUrl?: T;
               buttonConstantLink?: T;
+              buttonCalLink?: T;
+              buttonCalNamespace?: T;
               buttonOpenInNewTab?: T;
               buttonDisabled?: T;
               linkText?: T;
@@ -7169,6 +8005,8 @@ export interface PagesSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               id?: T;
@@ -7192,6 +8030,8 @@ export interface PagesSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               id?: T;
@@ -7222,6 +8062,8 @@ export interface PagesSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               id?: T;
@@ -7246,6 +8088,8 @@ export interface PagesSelect<T extends boolean = true> {
                     page?: T;
                     customUrl?: T;
                     constantLink?: T;
+                    calLink?: T;
+                    calNamespace?: T;
                     openInNewTab?: T;
                     disabled?: T;
                     variant?: T;
@@ -7265,6 +8109,8 @@ export interface PagesSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               excludeSpacing?: T;
@@ -7343,6 +8189,8 @@ export interface PagesSelect<T extends boolean = true> {
                     page?: T;
                     customUrl?: T;
                     constantLink?: T;
+                    calLink?: T;
+                    calNamespace?: T;
                     openInNewTab?: T;
                     disabled?: T;
                     id?: T;
@@ -7471,8 +8319,14 @@ export interface AgentsSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   linkedin?: T;
-  consultationUrl?: T;
+  consultationLinkType?: T;
+  consultationPage?: T;
+  consultationCustomUrl?: T;
+  consultationConstantLink?: T;
+  consultationCalLink?: T;
+  consultationCalNamespace?: T;
   consultationOpenInNewTab?: T;
+  consultationDisabled?: T;
   buildout_broker_id?: T;
   featuredPropertySetName?: T;
   featuredPropertyIds?: T;
@@ -7676,7 +8530,7 @@ export interface Navbar {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -7689,6 +8543,14 @@ export interface Navbar {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -7781,7 +8643,7 @@ export interface Navbar {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -7794,6 +8656,14 @@ export interface Navbar {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -8487,7 +9357,7 @@ export interface AgentCategory {
         /**
          * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+        linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
         /**
          * Select a page to link to
          */
@@ -8500,6 +9370,14 @@ export interface AgentCategory {
          * Select a constant link. These links can be managed globally and updated in one place.
          */
         constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
         /**
          * Open the link in a new browser tab
          */
@@ -8643,7 +9521,7 @@ export interface OfficeLocationSet {
               /**
                * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                */
-              linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+              linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
               /**
                * Select a page to link to
                */
@@ -8656,6 +9534,14 @@ export interface OfficeLocationSet {
                * Select a constant link. These links can be managed globally and updated in one place.
                */
               constantLink?: string | null;
+              /**
+               * Cal.com link path (e.g., team/meybohm/consult)
+               */
+              calLink?: string | null;
+              /**
+               * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+               */
+              calNamespace?: string | null;
               /**
                * Open the link in a new browser tab
                */
@@ -8725,6 +9611,8 @@ export interface NavbarSelect<T extends boolean = true> {
         page?: T;
         customUrl?: T;
         constantLink?: T;
+        calLink?: T;
+        calNamespace?: T;
         openInNewTab?: T;
         disabled?: T;
         hasDropdown?: T;
@@ -8766,6 +9654,8 @@ export interface NavbarSelect<T extends boolean = true> {
         page?: T;
         customUrl?: T;
         constantLink?: T;
+        calLink?: T;
+        calNamespace?: T;
         openInNewTab?: T;
         disabled?: T;
         hasDropdown?: T;
@@ -9143,6 +10033,8 @@ export interface AgentCategoriesSelect<T extends boolean = true> {
         page?: T;
         customUrl?: T;
         constantLink?: T;
+        calLink?: T;
+        calNamespace?: T;
         openInNewTab?: T;
         disabled?: T;
         agents?: T;
@@ -9226,6 +10118,8 @@ export interface OfficeLocationSetsSelect<T extends boolean = true> {
               page?: T;
               customUrl?: T;
               constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
               openInNewTab?: T;
               disabled?: T;
               id?: T;

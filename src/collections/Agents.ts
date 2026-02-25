@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { slugify } from '../utils/slugify'
 import { seoFields } from '../fields/seoFields'
+import { createLinkFields } from '../fields/linkField'
 
 export const Agents: CollectionConfig = {
   slug: 'agents',
@@ -114,22 +115,10 @@ export const Agents: CollectionConfig = {
         description: 'LinkedIn profile URL',
       },
     },
-    {
-      name: 'consultationUrl',
-      type: 'text',
-      required: false,
-      admin: {
-        description: 'External URL for "Schedule A Consultation" button (e.g., Calendly link)',
-      },
-    },
-    {
-      name: 'consultationOpenInNewTab',
-      type: 'checkbox',
-      defaultValue: true,
-      admin: {
-        description: 'Open consultation link in a new tab',
-      },
-    },
+    ...createLinkFields({
+      fieldPrefix: 'consultation',
+      includeText: false,
+    }),
     {
       name: 'buildout_broker_id',
       type: 'text',

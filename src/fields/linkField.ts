@@ -9,11 +9,13 @@ export function createLinkFields(options?: {
   linkTextLabel?: string
   linkTextRequired?: boolean
   fieldPrefix?: string // Prefix for linkType, page, and customUrl fields
+  includeText?: boolean // Set to false to omit the link text field (default: true)
 }): Field[] {
   const linkTextName = options?.linkTextName || 'linkText'
   const linkTextLabel = options?.linkTextLabel || 'Link Text'
   const linkTextRequired = options?.linkTextRequired || false
   const prefix = options?.fieldPrefix || ''
+  const includeText = options?.includeText !== false
 
   const linkTypeName = prefix ? `${prefix}LinkType` : 'linkType'
   const pageName = prefix ? `${prefix}Page` : 'page'
@@ -22,14 +24,20 @@ export function createLinkFields(options?: {
 
   const openInNewTabName = prefix ? `${prefix}OpenInNewTab` : 'openInNewTab'
   const disabledName = prefix ? `${prefix}Disabled` : 'disabled'
+  const calLinkName = prefix ? `${prefix}CalLink` : 'calLink'
+  const calNamespaceName = prefix ? `${prefix}CalNamespace` : 'calNamespace'
 
   return [
-    {
-      name: linkTextName,
-      type: 'text',
-      label: linkTextLabel,
-      required: linkTextRequired,
-    },
+    ...(includeText
+      ? [
+          {
+            name: linkTextName,
+            type: 'text' as const,
+            label: linkTextLabel,
+            required: linkTextRequired,
+          },
+        ]
+      : []),
     {
       name: linkTypeName,
       type: 'select',
@@ -50,6 +58,10 @@ export function createLinkFields(options?: {
         {
           label: 'Constant Link',
           value: 'constant',
+        },
+        {
+          label: 'Cal.com Booking',
+          value: 'cal',
         },
       ],
       defaultValue: 'none',
@@ -98,6 +110,24 @@ export function createLinkFields(options?: {
       },
     },
     {
+      name: calLinkName,
+      type: 'text',
+      required: false,
+      admin: {
+        condition: (data, siblingData) => siblingData?.[linkTypeName] === 'cal',
+        description: 'Cal.com link path (e.g., team/meybohm/consult)',
+      },
+    },
+    {
+      name: calNamespaceName,
+      type: 'text',
+      required: false,
+      admin: {
+        condition: (data, siblingData) => siblingData?.[linkTypeName] === 'cal',
+        description: 'Cal.com namespace — must match the Cal("init") call (e.g., consult)',
+      },
+    },
+    {
       name: openInNewTabName,
       type: 'checkbox',
       label: 'Open in New Tab',
@@ -105,7 +135,7 @@ export function createLinkFields(options?: {
       admin: {
         condition: (data, siblingData) => {
           const linkType = siblingData?.[linkTypeName]
-          return linkType !== 'none' && linkType !== undefined && linkType !== null
+          return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'cal'
         },
         description: 'Open the link in a new browser tab',
       },
@@ -118,7 +148,7 @@ export function createLinkFields(options?: {
       admin: {
         condition: (data, siblingData) => {
           const linkType = siblingData?.[linkTypeName]
-          return linkType !== 'none' && linkType !== undefined && linkType !== null
+          return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'cal'
         },
         description: 'Disable the link (renders as non-clickable text)',
       },

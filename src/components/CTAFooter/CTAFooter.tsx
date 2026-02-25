@@ -32,6 +32,8 @@ export default function CTAFooter({ block, constantLinksMap }: CTAFooterProps) {
         href={link.href || undefined}
         openInNewTab={link.openInNewTab}
         disabled={link.disabled}
+        calLink={link.calLink}
+        calNamespace={link.calNamespace}
         variant={isPrimary ? 'dark' : undefined}
       >
         {button.label}

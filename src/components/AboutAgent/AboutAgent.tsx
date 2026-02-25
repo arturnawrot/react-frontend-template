@@ -5,6 +5,7 @@ import type { SerializedEditorState } from 'lexical'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import PrimaryButton from '@/components/PrimaryButton'
 import CopyableContactLink from '@/components/CopyableContactLink'
+import type { ResolvedLink } from '@/utils/linkResolver'
 
 type AboutAgentProps = {
   agentFirstName?: string
@@ -16,8 +17,7 @@ type AboutAgentProps = {
   phone?: string
   linkedin?: string
   about?: SerializedEditorState | null
-  consultationUrl?: string
-  consultationOpenInNewTab?: boolean
+  consultationLink?: ResolvedLink | null
 }
 
 export default function AboutAgent({
@@ -30,9 +30,9 @@ export default function AboutAgent({
   phone,
   linkedin,
   about,
-  consultationUrl,
-  consultationOpenInNewTab = true,
+  consultationLink,
 }: AboutAgentProps) {
+  const hasConsultationLink = !!(consultationLink?.href || consultationLink?.calLink)
   return (
     <section className="w-full pt-20 md:pt-24 pb-16 md:pb-24 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
@@ -134,14 +134,18 @@ export default function AboutAgent({
               )}
 
               {/* Schedule A Consultation Button */}
-              <PrimaryButton
-                href={consultationUrl || undefined}
-                openInNewTab={consultationOpenInNewTab}
-                className="font-semibold rounded-full px-8 py-3 text-base text-center font-sans"
-                fullWidth
-              >
-                Schedule A Consultation
-              </PrimaryButton>
+              {hasConsultationLink && (
+                <PrimaryButton
+                  href={consultationLink?.href ?? null}
+                  openInNewTab={consultationLink?.openInNewTab}
+                  calLink={consultationLink?.calLink}
+                  calNamespace={consultationLink?.calNamespace}
+                  className="font-semibold rounded-full px-8 py-3 text-base text-center font-sans"
+                  fullWidth
+                >
+                  Schedule A Consultation
+                </PrimaryButton>
+              )}
             </div>
           </div>
         </div>

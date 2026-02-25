@@ -65,23 +65,31 @@ export async function getConstantLinksMap(payload?: Payload): Promise<ConstantLi
  * Supports both the new structure (linkType, page, customUrl, constantLink) and legacy structure (direct href)
  * Returns null if linkType is 'none' or no link is configured
  */
+export type LinkType = 'none' | 'page' | 'custom' | 'constant' | 'cal'
+
 export function resolveLinkUrl(
   linkData: {
-    linkType?: 'none' | 'page' | 'custom' | 'constant'
+    linkType?: LinkType
     page?: string | { slug?: string; id?: string } | null
     customUrl?: string | null
     constantLink?: string | null
+    calLink?: string | null
+    calNamespace?: string | null
     openInNewTab?: boolean
     // Field prefixes for multiple links
-    ctaPrimaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+    ctaPrimaryLinkType?: LinkType
     ctaPrimaryPage?: string | { slug?: string; id?: string } | null
     ctaPrimaryCustomUrl?: string | null
     ctaPrimaryConstantLink?: string | null
+    ctaPrimaryCalLink?: string | null
+    ctaPrimaryCalNamespace?: string | null
     ctaPrimaryOpenInNewTab?: boolean
-    ctaSecondaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+    ctaSecondaryLinkType?: LinkType
     ctaSecondaryPage?: string | { slug?: string; id?: string } | null
     ctaSecondaryCustomUrl?: string | null
     ctaSecondaryConstantLink?: string | null
+    ctaSecondaryCalLink?: string | null
+    ctaSecondaryCalNamespace?: string | null
     ctaSecondaryOpenInNewTab?: boolean
     // Legacy support
     href?: string | null
@@ -94,7 +102,7 @@ export function resolveLinkUrl(
 ): string | null {
   // Determine the effective linkType and related fields
   // Check prefixed fields first (for Hero CTAs), then standard fields
-  let effectiveLinkType: 'none' | 'page' | 'custom' | 'constant' | undefined
+  let effectiveLinkType: LinkType | undefined
   let effectivePage: string | { slug?: string; id?: string } | null | undefined
   let effectiveCustomUrl: string | null | undefined
   let effectiveConstantLink: string | null | undefined
@@ -129,6 +137,8 @@ export function resolveLinkUrl(
       return null
     }
     return null
+  } else if (effectiveLinkType === 'cal') {
+    return null // Cal.com uses data attributes, not a URL
   } else if (effectiveLinkType === 'custom') {
     return effectiveCustomUrl || null
   } else if (effectiveLinkType === 'constant') {
@@ -163,12 +173,12 @@ export function resolveLinkUrl(
  * Supports both the new structure and legacy (defaults to false)
  */
 export function shouldOpenInNewTab(linkData: {
-  linkType?: 'none' | 'page' | 'custom' | 'constant'
+  linkType?: LinkType
   openInNewTab?: boolean
   // Field prefixes for multiple links
-  ctaPrimaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaPrimaryLinkType?: LinkType
   ctaPrimaryOpenInNewTab?: boolean
-  ctaSecondaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaSecondaryLinkType?: LinkType
   ctaSecondaryOpenInNewTab?: boolean
 }): boolean {
   // Check for prefixed fields first (for Hero CTAs)
@@ -192,12 +202,12 @@ export function shouldOpenInNewTab(linkData: {
  * Supports both the new structure and legacy (defaults to false)
  */
 export function isLinkDisabled(linkData: {
-  linkType?: 'none' | 'page' | 'custom' | 'constant'
+  linkType?: LinkType
   disabled?: boolean
   // Field prefixes for multiple links
-  ctaPrimaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaPrimaryLinkType?: LinkType
   ctaPrimaryDisabled?: boolean
-  ctaSecondaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaSecondaryLinkType?: LinkType
   ctaSecondaryDisabled?: boolean
 }): boolean {
   // Check for prefixed fields first (for Hero CTAs)
@@ -223,29 +233,37 @@ export interface ResolvedLink {
   href: string | null
   openInNewTab: boolean
   disabled: boolean
+  calLink?: string | null
+  calNamespace?: string | null
 }
 
 /**
  * Link data input type - supports all link field variations
  */
 export type LinkData = {
-  linkType?: 'none' | 'page' | 'custom' | 'constant'
+  linkType?: LinkType
   page?: string | { slug?: string; id?: string } | null
   customUrl?: string | null
   constantLink?: string | null
+  calLink?: string | null
+  calNamespace?: string | null
   openInNewTab?: boolean
   disabled?: boolean
   // Field prefixes for multiple links
-  ctaPrimaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaPrimaryLinkType?: LinkType
   ctaPrimaryPage?: string | { slug?: string; id?: string } | null
   ctaPrimaryCustomUrl?: string | null
   ctaPrimaryConstantLink?: string | null
+  ctaPrimaryCalLink?: string | null
+  ctaPrimaryCalNamespace?: string | null
   ctaPrimaryOpenInNewTab?: boolean
   ctaPrimaryDisabled?: boolean
-  ctaSecondaryLinkType?: 'none' | 'page' | 'custom' | 'constant'
+  ctaSecondaryLinkType?: LinkType
   ctaSecondaryPage?: string | { slug?: string; id?: string } | null
   ctaSecondaryCustomUrl?: string | null
   ctaSecondaryConstantLink?: string | null
+  ctaSecondaryCalLink?: string | null
+  ctaSecondaryCalNamespace?: string | null
   ctaSecondaryOpenInNewTab?: boolean
   ctaSecondaryDisabled?: boolean
   // Legacy support
@@ -272,10 +290,19 @@ export function resolveLink(
   linkData: LinkData,
   constantLinksMap?: ConstantLinksMap
 ): ResolvedLink {
+  const effectiveLinkType = linkData.ctaPrimaryLinkType || linkData.ctaSecondaryLinkType || linkData.linkType
+  const isCal = effectiveLinkType === 'cal'
+
   return {
     href: resolveLinkUrl(linkData, constantLinksMap),
     openInNewTab: shouldOpenInNewTab(linkData),
     disabled: isLinkDisabled(linkData),
+    calLink: isCal
+      ? (linkData.ctaPrimaryCalLink ?? linkData.ctaSecondaryCalLink ?? linkData.calLink ?? null)
+      : null,
+    calNamespace: isCal
+      ? (linkData.ctaPrimaryCalNamespace ?? linkData.ctaSecondaryCalNamespace ?? linkData.calNamespace ?? null)
+      : null,
   }
 }
 
@@ -297,6 +324,8 @@ export function resolvePrefixedLink(
     page: data[`${prefix}Page`] as LinkData['page'],
     customUrl: data[`${prefix}CustomUrl`] as LinkData['customUrl'],
     constantLink: data[`${prefix}ConstantLink`] as LinkData['constantLink'],
+    calLink: data[`${prefix}CalLink`] as LinkData['calLink'],
+    calNamespace: data[`${prefix}CalNamespace`] as LinkData['calNamespace'],
     openInNewTab: data[`${prefix}OpenInNewTab`] as boolean,
     disabled: data[`${prefix}Disabled`] as boolean,
   }

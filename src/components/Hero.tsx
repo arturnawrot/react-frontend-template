@@ -138,8 +138,8 @@ const ActionButtons = ({
   secondaryClassName?: string
   align?: 'center' | 'start'
 }) => {
-  const hasPrimary = primaryLabel && (onPrimary || primaryLink?.href)
-  const hasSecondary = secondaryLabel && (onSecondary || secondaryLink?.href)
+  const hasPrimary = primaryLabel && (onPrimary || primaryLink?.href || primaryLink?.calLink)
+  const hasSecondary = secondaryLabel && (onSecondary || secondaryLink?.href || secondaryLink?.calLink)
   
   if (!hasPrimary && !hasSecondary) return null
 
@@ -152,6 +152,8 @@ const ActionButtons = ({
           href={primaryLink?.href ?? null}
           onClick={onPrimary}
           openInNewTab={primaryLink?.openInNewTab}
+          calLink={primaryLink?.calLink}
+          calNamespace={primaryLink?.calNamespace}
           className={primaryClassName}
           fullWidth
           disabled={primaryLink?.disabled}
@@ -164,6 +166,8 @@ const ActionButtons = ({
           href={secondaryLink?.href ?? null}
           onClick={onSecondary}
           openInNewTab={secondaryLink?.openInNewTab}
+          calLink={secondaryLink?.calLink}
+          calNamespace={secondaryLink?.calNamespace}
           className={secondaryClassName}
           fullWidth
           disabled={secondaryLink?.disabled}

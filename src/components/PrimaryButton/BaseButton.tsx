@@ -10,6 +10,8 @@ interface BaseButtonProps {
   className?: string
   fullWidth?: boolean
   disabled?: boolean
+  calLink?: string | null
+  calNamespace?: string | null
 }
 
 /**
@@ -25,10 +27,27 @@ export default function BaseButton({
   className = '',
   fullWidth = false,
   disabled = false,
+  calLink,
+  calNamespace,
 }: BaseButtonProps) {
   const fullWidthClass = fullWidth ? 'w-full md:w-auto' : ''
   const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : ''
   const baseClassName = `${className} ${fullWidthClass} ${disabledClass}`.trim()
+
+  // If calLink is provided, render as a cal.com element-click trigger
+  if (calLink) {
+    return (
+      <button
+        className={baseClassName}
+        type="button"
+        data-cal-link={calLink}
+        data-cal-namespace={calNamespace ?? undefined}
+        data-cal-config='{"layout":"month_view"}'
+      >
+        {children}
+      </button>
+    )
+  }
 
   // If href is provided, render as link (or span if disabled)
   if (href) {
