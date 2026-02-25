@@ -14,7 +14,7 @@ interface AssetTypeCardItem {
   header: string
   subheader?: string | null
   linkText?: string | null
-  linkType?: 'none' | 'page' | 'custom' | 'constant' | null
+  linkType?: 'none' | 'page' | 'custom' | 'constant' | 'cal' | null
   page?: string | { slug?: string; id?: string } | null
   customUrl?: string | null
   constantLink?: string | null

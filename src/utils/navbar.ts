@@ -44,7 +44,7 @@ export interface NavbarData {
 
 // Helper to resolve page, custom URL, or constant link
 function resolveHref(
-  linkType: 'none' | 'page' | 'custom' | 'constant' | null | undefined,
+  linkType: 'none' | 'page' | 'custom' | 'constant' | 'cal' | null | undefined,
   page: (string | null) | Page | undefined,
   customUrl: string | null | undefined,
   constantLink: string | null | undefined,
