@@ -8578,7 +8578,7 @@ export interface Navbar {
                     /**
                      * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                      */
-                    linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                    linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                     /**
                      * Select a page to link to
                      */
@@ -8592,9 +8592,21 @@ export interface Navbar {
                      */
                     constantLink?: string | null;
                     /**
+                     * Cal.com link path (e.g., team/meybohm/consult)
+                     */
+                    calLink?: string | null;
+                    /**
+                     * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                     */
+                    calNamespace?: string | null;
+                    /**
                      * Open the link in a new browser tab
                      */
                     openInNewTab?: boolean | null;
+                    /**
+                     * Disable the link (renders as non-clickable text)
+                     */
+                    disabled?: boolean | null;
                     id?: string | null;
                   }[]
                 | null;
@@ -8603,14 +8615,11 @@ export interface Navbar {
                */
               bottomLink?: {
                 enabled?: boolean | null;
-                /**
-                 * e.g., "See All Property Types"
-                 */
                 label?: string | null;
                 /**
                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                  */
-                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                 /**
                  * Select a page to link to
                  */
@@ -8624,9 +8633,21 @@ export interface Navbar {
                  */
                 constantLink?: string | null;
                 /**
+                 * Cal.com link path (e.g., team/meybohm/consult)
+                 */
+                calLink?: string | null;
+                /**
+                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                 */
+                calNamespace?: string | null;
+                /**
                  * Open the link in a new browser tab
                  */
                 openInNewTab?: boolean | null;
+                /**
+                 * Disable the link (renders as non-clickable text)
+                 */
+                disabled?: boolean | null;
               };
               id?: string | null;
             }[]
@@ -8691,7 +8712,7 @@ export interface Navbar {
                     /**
                      * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                      */
-                    linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                    linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                     /**
                      * Select a page to link to
                      */
@@ -8705,9 +8726,21 @@ export interface Navbar {
                      */
                     constantLink?: string | null;
                     /**
+                     * Cal.com link path (e.g., team/meybohm/consult)
+                     */
+                    calLink?: string | null;
+                    /**
+                     * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                     */
+                    calNamespace?: string | null;
+                    /**
                      * Open the link in a new browser tab
                      */
                     openInNewTab?: boolean | null;
+                    /**
+                     * Disable the link (renders as non-clickable text)
+                     */
+                    disabled?: boolean | null;
                     id?: string | null;
                   }[]
                 | null;
@@ -8716,14 +8749,11 @@ export interface Navbar {
                */
               bottomLink?: {
                 enabled?: boolean | null;
-                /**
-                 * e.g., "See All Property Types"
-                 */
                 label?: string | null;
                 /**
                  * Choose whether to link to an existing page, a custom URL, a constant link, or no link
                  */
-                linkType?: ('none' | 'page' | 'custom' | 'constant') | null;
+                linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
                 /**
                  * Select a page to link to
                  */
@@ -8737,9 +8767,21 @@ export interface Navbar {
                  */
                 constantLink?: string | null;
                 /**
+                 * Cal.com link path (e.g., team/meybohm/consult)
+                 */
+                calLink?: string | null;
+                /**
+                 * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+                 */
+                calNamespace?: string | null;
+                /**
                  * Open the link in a new browser tab
                  */
                 openInNewTab?: boolean | null;
+                /**
+                 * Disable the link (renders as non-clickable text)
+                 */
+                disabled?: boolean | null;
               };
               id?: string | null;
             }[]
@@ -9706,7 +9748,10 @@ export interface NavbarSelect<T extends boolean = true> {
                     page?: T;
                     customUrl?: T;
                     constantLink?: T;
+                    calLink?: T;
+                    calNamespace?: T;
                     openInNewTab?: T;
+                    disabled?: T;
                     id?: T;
                   };
               bottomLink?:
@@ -9718,7 +9763,10 @@ export interface NavbarSelect<T extends boolean = true> {
                     page?: T;
                     customUrl?: T;
                     constantLink?: T;
+                    calLink?: T;
+                    calNamespace?: T;
                     openInNewTab?: T;
+                    disabled?: T;
                   };
               id?: T;
             };
@@ -9749,7 +9797,10 @@ export interface NavbarSelect<T extends boolean = true> {
                     page?: T;
                     customUrl?: T;
                     constantLink?: T;
+                    calLink?: T;
+                    calNamespace?: T;
                     openInNewTab?: T;
+                    disabled?: T;
                     id?: T;
                   };
               bottomLink?:
@@ -9761,7 +9812,10 @@ export interface NavbarSelect<T extends boolean = true> {
                     page?: T;
                     customUrl?: T;
                     constantLink?: T;
+                    calLink?: T;
+                    calNamespace?: T;
                     openInNewTab?: T;
+                    disabled?: T;
                   };
               id?: T;
             };

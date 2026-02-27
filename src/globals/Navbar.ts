@@ -1,76 +1,35 @@
 import type { GlobalConfig, Field } from 'payload'
 import { createLinkFields } from '@/fields/linkField'
 
-// Reusable link fields for dropdown column links (uses same pattern as createLinkFields but with label instead of linkText)
+// Reusable link fields for dropdown column links
 const columnLinkFields: Field[] = [
-  {
-    name: 'label',
-    type: 'text',
-    required: true,
-    label: 'Link Label',
-  },
-  {
-    name: 'linkType',
-    type: 'select',
-    required: false,
-    options: [
-      { label: 'None', value: 'none' },
-      { label: 'Page', value: 'page' },
-      { label: 'Custom URL', value: 'custom' },
-      { label: 'Constant Link', value: 'constant' },
-    ],
-    defaultValue: 'custom',
-    admin: {
-      description: 'Choose whether to link to an existing page, a custom URL, a constant link, or no link',
-    },
-  },
-  {
-    name: 'page',
-    type: 'relationship',
-    relationTo: 'pages',
-    required: false,
-    admin: {
-      condition: (_data, siblingData) => siblingData?.linkType === 'page',
-      description: 'Select a page to link to',
-    },
-  },
-  {
-    name: 'customUrl',
-    type: 'text',
-    required: false,
-    admin: {
-      condition: (_data, siblingData) => siblingData?.linkType === 'custom',
-      description: 'Enter a custom URL (e.g., /contact, https://example.com)',
-    },
-  },
-  {
-    name: 'constantLink',
-    type: 'text',
-    required: false,
-    admin: {
-      condition: (_data, siblingData) => siblingData?.linkType === 'constant',
-      description: 'Select a constant link. These links can be managed globally and updated in one place.',
-      components: {
-        Field: '/components/ConstantLinkSelector/ConstantLinkSelector',
-      },
-    },
-  },
-  {
-    name: 'openInNewTab',
-    type: 'checkbox',
-    label: 'Open in New Tab',
-    defaultValue: false,
-    admin: {
-      condition: (_data, siblingData) => {
-        const linkType = siblingData?.linkType
-        return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'constant'
-      },
-      description: 'Open the link in a new browser tab',
-    },
-  },
+  ...createLinkFields({
+    linkTextName: 'label',
+    linkTextLabel: 'Link Label',
+    linkTextRequired: true,
+    defaultLinkType: 'custom',
+  }),
 ]
 
-// Bottom link fields with enabled toggle
+// Wraps each field's admin.condition with an additional `enabled` gate
+function withEnabledGate(fields: Field[]): Field[] {
+  return fields.map((field) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const existingCondition = 'admin' in field ? (field.admin as any)?.condition : undefined
+    return {
+      ...field,
+      admin: {
+        ...('admin' in field ? field.admin : {}),
+        condition: (_data: unknown, siblingData: Record<string, unknown>) => {
+          if (!siblingData?.enabled) return false
+          return existingCondition ? existingCondition(_data, siblingData) : true
+        },
+      },
+    } as Field
+  })
+}
+
+// Bottom link fields with enabled toggle — all link fields gated behind `enabled` checkbox
 const bottomLinkFields: Field[] = [
   {
     name: 'enabled',
@@ -78,76 +37,13 @@ const bottomLinkFields: Field[] = [
     label: 'Show Bottom Link',
     defaultValue: false,
   },
-  {
-    name: 'label',
-    type: 'text',
-    label: 'Link Label',
-    admin: {
-      condition: (_data, siblingData) => siblingData?.enabled === true,
-      description: 'e.g., "See All Property Types"',
-    },
-  },
-  {
-    name: 'linkType',
-    type: 'select',
-    required: false,
-    options: [
-      { label: 'None', value: 'none' },
-      { label: 'Page', value: 'page' },
-      { label: 'Custom URL', value: 'custom' },
-      { label: 'Constant Link', value: 'constant' },
-    ],
-    defaultValue: 'custom',
-    admin: {
-      condition: (_data, siblingData) => siblingData?.enabled === true,
-      description: 'Choose whether to link to an existing page, a custom URL, a constant link, or no link',
-    },
-  },
-  {
-    name: 'page',
-    type: 'relationship',
-    relationTo: 'pages',
-    required: false,
-    admin: {
-      condition: (_data, siblingData) => siblingData?.enabled === true && siblingData?.linkType === 'page',
-      description: 'Select a page to link to',
-    },
-  },
-  {
-    name: 'customUrl',
-    type: 'text',
-    required: false,
-    admin: {
-      condition: (_data, siblingData) => siblingData?.enabled === true && siblingData?.linkType === 'custom',
-      description: 'Enter a custom URL (e.g., /contact, https://example.com)',
-    },
-  },
-  {
-    name: 'constantLink',
-    type: 'text',
-    required: false,
-    admin: {
-      condition: (_data, siblingData) => siblingData?.enabled === true && siblingData?.linkType === 'constant',
-      description: 'Select a constant link. These links can be managed globally and updated in one place.',
-      components: {
-        Field: '/components/ConstantLinkSelector/ConstantLinkSelector',
-      },
-    },
-  },
-  {
-    name: 'openInNewTab',
-    type: 'checkbox',
-    label: 'Open in New Tab',
-    defaultValue: false,
-    admin: {
-      condition: (_data, siblingData) => {
-        if (!siblingData?.enabled) return false
-        const linkType = siblingData?.linkType
-        return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'constant'
-      },
-      description: 'Open the link in a new browser tab',
-    },
-  },
+  ...withEnabledGate(
+    createLinkFields({
+      linkTextName: 'label',
+      linkTextLabel: 'Link Label',
+      defaultLinkType: 'custom',
+    }),
+  ),
 ]
 
 // Dropdown column fields (reused for both upper and main links)

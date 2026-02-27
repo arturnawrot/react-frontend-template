@@ -76,7 +76,7 @@ export async function getConstantLinksMap(payload?: Payload): Promise<ConstantLi
       const isCal = link.linkType === 'cal'
       map.set(link.key, {
         href: resolveLinkUrl({
-          linkType: link.linkType,
+          linkType: link.linkType ?? undefined,
           page: link.page,
           customUrl: link.customUrl,
           calLink: link.calLink,
