@@ -171,18 +171,13 @@ export default function AgentIconsSection({ block }: AgentIconsSectionProps) {
                {(buttonText && buttonLink.href) || (linkText && arrowLink.href) ? (
                  <div className="pt-2 sm:pt-3 md:pt-4 flex flex-col gap-3 md:gap-4 max-w-[325px]">
                    {buttonText && buttonLink.href && (
-                     <PrimaryButton
-                       href={buttonLink.href}
-                       openInNewTab={buttonLink.openInNewTab}
-                       disabled={buttonLink.disabled}
-                       fullWidth
-                     >
+                     <PrimaryButton link={buttonLink} fullWidth>
                        {buttonText}
                      </PrimaryButton>
                    )}
                    {linkText && arrowLink.href && (
                     <div className="mt-5">
-                      <ArrowLink href={arrowLink.href} openInNewTab={arrowLink.openInNewTab} disabled={arrowLink.disabled}>
+                      <ArrowLink link={arrowLink}>
                         {linkText}
                       </ArrowLink>
                     </div>

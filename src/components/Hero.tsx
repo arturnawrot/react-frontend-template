@@ -138,9 +138,9 @@ const ActionButtons = ({
   secondaryClassName?: string
   align?: 'center' | 'start'
 }) => {
-  const hasPrimary = primaryLabel && (onPrimary || primaryLink?.href || primaryLink?.calLink)
-  const hasSecondary = secondaryLabel && (onSecondary || secondaryLink?.href || secondaryLink?.calLink)
-  
+  const hasPrimary = primaryLabel && (onPrimary || primaryLink?.href)
+  const hasSecondary = secondaryLabel && (onSecondary || secondaryLink?.href)
+
   if (!hasPrimary && !hasSecondary) return null
 
   const justifyClass = align === 'start' ? 'md:justify-start' : 'md:justify-center'
@@ -149,28 +149,20 @@ const ActionButtons = ({
     <div className={`mt-6 flex flex-col md:flex-row md:flex-wrap ${justifyClass} gap-3 md:gap-4 w-full`}>
       {hasPrimary && (
         <PrimaryButton
-          href={primaryLink?.href ?? null}
+          link={primaryLink}
           onClick={onPrimary}
-          openInNewTab={primaryLink?.openInNewTab}
-          calLink={primaryLink?.calLink}
-          calNamespace={primaryLink?.calNamespace}
           className={primaryClassName}
           fullWidth
-          disabled={primaryLink?.disabled}
         >
           {primaryLabel}
         </PrimaryButton>
       )}
       {hasSecondary && (
         <SecondaryButton
-          href={secondaryLink?.href ?? null}
+          link={secondaryLink}
           onClick={onSecondary}
-          openInNewTab={secondaryLink?.openInNewTab}
-          calLink={secondaryLink?.calLink}
-          calNamespace={secondaryLink?.calNamespace}
           className={secondaryClassName}
           fullWidth
-          disabled={secondaryLink?.disabled}
         >
           {secondaryLabel}
         </SecondaryButton>

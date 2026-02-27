@@ -241,12 +241,7 @@ const ProcessSection = ({
             
             {ctaText && ctaLink?.href && (
               <div className="mt-10 mb-20 md:ml-14">
-                <PrimaryButton
-                  href={ctaLink.href}
-                  openInNewTab={ctaLink.openInNewTab}
-                  disabled={ctaLink.disabled}
-                  className="font-bold inline-block"
-                >
+                <PrimaryButton link={ctaLink} className="font-bold inline-block">
                   {ctaText}
                 </PrimaryButton>
               </div>

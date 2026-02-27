@@ -32,7 +32,7 @@ export default function AboutAgent({
   about,
   consultationLink,
 }: AboutAgentProps) {
-  const hasConsultationLink = !!(consultationLink?.href || consultationLink?.calLink)
+  const hasConsultationLink = !!consultationLink?.href
   return (
     <section className="w-full pt-20 md:pt-24 pb-16 md:pb-24 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
@@ -136,10 +136,7 @@ export default function AboutAgent({
               {/* Schedule A Consultation Button */}
               {hasConsultationLink && (
                 <PrimaryButton
-                  href={consultationLink?.href ?? null}
-                  openInNewTab={consultationLink?.openInNewTab}
-                  calLink={consultationLink?.calLink}
-                  calNamespace={consultationLink?.calNamespace}
+                  link={consultationLink}
                   className="font-semibold rounded-full px-8 py-3 text-base text-center font-sans"
                   fullWidth
                 >

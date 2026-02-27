@@ -326,7 +326,12 @@ export function resolveLink(
         const entry = mapToUse instanceof Map
           ? mapToUse.get(constantKey)
           : mapToUse[constantKey]
-        if (entry) return entry
+        if (entry) {
+          // Cal.com links have href=null but need truthy href for component visibility checks.
+          // Rendering components (BaseButton, ArrowLink, NavbarLink) check calLink first.
+          if (entry.calLink && !entry.href) return { ...entry, href: '#' }
+          return entry
+        }
       }
     }
     return { href: null, openInNewTab: false, disabled: false }
@@ -335,7 +340,7 @@ export function resolveLink(
   const isCal = effectiveLinkType === 'cal'
 
   return {
-    href: resolveLinkUrl(linkData, constantLinksMap),
+    href: isCal ? '#' : resolveLinkUrl(linkData, constantLinksMap),
     openInNewTab: shouldOpenInNewTab(linkData),
     disabled: isLinkDisabled(linkData),
     calLink: isCal

@@ -154,7 +154,7 @@ export default function CardSection({ block }: CardSectionProps) {
                 )}
                 {cardLinkText && cardLink.href && (
                   <div className="mt-5">
-                    <ArrowLink href={cardLink.href} openInNewTab={cardLink.openInNewTab} disabled={cardLink.disabled}>
+                    <ArrowLink link={cardLink}>
                       {cardLinkText}
                     </ArrowLink>
                   </div>
@@ -166,12 +166,7 @@ export default function CardSection({ block }: CardSectionProps) {
 
         {buttonText && (
           <div className="text-center mt-15">
-            <PrimaryButton
-              href={buttonLink.href || undefined}
-              openInNewTab={buttonLink.openInNewTab}
-              disabled={buttonLink.disabled}
-              className="font-bold"
-            >
+            <PrimaryButton link={buttonLink} className="font-bold">
               {buttonText}
             </PrimaryButton>
           </div>
