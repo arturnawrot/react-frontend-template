@@ -47,6 +47,14 @@ export async function generateMetadata({ params }: AgentPageProps): Promise<Meta
     .map((r) => (typeof r === 'object' && r !== null && 'name' in r ? (r as Role).name : null))
     .filter(Boolean)
     .join(', ')
+  const specialties = (agent.specialties || [])
+    .map((s) => (typeof s === 'object' && s !== null && 'name' in s ? (s as Specialty).name : null))
+    .filter(Boolean)
+    .join(', ')
+  const servingLocations = (agent.servingLocations || [])
+    .map((l) => (typeof l === 'object' && l !== null && 'name' in l ? (l as ServingLocation).name : null))
+    .filter(Boolean)
+    .join(', ')
 
   // Get image URL from agent's card image or background image
   let imageUrl: string | undefined
@@ -57,6 +65,18 @@ export async function generateMetadata({ params }: AgentPageProps): Promise<Meta
   }
 
   return getSeoMetadata({
+    pageType: 'agents',
+    templateVars: {
+      firstName: agent.firstName || '',
+      lastName: agent.lastName || '',
+      fullName,
+      displayTitle: agent.displayTitle || '',
+      roles,
+      specialties,
+      servingLocations,
+      email: agent.email || '',
+      phone: agent.phone || '',
+    },
     docMeta: agent.meta,
     fallbackTitle: `${fullName} | Meybohm Real Estate`,
     fallbackDescription: roles ? `${fullName} - ${roles} at Meybohm Real Estate` : `${fullName} at Meybohm Real Estate`,

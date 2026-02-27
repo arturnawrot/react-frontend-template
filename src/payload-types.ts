@@ -5375,7 +5375,7 @@ export interface CssStyle {
   createdAt: string;
 }
 /**
- * SEO metadata for hard-coded pages (routes not managed in the Pages collection)
+ * SEO metadata for static pages and dynamic page templates (agents, jobs, blogs, properties)
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "page-seo".
@@ -5383,19 +5383,23 @@ export interface CssStyle {
 export interface PageSeo {
   id: string;
   /**
+   * Static Page: SEO for a specific URL path. Dynamic types: SEO template with {variable} placeholders for all pages of that type.
+   */
+  pageType: 'static' | 'agents' | 'jobs' | 'blogs' | 'properties';
+  /**
    * The URL path (e.g., /about, /contact, /agents)
    */
-  path: string;
+  path?: string | null;
   /**
-   * Page title for search engines and browser tabs
+   * Page title for search engines. For dynamic types, use {variable} placeholders (e.g., "{fullName} | Meybohm Real Estate").
    */
   title: string;
   /**
-   * Meta description for search engines (recommended: 150-160 characters)
+   * Meta description for search engines (recommended: 150-160 characters). For dynamic types, use {variable} placeholders.
    */
   description?: string | null;
   /**
-   * Image for social media sharing (Open Graph)
+   * Default image for social media sharing (Open Graph). For dynamic types, the entity image takes priority if available.
    */
   image?: (string | null) | Media;
   /**
@@ -5767,6 +5771,27 @@ export interface Job {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Search engine optimization settings
+   */
+  meta?: {
+    /**
+     * Title for search engines and browser tabs. Recommended: 50-60 characters.
+     */
+    title?: string | null;
+    /**
+     * Description for search engines. Recommended: 150-160 characters.
+     */
+    description?: string | null;
+    /**
+     * Image for social media sharing (Open Graph / Twitter). Recommended: 1200x630px.
+     */
+    image?: (string | null) | Media;
+    /**
+     * Prevent this page from being indexed by search engines.
+     */
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -8271,6 +8296,7 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "page-seo_select".
  */
 export interface PageSeoSelect<T extends boolean = true> {
+  pageType?: T;
   path?: T;
   title?: T;
   description?: T;
@@ -8437,6 +8463,14 @@ export interface JobsSelect<T extends boolean = true> {
         label?: T;
         value?: T;
         id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
       };
   updatedAt?: T;
   createdAt?: T;

@@ -33,6 +33,7 @@ import { default as default_a56e3005ebf421f70cea055433604e2c } from '../../../co
 import { default as default_2247cc648d23c0c4dd42aa8c515ce669 } from '../../../components/AvailableJobSetSelector/AvailableJobSetSelector'
 import { default as default_000273f608b216d98abb6ae4393192bf } from '../../../components/OfficeLocationSetSelector/OfficeLocationSetSelector'
 import { default as default_2e89adc84f4e289de55b95e609515c0a } from '../../../components/FAQSetSelector/FAQSetSelector'
+import { default as default_c4d02dbea99512adc8532232035f58ec } from '../../../components/TemplateVariablesInfo'
 import { default as default_3cfcbae1c8285b1dc0d2fcbf4d40a752 } from '../../../components/BuildoutBrokerIdField'
 import { default as default_5c82d05d3979d3a77d2f937acbecc21f } from '../../../components/AgentPropertiesDashboard'
 import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
@@ -77,6 +78,7 @@ export const importMap = {
   "/components/AvailableJobSetSelector/AvailableJobSetSelector#default": default_2247cc648d23c0c4dd42aa8c515ce669,
   "/components/OfficeLocationSetSelector/OfficeLocationSetSelector#default": default_000273f608b216d98abb6ae4393192bf,
   "/components/FAQSetSelector/FAQSetSelector#default": default_2e89adc84f4e289de55b95e609515c0a,
+  "/components/TemplateVariablesInfo#default": default_c4d02dbea99512adc8532232035f58ec,
   "/components/BuildoutBrokerIdField#default": default_3cfcbae1c8285b1dc0d2fcbf4d40a752,
   "/components/AgentPropertiesDashboard#default": default_5c82d05d3979d3a77d2f937acbecc21f,
   "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,

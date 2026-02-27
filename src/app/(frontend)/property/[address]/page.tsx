@@ -10,7 +10,7 @@ import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperti
 import { buildoutApi, getNearestProperties } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { addressToSlug } from '@/utils/address-slug'
-import { buildSeoMetadata } from '@/utils/getSeoMetadata'
+import { getSeoMetadata } from '@/utils/getSeoMetadata'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getPropertyTypeLabel } from '@/utils/property-types'
 import Container from '@/components/Container/Container'
@@ -40,10 +40,18 @@ export async function generateMetadata({ params }: PropertyPageProps): Promise<M
   const state = property.state || ''
   const location = [city, state].filter(Boolean).join(', ')
 
-  // Build description from property details
+  const buildingSize = property.building_size_sf
+    ? `${property.building_size_sf.toLocaleString()} SF`
+    : ''
+  const salePrice = property.sale_price_dollars
+    ? `$${property.sale_price_dollars.toLocaleString()}`
+    : ''
+  const propertyType = getPropertyTypeLabel(property.property_type_id)
+
+  // Build fallback description from property details
   const details: string[] = []
-  if (property.building_size_sf) details.push(`${property.building_size_sf.toLocaleString()} SF`)
-  if (property.sale_price_dollars) details.push(`$${property.sale_price_dollars.toLocaleString()}`)
+  if (buildingSize) details.push(buildingSize)
+  if (salePrice) details.push(salePrice)
 
   const description = location
     ? `Commercial property in ${location}${details.length ? ` - ${details.join(' | ')}` : ''}`
@@ -52,10 +60,19 @@ export async function generateMetadata({ params }: PropertyPageProps): Promise<M
   // Use first property image if available
   const imageUrl = property.photos?.[0]?.url
 
-  return buildSeoMetadata({
-    title: `${address} | Meybohm Real Estate`,
-    description,
-    image: imageUrl,
+  return getSeoMetadata({
+    pageType: 'properties',
+    templateVars: {
+      address,
+      city,
+      state,
+      propertyType,
+      buildingSize,
+      salePrice,
+    },
+    fallbackTitle: `${address} | Meybohm Real Estate`,
+    fallbackDescription: description,
+    fallbackImage: imageUrl,
   })
 }
 

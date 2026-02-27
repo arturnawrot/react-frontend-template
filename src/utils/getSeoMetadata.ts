@@ -13,6 +13,10 @@ export interface SeoData {
 interface GetSeoMetadataOptions {
   /** The URL path to look up in PageSEO collection (e.g., '/', '/about') */
   path?: string
+  /** Page type for dynamic template lookup (e.g., 'agents', 'jobs', 'blogs', 'properties') */
+  pageType?: string
+  /** Template variables for interpolation (e.g., { fullName: 'John Smith', roles: 'Senior Associate' }) */
+  templateVars?: Record<string, string>
   /** SEO data from a CMS document's meta field */
   docMeta?: SeoData | null
   /** Fallback title if no SEO data found */
@@ -27,21 +31,40 @@ const DEFAULT_TITLE = 'Meybohm Real Estate'
 const DEFAULT_DESCRIPTION = 'Your trusted partner in real estate.'
 
 /**
- * Fetches SEO metadata from PageSEO collection or uses document meta
- * Priority: PageSEO collection > Document meta > Fallbacks > Defaults
+ * Replaces {variable} placeholders in a template string with actual values.
+ * Unknown variables are replaced with empty string.
+ */
+export function interpolateTemplate(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key) => vars[key] ?? '')
+}
+
+/**
+ * Fetches SEO metadata with support for static paths and dynamic page type templates.
+ *
+ * Priority:
+ * 1. PageSEO by exact path (static entries)
+ * 2. Document's own meta field (from seoFields on the collection)
+ * 3. PageSEO template by pageType (with {variable} interpolation)
+ * 4. Fallback values
+ * 5. Global defaults
  */
 export async function getSeoMetadata(options: GetSeoMetadataOptions = {}): Promise<Metadata> {
-  const { path, docMeta, fallbackTitle, fallbackDescription, fallbackImage } = options
+  const { path, pageType, templateVars, docMeta, fallbackTitle, fallbackDescription, fallbackImage } = options
 
   let seoData: SeoData | null = null
 
-  // First, check PageSEO collection if a path is provided
+  // 1. Check PageSEO collection for exact path match (static entries)
   if (path) {
     try {
       const payload = await getPayload({ config })
       const { docs } = await payload.find({
         collection: 'page-seo',
-        where: { path: { equals: path } },
+        where: {
+          and: [
+            { pageType: { equals: 'static' } },
+            { path: { equals: path } },
+          ],
+        },
         limit: 1,
         depth: 1,
       })
@@ -60,9 +83,35 @@ export async function getSeoMetadata(options: GetSeoMetadataOptions = {}): Promi
     }
   }
 
-  // Fall back to document meta if no PageSEO found
-  if (!seoData && docMeta) {
+  // 2. Fall back to document meta if no static PageSEO found
+  if (!seoData && docMeta?.title) {
     seoData = docMeta
+  }
+
+  // 3. Fall back to dynamic page type template if no document meta
+  if (!seoData && pageType) {
+    try {
+      const payload = await getPayload({ config })
+      const { docs } = await payload.find({
+        collection: 'page-seo',
+        where: { pageType: { equals: pageType } },
+        limit: 1,
+        depth: 1,
+      })
+
+      if (docs[0]) {
+        const template = docs[0] as PageSeo
+        const vars = templateVars || {}
+        seoData = {
+          title: template.title ? interpolateTemplate(template.title, vars) : null,
+          description: template.description ? interpolateTemplate(template.description, vars) : null,
+          image: template.image,
+          noIndex: template.noIndex,
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching PageSEO template:', error)
+    }
   }
 
   // Build the metadata object

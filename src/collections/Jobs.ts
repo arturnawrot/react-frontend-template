@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
+import { seoFields } from '../fields/seoFields'
 
 export const Jobs: CollectionConfig = {
   slug: 'jobs',
@@ -100,6 +101,7 @@ export const Jobs: CollectionConfig = {
         },
       ],
     },
+    seoFields,
   ],
   timestamps: true,
 }

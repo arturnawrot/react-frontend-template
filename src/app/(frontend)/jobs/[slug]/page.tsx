@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
 import config from '@/payload.config'
+import type { Metadata } from 'next'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import type { Job } from '@/payload-types'
 import ShareButtons from '@/components/ShareButtons/ShareButtons'
@@ -13,12 +14,50 @@ import Arrow from '@/components/Arrow/Arrow'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import Container from '@/components/Container/Container'
+import { getSeoMetadata } from '@/utils/getSeoMetadata'
 
 // Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
 export const dynamic = 'force-dynamic'
 
 interface JobPageProps {
   params: Promise<{ slug: string }>
+}
+
+const formatEmploymentTypeLabel = (type: string | undefined) => {
+  if (!type) return ''
+  return type.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('-')
+}
+
+export async function generateMetadata({ params }: JobPageProps): Promise<Metadata> {
+  const { slug } = await params
+  const payload = await getPayload({ config })
+
+  const { docs } = await payload.find({
+    collection: 'jobs',
+    where: { slug: { equals: slug } },
+    depth: 0,
+    limit: 1,
+  })
+
+  const job = docs[0] as Job | undefined
+
+  if (!job) {
+    return { title: 'Job Not Found' }
+  }
+
+  return getSeoMetadata({
+    pageType: 'jobs',
+    templateVars: {
+      title: job.title || '',
+      department: job.department || '',
+      location: job.location || '',
+      employmentType: formatEmploymentTypeLabel(job.employmentType),
+      reportsTo: job.reportsTo || '',
+    },
+    docMeta: job.meta,
+    fallbackTitle: `${job.title} | Meybohm Real Estate`,
+    fallbackDescription: `Apply for ${job.title} (${formatEmploymentTypeLabel(job.employmentType)}) in ${job.location}. Join the ${job.department} team at Meybohm Real Estate.`,
+  })
 }
 
 export default async function JobPage({ params }: JobPageProps) {
@@ -83,15 +122,6 @@ export default async function JobPage({ params }: JobPageProps) {
     console.error('[JobPage] Error fetching agent icons:', error)
   }
 
-  // Format employment type for display
-  const formatEmploymentType = (type: string | undefined) => {
-    if (!type) return ''
-    return type
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('-')
-  }
-
   return (
     <>
     <DarkNavbar />
@@ -129,7 +159,7 @@ export default async function JobPage({ params }: JobPageProps) {
                 <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                   <span className="text-gray-600 font-sans">Employment Type:</span>
                   <span className="text-gray-900 font-sans font-medium">
-                    {formatEmploymentType(job.employmentType)}
+                    {formatEmploymentTypeLabel(job.employmentType)}
                   </span>
                 </div>
                 {job.reportsTo && (

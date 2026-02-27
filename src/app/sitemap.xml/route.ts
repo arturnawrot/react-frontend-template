@@ -94,11 +94,11 @@ export async function GET() {
           limit: 1000,
           depth: 0,
         })
-        
+
         for (const page of pages) {
           // Skip "home" page as it's already the root
           if (page.slug === 'home') continue
-          
+
           urls.push({
             loc: `${baseUrl}/${page.slug}`,
             lastmod: page.updatedAt ? formatDate(page.updatedAt) : undefined,
@@ -124,7 +124,7 @@ export async function GET() {
         
         for (const agent of agents) {
           if (!agent.slug) continue
-          
+
           urls.push({
             loc: `${baseUrl}/agents/${agent.slug}`,
             lastmod: agent.updatedAt ? formatDate(agent.updatedAt) : undefined,
@@ -225,7 +225,7 @@ export async function GET() {
         
         for (const job of jobs) {
           if (!job.slug) continue
-          
+
           urls.push({
             loc: `${baseUrl}/jobs/${job.slug}`,
             lastmod: job.updatedAt ? formatDate(job.updatedAt) : undefined,

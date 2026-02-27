@@ -1,11 +1,13 @@
 import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import config from '@/payload.config'
+import type { Metadata } from 'next'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import InvestmentSpotlightSidebar from '@/components/InvestmentSpotlightSidebar/InvestmentSpotlightSidebar'
 import type { Blog, Page } from '@/payload-types'
 import Link from 'next/link'
+import { getBlogMetadata } from '@/utils/getBlogMetadata'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
@@ -14,6 +16,11 @@ export const dynamic = 'force-dynamic'
 
 interface BlogPageProps {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const { slug } = await params
+  return getBlogMetadata(slug)
 }
 
 export default async function BlogPage({ params }: BlogPageProps) {
