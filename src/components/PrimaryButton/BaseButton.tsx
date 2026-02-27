@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import type { ResolvedLink } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
+import CalNamespaceInit from '@/components/CalNamespaceInit'
 
 interface BaseButtonProps {
   children: React.ReactNode
@@ -40,15 +41,18 @@ export default function BaseButton({
 
   if (effectiveCalLink) {
     return (
-      <button
-        className={`${baseClassName} cursor-pointer`}
-        type="button"
-        data-cal-link={effectiveCalLink}
-        data-cal-namespace={effectiveCalNamespace ?? undefined}
-        data-cal-config='{"layout":"month_view"}'
-      >
-        {children}
-      </button>
+      <>
+        {effectiveCalNamespace && <CalNamespaceInit namespace={effectiveCalNamespace} />}
+        <button
+          className={`${baseClassName} cursor-pointer`}
+          type="button"
+          data-cal-link={effectiveCalLink}
+          data-cal-namespace={effectiveCalNamespace ?? undefined}
+          data-cal-config='{"layout":"month_view"}'
+        >
+          {children}
+        </button>
+      </>
     )
   }
 

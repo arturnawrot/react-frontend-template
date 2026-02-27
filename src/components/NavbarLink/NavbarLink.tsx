@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import type { ResolvedLink } from '@/utils/linkResolver'
 import styles from './NavbarLink.module.scss'
+import CalNamespaceInit from '@/components/CalNamespaceInit'
 
 interface NavbarLinkProps {
   link: ResolvedLink
@@ -17,15 +18,18 @@ interface NavbarLinkProps {
 export function NavbarLink({ link, children, className = '' }: NavbarLinkProps) {
   if (link.calLink) {
     return (
-      <button
-        type="button"
-        className={`${className} cursor-pointer`}
-        data-cal-link={link.calLink}
-        data-cal-namespace={link.calNamespace ?? undefined}
-        data-cal-config='{"layout":"month_view"}'
-      >
-        {children}
-      </button>
+      <>
+        {link.calNamespace && <CalNamespaceInit namespace={link.calNamespace} />}
+        <button
+          type="button"
+          className={`${className} cursor-pointer`}
+          data-cal-link={link.calLink}
+          data-cal-namespace={link.calNamespace ?? undefined}
+          data-cal-config='{"layout":"month_view"}'
+        >
+          {children}
+        </button>
+      </>
     )
   }
 

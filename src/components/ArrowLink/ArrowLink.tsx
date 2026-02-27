@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { ResolvedLink } from '@/utils/linkResolver'
 import Arrow from '../Arrow/Arrow'
 import { isInternalLink } from '@/utils/link-utils'
+import CalNamespaceInit from '@/components/CalNamespaceInit'
 
 interface ArrowLinkProps {
   link?: ResolvedLink       // CMS-resolved link — overrides individual link props
@@ -36,17 +37,20 @@ export default function ArrowLink({ link, href, children, openInNewTab = false, 
 
   if (effectiveCalLink) {
     return (
-      <button
-        type="button"
-        className={`${combinedClassName} cursor-pointer`}
-        style={baseStyle}
-        data-cal-link={effectiveCalLink}
-        data-cal-namespace={effectiveCalNamespace ?? undefined}
-        data-cal-config='{"layout":"month_view"}'
-      >
-        {children}
-        <Arrow direction="right" variant="fill" size={16} />
-      </button>
+      <>
+        {effectiveCalNamespace && <CalNamespaceInit namespace={effectiveCalNamespace} />}
+        <button
+          type="button"
+          className={`${combinedClassName} cursor-pointer`}
+          style={baseStyle}
+          data-cal-link={effectiveCalLink}
+          data-cal-namespace={effectiveCalNamespace ?? undefined}
+          data-cal-config='{"layout":"month_view"}'
+        >
+          {children}
+          <Arrow direction="right" variant="fill" size={16} />
+        </button>
+      </>
     )
   }
 
