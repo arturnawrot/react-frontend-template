@@ -11,12 +11,35 @@ export const ConstantLinks: GlobalConfig = {
     read: () => true, // Public read access
   },
   hooks: {
+    afterRead: [
+      ({ doc }) => {
+        // Populate customUrl from legacy url on read so the admin UI shows the value
+        if (doc?.links && Array.isArray(doc.links)) {
+          for (const link of doc.links) {
+            if (link.url && !link.customUrl) {
+              link.customUrl = link.url
+              link.linkType = link.linkType || 'custom'
+            }
+          }
+        }
+        return doc
+      },
+    ],
     beforeChange: [
       ({ data }) => {
         if (data?.links && Array.isArray(data.links)) {
           for (const link of data.links) {
+            // Auto-generate key for new entries
             if (!link.key) {
               link.key = crypto.randomUUID()
+            }
+            // Migrate legacy url → customUrl and clear url
+            if (link.url && !link.customUrl) {
+              link.customUrl = link.url
+              link.linkType = link.linkType || 'custom'
+            }
+            if (link.url && link.customUrl) {
+              link.url = undefined
             }
           }
         }
