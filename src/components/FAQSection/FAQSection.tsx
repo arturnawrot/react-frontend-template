@@ -64,12 +64,7 @@ export default function FAQSection({ block }: FAQSectionProps) {
             </p>
 
             {contactButtonText && link.href && (
-              <PrimaryButton
-                href={link.href}
-                openInNewTab={link.openInNewTab}
-                disabled={link.disabled}
-                className="font-bold px-6 py-3 rounded-lg"
-              >
+              <PrimaryButton link={link} className="font-bold px-6 py-3 rounded-lg">
                 {contactButtonText}
               </PrimaryButton>
             )}

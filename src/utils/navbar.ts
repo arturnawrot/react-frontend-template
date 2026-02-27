@@ -1,24 +1,12 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import type { Navbar as NavbarType, Page } from '@/payload-types'
-import { getPageUrl } from './getPageUrl'
-import { getConstantLinksMap, type ConstantLinksMap } from './linkResolver'
-
-// Types for dropdown columns
-export interface DropdownLink {
-  label: string
-  href: string
-  openInNewTab?: boolean
-}
+import type { Navbar as NavbarType } from '@/payload-types'
+import { resolveLink, getConstantLinksMap, type ConstantLinksMap, type LinkData, type ResolvedLink } from './linkResolver'
 
 export interface DropdownColumn {
   columnName: string
-  links: DropdownLink[]
-  bottomLink?: {
-    label: string
-    href: string
-    openInNewTab?: boolean
-  }
+  links: (ResolvedLink & { label: string })[]
+  bottomLink?: ResolvedLink & { label: string }
 }
 
 export interface DropdownQuote {
@@ -28,10 +16,8 @@ export interface DropdownQuote {
   company?: string
 }
 
-export interface NavbarLinkWithDropdown {
+export type NavbarLinkWithDropdown = ResolvedLink & {
   label: string
-  href: string
-  openInNewTab?: boolean
   hasDropdown: boolean
   dropdownColumns?: DropdownColumn[]
 }
@@ -42,31 +28,29 @@ export interface NavbarData {
   dropdownQuote?: DropdownQuote
 }
 
-// Helper to resolve page, custom URL, or constant link
-function resolveHref(
-  linkType: 'none' | 'page' | 'custom' | 'constant' | 'cal' | null | undefined,
-  page: (string | null) | Page | undefined,
-  customUrl: string | null | undefined,
-  constantLink: string | null | undefined,
-  constantLinksMap: ConstantLinksMap,
-): string {
-  if (linkType === 'none') {
-    return '#'
-  } else if (linkType === 'page' && typeof page === 'object' && page !== null) {
-    return getPageUrl(page.slug)
-  } else if (linkType === 'custom' && customUrl) {
-    return customUrl
-  } else if (linkType === 'constant' && constantLink) {
-    // Look up constant link from the map
-    if (constantLinksMap instanceof Map) {
-      return constantLinksMap.get(constantLink) || '#'
-    }
-    return constantLinksMap[constantLink] || '#'
-  }
-  return '#'
+function resolveNavLink(link: {
+  linkType?: string | null
+  page?: unknown
+  customUrl?: string | null
+  constantLink?: string | null
+  calLink?: string | null
+  calNamespace?: string | null
+  openInNewTab?: boolean | null
+}, constantLinksMap: ConstantLinksMap): ResolvedLink {
+  return resolveLink(
+    {
+      linkType: link.linkType ?? undefined,
+      page: link.page as LinkData['page'],
+      customUrl: link.customUrl,
+      constantLink: link.constantLink,
+      calLink: link.calLink,
+      calNamespace: link.calNamespace,
+      openInNewTab: link.openInNewTab ?? false,
+    } as LinkData,
+    constantLinksMap,
+  )
 }
 
-// Transform raw dropdown columns from Payload
 function transformDropdownColumns(
   rawColumns: NonNullable<NonNullable<NavbarType['mainLinks']>[number]['dropdownColumns']>,
   constantLinksMap: ConstantLinksMap,
@@ -76,48 +60,37 @@ function transformDropdownColumns(
     links:
       col.links?.map((link) => ({
         label: link.label || '',
-        href: resolveHref(link.linkType, link.page, link.customUrl, link.constantLink, constantLinksMap),
-        openInNewTab: link.openInNewTab || false,
+        ...resolveNavLink(link, constantLinksMap),
       })) || [],
     bottomLink:
       col.bottomLink?.enabled && col.bottomLink.label
         ? {
             label: col.bottomLink.label,
-            href: resolveHref(col.bottomLink.linkType, col.bottomLink.page, col.bottomLink.customUrl, col.bottomLink.constantLink, constantLinksMap),
-            openInNewTab: col.bottomLink.openInNewTab || false,
+            ...resolveNavLink(col.bottomLink, constantLinksMap),
           }
         : undefined,
   }))
 }
 
-/**
- * Fetches navbar data from Payload and transforms it to NavbarLinkWithDropdown format
- */
 export async function getNavbarLinks(): Promise<NavbarData> {
   const payload = await getPayload({ config })
 
   let navbar: NavbarType | null = null
   try {
-    navbar = await payload.findGlobal({
-      slug: 'navbar',
-      depth: 2, // Populate page relationships in dropdowns
-    })
+    navbar = await payload.findGlobal({ slug: 'navbar', depth: 2 })
   } catch (error) {
     console.error('Error fetching navbar:', error)
   }
 
-  // Fetch constant links for resolving constant link types
   const constantLinksMap = await getConstantLinksMap(payload)
 
-  // Transform dropdown quote - check for non-empty text and author
   const rawQuote = navbar?.dropdownQuote
   const quoteText = rawQuote?.text?.trim()
   const quoteAuthor = rawQuote?.author?.trim()
-  
-  // Debug logging
+
   console.log('[Navbar] Raw dropdownQuote from Payload:', JSON.stringify(rawQuote, null, 2))
   console.log('[Navbar] quoteText:', quoteText, '| quoteAuthor:', quoteAuthor)
-  
+
   const dropdownQuote: DropdownQuote | undefined =
     quoteText && quoteAuthor
       ? {
@@ -127,39 +100,30 @@ export async function getNavbarLinks(): Promise<NavbarData> {
           company: rawQuote?.company?.trim() || undefined,
         }
       : undefined
-  
+
   console.log('[Navbar] Final dropdownQuote:', dropdownQuote ? 'exists' : 'undefined')
 
-  // Transform upper links
   const upperLinks: NavbarLinkWithDropdown[] =
     navbar?.upperLinks?.map((link) => ({
       label: link.label || '',
-      href: resolveHref(link.linkType, link.page, link.customUrl, link.constantLink, constantLinksMap),
-      openInNewTab: link.openInNewTab || false,
+      ...resolveNavLink(link, constantLinksMap),
       hasDropdown: link.hasDropdown || false,
-      dropdownColumns: link.hasDropdown && link.dropdownColumns
-        ? transformDropdownColumns(link.dropdownColumns, constantLinksMap)
-        : undefined,
+      dropdownColumns:
+        link.hasDropdown && link.dropdownColumns
+          ? transformDropdownColumns(link.dropdownColumns, constantLinksMap)
+          : undefined,
     })) || []
 
-  // Transform main links
   const mainLinks: NavbarLinkWithDropdown[] =
     navbar?.mainLinks?.map((link) => ({
       label: link.label || '',
-      href: resolveHref(link.linkType, link.page, link.customUrl, link.constantLink, constantLinksMap),
-      openInNewTab: link.openInNewTab || false,
+      ...resolveNavLink(link, constantLinksMap),
       hasDropdown: link.hasDropdown || false,
-      dropdownColumns: link.hasDropdown && link.dropdownColumns
-        ? transformDropdownColumns(link.dropdownColumns, constantLinksMap)
-        : undefined,
+      dropdownColumns:
+        link.hasDropdown && link.dropdownColumns
+          ? transformDropdownColumns(link.dropdownColumns, constantLinksMap)
+          : undefined,
     })) || []
 
   return { upperLinks, mainLinks, dropdownQuote }
 }
-
-
-
-
-
-
-

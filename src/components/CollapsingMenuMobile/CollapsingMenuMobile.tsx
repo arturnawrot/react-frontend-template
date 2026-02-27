@@ -57,7 +57,7 @@ export default function CollapsingMenuMobile({
           {/* Navigation Links - Left Aligned */}
           <div className="flex flex-col items-start gap-8 text-2xl flex-1 justify-center">
             {mainLinks.map((link, index) => (
-              <CollapsingMenuMobileLink key={`${link.href}-${index}`} href={link.href}>
+              <CollapsingMenuMobileLink key={`${link.label}-${index}`} link={link}>
                 {link.label}
               </CollapsingMenuMobileLink>
             ))}

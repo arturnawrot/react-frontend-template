@@ -1,12 +1,9 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import type { Footer as FooterType } from '@/payload-types'
-import { getPageUrl } from './getPageUrl'
+import { resolveLink, getConstantLinksMap, type ResolvedLink, type LinkData } from './linkResolver'
 
-export interface FooterLink {
-  label: string
-  href: string
-}
+export type FooterLink = ResolvedLink & { label: string }
 
 export interface FooterOffice {
   label?: string
@@ -29,47 +26,50 @@ export interface FooterData {
   }
 }
 
-/**
- * Fetches footer data from Payload and transforms it to FooterData format
- */
+function resolveFooterLink(link: {
+  label?: string | null
+  linkType?: string | null
+  page?: unknown
+  customUrl?: string | null
+  constantLink?: string | null
+  calLink?: string | null
+  calNamespace?: string | null
+  openInNewTab?: boolean | null
+}, constantLinksMap: Parameters<typeof resolveLink>[1]): FooterLink {
+  return {
+    label: link.label || '',
+    ...resolveLink(
+      {
+        linkType: link.linkType ?? undefined,
+        page: link.page as LinkData['page'],
+        customUrl: link.customUrl,
+        constantLink: link.constantLink,
+        calLink: link.calLink,
+        calNamespace: link.calNamespace,
+        openInNewTab: link.openInNewTab ?? false,
+      } as LinkData,
+      constantLinksMap,
+    ),
+  }
+}
+
 export async function getFooterData(): Promise<FooterData> {
   const payload = await getPayload({ config })
 
   let footer: FooterType | null = null
   try {
-    footer = await payload.findGlobal({
-      slug: 'footer',
-      depth: 1, // Populate page relationships
-    })
+    footer = await payload.findGlobal({ slug: 'footer', depth: 2 })
   } catch (error) {
     console.error('Error fetching footer:', error)
   }
 
-  // Transform navigation columns
-  const navigationColumns: FooterLink[][] =
-    footer?.navigationColumns?.map((column) => {
-      return (
-        column.links?.map((link) => {
-          if (link.linkType === 'page' && typeof link.page === 'object' && link.page !== null) {
-            return {
-              label: link.label || '',
-              href: getPageUrl(link.page.slug),
-            }
-          } else if (link.linkType === 'custom') {
-            return {
-              label: link.label || '',
-              href: link.customUrl || '#',
-            }
-          }
-          return {
-            label: link.label || '',
-            href: '#',
-          }
-        }) || []
-      )
-    }) || []
+  const constantLinksMap = await getConstantLinksMap(payload)
 
-  // Transform offices
+  const navigationColumns: FooterLink[][] =
+    footer?.navigationColumns?.map((column) =>
+      column.links?.map((link) => resolveFooterLink(link, constantLinksMap)) ?? []
+    ) ?? []
+
   const offices: FooterOffice[] =
     footer?.offices?.map((office) => ({
       label: office.label || undefined,
@@ -77,33 +77,15 @@ export async function getFooterData(): Promise<FooterData> {
       phone: office.phone || undefined,
       fax: office.fax || undefined,
       tollFree: office.tollFree || undefined,
-    })) || []
+    })) ?? []
 
-  // Transform social media
   const socialMedia = {
     facebook: footer?.socialMedia?.facebook || undefined,
     linkedin: footer?.socialMedia?.linkedin || undefined,
   }
 
-  // Transform policy links
   const policyLinks: FooterLink[] =
-    footer?.bottomBar?.policyLinks?.map((link) => {
-      if (link.linkType === 'page' && typeof link.page === 'object' && link.page !== null) {
-        return {
-          label: link.label || '',
-          href: getPageUrl(link.page.slug),
-        }
-      } else if (link.linkType === 'custom') {
-        return {
-          label: link.label || '',
-          href: link.customUrl || '#',
-        }
-      }
-      return {
-        label: link.label || '',
-        href: '#',
-      }
-    }) || []
+    footer?.bottomBar?.policyLinks?.map((link) => resolveFooterLink(link, constantLinksMap)) ?? []
 
   return {
     navigationColumns,
@@ -115,4 +97,3 @@ export async function getFooterData(): Promise<FooterData> {
     },
   }
 }
-

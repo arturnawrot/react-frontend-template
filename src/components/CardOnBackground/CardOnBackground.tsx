@@ -69,13 +69,7 @@ export default function CardOnBackground({ block }: CardOnBackgroundProps) {
 
           {/* CTA Button */}
           {ctaText && (
-            <PrimaryButton
-              href={hasLink ? link.href : undefined}
-              openInNewTab={link.openInNewTab}
-              disabled={link.disabled}
-              className="text-base md:text-lg rounded-full"
-              fullWidth
-            >
+            <PrimaryButton link={link} className="text-base md:text-lg rounded-full" fullWidth>
               {ctaText}
             </PrimaryButton>
           )}

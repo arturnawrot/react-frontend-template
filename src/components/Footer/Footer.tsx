@@ -1,6 +1,6 @@
 import React from 'react'
-import Link from 'next/link'
 import { getFooterData } from '@/utils/footer'
+import { NavbarLink } from '@/components/NavbarLink/NavbarLink'
 
 export default async function Footer() {
   const footerData = await getFooterData()
@@ -23,30 +23,18 @@ export default async function Footer() {
               {footerData.navigationColumns.map((column, colIndex) => (
                 <div key={colIndex} className="flex flex-col gap-3">
                   {column.map((link, linkIndex) => (
-                    <Link
+                    <NavbarLink
                       key={linkIndex}
-                      href={link.href}
+                      link={link}
                       className="hover:text-[#dce567] transition w-fit outline-none border-none"
                     >
                       {link.label}
-                    </Link>
+                    </NavbarLink>
                   ))}
                 </div>
               ))}
             </div>
 
-            {/* Middle Section: Account & Contact Actions */}
-            <div className="flex flex-col gap-3 mb-6 text-sm">
-              <Link href="#" className="hover:text-[#dce567] transition w-fit outline-none border-none">
-                Account Login
-              </Link>
-              <Link href="#" className="hover:text-[#dce567] transition w-fit outline-none border-none">
-                Contact Us
-              </Link>
-              <Link href="#" className="hover:text-[#dce567] transition w-fit outline-none border-none">
-                Schedule a Tour / Consultation
-              </Link>
-            </div>
 
             {/* Divider */}
             <div className="border-t border-gray-700/30 mb-6"></div>
@@ -134,13 +122,13 @@ export default async function Footer() {
               <p className="text-[10px] text-gray-400 mb-4">{footerData.bottomBar.copyrightText}</p>
               <div className="flex flex-wrap gap-4">
                 {footerData.bottomBar.policyLinks.map((link, index) => (
-                  <Link
+                  <NavbarLink
                     key={index}
-                    href={link.href}
+                    link={link}
                     className="text-[10px] text-gray-400 hover:text-white transition outline-none"
                   >
                     {link.label}
-                  </Link>
+                  </NavbarLink>
                 ))}
               </div>
             </div>
@@ -160,13 +148,13 @@ export default async function Footer() {
             {footerData.navigationColumns.map((column, colIndex) => (
               <div key={colIndex} className="flex flex-col gap-3">
                 {column.map((link, linkIndex) => (
-                  <Link
+                  <NavbarLink
                     key={linkIndex}
-                    href={link.href}
+                    link={link}
                     className="hover:text-[#dce567] transition w-fit outline-none border-none"
                   >
                     {link.label}
-                  </Link>
+                  </NavbarLink>
                 ))}
               </div>
             ))}
@@ -240,13 +228,13 @@ export default async function Footer() {
             <p>{footerData.bottomBar.copyrightText}</p>
             <div className="flex gap-6">
               {footerData.bottomBar.policyLinks.map((link, index) => (
-                <Link
+                <NavbarLink
                   key={index}
-                  href={link.href}
+                  link={link}
                   className="hover:text-white transition outline-none"
                 >
                   {link.label}
-                </Link>
+                </NavbarLink>
               ))}
             </div>
           </div>

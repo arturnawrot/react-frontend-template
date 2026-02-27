@@ -1,10 +1,9 @@
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import Container from '@/components/Container/Container'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import { resolveLink } from '@/utils/linkResolver'
-import { isInternalLink } from '@/utils/link-utils'
+import { NavbarLink } from '@/components/NavbarLink/NavbarLink'
 
 interface OfficeLocation {
   image?: {
@@ -44,7 +43,6 @@ function OfficeLocationCard({ location }: { location: OfficeLocation }) {
     : location.header
 
   const link = resolveLink(location as any)
-  const isInternal = link.href ? isInternalLink(link.href) && !link.openInNewTab : false
 
   // Parse subheader for bullet points (split by newline or • character)
   const subheaderLines = location.subheader
@@ -106,34 +104,14 @@ function OfficeLocationCard({ location }: { location: OfficeLocation }) {
         )}
         
         {/* Link */}
-        {location.linkText && link.href && (
-          link.disabled ? (
-            <span
-              className="text-sm font-medium text-[var(--strong-green)] opacity-50 cursor-not-allowed inline-flex items-center gap-1"
-              aria-disabled="true"
-            >
-              {location.linkText}
-              <span aria-hidden="true">→</span>
-            </span>
-          ) : isInternal ? (
-            <Link
-              href={link.href}
-              className="text-sm font-medium text-[var(--strong-green)] hover:underline inline-flex items-center gap-1"
-            >
-              {location.linkText}
-              <span aria-hidden="true">→</span>
-            </Link>
-          ) : (
-            <a
-              href={link.href}
-              target={link.openInNewTab ? '_blank' : undefined}
-              rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
-              className="text-sm font-medium text-[var(--strong-green)] hover:underline inline-flex items-center gap-1"
-            >
-              {location.linkText}
-              <span aria-hidden="true">→</span>
-            </a>
-          )
+        {location.linkText && (
+          <NavbarLink
+            link={link}
+            className="text-sm font-medium text-[var(--strong-green)] hover:underline inline-flex items-center gap-1"
+          >
+            {location.linkText}
+            <span aria-hidden="true">→</span>
+          </NavbarLink>
         )}
       </div>
     </div>

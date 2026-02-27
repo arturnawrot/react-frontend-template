@@ -81,13 +81,7 @@ function AssetTypeCardCard({ card }: { card: AssetTypeCardItem }) {
         {/* Link with ArrowLink at bottom */}
         {card.linkText && link.href && (
           <div>
-            <ArrowLink 
-              href={link.href} 
-              openInNewTab={link.openInNewTab || false} 
-              disabled={link.disabled || false}
-            >
-              {card.linkText}
-            </ArrowLink>
+            <ArrowLink link={link}>{card.linkText}</ArrowLink>
           </div>
         )}
       </div>

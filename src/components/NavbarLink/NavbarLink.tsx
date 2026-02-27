@@ -1,91 +1,61 @@
 import React from 'react'
 import Link from 'next/link'
+import type { ResolvedLink } from '@/utils/linkResolver'
 import styles from './NavbarLink.module.scss'
 
-export function NavbarLink({
-  href = '#',
-  children,
-  className = '',
-  isExternal = false,
-}: {
-  href?: string
+interface NavbarLinkProps {
+  link: ResolvedLink
   children: React.ReactNode
   className?: string
-  isExternal?: boolean
-}) {
-  // Check if link is external (starts with http:// or https://)
-  const isExternalLink = isExternal || (href.startsWith('http://') || href.startsWith('https://'))
-  
-  const externalProps = isExternalLink
-    ? { target: '_blank', rel: 'noopener noreferrer' }
-    : {}
+}
 
-  // Use regular <a> tag for external links, Next.js Link for internal links
-  if (isExternalLink) {
+/**
+ * Single source of truth for rendering any CMS-managed link.
+ * Handles all link types based on ResolvedLink fields.
+ * To add a new link type: update ResolvedLink + add a branch here. Nothing else changes.
+ */
+export function NavbarLink({ link, children, className = '' }: NavbarLinkProps) {
+  if (link.calLink) {
     return (
-      <a
-        href={href}
-        className={`text-white hover:text-opacity-80 transition ${className}`}
-        {...externalProps}
+      <button
+        type="button"
+        className={`${className} cursor-pointer`}
+        data-cal-link={link.calLink}
+        data-cal-namespace={link.calNamespace ?? undefined}
+        data-cal-config='{"layout":"month_view"}'
       >
+        {children}
+      </button>
+    )
+  }
+
+  if (!link.href) {
+    return <span className={className}>{children}</span>
+  }
+
+  const isExternal = link.href.startsWith('http://') || link.href.startsWith('https://')
+
+  if (isExternal || link.openInNewTab) {
+    return (
+      <a href={link.href} className={className} target="_blank" rel="noopener noreferrer">
         {children}
       </a>
     )
   }
 
-  return (
-    <Link
-      href={href}
-      className={`text-white hover:text-opacity-80 transition ${className}`}
-    >
-      {children}
-    </Link>
-  )
+  return <Link href={link.href} className={className}>{children}</Link>
 }
 
-export function MainNavbarLink({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
-  return (
-    <NavbarLink href={href} className={styles.mainNavbarLink}>
-      {children}
-    </NavbarLink>
-  )
+export function MainNavbarLink({ link, children }: { link: ResolvedLink; children: React.ReactNode }) {
+  return <NavbarLink link={link} className={styles.mainNavbarLink}>{children}</NavbarLink>
 }
 
-export function UpperNavbarLink({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
-  return (
-    <NavbarLink href={href} className={styles.upperNavbarLink}>
-      {children}
-    </NavbarLink>
-  )
+export function UpperNavbarLink({ link, children }: { link: ResolvedLink; children: React.ReactNode }) {
+  return <NavbarLink link={link} className={styles.upperNavbarLink}>{children}</NavbarLink>
 }
 
-export function CollapsingMenuMobileLink({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
-  return (
-    <NavbarLink
-      href={href}
-      className={`${styles.collapsingMenuMobileLink}`}
-    >
-      {children}
-    </NavbarLink>
-  )
+export function CollapsingMenuMobileLink({ link, children }: { link: ResolvedLink; children: React.ReactNode }) {
+  return <NavbarLink link={link} className={styles.collapsingMenuMobileLink}>{children}</NavbarLink>
 }
 
 export const MAIN_LINKS = [
@@ -105,4 +75,3 @@ export const UPPER_LINKS = [
 ]
 
 export const ALL_LINKS = [...MAIN_LINKS, ...UPPER_LINKS]
-

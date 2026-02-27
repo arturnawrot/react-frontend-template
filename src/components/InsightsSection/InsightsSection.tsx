@@ -88,9 +88,7 @@ export default function InsightsSection({ block, articles: propArticles }: Insig
             </SectionHeading>
 
             {linkText && link.href && (
-              <ArrowLink href={link.href} openInNewTab={link.openInNewTab} disabled={link.disabled}>
-                {linkText}
-              </ArrowLink>
+              <ArrowLink link={link}>{linkText}</ArrowLink>
             )}
           </div>
 

@@ -85,20 +85,13 @@ export default function SplitSection({ block }: SplitSectionProps) {
           {(buttonText && buttonLink.href) || (linkText && link.href) ? (
             <div className="pt-10 flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
               {buttonText && buttonLink.href && (
-                <PrimaryButton
-                  href={buttonLink.href}
-                  openInNewTab={buttonLink.openInNewTab}
-                  disabled={buttonLink.disabled}
-                  fullWidth
-                >
+                <PrimaryButton link={buttonLink} fullWidth>
                   {buttonText}
                 </PrimaryButton>
               )}
               {linkText && link.href && (
                 <div className="w-full md:w-auto">
-                  <ArrowLink href={link.href} openInNewTab={link.openInNewTab} disabled={link.disabled}>
-                    {linkText}
-                  </ArrowLink>
+                  <ArrowLink link={link}>{linkText}</ArrowLink>
                 </div>
               )}
             </div>

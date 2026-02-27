@@ -108,9 +108,7 @@ export default function AgentCarousel({ block }: AgentCarouselProps) {
 
           {linkText && link.href && (
             <div className="mt-2">
-              <ArrowLink href={link.href} openInNewTab={link.openInNewTab} disabled={link.disabled} style={textColorStyle}>
-                {linkText}
-              </ArrowLink>
+              <ArrowLink link={link} style={textColorStyle}>{linkText}</ArrowLink>
             </div>
           )}
 

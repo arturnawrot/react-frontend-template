@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
 import Arrow from '../Arrow/Arrow'
+import { NavbarLink } from '../NavbarLink/NavbarLink'
 import LocationSearchSuggestion, { type AddressSuggestion } from '../LocationSearchSuggestion/LocationSearchSuggestion'
 import type { DropdownColumn, DropdownQuote } from '@/utils/navbar'
 import styles from './NavbarDropdown.module.scss'
@@ -101,25 +101,17 @@ export default function NavbarDropdown({
               <ul className={styles.linkList}>
                 {column.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <Link
-                      href={link.href}
-                      className={styles.dropdownLink}
-                      {...(link.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                    >
+                    <NavbarLink link={link} className={styles.dropdownLink}>
                       <span>{link.label}</span>
                       <Arrow direction="right" variant="fill" size={16} />
-                    </Link>
+                    </NavbarLink>
                   </li>
                 ))}
               </ul>
               {column.bottomLink && (
-                <Link
-                  href={column.bottomLink.href}
-                  className={styles.bottomLink}
-                  {...(column.bottomLink.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                >
+                <NavbarLink link={column.bottomLink} className={styles.bottomLink}>
                   {column.bottomLink.label}
-                </Link>
+                </NavbarLink>
               )}
             </div>
           ))}

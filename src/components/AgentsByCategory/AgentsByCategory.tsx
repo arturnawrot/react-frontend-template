@@ -237,9 +237,7 @@ export default function AgentsByCategory({ block }: AgentsByCategoryProps) {
                       
                       return (
                         <div className="mt-6 md:mt-12">
-                          <ArrowLink href={link.href} openInNewTab={link.openInNewTab} disabled={link.disabled}>
-                            {cat.linkText}
-                          </ArrowLink>
+                          <ArrowLink link={link}>{cat.linkText}</ArrowLink>
                         </div>
                       )
                     })()}

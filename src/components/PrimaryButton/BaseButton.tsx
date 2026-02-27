@@ -1,10 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
+import type { ResolvedLink } from '@/utils/linkResolver'
 import { isInternalLink } from '@/utils/link-utils'
 
 interface BaseButtonProps {
   children: React.ReactNode
-  href?: string | null
+  link?: ResolvedLink       // CMS-resolved link — overrides individual link props
+  href?: string | null      // Static href for non-CMS use
   onClick?: () => void
   openInNewTab?: boolean
   className?: string
@@ -14,13 +16,9 @@ interface BaseButtonProps {
   calNamespace?: string | null
 }
 
-/**
- * Base button component that handles both link and button rendering
- * Used by PrimaryButton and SecondaryButton to avoid code duplication
- * When disabled, renders as a span (for links) or disabled button
- */
 export default function BaseButton({
   children,
+  link,
   href,
   onClick,
   openInNewTab = false,
@@ -30,18 +28,23 @@ export default function BaseButton({
   calLink,
   calNamespace,
 }: BaseButtonProps) {
+  const effectiveHref = link?.href ?? href
+  const effectiveOpenInNewTab = link?.openInNewTab ?? openInNewTab
+  const effectiveDisabled = link?.disabled ?? disabled
+  const effectiveCalLink = link?.calLink ?? calLink
+  const effectiveCalNamespace = link?.calNamespace ?? calNamespace
+
   const fullWidthClass = fullWidth ? 'w-full md:w-auto' : ''
-  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : ''
+  const disabledClass = effectiveDisabled ? 'opacity-50 cursor-not-allowed' : ''
   const baseClassName = `${className} ${fullWidthClass} ${disabledClass}`.trim()
 
-  // If calLink is provided, render as a cal.com element-click trigger
-  if (calLink) {
+  if (effectiveCalLink) {
     return (
       <button
-        className={baseClassName}
+        className={`${baseClassName} cursor-pointer`}
         type="button"
-        data-cal-link={calLink}
-        data-cal-namespace={calNamespace ?? undefined}
+        data-cal-link={effectiveCalLink}
+        data-cal-namespace={effectiveCalNamespace ?? undefined}
         data-cal-config='{"layout":"month_view"}'
       >
         {children}
@@ -49,10 +52,8 @@ export default function BaseButton({
     )
   }
 
-  // If href is provided, render as link (or span if disabled)
-  if (href) {
-    // If disabled, render as span instead of link
-    if (disabled) {
+  if (effectiveHref) {
+    if (effectiveDisabled) {
       return (
         <span className={baseClassName} aria-disabled="true">
           {children}
@@ -60,22 +61,21 @@ export default function BaseButton({
       )
     }
 
-    const isInternal = isInternalLink(href) && !openInNewTab
+    const isInternal = isInternalLink(effectiveHref) && !effectiveOpenInNewTab
     const LinkComponent = isInternal ? Link : 'a'
     const linkProps = isInternal
-      ? { href, className: baseClassName }
+      ? { href: effectiveHref, className: baseClassName }
       : {
-          href,
-          target: openInNewTab ? '_blank' : undefined,
-          rel: openInNewTab ? 'noopener noreferrer' : undefined,
+          href: effectiveHref,
+          target: effectiveOpenInNewTab ? '_blank' : undefined,
+          rel: effectiveOpenInNewTab ? 'noopener noreferrer' : undefined,
           className: baseClassName,
         }
     return <LinkComponent {...linkProps}>{children}</LinkComponent>
   }
 
-  // Otherwise render as button
   return (
-    <button onClick={onClick} className={baseClassName} type="button" disabled={disabled}>
+    <button onClick={onClick} className={baseClassName} type="button" disabled={effectiveDisabled}>
       {children}
     </button>
   )

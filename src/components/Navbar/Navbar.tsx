@@ -1,19 +1,14 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import Link from 'next/link'
 import Logo from '../Logo/Logo'
 import LocationSearchSuggestion, { type AddressSuggestion } from '../LocationSearchSuggestion/LocationSearchSuggestion'
 import NavbarDropdown from './NavbarDropdown'
+import { NavbarLink } from '../NavbarLink/NavbarLink'
 import type { NavbarLinkWithDropdown, DropdownQuote } from '@/utils/navbar'
 import styles from './Navbar.module.scss'
 import linkStyles from '../NavbarLink/NavbarLink.module.scss'
 
-// Keep legacy NavbarLink type for backwards compatibility
-export interface NavbarLink {
-  label: string
-  href: string
-}
 
 interface NavbarProps {
   darkVariant?: boolean
@@ -125,20 +120,19 @@ export default function Navbar({
           <div className="flex gap-8 ml-8">
             {upperLinks.map((link, index) => (
               <div
-                key={`${link.href}-${index}`}
+                key={`${link.label}-${index}`}
                 className="relative"
                 onMouseEnter={() => handleMouseEnter(index, setActiveUpperDropdown, link.hasDropdown)}
                 onMouseLeave={() => handleMouseLeave(setActiveUpperDropdown)}
               >
-                <Link 
-                  href={link.href} 
+                <NavbarLink
+                  link={link}
                   className={`${isAnyDropdownActive ? styles.upperNavbarLinkDark : linkStyles.upperNavbarLink} ${
                     activeUpperDropdown === index ? styles.activeLink : ''
                   } ${link.hasDropdown ? styles.hasDropdown : ''}`}
-                  {...(link.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 >
                   {link.label}
-                </Link>
+                </NavbarLink>
               </div>
             ))}
           </div>
@@ -176,20 +170,19 @@ export default function Navbar({
           <div className="flex gap-2 md:gap-3 lg:gap-5 xl:gap-8 flex-nowrap" id="mainNavbarLinks">
             {mainLinks.map((link, index) => (
               <div
-                key={`${link.href}-${index}`}
+                key={`${link.label}-${index}`}
                 className="relative"
                 onMouseEnter={() => handleMouseEnter(index, setActiveMainDropdown, link.hasDropdown)}
                 onMouseLeave={() => handleMouseLeave(setActiveMainDropdown)}
               >
-                <Link 
-                  href={link.href} 
+                <NavbarLink
+                  link={link}
                   className={`${isAnyDropdownActive ? styles.mainNavbarLinkDark : linkStyles.mainNavbarLink} ${
                     activeMainDropdown === index ? styles.activeLink : ''
                   } ${link.hasDropdown ? styles.hasDropdown : ''}`}
-                  {...(link.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 >
                   {link.label}
-                </Link>
+                </NavbarLink>
               </div>
             ))}
           </div>

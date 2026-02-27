@@ -1,10 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
+import type { ResolvedLink } from '@/utils/linkResolver'
 import Arrow from '../Arrow/Arrow'
 import { isInternalLink } from '@/utils/link-utils'
 
 interface ArrowLinkProps {
-  href: string
+  link?: ResolvedLink       // CMS-resolved link — overrides individual link props
+  href?: string             // Static href for non-CMS use
   children: React.ReactNode
   openInNewTab?: boolean
   className?: string
@@ -12,14 +14,17 @@ interface ArrowLinkProps {
   disabled?: boolean
 }
 
-export default function ArrowLink({ href, children, openInNewTab = false, className = '', style, disabled = false }: ArrowLinkProps) {
-  const isInternal = isInternalLink(href) && !openInNewTab
-  const LinkComponent = isInternal ? Link : 'a'
-  
+export default function ArrowLink({ link, href, children, openInNewTab = false, className = '', style, disabled = false }: ArrowLinkProps) {
+  const effectiveHref = link?.href ?? href
+  const effectiveOpenInNewTab = link?.openInNewTab ?? openInNewTab
+  const effectiveDisabled = link?.disabled ?? disabled
+  const effectiveCalLink = link?.calLink
+  const effectiveCalNamespace = link?.calNamespace
+
   const baseClassName = 'inline-flex items-center gap-2 text-[#1a2e2a] hover:opacity-70 transition-opacity'
-  const disabledClassName = disabled ? 'opacity-50 cursor-not-allowed hover:opacity-50' : ''
+  const disabledClassName = effectiveDisabled ? 'opacity-50 cursor-not-allowed hover:opacity-50' : ''
   const combinedClassName = className ? `${baseClassName} ${disabledClassName} ${className}`.trim() : `${baseClassName} ${disabledClassName}`.trim()
-  
+
   const baseStyle: React.CSSProperties = {
     fontFamily: 'GT America, sans-serif',
     fontWeight: 400,
@@ -29,8 +34,23 @@ export default function ArrowLink({ href, children, openInNewTab = false, classN
     ...style,
   }
 
-  // If disabled, render as span instead of link
-  if (disabled) {
+  if (effectiveCalLink) {
+    return (
+      <button
+        type="button"
+        className={`${combinedClassName} cursor-pointer`}
+        style={baseStyle}
+        data-cal-link={effectiveCalLink}
+        data-cal-namespace={effectiveCalNamespace ?? undefined}
+        data-cal-config='{"layout":"month_view"}'
+      >
+        {children}
+        <Arrow direction="right" variant="fill" size={16} />
+      </button>
+    )
+  }
+
+  if (effectiveDisabled) {
     return (
       <span className={combinedClassName} style={baseStyle} aria-disabled="true">
         {children}
@@ -38,17 +58,19 @@ export default function ArrowLink({ href, children, openInNewTab = false, classN
       </span>
     )
   }
-  
+
+  if (!effectiveHref) {
+    return null
+  }
+
+  const isInternal = isInternalLink(effectiveHref) && !effectiveOpenInNewTab
+  const LinkComponent = isInternal ? Link : 'a'
   const linkProps = isInternal
-    ? {
-        href,
-        className: combinedClassName,
-        style: baseStyle,
-      }
+    ? { href: effectiveHref, className: combinedClassName, style: baseStyle }
     : {
-        href,
-        target: openInNewTab ? '_blank' : undefined,
-        rel: openInNewTab ? 'noopener noreferrer' : undefined,
+        href: effectiveHref,
+        target: effectiveOpenInNewTab ? '_blank' : undefined,
+        rel: effectiveOpenInNewTab ? 'noopener noreferrer' : undefined,
         className: combinedClassName,
         style: baseStyle,
       }

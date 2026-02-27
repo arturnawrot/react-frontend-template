@@ -1,9 +1,11 @@
 import React from 'react'
+import type { ResolvedLink } from '@/utils/linkResolver'
 import BaseButton from './BaseButton'
 import styles from './PrimaryButton.module.scss'
 
 interface PrimaryButtonProps {
   children: React.ReactNode
+  link?: ResolvedLink
   href?: string | null
   onClick?: () => void
   openInNewTab?: boolean
@@ -17,6 +19,7 @@ interface PrimaryButtonProps {
 
 export default function PrimaryButton({
   children,
+  link,
   href,
   onClick,
   openInNewTab = false,
@@ -33,6 +36,7 @@ export default function PrimaryButton({
 
   return (
     <BaseButton
+      link={link}
       href={href}
       onClick={onClick}
       openInNewTab={openInNewTab}

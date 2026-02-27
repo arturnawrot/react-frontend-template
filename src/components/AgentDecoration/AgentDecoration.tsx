@@ -138,12 +138,7 @@ export default function AgentDecoration({ block, constantLinksMap }: AgentDecora
           
           {buttonText && link.href && (
             <div className={isCompact ? 'mt-8' : ''}>
-              <PrimaryButton
-                href={link.href}
-                openInNewTab={link.openInNewTab}
-                disabled={link.disabled}
-                className="font-bold py-4 px-10 rounded-full text-lg w-full md:w-auto"
-              >
+              <PrimaryButton link={link} className="font-bold py-4 px-10 rounded-full text-lg w-full md:w-auto">
                 {buttonText}
               </PrimaryButton>
             </div>
