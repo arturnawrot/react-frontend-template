@@ -10,12 +10,16 @@ export function createLinkFields(options?: {
   linkTextRequired?: boolean
   fieldPrefix?: string // Prefix for linkType, page, and customUrl fields
   includeText?: boolean // Set to false to omit the link text field (default: true)
+  excludeLinkTypes?: string[] // Filter out these linkType values from the select options
+  defaultLinkType?: string // Override the default linkType value (default: 'none')
 }): Field[] {
   const linkTextName = options?.linkTextName || 'linkText'
   const linkTextLabel = options?.linkTextLabel || 'Link Text'
   const linkTextRequired = options?.linkTextRequired || false
   const prefix = options?.fieldPrefix || ''
   const includeText = options?.includeText !== false
+  const excludeLinkTypes = options?.excludeLinkTypes || []
+  const defaultLinkType = options?.defaultLinkType || 'none'
 
   const linkTypeName = prefix ? `${prefix}LinkType` : 'linkType'
   const pageName = prefix ? `${prefix}Page` : 'page'
@@ -43,28 +47,13 @@ export function createLinkFields(options?: {
       type: 'select',
       required: false,
       options: [
-        {
-          label: 'None',
-          value: 'none',
-        },
-        {
-          label: 'Page',
-          value: 'page',
-        },
-        {
-          label: 'Custom URL',
-          value: 'custom',
-        },
-        {
-          label: 'Constant Link',
-          value: 'constant',
-        },
-        {
-          label: 'Cal.com Booking',
-          value: 'cal',
-        },
-      ],
-      defaultValue: 'none',
+        { label: 'None', value: 'none' },
+        { label: 'Page', value: 'page' },
+        { label: 'Custom URL', value: 'custom' },
+        { label: 'Constant Link', value: 'constant' },
+        { label: 'Cal.com Booking', value: 'cal' },
+      ].filter((opt) => !excludeLinkTypes.includes(opt.value)),
+      defaultValue: defaultLinkType,
       admin: {
         description: 'Choose whether to link to an existing page, a custom URL, a constant link, or no link',
       },
@@ -135,7 +124,7 @@ export function createLinkFields(options?: {
       admin: {
         condition: (data, siblingData) => {
           const linkType = siblingData?.[linkTypeName]
-          return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'cal'
+          return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'cal' && linkType !== 'constant'
         },
         description: 'Open the link in a new browser tab',
       },
@@ -148,7 +137,7 @@ export function createLinkFields(options?: {
       admin: {
         condition: (data, siblingData) => {
           const linkType = siblingData?.[linkTypeName]
-          return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'cal'
+          return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'cal' && linkType !== 'constant'
         },
         description: 'Disable the link (renders as non-clickable text)',
       },

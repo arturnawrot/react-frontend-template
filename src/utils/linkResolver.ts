@@ -2,9 +2,20 @@ import { getPageUrl } from './getPageUrl'
 import type { Payload } from 'payload'
 
 /**
- * Map of constant link keys to URLs
+ * Resolved link properties for rendering
  */
-export type ConstantLinksMap = Map<string, string> | Record<string, string>
+export interface ResolvedLink {
+  href: string | null
+  openInNewTab: boolean
+  disabled: boolean
+  calLink?: string | null
+  calNamespace?: string | null
+}
+
+/**
+ * Map of constant link keys to resolved link data
+ */
+export type ConstantLinksMap = Map<string, ResolvedLink> | Record<string, ResolvedLink>
 
 /**
  * Module-level cache for constant links map
@@ -29,7 +40,7 @@ export function getCachedConstantLinksMap(): ConstantLinksMap | null {
 }
 
 /**
- * Fetches constant links from the global and returns a map of key -> URL
+ * Fetches constant links from the global and returns a map of key -> ResolvedLink
  * Can be used in server components to pre-fetch constant links
  */
 export async function getConstantLinksMap(payload?: Payload): Promise<ConstantLinksMap> {
@@ -40,17 +51,42 @@ export async function getConstantLinksMap(payload?: Payload): Promise<ConstantLi
   try {
     const global = await payload.findGlobal({
       slug: 'constantLinks',
+      depth: 1, // Populate page relationships
     })
 
     if (!global?.links || !Array.isArray(global.links)) {
       return new Map()
     }
 
-    const map = new Map<string, string>()
+    const map = new Map<string, ResolvedLink>()
     for (const link of global.links) {
-      if (link.key && link.url) {
-        map.set(link.key, link.url)
+      if (!link.key) continue
+
+      // Backward compatibility: legacy entries with url but no linkType
+      if (!link.linkType && link.url) {
+        map.set(link.key, {
+          href: link.url,
+          openInNewTab: link.openInNewTab || false,
+          disabled: link.disabled || false,
+        })
+        continue
       }
+
+      // Resolve using standard logic (no constantLinksMap to avoid circular refs)
+      const isCal = link.linkType === 'cal'
+      map.set(link.key, {
+        href: resolveLinkUrl({
+          linkType: link.linkType,
+          page: link.page,
+          customUrl: link.customUrl,
+          calLink: link.calLink,
+          calNamespace: link.calNamespace,
+        }),
+        openInNewTab: link.openInNewTab || false,
+        disabled: link.disabled || false,
+        calLink: isCal ? (link.calLink || null) : null,
+        calNamespace: isCal ? (link.calNamespace || null) : null,
+      })
     }
 
     return map
@@ -150,11 +186,11 @@ export function resolveLinkUrl(
     if (!mapToUse) {
       return null
     }
-    // Support both Map and Record types
-    if (mapToUse instanceof Map) {
-      return mapToUse.get(effectiveConstantLink) || null
-    }
-    return mapToUse[effectiveConstantLink] || null
+    // Support both Map and Record types — extract href from ResolvedLink
+    const entry = mapToUse instanceof Map
+      ? mapToUse.get(effectiveConstantLink)
+      : mapToUse[effectiveConstantLink]
+    return entry?.href || null
   }
 
   // Legacy support: fall back to old field names
@@ -227,17 +263,6 @@ export function isLinkDisabled(linkData: {
 }
 
 /**
- * Resolved link properties for rendering
- */
-export interface ResolvedLink {
-  href: string | null
-  openInNewTab: boolean
-  disabled: boolean
-  calLink?: string | null
-  calNamespace?: string | null
-}
-
-/**
  * Link data input type - supports all link field variations
  */
 export type LinkData = {
@@ -291,6 +316,22 @@ export function resolveLink(
   constantLinksMap?: ConstantLinksMap
 ): ResolvedLink {
   const effectiveLinkType = linkData.ctaPrimaryLinkType || linkData.ctaSecondaryLinkType || linkData.linkType
+
+  // For constant links, return the full stored ResolvedLink directly
+  if (effectiveLinkType === 'constant') {
+    const constantKey = linkData.ctaPrimaryConstantLink || linkData.ctaSecondaryConstantLink || linkData.constantLink
+    if (constantKey) {
+      const mapToUse = constantLinksMap || cachedConstantLinksMap
+      if (mapToUse) {
+        const entry = mapToUse instanceof Map
+          ? mapToUse.get(constantKey)
+          : mapToUse[constantKey]
+        if (entry) return entry
+      }
+    }
+    return { href: null, openInNewTab: false, disabled: false }
+  }
+
   const isCal = effectiveLinkType === 'cal'
 
   return {

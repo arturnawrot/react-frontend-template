@@ -63,7 +63,7 @@ const columnLinkFields: Field[] = [
     admin: {
       condition: (_data, siblingData) => {
         const linkType = siblingData?.linkType
-        return linkType !== 'none' && linkType !== undefined && linkType !== null
+        return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'constant'
       },
       description: 'Open the link in a new browser tab',
     },
@@ -143,7 +143,7 @@ const bottomLinkFields: Field[] = [
       condition: (_data, siblingData) => {
         if (!siblingData?.enabled) return false
         const linkType = siblingData?.linkType
-        return linkType !== 'none' && linkType !== undefined && linkType !== null
+        return linkType !== 'none' && linkType !== undefined && linkType !== null && linkType !== 'constant'
       },
       description: 'Open the link in a new browser tab',
     },

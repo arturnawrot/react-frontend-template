@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
@@ -23,54 +24,13 @@ export const Footer: GlobalConfig = {
           label: 'Links',
           required: true,
           fields: [
-            {
-              name: 'label',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'linkType',
-              type: 'select',
-              required: true,
-              options: [
-                {
-                  label: 'Page',
-                  value: 'page',
-                },
-                {
-                  label: 'Custom URL',
-                  value: 'custom',
-                },
-              ],
-              admin: {
-                description: 'Choose whether to link to an existing page or a custom URL',
-              },
-            },
-            {
-              name: 'page',
-              type: 'relationship',
-              relationTo: 'pages',
-              required: true,
-              admin: {
-                condition: (data, siblingData) => {
-                  const linkType = siblingData?.linkType
-                  return linkType === 'page'
-                },
-                description: 'Select a page to link to',
-              },
-            },
-            {
-              name: 'customUrl',
-              type: 'text',
-              required: true,
-              admin: {
-                condition: (data, siblingData) => {
-                  const linkType = siblingData?.linkType
-                  return linkType === 'custom'
-                },
-                description: 'Enter a custom URL (e.g., /contact, https://example.com)',
-              },
-            },
+            ...createLinkFields({
+              linkTextName: 'label',
+              linkTextLabel: 'Label',
+              linkTextRequired: true,
+              excludeLinkTypes: ['none'],
+              defaultLinkType: 'custom',
+            }),
           ],
         },
       ],
@@ -159,53 +119,16 @@ export const Footer: GlobalConfig = {
           type: 'array',
           label: 'Policy Links',
           fields: [
-            {
-              name: 'label',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'linkType',
-              type: 'select',
-              required: true,
-              options: [
-                {
-                  label: 'Page',
-                  value: 'page',
-                },
-                {
-                  label: 'Custom URL',
-                  value: 'custom',
-                },
-              ],
-            },
-            {
-              name: 'page',
-              type: 'relationship',
-              relationTo: 'pages',
-              required: true,
-              admin: {
-                condition: (data, siblingData) => {
-                  const linkType = siblingData?.linkType
-                  return linkType === 'page'
-                },
-              },
-            },
-            {
-              name: 'customUrl',
-              type: 'text',
-              required: true,
-              admin: {
-                condition: (data, siblingData) => {
-                  const linkType = siblingData?.linkType
-                  return linkType === 'custom'
-                },
-              },
-            },
+            ...createLinkFields({
+              linkTextName: 'label',
+              linkTextLabel: 'Label',
+              linkTextRequired: true,
+              excludeLinkTypes: ['none'],
+              defaultLinkType: 'custom',
+            }),
           ],
         },
       ],
     },
   ],
 }
-

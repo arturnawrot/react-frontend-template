@@ -8766,9 +8766,9 @@ export interface Footer {
         links: {
           label: string;
           /**
-           * Choose whether to link to an existing page or a custom URL
+           * Choose whether to link to an existing page, a custom URL, a constant link, or no link
            */
-          linkType: 'page' | 'custom';
+          linkType?: ('page' | 'custom' | 'constant' | 'cal') | null;
           /**
            * Select a page to link to
            */
@@ -8777,6 +8777,26 @@ export interface Footer {
            * Enter a custom URL (e.g., /contact, https://example.com)
            */
           customUrl?: string | null;
+          /**
+           * Select a constant link. These links can be managed globally and updated in one place.
+           */
+          constantLink?: string | null;
+          /**
+           * Cal.com link path (e.g., team/meybohm/consult)
+           */
+          calLink?: string | null;
+          /**
+           * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+           */
+          calNamespace?: string | null;
+          /**
+           * Open the link in a new browser tab
+           */
+          openInNewTab?: boolean | null;
+          /**
+           * Disable the link (renders as non-clickable text)
+           */
+          disabled?: boolean | null;
           id?: string | null;
         }[];
         id?: string | null;
@@ -8819,9 +8839,38 @@ export interface Footer {
     policyLinks?:
       | {
           label: string;
-          linkType: 'page' | 'custom';
+          /**
+           * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+           */
+          linkType?: ('page' | 'custom' | 'constant' | 'cal') | null;
+          /**
+           * Select a page to link to
+           */
           page?: (string | null) | Page;
+          /**
+           * Enter a custom URL (e.g., /contact, https://example.com)
+           */
           customUrl?: string | null;
+          /**
+           * Select a constant link. These links can be managed globally and updated in one place.
+           */
+          constantLink?: string | null;
+          /**
+           * Cal.com link path (e.g., team/meybohm/consult)
+           */
+          calLink?: string | null;
+          /**
+           * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+           */
+          calNamespace?: string | null;
+          /**
+           * Open the link in a new browser tab
+           */
+          openInNewTab?: boolean | null;
+          /**
+           * Disable the link (renders as non-clickable text)
+           */
+          disabled?: boolean | null;
           id?: string | null;
         }[]
       | null;
@@ -9573,17 +9622,46 @@ export interface ConstantLink {
   links?:
     | {
         /**
-         * Unique identifier for this constant link (e.g., "contact", "about", "apply-now")
+         * Auto-generated unique identifier
          */
         key: string;
         /**
          * Display name for this constant link (e.g., "Contact Us", "About Us", "Apply Now")
          */
         label: string;
+        url?: string | null;
         /**
-         * The URL this constant link redirects to (e.g., /contact, https://example.com, /about)
+         * Choose whether to link to an existing page, a custom URL, a constant link, or no link
          */
-        url: string;
+        linkType?: ('page' | 'custom' | 'cal') | null;
+        /**
+         * Select a page to link to
+         */
+        page?: (string | null) | Page;
+        /**
+         * Enter a custom URL (e.g., /contact, https://example.com)
+         */
+        customUrl?: string | null;
+        /**
+         * Select a constant link. These links can be managed globally and updated in one place.
+         */
+        constantLink?: string | null;
+        /**
+         * Cal.com link path (e.g., team/meybohm/consult)
+         */
+        calLink?: string | null;
+        /**
+         * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+         */
+        calNamespace?: string | null;
+        /**
+         * Open the link in a new browser tab
+         */
+        openInNewTab?: boolean | null;
+        /**
+         * Disable the link (renders as non-clickable text)
+         */
+        disabled?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -9708,6 +9786,11 @@ export interface FooterSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
+              openInNewTab?: T;
+              disabled?: T;
               id?: T;
             };
         id?: T;
@@ -9739,6 +9822,11 @@ export interface FooterSelect<T extends boolean = true> {
               linkType?: T;
               page?: T;
               customUrl?: T;
+              constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
+              openInNewTab?: T;
+              disabled?: T;
               id?: T;
             };
       };
@@ -10141,6 +10229,14 @@ export interface ConstantLinksSelect<T extends boolean = true> {
         key?: T;
         label?: T;
         url?: T;
+        linkType?: T;
+        page?: T;
+        customUrl?: T;
+        constantLink?: T;
+        calLink?: T;
+        calNamespace?: T;
+        openInNewTab?: T;
+        disabled?: T;
         id?: T;
       };
   updatedAt?: T;

@@ -1,4 +1,6 @@
 import type { GlobalConfig } from 'payload'
+import { createLinkFields } from '@/fields/linkField'
+import crypto from 'crypto'
 
 export const ConstantLinks: GlobalConfig = {
   slug: 'constantLinks',
@@ -7,6 +9,20 @@ export const ConstantLinks: GlobalConfig = {
   },
   access: {
     read: () => true, // Public read access
+  },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        if (data?.links && Array.isArray(data.links)) {
+          for (const link of data.links) {
+            if (!link.key) {
+              link.key = crypto.randomUUID()
+            }
+          }
+        }
+        return data
+      },
+    ],
   },
   fields: [
     {
@@ -21,11 +37,10 @@ export const ConstantLinks: GlobalConfig = {
         {
           name: 'key',
           type: 'text',
-          label: 'Key',
           required: true,
-          unique: true,
           admin: {
-            description: 'Unique identifier for this constant link (e.g., "contact", "about", "apply-now")',
+            hidden: true,
+            description: 'Auto-generated unique identifier',
           },
         },
         {
@@ -37,15 +52,21 @@ export const ConstantLinks: GlobalConfig = {
             description: 'Display name for this constant link (e.g., "Contact Us", "About Us", "Apply Now")',
           },
         },
+        // Legacy url field — hidden, kept for backward compatibility with existing entries
         {
           name: 'url',
           type: 'text',
-          label: 'URL',
-          required: true,
+          label: 'Legacy URL',
           admin: {
-            description: 'The URL this constant link redirects to (e.g., /contact, https://example.com, /about)',
+            hidden: true,
           },
         },
+        // Full linkType fields (page, custom, cal — excluding none and constant)
+        ...createLinkFields({
+          includeText: false,
+          excludeLinkTypes: ['none', 'constant'],
+          defaultLinkType: 'custom',
+        }),
       ],
     },
   ],
