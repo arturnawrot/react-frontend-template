@@ -8541,21 +8541,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Navbar {
   id: string;
   /**
-   * Quote displayed in the left side of dropdown panels
-   */
-  dropdownQuote?: {
-    /**
-     * The main quote text (without quotation marks)
-     */
-    text?: string | null;
-    /**
-     * Part of the quote to highlight in green (must be exact match within quote)
-     */
-    highlightedText?: string | null;
-    author?: string | null;
-    company?: string | null;
-  };
-  /**
    * Links shown in the top bar (e.g., Search, Schedule, Contact Us, Login)
    */
   upperLinks?:
@@ -8686,6 +8671,21 @@ export interface Navbar {
               id?: string | null;
             }[]
           | null;
+        /**
+         * Quote displayed in the left side of this dropdown panel
+         */
+        dropdownQuote?: {
+          /**
+           * The main quote text (without quotation marks)
+           */
+          text?: string | null;
+          /**
+           * Part of the quote to highlight in green (must be exact match within quote)
+           */
+          highlightedText?: string | null;
+          author?: string | null;
+          company?: string | null;
+        };
         id?: string | null;
       }[]
     | null;
@@ -8820,6 +8820,21 @@ export interface Navbar {
               id?: string | null;
             }[]
           | null;
+        /**
+         * Quote displayed in the left side of this dropdown panel
+         */
+        dropdownQuote?: {
+          /**
+           * The main quote text (without quotation marks)
+           */
+          text?: string | null;
+          /**
+           * Part of the quote to highlight in green (must be exact match within quote)
+           */
+          highlightedText?: string | null;
+          author?: string | null;
+          company?: string | null;
+        };
         id?: string | null;
       }[]
     | null;
@@ -9749,14 +9764,6 @@ export interface ConstantLink {
  * via the `definition` "navbar_select".
  */
 export interface NavbarSelect<T extends boolean = true> {
-  dropdownQuote?:
-    | T
-    | {
-        text?: T;
-        highlightedText?: T;
-        author?: T;
-        company?: T;
-      };
   upperLinks?:
     | T
     | {
@@ -9803,6 +9810,14 @@ export interface NavbarSelect<T extends boolean = true> {
                     disabled?: T;
                   };
               id?: T;
+            };
+        dropdownQuote?:
+          | T
+          | {
+              text?: T;
+              highlightedText?: T;
+              author?: T;
+              company?: T;
             };
         id?: T;
       };
@@ -9852,6 +9867,14 @@ export interface NavbarSelect<T extends boolean = true> {
                     disabled?: T;
                   };
               id?: T;
+            };
+        dropdownQuote?:
+          | T
+          | {
+              text?: T;
+              highlightedText?: T;
+              author?: T;
+              company?: T;
             };
         id?: T;
       };

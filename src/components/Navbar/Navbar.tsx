@@ -5,7 +5,7 @@ import Logo from '../Logo/Logo'
 import LocationSearchSuggestion, { type AddressSuggestion } from '../LocationSearchSuggestion/LocationSearchSuggestion'
 import NavbarDropdown from './NavbarDropdown'
 import { NavbarLink } from '../NavbarLink/NavbarLink'
-import type { NavbarLinkWithDropdown, DropdownQuote } from '@/utils/navbar'
+import type { NavbarLinkWithDropdown } from '@/utils/navbar'
 import styles from './Navbar.module.scss'
 import linkStyles from '../NavbarLink/NavbarLink.module.scss'
 
@@ -14,14 +14,12 @@ interface NavbarProps {
   darkVariant?: boolean
   upperLinks?: NavbarLinkWithDropdown[]
   mainLinks?: NavbarLinkWithDropdown[]
-  dropdownQuote?: DropdownQuote
 }
 
-export default function Navbar({ 
+export default function Navbar({
   darkVariant = false,
   upperLinks = [],
   mainLinks = [],
-  dropdownQuote,
 }: NavbarProps) {
   const [searchValue, setSearchValue] = useState('')
   const [activeUpperDropdown, setActiveUpperDropdown] = useState<number | null>(null)
@@ -148,7 +146,7 @@ export default function Navbar({
             >
               <NavbarDropdown
                 columns={link.dropdownColumns}
-                quote={dropdownQuote}
+                quote={link.quote}
                 isVisible={activeUpperDropdown === index}
                 variant="upper"
                 showSearch={true}
@@ -198,7 +196,7 @@ export default function Navbar({
             >
               <NavbarDropdown
                 columns={link.dropdownColumns}
-                quote={dropdownQuote}
+                quote={link.quote}
                 isVisible={activeMainDropdown === index}
                 variant="main"
               />

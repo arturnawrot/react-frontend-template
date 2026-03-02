@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { buildoutApi, toLightweightProperty, filterProperties, type PropertyFilters } from '@/utils/buildout-api'
+import { buildoutApi, toLightweightProperty, filterProperties, sortProperties, type PropertyFilters, type SortBy } from '@/utils/buildout-api'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,6 +43,7 @@ export async function GET(request: Request) {
     const minSquareFootageParam = searchParams.get('minSquareFootage')
     const maxSquareFootageParam = searchParams.get('maxSquareFootage')
     const searchQueryParam = searchParams.get('search')
+    const sortByParam = searchParams.get('sortBy') as SortBy | null
 
     if (!idsParam) {
       return NextResponse.json({
@@ -100,16 +101,20 @@ export async function GET(request: Request) {
       minSquareFootage: minSquareFootage ?? undefined,
       maxSquareFootage: maxSquareFootage ?? undefined,
       search: searchQueryParam ?? undefined,
+      excludeInactive: true,
     }
 
     // Apply filtering using shared filter function
     const filteredProperties = filterProperties(allPropertiesResponse.properties, filters)
 
+    // Apply sorting after filtering
+    const sortedProperties = sortProperties(filteredProperties, sortByParam || 'newest')
+
     // Apply pagination to filtered results
-    const totalFiltered = filteredProperties.length
+    const totalFiltered = sortedProperties.length
     const startIndex = offset
     const endIndex = Math.min(startIndex + limit, totalFiltered)
-    const paginatedProperties = filteredProperties.slice(startIndex, endIndex)
+    const paginatedProperties = sortedProperties.slice(startIndex, endIndex)
 
     // Return lightweight properties by default (unless fullData=true)
     if (fullDataParam === 'true') {

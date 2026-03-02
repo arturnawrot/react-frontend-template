@@ -14,6 +14,7 @@ export interface FilterParams {
   maxCapRate?: number | null
   minSquareFootage?: number | null
   maxSquareFootage?: number | null
+  sortBy?: string | null
 }
 
 /**
@@ -83,6 +84,11 @@ export function buildFilterParams(
   }
   if (filters.maxSquareFootage) {
     addParam('maxSquareFootage', filters.maxSquareFootage)
+  }
+
+  // Sort
+  if (filters.sortBy && filters.sortBy !== 'newest') {
+    addParam('sortBy', filters.sortBy)
   }
 
   return params

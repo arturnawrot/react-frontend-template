@@ -4,7 +4,7 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { ChevronDown, List, Grid, Share2, RotateCcw, Filter } from 'lucide-react'
 import PropertyCard from '../PropertyCard/PropertyCard'
-import type { LightweightProperty, BuildoutBroker } from '@/utils/buildout-api'
+import type { LightweightProperty, BuildoutBroker, SortBy } from '@/utils/buildout-api'
 import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
 import { buildFilterParams as buildFilterParamsUtil } from '@/utils/filter-params'
@@ -65,10 +65,12 @@ export default function PropertySearchAdvanced({
     const maxCapRate = searchParams.get('maxCapRate') ? parseFloat(searchParams.get('maxCapRate')!) : null
     const minSquareFootage = searchParams.get('minSquareFootage') ? parseInt(searchParams.get('minSquareFootage')!, 10) : null
     const maxSquareFootage = searchParams.get('maxSquareFootage') ? parseInt(searchParams.get('maxSquareFootage')!, 10) : null
+    const sortBy = (searchParams.get('sortBy') as SortBy) || 'newest'
     const page = searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : 1
 
     return {
       search,
+      sortBy,
       filters: {
         brokerId: brokerId && !isNaN(brokerId) ? brokerId : null,
         propertyType: propertyType && !isNaN(propertyType) ? propertyType : null,
@@ -85,8 +87,9 @@ export default function PropertySearchAdvanced({
   }, [searchParams])
 
   const initialState = getInitialState()
-  
+
   const [searchQuery, setSearchQuery] = useState(initialState.search)
+  const [sortBy, setSortBy] = useState<SortBy>(initialState.sortBy)
   const [filters, setFilters] = useState<FilterState>(initialState.filters)
   const [properties, setProperties] = useState<PropertyCardData[]>([])
   const [allProperties, setAllProperties] = useState<PropertyCardData[]>([]) // All filtered properties for map
@@ -107,8 +110,8 @@ export default function PropertySearchAdvanced({
   const mobileFilterButtonRef = useRef<HTMLButtonElement | null>(null)
   const isInitialMount = useRef(true)
   
-  // Update URL params when filters/search/page change
-  const updateURL = useCallback((newSearch: string, newFilters: FilterState, newPage: number) => {
+  // Update URL params when filters/search/page/sort change
+  const updateURL = useCallback((newSearch: string, newFilters: FilterState, newPage: number, newSortBy?: SortBy) => {
     const params = new URLSearchParams()
     
     if (newSearch) {
@@ -151,10 +154,14 @@ export default function PropertySearchAdvanced({
       params.set('maxSquareFootage', newFilters.maxSquareFootage.toString())
     }
     
+    if (newSortBy && newSortBy !== 'newest') {
+      params.set('sortBy', newSortBy)
+    }
+
     if (newPage > 1) {
       params.set('page', newPage.toString())
     }
-    
+
     // Update URL without adding to history (replace instead of push)
     const newURL = params.toString() ? `${pathname}?${params.toString()}` : pathname
     router.replace(newURL, { scroll: false })
@@ -185,7 +192,7 @@ export default function PropertySearchAdvanced({
   }, [openDropdown, mobileFiltersOpen])
 
   // Helper function to build filter params from filter state
-  const buildFilterParams = useCallback((filters: FilterState, searchQuery?: string, includeSearch = false): URLSearchParams => {
+  const buildFilterParams = useCallback((filters: FilterState, searchQuery?: string, includeSearch = false, currentSortBy?: SortBy): URLSearchParams => {
     return buildFilterParamsUtil(
       {
         search: searchQuery,
@@ -198,6 +205,7 @@ export default function PropertySearchAdvanced({
         maxCapRate: filters.maxCapRate,
         minSquareFootage: filters.minSquareFootage,
         maxSquareFootage: filters.maxSquareFootage,
+        sortBy: currentSortBy,
       },
       { includeSearch }
     )
@@ -284,7 +292,7 @@ export default function PropertySearchAdvanced({
         }
 
         // Fetch saved properties by IDs with pagination and filters
-        const filterParams = buildFilterParams(filters, searchQuery, true) // Include search for list view
+        const filterParams = buildFilterParams(filters, searchQuery, true, sortBy) // Include search for list view
         filterParams.append('ids', savedIds.join(','))
         filterParams.append('limit', ITEMS_PER_PAGE.toString())
         filterParams.append('offset', offset.toString())
@@ -292,7 +300,7 @@ export default function PropertySearchAdvanced({
         response = await fetch(`/api/buildout/saved-properties?${filterParams.toString()}`)
       } else {
         // ALL filtering is done server-side - use proper pagination for list view (20 per page)
-        const filterParams = buildFilterParams(filters, searchQuery, true) // Include search for list view
+        const filterParams = buildFilterParams(filters, searchQuery, true, sortBy) // Include search for list view
         filterParams.append('limit', ITEMS_PER_PAGE.toString())
         filterParams.append('offset', offset.toString())
 
@@ -339,7 +347,7 @@ export default function PropertySearchAdvanced({
     } finally {
       setLoading(false)
     }
-  }, [searchQuery, filters, brokers, savedPropertiesMode, calculateMapCenter, hideMap, buildFilterParams])
+  }, [searchQuery, filters, sortBy, brokers, savedPropertiesMode, calculateMapCenter, hideMap, buildFilterParams])
 
   // fetchAllPropertiesForMap is now handled by fetchProperties - no longer needed
 
@@ -392,6 +400,7 @@ export default function PropertySearchAdvanced({
     const urlMaxCapRate = searchParams.get('maxCapRate') ? parseFloat(searchParams.get('maxCapRate')!) : null
     const urlMinSquareFootage = searchParams.get('minSquareFootage') ? parseInt(searchParams.get('minSquareFootage')!, 10) : null
     const urlMaxSquareFootage = searchParams.get('maxSquareFootage') ? parseInt(searchParams.get('maxSquareFootage')!, 10) : null
+    const urlSortBy = (searchParams.get('sortBy') as SortBy) || 'newest'
     const urlPage = searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : 1
 
     const newFilters: FilterState = {
@@ -409,23 +418,28 @@ export default function PropertySearchAdvanced({
 
     const searchChanged = urlSearch !== searchQuery
     const filtersChanged = JSON.stringify(newFilters) !== JSON.stringify(filters)
+    const sortChanged = urlSortBy !== sortBy
     const pageChanged = newPage !== currentPage
 
     // Only update if URL params actually changed
-    if (searchChanged || filtersChanged || pageChanged) {
+    if (searchChanged || filtersChanged || sortChanged || pageChanged) {
       isUpdatingFromURLRef.current = true
-      
+
       // If search or filters changed, reset to page 1 (unless page is explicitly set in URL)
       const shouldResetPage = (searchChanged || filtersChanged) && !searchParams.has('page')
-      
+
       if (searchChanged) {
         setSearchQuery(urlSearch)
       }
-      
+
       if (filtersChanged) {
         setFilters(newFilters)
       }
-      
+
+      if (sortChanged) {
+        setSortBy(urlSortBy)
+      }
+
       if (pageChanged) {
         setCurrentPage(newPage)
       } else if (shouldResetPage && currentPage !== 1) {
@@ -453,8 +467,8 @@ export default function PropertySearchAdvanced({
       return
     }
     
-    updateURL(searchQuery, filters, currentPage)
-  }, [searchQuery, filters, currentPage, updateURL])
+    updateURL(searchQuery, filters, currentPage, sortBy)
+  }, [searchQuery, filters, currentPage, sortBy, updateURL])
 
   // Initial fetch when brokers are loaded (only once on mount)
   useEffect(() => {
@@ -481,6 +495,17 @@ export default function PropertySearchAdvanced({
     }
   }, [searchQuery, filters])
 
+  // Fetch properties when sort changes (keep current page)
+  const prevSortByRef = useRef<SortBy>(sortBy)
+  useEffect(() => {
+    if (!hasInitialFetchRef.current) return
+    if (prevSortByRef.current !== sortBy) {
+      prevSortByRef.current = sortBy
+      setCurrentPage(1)
+      fetchPropertiesRef.current(1)
+    }
+  }, [sortBy])
+
   // Track previous page to detect actual page changes
   const prevPageRef = useRef<number>(currentPage)
   
@@ -506,6 +531,7 @@ export default function PropertySearchAdvanced({
 
   const handleResetFilters = () => {
     setSearchQuery('')
+    setSortBy('newest')
     setFilters({
       brokerId: null,
       propertyType: null,
@@ -624,10 +650,10 @@ export default function PropertySearchAdvanced({
         <div className="max-w-[1400px] mx-auto">
           {/* --- Filter Section --- */}
           <div className="py-6">
-            <div className="flex flex-col xl:flex-row gap-4 items-center justify-between w-full">
-              
+            <div className="flex flex-col xl:flex-row gap-4 items-start w-full">
+
               {/* Search Input */}
-              <div className="relative w-full xl:w-96">
+              <div className="relative w-full xl:w-96 xl:self-end">
                 <LocationSearchSuggestion
                   value={searchQuery}
                   onChange={setSearchQuery}
@@ -659,8 +685,49 @@ export default function PropertySearchAdvanced({
                 />
               </div>
 
-              {/* Desktop: Filter Dropdowns - Always Visible */}
-              <div className="hidden xl:flex flex-wrap items-center gap-2 w-auto">
+              {/* Desktop: Filter Dropdowns + Reset */}
+              <div className="hidden xl:flex flex-col items-end gap-2">
+                <button
+                  onClick={handleResetFilters}
+                  className={`whitespace-nowrap text-white hover:opacity-80 px-6 py-2 transition-colors ${styles.resetButton}`}
+                >
+                  Reset Filters
+                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                {/* Sort By */}
+                <div className="relative" ref={(el) => { dropdownRefs.current['sortBy'] = el }}>
+                  <button
+                    onClick={() => setOpenDropdown(openDropdown === 'sortBy' ? null : 'sortBy')}
+                    className={`flex items-center justify-between gap-2 text-stone-900 px-4 py-3 transition-colors min-w-[120px] ${styles.filterButton}`}
+                  >
+                    <span className="truncate">
+                      {sortBy === 'newest' ? 'Newest' : sortBy === 'oldest' ? 'Oldest' : sortBy === 'largest' ? 'Largest' : 'Smallest'}
+                    </span>
+                    <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
+                  </button>
+                  {openDropdown === 'sortBy' && (
+                    <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[130px]">
+                      {([
+                        { value: 'newest', label: 'Newest' },
+                        { value: 'oldest', label: 'Oldest' },
+                        { value: 'largest', label: 'Largest' },
+                        { value: 'smallest', label: 'Smallest' },
+                      ] as const).map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => {
+                            setSortBy(option.value)
+                            setOpenDropdown(null)
+                          }}
+                          className={`w-full text-left px-4 py-2 hover:bg-stone-100 text-sm ${sortBy === option.value ? 'bg-stone-50 font-medium' : ''}`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 {/* Brokers */}
                 <div className="relative" ref={(el) => { dropdownRefs.current['brokers'] = el }}>
                   <button 
@@ -862,12 +929,7 @@ export default function PropertySearchAdvanced({
                   )}
                 </div>
                  
-                <button 
-                  onClick={handleResetFilters}
-                  className={`whitespace-nowrap text-white hover:opacity-80 px-6 py-3 ml-auto xl:ml-2 transition-colors ${styles.resetButton}`}
-                >
-                  Reset Filters
-                </button>
+                </div>
               </div>
 
               {/* Mobile: Filter Button and Collapsible Panel */}
@@ -892,6 +954,41 @@ export default function PropertySearchAdvanced({
               {/* Mobile: Collapsible Filter Panel */}
               {mobileFiltersOpen && (
                 <div ref={mobileFilterPanelRef} className="xl:hidden w-full mt-4 p-4 bg-[#1C2B28] rounded-lg space-y-3">
+                  {/* Sort By */}
+                  <div className="relative" ref={(el) => { dropdownRefs.current['sortBy-mobile'] = el }}>
+                    <button
+                      onClick={() => setOpenDropdown(openDropdown === 'sortBy-mobile' ? null : 'sortBy-mobile')}
+                      className="flex items-center justify-between gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded text-sm font-semibold transition-colors w-full"
+                    >
+                      <span className="truncate">
+                        {sortBy === 'newest' ? 'Newest' : sortBy === 'oldest' ? 'Oldest' : sortBy === 'largest' ? 'Largest' : 'Smallest'}
+                      </span>
+                      <ChevronDown size={14} className="opacity-70 flex-shrink-0" />
+                    </button>
+                    {openDropdown === 'sortBy-mobile' && (
+                      <div className="absolute top-full left-0 mt-1 bg-white rounded shadow-lg z-50 min-w-[130px] w-full">
+                        {([
+                          { value: 'newest', label: 'Newest' },
+                          { value: 'oldest', label: 'Oldest' },
+                          { value: 'largest', label: 'Largest' },
+                          { value: 'smallest', label: 'Smallest' },
+                        ] as const).map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => {
+                              setSortBy(option.value)
+                              setOpenDropdown(null)
+                              setMobileFiltersOpen(false)
+                            }}
+                            className={`w-full text-left px-4 py-2 hover:bg-stone-100 text-sm ${sortBy === option.value ? 'bg-stone-50 font-medium' : ''}`}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                   {/* Brokers */}
                   <div className="relative" ref={(el) => { dropdownRefs.current['brokers-mobile'] = el }}>
                     <button 
@@ -1126,20 +1223,10 @@ export default function PropertySearchAdvanced({
 
           {/* --- Toolbar + Heading --- */}
           <div>
-            <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
+            <div className="mb-6">
               <h2 className="text-lg font-medium text-stone-700 text-white">
                 {propertiesCountText}
               </h2>
-              {/* <div className="flex gap-2 items-center">
-                 <div className="hidden sm:flex bg-white rounded border border-stone-300 p-1">
-                   <button className="p-1.5 hover:bg-stone-100 rounded text-stone-600"><List size={18} /></button>
-                   <button className="p-1.5 bg-stone-100 rounded text-stone-800 shadow-sm"><Grid size={18} /></button>
-                 </div>
-                 <button className="flex items-center gap-1 text-xs font-bold bg-stone-100 px-3 py-2 rounded-md hover:bg-stone-200 text-stone-600 border border-stone-200">
-                    <RotateCcw size={12}/> Last Updated
-                 </button>
-                 <button className="p-2 hover:bg-stone-100 rounded-full text-stone-600 border border-stone-200"><Share2 size={16} /></button>
-              </div> */}
             </div>
           </div>
         </div>

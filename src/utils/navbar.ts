@@ -20,12 +20,12 @@ export type NavbarLinkWithDropdown = ResolvedLink & {
   label: string
   hasDropdown: boolean
   dropdownColumns?: DropdownColumn[]
+  quote?: DropdownQuote
 }
 
 export interface NavbarData {
   upperLinks: NavbarLinkWithDropdown[]
   mainLinks: NavbarLinkWithDropdown[]
-  dropdownQuote?: DropdownQuote
 }
 
 function resolveNavLink(link: {
@@ -84,24 +84,18 @@ export async function getNavbarLinks(): Promise<NavbarData> {
 
   const constantLinksMap = await getConstantLinksMap(payload)
 
-  const rawQuote = navbar?.dropdownQuote
-  const quoteText = rawQuote?.text?.trim()
-  const quoteAuthor = rawQuote?.author?.trim()
-
-  console.log('[Navbar] Raw dropdownQuote from Payload:', JSON.stringify(rawQuote, null, 2))
-  console.log('[Navbar] quoteText:', quoteText, '| quoteAuthor:', quoteAuthor)
-
-  const dropdownQuote: DropdownQuote | undefined =
-    quoteText && quoteAuthor
-      ? {
-          text: quoteText,
-          highlightedText: rawQuote?.highlightedText?.trim() || undefined,
-          author: quoteAuthor,
-          company: rawQuote?.company?.trim() || undefined,
-        }
-      : undefined
-
-  console.log('[Navbar] Final dropdownQuote:', dropdownQuote ? 'exists' : 'undefined')
+  function extractQuote(link: { dropdownQuote?: { text?: string | null; highlightedText?: string | null; author?: string | null; company?: string | null } | null }): DropdownQuote | undefined {
+    const raw = link.dropdownQuote
+    const text = raw?.text?.trim()
+    const author = raw?.author?.trim()
+    if (!text || !author) return undefined
+    return {
+      text,
+      highlightedText: raw?.highlightedText?.trim() || undefined,
+      author,
+      company: raw?.company?.trim() || undefined,
+    }
+  }
 
   const upperLinks: NavbarLinkWithDropdown[] =
     navbar?.upperLinks?.map((link) => ({
@@ -112,6 +106,7 @@ export async function getNavbarLinks(): Promise<NavbarData> {
         link.hasDropdown && link.dropdownColumns
           ? transformDropdownColumns(link.dropdownColumns, constantLinksMap)
           : undefined,
+      quote: link.hasDropdown ? extractQuote(link) : undefined,
     })) || []
 
   const mainLinks: NavbarLinkWithDropdown[] =
@@ -123,7 +118,8 @@ export async function getNavbarLinks(): Promise<NavbarData> {
         link.hasDropdown && link.dropdownColumns
           ? transformDropdownColumns(link.dropdownColumns, constantLinksMap)
           : undefined,
+      quote: link.hasDropdown ? extractQuote(link) : undefined,
     })) || []
 
-  return { upperLinks, mainLinks, dropdownQuote }
+  return { upperLinks, mainLinks }
 }

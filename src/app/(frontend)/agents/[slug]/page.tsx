@@ -12,7 +12,7 @@ import TrackRecordSection from '@/components/TrackRecordSection/TrackRecordSecti
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import type { Page } from '@/payload-types'
-import { buildoutApi } from '@/utils/buildout-api'
+import { buildoutApi, sortProperties } from '@/utils/buildout-api'
 import type { BuildoutProperty } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
@@ -324,6 +324,22 @@ export default async function AgentPage({ params }: AgentPageProps) {
       if (featuredIds.length === 0) {
         console.warn(`[Agent Page] Agent ${agent.slug} has no featured property IDs`)
       }
+    }
+  }
+
+  // Priority 3: Fall back to newest properties for this broker
+  if (featuredProperties.length === 0 && agent.buildout_broker_id) {
+    try {
+      const brokerId = parseInt(agent.buildout_broker_id, 10)
+      if (!isNaN(brokerId)) {
+        const propertiesResponse = await buildoutApi.getPropertiesByBrokerId(brokerId, {
+          limit: 10000,
+          skipCache: false,
+        })
+        featuredProperties = sortProperties(propertiesResponse.properties, 'newest').slice(0, 4)
+      }
+    } catch (error) {
+      console.error('[Agent Page] Error fetching newest properties for agent:', error)
     }
   }
 

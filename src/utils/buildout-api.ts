@@ -334,6 +334,7 @@ export interface LightweightProperty {
   building_size_sf?: number | null
   created_at?: string
   broker_id?: number
+  broker_ids?: number[]
 }
 
 export function toLightweightProperty(property: BuildoutProperty): LightweightProperty {
@@ -361,6 +362,7 @@ export function toLightweightProperty(property: BuildoutProperty): LightweightPr
     building_size_sf: property.building_size_sf,
     created_at: property.created_at,
     broker_id: property.broker_id,
+    broker_ids: property.broker_ids,
   }
 }
 
@@ -374,6 +376,47 @@ export interface LightweightPropertiesResponse {
 // Filters Logic
 // ----------------------------------------------------------------------
 
+// ----------------------------------------------------------------------
+// Deal Status Constants
+// ----------------------------------------------------------------------
+
+export enum DealStatus {
+  Inactive = 0,
+  Active = 1,
+  UnderContract = 2,
+  Closed = 3,
+}
+
+/** Status IDs that indicate a property is no longer actively available */
+const INACTIVE_DEAL_STATUSES = [DealStatus.Inactive, DealStatus.UnderContract, DealStatus.Closed]
+
+/**
+ * Check if a property is active (not inactive, under contract, or closed)
+ */
+export function isPropertyActive(property: BuildoutProperty): boolean {
+  return !INACTIVE_DEAL_STATUSES.includes(property.sale_deal_status_id)
+}
+
+/**
+ * Get a human-readable label for a deal status
+ */
+export function getDealStatusLabel(statusId: number): string {
+  switch (statusId) {
+    case DealStatus.Inactive:
+      return 'Inactive'
+    case DealStatus.Active:
+      return 'Active'
+    case DealStatus.UnderContract:
+      return 'Under Contract'
+    case DealStatus.Closed:
+      return 'Sold'
+    default:
+      return 'Unknown'
+  }
+}
+
+export type SortBy = 'newest' | 'oldest' | 'largest' | 'smallest'
+
 export interface PropertyFilters {
   propertyIds?: number[]
   brokerId?: number
@@ -386,6 +429,8 @@ export interface PropertyFilters {
   minSquareFootage?: number
   maxSquareFootage?: number
   search?: string
+  /** Excludes properties with sale_deal_status_id of 0 (Inactive), 2 (Under Contract), or 3 (Closed). Defaults to true. */
+  excludeInactive?: boolean
 }
 
 export function filterProperties(
@@ -394,14 +439,19 @@ export function filterProperties(
 ): BuildoutProperty[] {
   let filtered = properties
 
+  // Exclude inactive/under contract/closed properties (default: true)
+  if (filters.excludeInactive !== false) {
+    filtered = filtered.filter(p => isPropertyActive(p))
+  }
+
   // Filter by property IDs (for saved properties)
   if (filters.propertyIds && filters.propertyIds.length > 0) {
     filtered = filtered.filter(p => filters.propertyIds!.includes(p.id))
   }
 
-  // Filter by broker
+  // Filter by broker (match any position: primary, secondary, etc.)
   if (filters.brokerId !== null && filters.brokerId !== undefined) {
-    filtered = filtered.filter(p => p.broker_id === filters.brokerId)
+    filtered = filtered.filter(p => p.broker_ids?.includes(filters.brokerId!))
   }
 
   // Filter by property type
@@ -536,6 +586,26 @@ export function filterProperties(
   }
 
   return filtered
+}
+
+export function sortProperties(
+  properties: BuildoutProperty[],
+  sortBy: SortBy = 'newest'
+): BuildoutProperty[] {
+  return [...properties].sort((a, b) => {
+    switch (sortBy) {
+      case 'newest':
+        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      case 'oldest':
+        return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
+      case 'largest':
+        return (b.building_size_sf ?? 0) - (a.building_size_sf ?? 0)
+      case 'smallest':
+        return (a.building_size_sf ?? 0) - (b.building_size_sf ?? 0)
+      default:
+        return 0
+    }
+  })
 }
 
 
@@ -737,7 +807,7 @@ export async function getNearestProperties(
   const allPropertiesResponse = await buildoutApi.getAllProperties({ skipCache })
   const allProperties = allPropertiesResponse.properties
 
-  // Filter out the current property and properties without valid coordinates
+  // Filter out the current property, inactive properties, and properties without valid coordinates
   const otherProperties = allProperties.filter(
     (p) =>
       p.id !== id &&
@@ -745,6 +815,8 @@ export async function getNearestProperties(
       p.latitude !== undefined &&
       p.longitude !== null &&
       p.longitude !== undefined &&
+      // Only include active listings
+      isPropertyActive(p) &&
       // Only include published listings (either sale or lease)
       ((p.sale && p.sale_listing_published) || (p.lease && p.lease_listing_published))
   )
@@ -998,7 +1070,7 @@ class BuildoutApiClient {
     }
   ): Promise<ListPropertiesResponse> {
     return this.searchProperties({
-      broker_id: brokerId,
+      broker_ids: brokerId,
       ...options
     })
   }

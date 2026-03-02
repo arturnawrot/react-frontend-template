@@ -7,7 +7,7 @@ import PropertyDetails from '@/components/PropertyDetails/PropertyDetails'
 import Footer from '@/components/Footer/Footer'
 import DarkNavbar from '@/components/Navbar/DarkNavbar'
 import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
-import { buildoutApi, getNearestProperties } from '@/utils/buildout-api'
+import { buildoutApi, getNearestProperties, isPropertyActive, getDealStatusLabel } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { addressToSlug } from '@/utils/address-slug'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
@@ -210,11 +210,23 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     console.error('Error fetching custom contact form:', error)
   }
 
+  const propertyIsActive = isPropertyActive(property)
+  const dealStatusLabel = getDealStatusLabel(property.sale_deal_status_id)
+
   return (
     <>
         <DarkNavbar />
-        <PropertyDetails 
-          property={property} 
+        {!propertyIsActive && (
+          <div className="bg-amber-50 border-b border-amber-200">
+            <div className="max-w-7xl mx-auto px-4 py-4">
+              <p className="text-amber-800 font-semibold text-center">
+                This property is no longer active &mdash; Status: {dealStatusLabel}
+              </p>
+            </div>
+          </div>
+        )}
+        <PropertyDetails
+          property={property}
           brokers={propertyBrokers}
           brokerIdToAgentSlug={brokerIdToAgentSlug}
           brokerIdToAgentData={brokerIdToAgentData}

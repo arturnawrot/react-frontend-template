@@ -6,14 +6,13 @@ interface NavbarWrapperProps {
 }
 
 export default async function NavbarWrapper({ darkVariant = false }: NavbarWrapperProps) {
-  const { upperLinks, mainLinks, dropdownQuote } = await getNavbarLinks()
+  const { upperLinks, mainLinks } = await getNavbarLinks()
 
   return (
     <Navbar
       darkVariant={darkVariant}
       upperLinks={upperLinks}
       mainLinks={mainLinks}
-      dropdownQuote={dropdownQuote}
     />
   )
 }

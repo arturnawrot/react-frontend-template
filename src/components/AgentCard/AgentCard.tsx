@@ -101,37 +101,6 @@ export default function AgentCard({
           {role}
         </ResponsiveText>
         
-        {/* Serving Locations */}
-        {servingLocations.length > 0 && (
-          <div className="mb-4">
-            <ResponsiveText
-              as="p"
-              desktop="--xs"
-              mobile="--xs"
-              fontFamily="GT America Condensed"
-              fontWeight={400}
-              color="var(--strong-green)"
-              letterSpacing="3px"
-              className="uppercase mb-1"
-            >
-              SERVING
-            </ResponsiveText>
-            <ResponsiveText
-              as="p"
-              desktop="--l"
-              mobile="--l"
-              desktopLineHeight="24px"
-              mobileLineHeight="24px"
-              fontFamily="GT America Condensed"
-              fontWeight={400}
-              color="var(--strong-green)"
-              letterSpacing="0px"
-            >
-              {servingLocations.join(', ')}
-            </ResponsiveText>
-          </div>
-        )}
-
         {/* Contact Information */}
         <div className="grid grid-cols-2 gap-2 mb-4">
           {email && (

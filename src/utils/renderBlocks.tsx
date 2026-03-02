@@ -34,7 +34,7 @@ import ComingSoon from '@/components/ComingSoon/ComingSoon'
 import DarkNavbar from '@/components/Navbar/DarkNavbar'
 import ContentBlock from '@/components/ContentBlock/ContentBlock'
 import BlockWrapper from '@/components/BlockWrapper/BlockWrapper'
-import { buildoutApi } from '@/utils/buildout-api'
+import { buildoutApi, isPropertyActive } from '@/utils/buildout-api'
 import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
@@ -135,10 +135,10 @@ export async function renderBlock(
               })
             ])
 
-            // Filter to only the properties in the set and maintain order
+            // Filter to only the properties in the set, maintain order, and exclude inactive
             const featuredProperties: BuildoutProperty[] = propertyIds
               .map((id: number) => allPropertiesResponse.properties.find((p: BuildoutProperty) => p.id === id))
-              .filter((p): p is BuildoutProperty => p !== undefined)
+              .filter((p): p is BuildoutProperty => p !== undefined && isPropertyActive(p))
 
             const brokers = brokersResponse.brokers
 

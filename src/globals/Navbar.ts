@@ -46,6 +46,47 @@ const bottomLinkFields: Field[] = [
   ),
 ]
 
+// Quote fields for each dropdown (gated behind hasDropdown)
+const dropdownQuoteFields: Field[] = [
+  {
+    name: 'dropdownQuote',
+    type: 'group',
+    label: 'Dropdown Quote',
+    admin: {
+      condition: (_data, siblingData) => siblingData?.hasDropdown === true,
+      description: 'Quote displayed in the left side of this dropdown panel',
+    },
+    fields: [
+      {
+        name: 'text',
+        type: 'textarea',
+        label: 'Quote Text',
+        admin: {
+          description: 'The main quote text (without quotation marks)',
+        },
+      },
+      {
+        name: 'highlightedText',
+        type: 'text',
+        label: 'Highlighted Text',
+        admin: {
+          description: 'Part of the quote to highlight in green (must be exact match within quote)',
+        },
+      },
+      {
+        name: 'author',
+        type: 'text',
+        label: 'Author Name',
+      },
+      {
+        name: 'company',
+        type: 'text',
+        label: 'Company Name',
+      },
+    ],
+  },
+]
+
 // Dropdown column fields (reused for both upper and main links)
 const dropdownColumnFields: Field[] = [
   {
@@ -83,43 +124,6 @@ export const Navbar: GlobalConfig = {
     read: () => true,
   },
   fields: [
-    // Shared quote for dropdown panels
-    {
-      name: 'dropdownQuote',
-      type: 'group',
-      label: 'Dropdown Quote',
-      admin: {
-        description: 'Quote displayed in the left side of dropdown panels',
-      },
-      fields: [
-        {
-          name: 'text',
-          type: 'textarea',
-          label: 'Quote Text',
-          admin: {
-            description: 'The main quote text (without quotation marks)',
-          },
-        },
-        {
-          name: 'highlightedText',
-          type: 'text',
-          label: 'Highlighted Text',
-          admin: {
-            description: 'Part of the quote to highlight in green (must be exact match within quote)',
-          },
-        },
-        {
-          name: 'author',
-          type: 'text',
-          label: 'Author Name',
-        },
-        {
-          name: 'company',
-          type: 'text',
-          label: 'Company Name',
-        },
-      ],
-    },
     // Upper Navigation Links
     {
       name: 'upperLinks',
@@ -154,6 +158,7 @@ export const Navbar: GlobalConfig = {
           },
           fields: dropdownColumnFields,
         },
+        ...dropdownQuoteFields,
       ],
     },
     // Main Navigation Links
@@ -190,6 +195,7 @@ export const Navbar: GlobalConfig = {
           },
           fields: dropdownColumnFields,
         },
+        ...dropdownQuoteFields,
       ],
     },
   ],
