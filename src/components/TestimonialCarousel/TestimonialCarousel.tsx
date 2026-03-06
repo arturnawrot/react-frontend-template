@@ -4,6 +4,7 @@ import type { Page } from '@/payload-types'
 import Arrow from '../Arrow/Arrow'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import styles from './TestimonialCarousel.module.scss'
+import Container from '../Container/Container'
 
 type TestimonialCarouselBlock = Extract<Page['blocks'][number], { blockType: 'testimonialCarousel' }> & {
   testimonials?: Array<{
@@ -50,7 +51,7 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
   }
 
   return (
-    <div className={styles.container}>
+    <Container>
       <div className={styles.inner}>
         <div className={styles.header}>
           <p className={styles.preHeader}>Testimonials</p>
@@ -105,7 +106,7 @@ export default function TestimonialCarousel({ block }: TestimonialCarouselProps)
           </button>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }
 

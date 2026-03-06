@@ -1,21 +1,5 @@
-.container {
-  max-width: 1050px;
-  margin: 0 auto;
-  padding: 0;
-  overflow: visible;
-
-  @media (min-width: 768px) {
-    padding: 0 1rem;
-  }
-}
-
 .inner {
   margin: 0 auto;
-  padding: 2rem 1rem;
-
-  @media (min-width: 768px) {
-    padding: 2rem;
-  }
 }
 
 .header {
