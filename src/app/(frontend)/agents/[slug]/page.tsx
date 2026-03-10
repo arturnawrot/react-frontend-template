@@ -336,7 +336,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
           limit: 10000,
           skipCache: false,
         })
-        featuredProperties = sortProperties(propertiesResponse.properties, 'newest').slice(0, 4)
+        featuredProperties = sortProperties(propertiesResponse.properties, 'most_expensive').slice(0, 4)
       }
     } catch (error) {
       console.error('[Agent Page] Error fetching newest properties for agent:', error)

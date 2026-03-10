@@ -767,6 +767,10 @@ export interface Page {
                   blockType: 'cardSection';
                 }
               | {
+                  /**
+                   * When enabled, limits search to lease properties only and changes heading to "Search Commercial Properties for Lease"
+                   */
+                  forLeaseOnly?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'propertySearchInput';
@@ -959,6 +963,10 @@ export interface Page {
                   description?: string | null;
                   buttonText?: string | null;
                   propertiesCount?: string | null;
+                  /**
+                   * When enabled, only shows lease properties and changes text from "For Sale" to "For Lease"
+                   */
+                  forLeaseOnly?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'propertySearch';
@@ -1744,6 +1752,10 @@ export interface Page {
                             blockType: 'cardSection';
                           }
                         | {
+                            /**
+                             * When enabled, limits search to lease properties only and changes heading to "Search Commercial Properties for Lease"
+                             */
+                            forLeaseOnly?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'propertySearchInput';
@@ -1936,6 +1948,10 @@ export interface Page {
                             description?: string | null;
                             buttonText?: string | null;
                             propertiesCount?: string | null;
+                            /**
+                             * When enabled, only shows lease properties and changes text from "For Sale" to "For Lease"
+                             */
+                            forLeaseOnly?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'propertySearch';
@@ -2721,6 +2737,10 @@ export interface Page {
                                       blockType: 'cardSection';
                                     }
                                   | {
+                                      /**
+                                       * When enabled, limits search to lease properties only and changes heading to "Search Commercial Properties for Lease"
+                                       */
+                                      forLeaseOnly?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'propertySearchInput';
@@ -2913,6 +2933,10 @@ export interface Page {
                                       description?: string | null;
                                       buttonText?: string | null;
                                       propertiesCount?: string | null;
+                                      /**
+                                       * When enabled, only shows lease properties and changes text from "For Sale" to "For Lease"
+                                       */
+                                      forLeaseOnly?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'propertySearch';
@@ -3706,6 +3730,10 @@ export interface Page {
                                                 blockType: 'cardSection';
                                               }
                                             | {
+                                                /**
+                                                 * When enabled, limits search to lease properties only and changes heading to "Search Commercial Properties for Lease"
+                                                 */
+                                                forLeaseOnly?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'propertySearchInput';
@@ -3907,6 +3935,10 @@ export interface Page {
                                                 description?: string | null;
                                                 buttonText?: string | null;
                                                 propertiesCount?: string | null;
+                                                /**
+                                                 * When enabled, only shows lease properties and changes text from "For Sale" to "For Lease"
+                                                 */
+                                                forLeaseOnly?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'propertySearch';
@@ -4494,6 +4526,10 @@ export interface Page {
         blockType: 'cardSection';
       }
     | {
+        /**
+         * When enabled, limits search to lease properties only and changes heading to "Search Commercial Properties for Lease"
+         */
+        forLeaseOnly?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'propertySearchInput';
@@ -4686,6 +4722,10 @@ export interface Page {
         description?: string | null;
         buttonText?: string | null;
         propertiesCount?: string | null;
+        /**
+         * When enabled, only shows lease properties and changes text from "For Sale" to "For Lease"
+         */
+        forLeaseOnly?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'propertySearch';
@@ -6211,6 +6251,7 @@ export interface PagesSelect<T extends boolean = true> {
                     propertySearchInput?:
                       | T
                       | {
+                          forLeaseOnly?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -6299,6 +6340,7 @@ export interface PagesSelect<T extends boolean = true> {
                           description?: T;
                           buttonText?: T;
                           propertiesCount?: T;
+                          forLeaseOnly?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -6652,6 +6694,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 propertySearchInput?:
                                   | T
                                   | {
+                                      forLeaseOnly?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -6740,6 +6783,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       description?: T;
                                       buttonText?: T;
                                       propertiesCount?: T;
+                                      forLeaseOnly?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -7093,6 +7137,7 @@ export interface PagesSelect<T extends boolean = true> {
                                             propertySearchInput?:
                                               | T
                                               | {
+                                                  forLeaseOnly?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -7181,6 +7226,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   description?: T;
                                                   buttonText?: T;
                                                   propertiesCount?: T;
+                                                  forLeaseOnly?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -7534,6 +7580,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                         propertySearchInput?:
                                                           | T
                                                           | {
+                                                              forLeaseOnly?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -7622,6 +7669,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               description?: T;
                                                               buttonText?: T;
                                                               propertiesCount?: T;
+                                                              forLeaseOnly?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -7898,6 +7946,7 @@ export interface PagesSelect<T extends boolean = true> {
         propertySearchInput?:
           | T
           | {
+              forLeaseOnly?: T;
               id?: T;
               blockName?: T;
             };
@@ -7986,6 +8035,7 @@ export interface PagesSelect<T extends boolean = true> {
               description?: T;
               buttonText?: T;
               propertiesCount?: T;
+              forLeaseOnly?: T;
               id?: T;
               blockName?: T;
             };
@@ -9527,9 +9577,9 @@ export interface AgentCategory {
          */
         disabled?: boolean | null;
         /**
-         * Select exactly 3 agents to display for this category
+         * Select a specialty — all agents with this specialty will be shown in a carousel
          */
-        agents: (string | Agent)[];
+        specialty: string | Specialty;
         id?: string | null;
       }[]
     | null;
@@ -10236,7 +10286,7 @@ export interface AgentCategoriesSelect<T extends boolean = true> {
         calNamespace?: T;
         openInNewTab?: T;
         disabled?: T;
-        agents?: T;
+        specialty?: T;
         id?: T;
       };
   updatedAt?: T;

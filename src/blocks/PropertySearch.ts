@@ -31,6 +31,15 @@ export const PropertySearch: Block = {
       label: 'Properties Count Text',
       defaultValue: '99 Properties For Sale in or near Aiken',
     },
+    {
+      name: 'forLeaseOnly',
+      type: 'checkbox',
+      label: 'For Lease Only',
+      defaultValue: false,
+      admin: {
+        description: 'When enabled, only shows lease properties and changes text from "For Sale" to "For Lease"',
+      },
+    },
   ],
 }
 

@@ -21,10 +21,7 @@ config.autoAddCss = false
 library.add(fas, far, fab)
 
 export const metadata = {
-  title: {
-    default: 'Meybohm Real Estate',
-    template: '%s | Meybohm Real Estate',
-  },
+  title: 'Meybohm Real Estate',
   description: 'Your trusted partner in real estate.',
 }
 

@@ -69,14 +69,39 @@ export default function PropertySelector({
         <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '4px' }}>
           Showing {properties.length} of {totalCount} properties
         </p>
-        <p style={{ color: '#6b7280', fontSize: '12px', marginBottom: error ? '8px' : '0' }}>
-          {selectedPropertyIds.length} of {maxSelected} {selectionLabel === 'Featured' ? 'featured listings' : 'properties'} selected
-          {selectedPropertyIds.length >= maxSelected && (
-            <span style={{ color: '#dc2626', marginLeft: '8px', fontWeight: '500' }}>
-              (Maximum reached)
-            </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: error ? '8px' : '0' }}>
+          <p style={{ color: '#6b7280', fontSize: '12px', margin: 0 }}>
+            {selectedPropertyIds.length} of {maxSelected} {selectionLabel === 'Featured' ? 'featured listings' : 'properties'} selected
+            {selectedPropertyIds.length >= maxSelected && (
+              <span style={{ color: '#dc2626', marginLeft: '8px', fontWeight: '500' }}>
+                (Maximum reached)
+              </span>
+            )}
+          </p>
+          {selectedPropertyIds.length > 0 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onSelectionChange([])
+              }}
+              disabled={saving}
+              style={{
+                padding: '2px 8px',
+                fontSize: '12px',
+                border: '1px solid #d1d5db',
+                borderRadius: '4px',
+                backgroundColor: '#ffffff',
+                color: '#dc2626',
+                cursor: saving ? 'not-allowed' : 'pointer',
+                fontWeight: '500',
+              }}
+            >
+              Clear All
+            </button>
           )}
-        </p>
+        </div>
         {error && (
           <p style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px' }}>
             {error}

@@ -23,8 +23,10 @@ export async function GET(request: NextRequest) {
     const allPropertiesResponse = await buildoutApi.getAllProperties()
 
     // Filter properties using the search query (this handles address, city, state, zip matching)
+    const saleOrLease = searchParams.get('saleOrLease') as 'sale' | 'lease' | null
     const filters: PropertyFilters = {
       search: query,
+      ...(saleOrLease && { saleOrLease }),
     }
     const filteredProperties = filterProperties(allPropertiesResponse.properties, filters)
 

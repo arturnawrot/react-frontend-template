@@ -415,7 +415,7 @@ export function getDealStatusLabel(statusId: number): string {
   }
 }
 
-export type SortBy = 'newest' | 'oldest' | 'largest' | 'smallest'
+export type SortBy = 'newest' | 'oldest' | 'largest' | 'smallest' | 'most_expensive' | 'least_expensive'
 
 export interface PropertyFilters {
   propertyIds?: number[]
@@ -602,6 +602,10 @@ export function sortProperties(
         return (b.building_size_sf ?? 0) - (a.building_size_sf ?? 0)
       case 'smallest':
         return (a.building_size_sf ?? 0) - (b.building_size_sf ?? 0)
+      case 'most_expensive':
+        return (b.sale_price_dollars ?? 0) - (a.sale_price_dollars ?? 0)
+      case 'least_expensive':
+        return (a.sale_price_dollars ?? 0) - (b.sale_price_dollars ?? 0)
       default:
         return 0
     }

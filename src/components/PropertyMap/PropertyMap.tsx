@@ -55,6 +55,7 @@ function LeafletMap({
   const lastHoveredPropertyRef = useRef<PropertyCardData | null>(null)
   const lastCardPositionRef = useRef<{ x: number; y: number } | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
+  const hasFitBoundsRef = useRef(false)
   const [mapReady, setMapReady] = useState(false)
 
   // Load Leaflet CSS and libraries only on client
@@ -420,13 +421,13 @@ function LeafletMap({
   function MapInitializer() {
     const useMap = useMapHookRef.current!
     const map = useMap()
-    
+
     useEffect(() => {
       if (!map) return
-      
+
       let intervalId: NodeJS.Timeout | null = null
       let isCancelled = false
-      
+
       // Check if map panes are ready (required for TileLayer)
       const checkPanesReady = () => {
         try {
@@ -438,7 +439,7 @@ function LeafletMap({
           return false
         }
       }
-      
+
       const setReadyIfPanes = () => {
         if (isCancelled) return
         if (checkPanesReady()) {
@@ -449,13 +450,13 @@ function LeafletMap({
           }
         }
       }
-      
+
       // Try immediately
       if (checkPanesReady()) {
         setMapReady(true)
         return
       }
-      
+
       // Wait for map to be fully initialized, then verify panes
       map.whenReady(() => {
         if (isCancelled) return
@@ -473,7 +474,7 @@ function LeafletMap({
           }, 1000)
         }
       })
-      
+
       return () => {
         isCancelled = true
         if (intervalId) {
@@ -482,9 +483,25 @@ function LeafletMap({
         setMapReady(false)
       }
     }, [map])
-    
+
+    // Fit bounds to all properties once on initial load
+    useEffect(() => {
+      if (!map || !L || hasFitBoundsRef.current || propCenter || propZoom) return
+      if (uniqueProperties.length === 0) return
+
+      const bounds = L.latLngBounds(
+        uniqueProperties.map((p: PropertyCardData) => [p.latitude, p.longitude])
+      )
+
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 })
+        hasFitBoundsRef.current = true
+      }
+    }, [map, uniqueProperties.length])
+
     return null
   }
+
 
   return (
     <div className="relative w-full h-full" ref={mapContainerRef}>
@@ -496,7 +513,7 @@ function LeafletMap({
         className="rounded-3xl"
       >
         <MapInitializer />
-        
+
         {mapReady && (
           <>
             <TileLayer

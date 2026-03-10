@@ -26,6 +26,7 @@ interface LocationSearchSuggestionProps {
   wrapperClassName?: string // Custom wrapper div className (for positioning icon)
   handleRedirect?: boolean // Whether to handle redirect internally (default: true)
   openUpward?: boolean // Whether to open suggestions dropdown upward (default: false)
+  saleOrLease?: 'sale' | 'lease' | null // Filter suggestions to sale or lease properties only
 }
 
 export default function LocationSearchSuggestion({
@@ -42,6 +43,7 @@ export default function LocationSearchSuggestion({
   wrapperClassName = '',
   handleRedirect = true, // Default to handling redirect internally
   openUpward = false, // Default to opening downward
+  saleOrLease,
 }: LocationSearchSuggestionProps) {
   const router = useRouter()
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([])
@@ -76,7 +78,9 @@ export default function LocationSearchSuggestion({
 
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/geocoding/autocomplete?query=${encodeURIComponent(query)}`)
+      const params = new URLSearchParams({ query })
+      if (saleOrLease) params.set('saleOrLease', saleOrLease)
+      const response = await fetch(`/api/geocoding/autocomplete?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
         if (data.success && data.suggestions) {
@@ -97,7 +101,7 @@ export default function LocationSearchSuggestion({
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [saleOrLease])
 
   // Debounce input changes - only fetch suggestions if user is typing
   useEffect(() => {

@@ -35,6 +35,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
   const heading = block.heading || 'Local Insight. National Scale.'
   const description = block.description || 'Headquartered in the Southeast, our brokers and partners support commercial activity across state lines and sector boundaries.'
   const buttonText = block.buttonText || 'Explore Properties by Market'
+  const forLeaseOnly = (block as any).forLeaseOnly === true
   
   const [allProperties, setAllProperties] = useState<PropertyCardData[]>([])
   const [visibleProperties, setVisibleProperties] = useState<PropertyCardData[]>([])
@@ -76,7 +77,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
         let isFirstChunk = true
 
         while (hasMore) {
-          const response = await fetch(`/api/buildout/search-properties?limit=${CHUNK_SIZE}&offset=${offset}`)
+          const response = await fetch(`/api/buildout/search-properties?limit=${CHUNK_SIZE}&offset=${offset}${forLeaseOnly ? '&saleOrLease=lease' : ''}`)
           
           if (!response.ok) {
             const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
@@ -179,8 +180,8 @@ export default function PropertySearch({ block }: PropertySearchProps) {
   const propertiesCountText = useMemo(() => {
     if (error) return 'Error loading properties'
     const count = allProperties.length
-    return `${count} ${count === 1 ? 'Property' : 'Properties'} For Sale`
-  }, [allProperties.length, error])
+    return `${count} ${count === 1 ? 'Property' : 'Properties'} ${forLeaseOnly ? 'For Lease' : 'For Sale'}`
+  }, [allProperties.length, error, forLeaseOnly])
 
   return (
     <Container className="font-sans text-stone-800 bg-transparent">
@@ -197,7 +198,7 @@ export default function PropertySearch({ block }: PropertySearchProps) {
             </p>
           </div>
           <div className="flex-shrink-0">
-            <Link href="/property-search" className={`${styles.buttonText} whitespace-nowrap px-8 py-3 rounded-full border border-stone-800 hover:bg-stone-800 hover:text-white transition-colors`}>
+            <Link href={forLeaseOnly ? '/property-search?saleOrLease=lease' : '/property-search'} className={`${styles.buttonText} whitespace-nowrap px-8 py-3 rounded-full border border-stone-800 hover:bg-stone-800 hover:text-white transition-colors`}>
               {buttonText}
             </Link>
           </div>

@@ -9,7 +9,13 @@ import Footer from '@/components/Footer/Footer'
 
 export const dynamic = 'force-dynamic'
 
-export default async function PropertySearchPage() {
+export default async function PropertySearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const params = await searchParams
+  const isForLease = params.saleOrLease === 'lease'
   const payload = await getPayload({ config })
   
   // Fetch the page with slug 'property-search' if it exists, otherwise use default
@@ -48,7 +54,7 @@ export default async function PropertySearchPage() {
         breakOnDesktop: false,
       },
       {
-        text: 'Sale',
+        text: isForLease ? 'Lease' : 'Sale',
         color: '#DAE684',
         breakOnMobile: false,
         breakOnDesktop: false,

@@ -46,7 +46,7 @@ const STORAGE_KEYS = {
   squareFootage: 'propertySearch_squareFootage',
 }
 
-export default function PropertySearchInput() {
+export default function PropertySearchInput({ forLeaseOnly = false }: { forLeaseOnly?: boolean }) {
   const router = useRouter()
   const [location, setLocation] = useState('')
   const [selectedPropertyType, setSelectedPropertyType] = useState<number | null>(null)
@@ -202,6 +202,7 @@ export default function PropertySearchInput() {
         maxPrice: clearFilters ? undefined : (selectedPriceRange?.max || undefined),
         minSquareFootage: clearFilters ? undefined : (selectedSquareFootage?.min || undefined),
         maxSquareFootage: clearFilters ? undefined : (selectedSquareFootage?.max || undefined),
+        saleOrLease: forLeaseOnly ? 'lease' : undefined,
       },
       { includeSearch: true, useSet: true } // useSet for URL navigation
     )
@@ -245,7 +246,7 @@ export default function PropertySearchInput() {
             
           {/* Heading */}
           <SectionHeading align="center" className="mb-10 tracking-tight">
-            Search Commercial Properties for Sale
+            {forLeaseOnly ? 'Search Commercial Properties for Lease' : 'Search Commercial Properties for Sale'}
           </SectionHeading>
 
           {/* Search Bar (Pill Shape) */}
@@ -261,6 +262,7 @@ export default function PropertySearchInput() {
                     label="Location"
                     className="relative"
                     inputClassName="truncate pr-2"
+                    saleOrLease={forLeaseOnly ? 'lease' : null}
                   />
               </div>
 

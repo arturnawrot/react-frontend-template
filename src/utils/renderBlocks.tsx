@@ -78,7 +78,7 @@ export async function renderBlock(
     return <CardSection key={index} block={block} />
   }
   if (block.blockType === 'propertySearchInput') {
-    return <PropertySearchInput key={index} />
+    return <PropertySearchInput key={index} forLeaseOnly={(block as any).forLeaseOnly === true} />
   }
   if (block.blockType === 'featuredProperties') {
     // Fetch properties from the selected set if specified
@@ -616,6 +616,19 @@ export async function renderBlock(
   }
   if (block.blockType === 'agentsByCategory') {
     // Fetch agent categories from global
+    type MappedAgent = {
+      id: string
+      name: string
+      role: string
+      image: string | null
+      servingLocations: string[]
+      serviceTags: string[]
+      email: string | null
+      phone: string | null
+      linkedin: string | null
+      slug: string | undefined
+    }
+
     let categories: Array<{
       id: string
       title: string
@@ -625,18 +638,7 @@ export async function renderBlock(
       page?: string | { slug?: string; id?: string } | null
       customUrl?: string | null
       openInNewTab?: boolean | null
-      agents: Array<{
-        id: string
-        name: string
-        role: string
-        image?: string | null
-        servingLocations: string[]
-        serviceTags: string[]
-        email?: string | null
-        phone?: string | null
-        linkedin?: string | null
-        slug?: string
-      }>
+      agents: MappedAgent[]
     }> = []
     let heading = 'Expertise That Moves Markets'
     let description = 'Our agents specialize in everything from raw land and infill redevelopment to national net-lease portfolios.'
@@ -645,7 +647,7 @@ export async function renderBlock(
       try {
         const global = await payload.findGlobal({
           slug: 'agentCategories',
-          depth: 2, // Populate agent relationships
+          depth: 1,
         })
 
         if (global?.heading) {
@@ -656,74 +658,63 @@ export async function renderBlock(
         }
 
         if (global?.categories && Array.isArray(global.categories)) {
-          type MappedAgent = {
-            id: string
-            name: string
-            role: string
-            image: string | null
-            servingLocations: string[]
-            serviceTags: string[]
-            email: string | null
-            phone: string | null
-            linkedin: string | null
-            slug: string | undefined
-          }
+          // Fetch agents for each category's specialty in parallel
+          categories = await Promise.all(
+            global.categories.map(async (cat: any, catIndex: number) => {
+              const specialtyId = typeof cat.specialty === 'object' ? cat.specialty?.id : cat.specialty
+              let agents: MappedAgent[] = []
 
-          categories = global.categories.map((cat: any, catIndex: number) => {
-            // Extract agents
-            const agents = (cat.agents || [])
-              .map((agent: any): MappedAgent | null => {
-                if (typeof agent === 'string') {
-                  return null // Skip IDs, they should be populated
-                }
+              if (specialtyId) {
+                const { docs: agentDocs } = await payload.find({
+                  collection: 'agents',
+                  where: {
+                    specialties: { contains: specialtyId },
+                  },
+                  limit: 50,
+                  depth: 2,
+                })
 
-                // Extract roles
-                const roles = (agent.roles || [])
-                  .map((r: any) => (typeof r === 'object' && r !== null && 'name' in r ? r.name : null))
-                  .filter((name: any): name is string => Boolean(name))
+                agents = agentDocs.map((agent: any) => {
+                  const specialties = (agent.specialties || [])
+                    .map((s: any) => (typeof s === 'object' && s !== null && 'name' in s ? s.name : null))
+                    .filter((name: any): name is string => Boolean(name))
 
-                // Extract specialties
-                const specialties = (agent.specialties || [])
-                  .map((s: any) => (typeof s === 'object' && s !== null && 'name' in s ? s.name : null))
-                  .filter((name: any): name is string => Boolean(name))
+                  const servingLocations = (agent.servingLocations || [])
+                    .map((l: any) => (typeof l === 'object' && l !== null && 'name' in l ? l.name : null))
+                    .filter((name: any): name is string => Boolean(name))
 
-                // Extract serving locations
-                const servingLocations = (agent.servingLocations || [])
-                  .map((l: any) => (typeof l === 'object' && l !== null && 'name' in l ? l.name : null))
-                  .filter((name: any): name is string => Boolean(name))
+                  const cardImage = agent.cardImage && typeof agent.cardImage === 'object'
+                    ? agent.cardImage.url || null
+                    : null
 
-                // Get image URL
-                const cardImage = agent.cardImage && typeof agent.cardImage === 'object'
-                  ? agent.cardImage.url || null
-                  : null
+                  return {
+                    id: agent.id,
+                    name: agent.fullName || `${agent.firstName} ${agent.lastName}`,
+                    role: agent.displayTitle || 'Agent & Broker',
+                    image: cardImage,
+                    servingLocations,
+                    serviceTags: specialties,
+                    email: agent.email || null,
+                    phone: agent.phone || null,
+                    linkedin: agent.linkedin || null,
+                    slug: agent.slug,
+                  }
+                })
+              }
 
-                return {
-                  id: agent.id,
-                  name: agent.fullName || `${agent.firstName} ${agent.lastName}`,
-                  role: agent.displayTitle || 'Agent & Broker',
-                  image: cardImage,
-                  servingLocations,
-                  serviceTags: specialties,
-                  email: agent.email || null,
-                  phone: agent.phone || null,
-                  linkedin: agent.linkedin || null,
-                  slug: agent.slug,
-                }
-              })
-              .filter((agent: MappedAgent | null): agent is MappedAgent => agent !== null)
-
-            return {
-              id: cat.id || `category-${catIndex}`,
-              title: cat.title || '',
-              backgroundColor: cat.backgroundColor || '#F2F7D5',
-              linkText: cat.linkText || null,
-              linkType: cat.linkType || null,
-              page: cat.page || null,
-              customUrl: cat.customUrl || null,
-              openInNewTab: cat.openInNewTab || null,
-              agents: agents.slice(0, 3), // Ensure max 3 agents
-            }
-          })
+              return {
+                id: cat.id || `category-${catIndex}`,
+                title: cat.title || '',
+                backgroundColor: cat.backgroundColor || '#F2F7D5',
+                linkText: cat.linkText || null,
+                linkType: cat.linkType || null,
+                page: cat.page || null,
+                customUrl: cat.customUrl || null,
+                openInNewTab: cat.openInNewTab || null,
+                agents,
+              }
+            })
+          )
         }
       } catch (error) {
         console.error('[renderBlocks] Error fetching agent categories:', error)
