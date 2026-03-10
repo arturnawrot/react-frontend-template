@@ -1,13 +1,33 @@
 import { getPayload } from 'payload'
 import React from 'react'
 import config from '@/payload.config'
+import type { Metadata } from 'next'
 import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
+import { getSeoMetadata } from '@/utils/getSeoMetadata'
 import PropertySearchAdvanced from '@/components/PropertySearchAdvanced/PropertySearchAdvanced'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import Footer from '@/components/Footer/Footer'
 
 export const dynamic = 'force-dynamic'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const payload = await getPayload({ config })
+  const { docs } = await payload.find({
+    collection: 'pages',
+    where: { slug: { equals: 'property-search' } },
+    depth: 1,
+    limit: 1,
+  })
+
+  const page = docs[0] as PageType | undefined
+
+  return getSeoMetadata({
+    path: '/property-search',
+    docMeta: page?.meta,
+    fallbackTitle: page?.title || 'Property Search',
+  })
+}
 
 export default async function PropertySearchPage({
   searchParams,
