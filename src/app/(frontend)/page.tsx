@@ -39,7 +39,7 @@ export default async function HomePage() {
         equals: 'home',
       },
     },
-    depth: 2,
+    depth: 1,
     limit: 1,
   })
 

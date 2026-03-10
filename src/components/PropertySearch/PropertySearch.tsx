@@ -29,8 +29,6 @@ interface PropertySearchProps {
   block: PropertySearchBlock
 }
 
-const CHUNK_SIZE = 50
-
 export default function PropertySearch({ block }: PropertySearchProps) {
   const heading = block.heading || 'Local Insight. National Scale.'
   const description = block.description || 'Headquartered in the Southeast, our brokers and partners support commercial activity across state lines and sector boundaries.'
@@ -71,62 +69,33 @@ export default function PropertySearch({ block }: PropertySearchProps) {
           console.warn('Failed to fetch brokers:', e)
         }
 
-        // Fetch properties in chunks, updating state incrementally
-        let offset = 0
-        let hasMore = true
-        let isFirstChunk = true
+        // Fetch all properties in a single request
+        const response = await fetch(`/api/buildout/search-properties?limit=500${forLeaseOnly ? '&saleOrLease=lease' : ''}`)
 
-        while (hasMore) {
-          const response = await fetch(`/api/buildout/search-properties?limit=${CHUNK_SIZE}&offset=${offset}${forLeaseOnly ? '&saleOrLease=lease' : ''}`)
-          
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
-            throw new Error(errorData.error || 'Failed to fetch properties')
-          }
-
-          const data = await response.json()
-          
-          if (!data.success) {
-            throw new Error(data.error || 'Failed to fetch properties')
-          }
-
-          const properties = data.properties || []
-          
-          if (properties.length === 0) {
-            hasMore = false
-            break
-          }
-
-          // Transform lightweight properties to PropertyCard format with broker names and images
-          const transformedProperties = properties.map((property: LightweightProperty) => {
-            const { name: agentName, image: agentImage } = getAgentInfo(property.broker_id, brokerMaps)
-            return transformPropertyToCard(property, agentName, agentImage)
-          })
-
-          // Filter out properties without valid coordinates
-          const validProperties = filterValidCoordinates(transformedProperties)
-
-          // Update state incrementally - append new properties to existing ones
-          setAllProperties(prev => {
-            const newProperties = [...prev, ...validProperties]
-            return newProperties
-          })
-
-          // After first chunk, show the map immediately
-          if (isFirstChunk) {
-            setIsInitialLoad(false)
-            isFirstChunk = false
-          }
-
-          // If we got less than CHUNK_SIZE, we've reached the end
-          if (properties.length < CHUNK_SIZE) {
-            hasMore = false
-          } else {
-            offset += CHUNK_SIZE
-          }
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+          throw new Error(errorData.error || 'Failed to fetch properties')
         }
 
-        // All chunks fetched, stop loading
+        const data = await response.json()
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to fetch properties')
+        }
+
+        const properties = data.properties || []
+
+        // Transform lightweight properties to PropertyCard format with broker names and images
+        const transformedProperties = properties.map((property: LightweightProperty) => {
+          const { name: agentName, image: agentImage } = getAgentInfo(property.broker_id, brokerMaps)
+          return transformPropertyToCard(property, agentName, agentImage)
+        })
+
+        // Filter out properties without valid coordinates
+        const validProperties = filterValidCoordinates(transformedProperties)
+
+        setAllProperties(validProperties)
+        setIsInitialLoad(false)
         setLoading(false)
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to fetch properties'

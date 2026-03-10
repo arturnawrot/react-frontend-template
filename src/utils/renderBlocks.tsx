@@ -631,6 +631,19 @@ export async function renderBlock(
                   },
                   limit: 50,
                   depth: 1,
+                  select: {
+                    fullName: true,
+                    firstName: true,
+                    lastName: true,
+                    displayTitle: true,
+                    cardImage: true,
+                    specialties: true,
+                    servingLocations: true,
+                    email: true,
+                    phone: true,
+                    linkedin: true,
+                    slug: true,
+                  },
                 })
 
                 agents = agentDocs.map((agent: any) => {
@@ -717,11 +730,14 @@ export async function renderBlock(
           collection: 'users',
           limit: 100,
           depth: 0,
+          select: { firstName: true, lastName: true, email: true },
         }),
+        // Only fetch createdAt to extract years — no need for full blog objects
         payload.find({
           collection: 'blogs',
           limit: 1000,
           depth: 0,
+          select: { createdAt: true },
         }),
       ])
 

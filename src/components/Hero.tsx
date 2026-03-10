@@ -627,11 +627,10 @@ const CenteredLayout = (
             loop
             muted
             playsInline
-            preload="auto"
+            preload="metadata"
             aria-hidden="true"
           >
             <source src={backgroundVideoUrl} type="video/mp4" />
-            <source src={backgroundVideoUrl} type="video/webm" />
           </video>
         )}
 

@@ -1,10 +1,6 @@
 import React from 'react'
 import Script from 'next/script'
 import './styles.css'
-import { config, library } from '@fortawesome/fontawesome-svg-core'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { far } from '@fortawesome/free-regular-svg-icons'
-import { fab } from '@fortawesome/free-brands-svg-icons'
 import { HashNavigation } from '@/components/HashNavigation'
 import { PasswordGate } from '@/components/PasswordGate'
 import { HeadScripts, HeadTags, BodyScripts } from '@/components/ScriptInjection'
@@ -12,12 +8,6 @@ import { HeadScripts, HeadTags, BodyScripts } from '@/components/ScriptInjection
 import { cookies } from 'next/headers'
 import type { ScriptInjection } from '@/payload-types'
 import { getCachedSiteLock, getCachedScriptInjection } from '@/utils/payload-cache'
-
-// Prevent FontAwesome from auto-adding CSS (we're using SVG core)
-config.autoAddCss = false
-
-// Add all icons to the library
-library.add(fas, far, fab)
 
 export const metadata = {
   title: 'Meybohm Real Estate',
