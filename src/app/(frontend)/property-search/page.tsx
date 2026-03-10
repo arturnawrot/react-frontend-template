@@ -12,20 +12,9 @@ import Footer from '@/components/Footer/Footer'
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const payload = await getPayload({ config })
-  const { docs } = await payload.find({
-    collection: 'pages',
-    where: { slug: { equals: 'property-search' } },
-    depth: 1,
-    limit: 1,
-  })
-
-  const page = docs[0] as PageType | undefined
-
   return getSeoMetadata({
     path: '/property-search',
-    docMeta: page?.meta,
-    fallbackTitle: page?.title || 'Property Search',
+    fallbackTitle: 'Property Search',
   })
 }
 
