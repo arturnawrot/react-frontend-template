@@ -17,9 +17,10 @@ import type { BuildoutProperty } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
 import { resolvePrefixedLink } from '@/utils/linkResolver'
+import { getCachedFeaturedPropertiesSets, getCachedProvenTrackRecordSets } from '@/utils/payload-cache'
 
-// Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
-export const dynamic = 'force-dynamic'
+// ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
+export const revalidate = 60
 
 interface AgentPageProps {
   params: Promise<{ slug: string }>
@@ -181,9 +182,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
   // Priority 1: Check if agent uses a global featured properties set
   if (agent.featuredPropertySetName) {
     try {
-      const global = await payload.findGlobal({
-        slug: 'featuredPropertiesSets',
-      })
+      const global = await getCachedFeaturedPropertiesSets()
 
       // Sets is now an array field, propertyIds is a JSON field
       let sets: Array<{ name: string; propertyIds?: number[] }> = []
@@ -385,10 +384,7 @@ export default async function AgentPage({ params }: AgentPageProps) {
   }> = []
 
   try {
-    const provenTrackRecordGlobal = await payload.findGlobal({
-      slug: 'provenTrackRecordSets',
-      depth: 2, // Populate relationships (agent, image)
-    })
+    const provenTrackRecordGlobal = await getCachedProvenTrackRecordSets()
 
     if (provenTrackRecordGlobal?.sets && Array.isArray(provenTrackRecordGlobal.sets)) {
       // Use "default" set or fall back to first set

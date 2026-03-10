@@ -9,10 +9,9 @@ import { HashNavigation } from '@/components/HashNavigation'
 import { PasswordGate } from '@/components/PasswordGate'
 import { HeadScripts, HeadTags, BodyScripts } from '@/components/ScriptInjection'
 
-import { getPayload } from 'payload'
-import payloadConfig from '@/payload.config'
 import { cookies } from 'next/headers'
 import type { ScriptInjection } from '@/payload-types'
+import { getCachedSiteLock, getCachedScriptInjection } from '@/utils/payload-cache'
 
 // Prevent FontAwesome from auto-adding CSS (we're using SVG core)
 config.autoAddCss = false
@@ -44,17 +43,11 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   let scriptInjection: ScriptInjection | null = null
 
   try {
-    const payload = await getPayload({ config: payloadConfig })
     const [fullSettings, scripts] = await Promise.all([
-      payload.findGlobal({
-        slug: 'siteLock',
-        depth: 1, // Get page slugs for excluded pages
-      }),
-      payload.findGlobal({
-        slug: 'scriptInjection',
-      }),
+      getCachedSiteLock(),
+      getCachedScriptInjection(),
     ])
-    
+
     // Only pass safe settings to client (NO PASSWORD)
     siteLockSettings = {
       enabled: fullSettings.enabled,
@@ -62,7 +55,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
       lockScreenMessage: fullSettings.lockScreenMessage,
       excludedPages: fullSettings.excludedPages as Array<{ slug: string } | string> | null,
     }
-    
+
     scriptInjection = scripts
   } catch (error) {
     // If fetch fails, don't block the site - just disable the lock

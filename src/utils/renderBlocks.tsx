@@ -39,6 +39,21 @@ import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
 import { transformPropertyToCard, type PropertyCardData } from '@/utils/property-transform'
 import { getAgentInfoFromBrokers } from '@/utils/broker-utils'
 import { getConstantLinksMap, setCachedConstantLinksMap } from '@/utils/linkResolver'
+import {
+  getCachedSiteSettings,
+  getCachedFeaturedPropertiesSets,
+  getCachedTestimonialsSets,
+  getCachedFeaturedAgentsSets,
+  getCachedAgentIconsSets,
+  getCachedFeaturedArticles,
+  getCachedProvenTrackRecordSets,
+  getCachedFAQSets,
+  getCachedFAQFullPage,
+  getCachedAgentCategories,
+  getCachedBlogHighlights,
+  getCachedAvailableJobSets,
+  getCachedOfficeLocationSets,
+} from '@/utils/payload-cache'
 
 // Type for any block from a Page (also compatible with Container blocks)
 type PageBlock = Page['blocks'][number]
@@ -86,16 +101,13 @@ export async function renderBlock(
 
     const setName = (block as any).featuredPropertySetName
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'featuredPropertiesSets',
-        })
-
+        const global = await getCachedFeaturedPropertiesSets()
 
         // Sets is now an array field, propertyIds is a JSON field
         let sets: Array<{ name: string; propertyIds?: number[] }> = []
-        
+
         if (global?.sets && Array.isArray(global.sets)) {
           sets = global.sets.map((set: any) => {
             let propertyIds: number[] = []
@@ -119,7 +131,7 @@ export async function renderBlock(
             }
           })
         }
-        
+
         const set = sets.find((s) => s.name === setName)
 
         if (set?.propertyIds && Array.isArray(set.propertyIds)) {
@@ -128,7 +140,7 @@ export async function renderBlock(
           if (propertyIds.length > 0) {
             // Fetch properties and brokers in PARALLEL for better performance
             const [allPropertiesResponse, brokersResponse] = await Promise.all([
-              buildoutApi.getAllProperties({ skipCache: false, limit: 10000 }),
+              buildoutApi.getAllProperties({ skipCache: false }),
               buildoutApi.getAllBrokers({ skipCache: false }).catch(error => {
                 console.error('[renderBlocks] Error fetching brokers:', error)
                 return { brokers: [] as BuildoutBroker[] }
@@ -147,7 +159,7 @@ export async function renderBlock(
               // Get the first broker for this property
               const brokerId = prop.broker_id || (prop.broker_ids && prop.broker_ids[0])
               const { name: agentName, image: agentImage } = getAgentInfoFromBrokers(brokerId, brokers)
-              
+
               return transformPropertyToCard(prop, agentName, agentImage)
             })
           }
@@ -168,28 +180,20 @@ export async function renderBlock(
     }> = []
 
     const setName = (block as any).testimonialSetName
-    console.log('[renderBlocks] TestimonialCarousel block:', {
-      setName,
-      hasPayload: !!payload,
-      blockType: block.blockType,
-    })
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'testimonialsSets',
-          depth: 0,
-        })
+        const global = await getCachedTestimonialsSets()
 
         // Sets is an array field, testimonials is an array field
         let sets: Array<{ name: string; testimonials?: any[] }> = []
-        
+
         if (global?.sets && Array.isArray(global.sets)) {
           sets = global.sets as Array<{ name: string; testimonials?: any[] }>
         }
-        
+
         const set = sets.find((s) => s.name === setName)
-        
+
         if (set?.testimonials && Array.isArray(set.testimonials)) {
           testimonials = set.testimonials.map((testimonial: any) => ({
             quote: testimonial.quote || '',
@@ -222,17 +226,14 @@ export async function renderBlock(
       slug: string
       type?: 'article' | 'market-report' | 'investment-spotlight'
     }
-    
+
     let articles: Article[] = []
 
     const setName = (block as any).featuredArticleSetName
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'featuredArticles',
-          depth: 2, // Populate relationships
-        })
+        const global = await getCachedFeaturedArticles()
 
         if (global?.sets && Array.isArray(global.sets)) {
           const set = global.sets.find((s: any) => s.name === setName)
@@ -282,12 +283,9 @@ export async function renderBlock(
 
     const setName = (block as any).provenTrackRecordSetName
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'provenTrackRecordSets',
-          depth: 2, // Populate relationships (agent, image)
-        })
+        const global = await getCachedProvenTrackRecordSets()
 
         if (global?.sets && Array.isArray(global.sets)) {
           const set = global.sets.find((s: any) => s.name === setName)
@@ -296,15 +294,15 @@ export async function renderBlock(
             items = set.items.map((item: any) => {
               const image = item.image
               const imageUrl = typeof image === 'object' && image !== null ? image.url || '' : ''
-              
+
               const agent = item.agent
               let agentData: { name: string; image?: string } | undefined
-              
+
               if (agent && typeof agent === 'object') {
                 const agentName = agent.fullName || `${agent.firstName || ''} ${agent.lastName || ''}`.trim()
                 const agentImage = agent.cardImage || agent.backgroundImage
                 const agentImageUrl = typeof agentImage === 'object' && agentImage !== null ? agentImage.url : undefined
-                
+
                 if (agentName) {
                   agentData = {
                     name: agentName,
@@ -347,45 +345,33 @@ export async function renderBlock(
     }> = []
 
     const setName = (block as any).featuredAgentSetName
-    console.log('[renderBlocks] AgentCarousel block:', {
-      setName,
-      hasPayload: !!payload,
-      blockType: block.blockType,
-    })
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'featuredAgentsSets',
-          depth: 2, // Populate agent relationships
-        })
+        const global = await getCachedFeaturedAgentsSets()
 
         // Sets is now an array field, agents are relationship field (populated with depth: 2)
         let sets: Array<{ name: string; agents?: any[] | string[] }> = []
-        
+
         if (global?.sets && Array.isArray(global.sets)) {
           sets = global.sets as Array<{ name: string; agents?: any[] | string[] }>
         }
-        
+
         const set = sets.find((s) => s.name === setName)
-        
+
         if (set?.agents && Array.isArray(set.agents)) {
           // Agents are already populated (objects) or IDs (strings) depending on depth
           const agentList = set.agents
-          
+
           agents = agentList
             .map((agent: any) => {
               // If it's an ID string, we need to fetch it (shouldn't happen with depth: 2, but handle it)
               if (typeof agent === 'string') {
                 return null // Skip IDs, they should be populated
               }
-              
+
               // Agent is already populated as an object
               // Extract roles, specialties, and locations
-              const roles = (agent.roles || [])
-                .map((r: any) => (typeof r === 'object' && r !== null && 'name' in r ? r.name : null))
-                .filter((name: any): name is string => Boolean(name))
-              
               const servingLocations = (agent.servingLocations || [])
                 .map((l: any) => (typeof l === 'object' && l !== null && 'name' in l ? l.name : null))
                 .filter((name: any): name is string => Boolean(name))
@@ -419,39 +405,31 @@ export async function renderBlock(
     }> = []
 
     const setName = (block as any).agentIconsSetName
-    console.log('[renderBlocks] AgentIconsSection block:', {
-      setName,
-      hasPayload: !!payload,
-      blockType: block.blockType,
-    })
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'agentIconsSets',
-          depth: 2, // Populate agent relationships
-        })
+        const global = await getCachedAgentIconsSets()
 
         // Sets is now an array field, agents are relationship field (populated with depth: 2)
         let sets: Array<{ name: string; agents?: any[] | string[] }> = []
-        
+
         if (global?.sets && Array.isArray(global.sets)) {
           sets = global.sets as Array<{ name: string; agents?: any[] | string[] }>
         }
-        
+
         const set = sets.find((s) => s.name === setName)
-        
+
         if (set?.agents && Array.isArray(set.agents)) {
           // Agents are already populated (objects) or IDs (strings) depending on depth
           const agentList = set.agents
-          
+
           agents = agentList
             .map((agent: any) => {
               // If it's an ID string, we need to fetch it (shouldn't happen with depth: 2, but handle it)
               if (typeof agent === 'string') {
                 return null // Skip IDs, they should be populated
               }
-              
+
               // Agent is already populated as an object
               return {
                 id: agent.id,
@@ -483,39 +461,31 @@ export async function renderBlock(
     }> = []
 
     const setName = (block as any).agentIconsSetName
-    console.log('[renderBlocks] AgentDecoration block:', {
-      setName,
-      hasPayload: !!payload,
-      blockType: block.blockType,
-    })
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'agentIconsSets',
-          depth: 2, // Populate agent relationships
-        })
+        const global = await getCachedAgentIconsSets()
 
         // Sets is now an array field, agents are relationship field (populated with depth: 2)
         let sets: Array<{ name: string; agents?: any[] | string[] }> = []
-        
+
         if (global?.sets && Array.isArray(global.sets)) {
           sets = global.sets as Array<{ name: string; agents?: any[] | string[] }>
         }
-        
+
         const set = sets.find((s) => s.name === setName)
-        
+
         if (set?.agents && Array.isArray(set.agents)) {
           // Agents are already populated (objects) or IDs (strings) depending on depth
           const agentList = set.agents
-          
+
           agents = agentList
             .map((agent: any) => {
               // If it's an ID string, we need to fetch it (shouldn't happen with depth: 2, but handle it)
               if (typeof agent === 'string') {
                 return null // Skip IDs, they should be populated
               }
-              
+
               // Agent is already populated as an object
               return {
                 id: agent.id,
@@ -544,12 +514,9 @@ export async function renderBlock(
 
     const setName = (block as any).faqSetName
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'faqSets',
-          depth: 0,
-        })
+        const global = await getCachedFAQSets()
 
         if (global?.sets && Array.isArray(global.sets)) {
           const set = global.sets.find((s: any) => s.name === setName)
@@ -578,27 +545,22 @@ export async function renderBlock(
       }>
     }> = []
 
-    if (payload) {
-      try {
-        const global = await payload.findGlobal({
-          slug: 'faqFullPage',
-          depth: 0,
-        })
+    try {
+      const global = await getCachedFAQFullPage()
 
-        if (global) {
-          if (global.categories && Array.isArray(global.categories)) {
-            categories = global.categories.map((cat: any) => ({
-              categoryName: cat.categoryName || '',
-              questions: (cat.questions || []).map((faq: any) => ({
-                question: faq.question || '',
-                answer: faq.answer || null,
-              })),
-            }))
-          }
+      if (global) {
+        if (global.categories && Array.isArray(global.categories)) {
+          categories = global.categories.map((cat: any) => ({
+            categoryName: cat.categoryName || '',
+            questions: (cat.questions || []).map((faq: any) => ({
+              question: faq.question || '',
+              answer: faq.answer || null,
+            })),
+          }))
         }
-      } catch (error) {
-        console.error('[renderBlocks] Error fetching FAQ Full Page global:', error)
       }
+    } catch (error) {
+      console.error('[renderBlocks] Error fetching FAQ Full Page global:', error)
     }
 
     return (
@@ -645,10 +607,7 @@ export async function renderBlock(
 
     if (payload) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'agentCategories',
-          depth: 1,
-        })
+        const global = await getCachedAgentCategories()
 
         if (global?.heading) {
           heading = global.heading
@@ -671,7 +630,7 @@ export async function renderBlock(
                     specialties: { contains: specialtyId },
                   },
                   limit: 50,
-                  depth: 2,
+                  depth: 1,
                 })
 
                 agents = agentDocs.map((agent: any) => {
@@ -740,39 +699,44 @@ export async function renderBlock(
     }
 
     try {
-      // Fetch the BlogHighlights global config
-      const blogHighlightsConfig = await payload.findGlobal({
-        slug: 'blogHighlights',
-        depth: 2, // Populate relationships
-      })
+      // Fetch the BlogHighlights global config (cached) and initial data in parallel
+      const [blogHighlightsConfig, blogsResponse, categoriesResponse, authorsResponse, allBlogsForYears] = await Promise.all([
+        getCachedBlogHighlights(),
+        payload.find({
+          collection: 'blogs',
+          limit: 10,
+          sort: '-createdAt',
+          depth: 1,
+        }),
+        payload.find({
+          collection: 'blog-categories',
+          limit: 100,
+          depth: 0,
+        }),
+        payload.find({
+          collection: 'users',
+          limit: 100,
+          depth: 0,
+        }),
+        payload.find({
+          collection: 'blogs',
+          limit: 1000,
+          depth: 0,
+        }),
+      ])
 
-      // Fetch initial blogs
+      // Use postsPerPage from config if different from default
       const postsPerPage = blogHighlightsConfig.exploreByCategory?.postsPerPage || 10
-      const blogsResponse = await payload.find({
-        collection: 'blogs',
-        limit: postsPerPage,
-        sort: '-createdAt',
-        depth: 2,
-      })
+      let blogs = blogsResponse
+      if (postsPerPage !== 10) {
+        blogs = await payload.find({
+          collection: 'blogs',
+          limit: postsPerPage,
+          sort: '-createdAt',
+          depth: 1,
+        })
+      }
 
-      // Fetch all categories
-      const categoriesResponse = await payload.find({
-        collection: 'blog-categories',
-        limit: 100,
-      })
-
-      // Fetch authors (users who have written blogs)
-      const authorsResponse = await payload.find({
-        collection: 'users',
-        limit: 100,
-      })
-
-      // Get unique years from blogs
-      const allBlogsForYears = await payload.find({
-        collection: 'blogs',
-        limit: 1000,
-        depth: 0,
-      })
       const years = Array.from(
         new Set(
           allBlogsForYears.docs
@@ -788,7 +752,7 @@ export async function renderBlock(
         <BlogHighlightsBlock
           key={index}
           config={blogHighlightsConfig as any}
-          initialBlogs={blogsResponse.docs as any}
+          initialBlogs={blogs.docs as any}
           allCategories={categoriesResponse.docs as any}
           authors={authorsResponse.docs as any}
           years={years}
@@ -823,12 +787,9 @@ export async function renderBlock(
 
     const setName = (block as any).availableJobSetName
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'availableJobSets',
-          depth: 2, // Populate job relationships
-        })
+        const global = await getCachedAvailableJobSets()
 
         if (global?.sets && Array.isArray(global.sets)) {
           const set = global.sets.find((s: any) => s.name === setName)
@@ -881,12 +842,9 @@ export async function renderBlock(
 
     const setName = (block as any).officeLocationSetName
 
-    if (setName && payload) {
+    if (setName) {
       try {
-        const global = await payload.findGlobal({
-          slug: 'officeLocationSets',
-          depth: 2, // Populate image relationships
-        })
+        const global = await getCachedOfficeLocationSets()
 
         if (global?.sets && Array.isArray(global.sets)) {
           const set = global.sets.find((s: any) => s.name === setName)
@@ -947,23 +905,20 @@ export async function renderBlocks(
     return []
   }
 
-  // Use pre-fetched site settings if available, otherwise fetch
+  // Use pre-fetched site settings if available, otherwise fetch (cached)
   let defaultSpacing: 'none' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium'
   let resolvedOptions = options
-  
+
   if (options?.siteSettings) {
     // Use cached siteSettings (avoids redundant fetches in nested containers)
     const spacing = options.siteSettings.blockSpacing?.defaultSpacing
     if (spacing && ['none', 'small', 'medium', 'large', 'xlarge'].includes(spacing)) {
       defaultSpacing = spacing
     }
-  } else if (payload) {
-    // Fetch site settings only at the top level
+  } else {
+    // Fetch site settings via cache
     try {
-      const siteSettings = await payload.findGlobal({
-        slug: 'siteSettings',
-        depth: 0,
-      })
+      const siteSettings = await getCachedSiteSettings()
       const spacing = siteSettings?.blockSpacing?.defaultSpacing
       if (spacing && ['none', 'small', 'medium', 'large', 'xlarge'].includes(spacing)) {
         defaultSpacing = spacing as typeof defaultSpacing
@@ -1007,30 +962,21 @@ export async function renderBlocks(
   return renderedBlocks.map((block, index) => {
     const isFirst = index === 0
     const isLast = index === renderedBlocks.length - 1
-    
+
     // Some blocks (like Hero, Footer, CTAFooter, and components with internal padding) might not need spacing
     // Check if block is a special case that shouldn't have spacing
     const blockType = blocks[index]?.blockType
     const blockData = blocks[index] as any
-    
+
     // Check for excludeSpacing option on cardOnBackground
     let cardOnBackgroundExcludeSpacing = false
     if (blockType === 'cardOnBackground') {
       const excludeSpacing = (blockData as any)?.excludeSpacing
       cardOnBackgroundExcludeSpacing = excludeSpacing === true
-      // Debug log (remove after testing)
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[renderBlocks] CardOnBackground excludeSpacing:', {
-          blockType,
-          excludeSpacing,
-          willSkip: cardOnBackgroundExcludeSpacing,
-          blockDataKeys: Object.keys(blockData || {}),
-        })
-      }
     }
-    
-    const skipSpacing = blockType === 'hero' || 
-                        blockType === 'footer' || 
+
+    const skipSpacing = blockType === 'hero' ||
+                        blockType === 'footer' ||
                         blockType === 'ctaFooter' ||
                         blockType === 'insightsSection' ||
                         blockType === 'trackRecordSection' ||
@@ -1039,7 +985,7 @@ export async function renderBlocks(
                         blockType === 'propertySearchInput' ||
                         (blockType as string) === 'comingSoon' ||
                         cardOnBackgroundExcludeSpacing
-    
+
     if (skipSpacing) {
       return block
     }
@@ -1061,4 +1007,3 @@ export async function renderBlocks(
     )
   })
 }
-

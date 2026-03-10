@@ -7,8 +7,8 @@ import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
 
-// Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
-export const dynamic = 'force-dynamic'
+// ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
+export const revalidate = 60
 
 interface PageProps {
   params: Promise<{ slug: string }>

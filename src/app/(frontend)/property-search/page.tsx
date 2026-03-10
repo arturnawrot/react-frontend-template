@@ -9,7 +9,8 @@ import PropertySearchAdvanced from '@/components/PropertySearchAdvanced/Property
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import Footer from '@/components/Footer/Footer'
 
-export const dynamic = 'force-dynamic'
+// ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
+export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   return getSeoMetadata({

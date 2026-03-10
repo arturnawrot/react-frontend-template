@@ -16,8 +16,8 @@ import Footer from '@/components/Footer/Footer'
 import Container from '@/components/Container/Container'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
 
-// Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
-export const dynamic = 'force-dynamic'
+// ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
+export const revalidate = 60
 
 interface JobPageProps {
   params: Promise<{ slug: string }>

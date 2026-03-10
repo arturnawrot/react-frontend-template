@@ -15,8 +15,8 @@ import { transformPropertyToCard } from '@/utils/property-transform'
 import { getPropertyTypeLabel } from '@/utils/property-types'
 import Container from '@/components/Container/Container'
 
-// Mark as dynamic to prevent build-time prerendering (requires MongoDB connection)
-export const dynamic = 'force-dynamic'
+// ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
+export const revalidate = 60
 
 interface PropertyPageProps {
   params: Promise<{ address: string }>
