@@ -58,6 +58,31 @@ import {
 // Type for any block from a Page (also compatible with Container blocks)
 type PageBlock = Page['blocks'][number]
 
+/**
+ * Extract URL string from a Payload Media field (object or string).
+ * Prevents full Media objects from being serialized into client component HTML.
+ */
+function extractMediaUrl(media: any): string {
+  if (!media) return ''
+  if (typeof media === 'string') return media
+  if (typeof media === 'object' && media !== null && 'url' in media) {
+    return media.url || ''
+  }
+  return ''
+}
+
+/**
+ * Extract minimal image data {url, width, height} from a Media field.
+ */
+function extractMediaData(media: any): { url: string; width?: number; height?: number } | string | null {
+  if (!media) return null
+  if (typeof media === 'string') return media
+  if (typeof media === 'object' && media !== null && 'url' in media) {
+    return { url: media.url || '', width: media.width, height: media.height }
+  }
+  return null
+}
+
 // Options for renderBlocks to avoid redundant fetches
 export interface RenderBlocksOptions {
   /** Pre-fetched site settings to avoid redundant fetches in nested containers */
@@ -84,7 +109,15 @@ export async function renderBlock(
     return <HeroWrapper key={index} block={block} constantLinksMap={options?.constantLinksMap} />
   }
   if (block.blockType === 'flippedM') {
-    return <FlippedM key={index} block={block} />
+    // Strip full Media objects from bulletPoints to reduce serialized HTML size
+    const strippedBlock = {
+      ...block,
+      bulletPoints: ((block as any).bulletPoints || []).map((bp: any) => ({
+        ...bp,
+        image: extractMediaData(bp.image),
+      })),
+    }
+    return <FlippedM key={index} block={strippedBlock as typeof block} />
   }
   if (block.blockType === 'container') {
     return <PayloadContainer key={index} block={block} payload={payload} options={options} />
@@ -253,7 +286,7 @@ export async function renderBlock(
 
               return {
                 title: article.title || '',
-                image: image || null,
+                image: extractMediaUrl(image),
                 tags: categories,
                 slug: slug,
                 type: type,
@@ -380,7 +413,7 @@ export async function renderBlock(
                 name: agent.fullName || `${agent.firstName} ${agent.lastName}`,
                 role: agent.displayTitle || 'Agent & Broker',
                 location: servingLocations.length > 0 ? servingLocations.join(', ') : '',
-                image: agent.cardImage || agent.backgroundImage,
+                image: extractMediaUrl(agent.cardImage || agent.backgroundImage),
                 slug: agent.slug,
               }
             })
@@ -437,7 +470,7 @@ export async function renderBlock(
                 lastName: agent.lastName,
                 fullName: agent.fullName || `${agent.firstName} ${agent.lastName}`,
                 slug: agent.slug,
-                cardImage: agent.cardImage || agent.backgroundImage,
+                cardImage: extractMediaUrl(agent.cardImage || agent.backgroundImage),
               }
             })
             .filter((agent): agent is NonNullable<typeof agent> => agent !== null)
@@ -493,7 +526,7 @@ export async function renderBlock(
                 lastName: agent.lastName,
                 fullName: agent.fullName || `${agent.firstName} ${agent.lastName}`,
                 slug: agent.slug,
-                cardImage: agent.cardImage || agent.backgroundImage,
+                cardImage: extractMediaUrl(agent.cardImage || agent.backgroundImage),
               }
             })
             .filter((agent): agent is NonNullable<typeof agent> => agent !== null)
@@ -764,11 +797,42 @@ export async function renderBlock(
         )
       ).sort((a, b) => b - a)
 
+      // Strip blog objects to only fields used by BlogCard to reduce serialized HTML.
+      // Full Blog objects include heavy Lexical content, relatedArticles, meta/SEO, etc.
+      const stripBlog = (blog: any) => ({
+        id: blog.id,
+        type: blog.type,
+        title: blog.title,
+        slug: blog.slug,
+        description: blog.description || null,
+        featuredImage: extractMediaUrl(blog.featuredImage),
+        author: typeof blog.author === 'object' && blog.author
+          ? { username: blog.author.username, email: blog.author.email }
+          : blog.author,
+        categories: (blog.categories || []).map((cat: any) =>
+          typeof cat === 'object' && cat ? { id: cat.id, name: cat.name, slug: cat.slug } : cat
+        ),
+        createdAt: blog.createdAt,
+      })
+
+      // Strip featured posts inside config too
+      const strippedConfig = {
+        ...blogHighlightsConfig,
+        featuredPosts: blogHighlightsConfig.featuredPosts
+          ? {
+              ...blogHighlightsConfig.featuredPosts,
+              posts: ((blogHighlightsConfig.featuredPosts as any).posts || []).map((post: any) =>
+                typeof post === 'object' && post ? stripBlog(post) : post
+              ),
+            }
+          : blogHighlightsConfig.featuredPosts,
+      }
+
       return (
         <BlogHighlightsBlock
           key={index}
-          config={blogHighlightsConfig as any}
-          initialBlogs={blogs.docs as any}
+          config={strippedConfig as any}
+          initialBlogs={blogs.docs.map(stripBlog) as any}
           allCategories={categoriesResponse.docs as any}
           authors={authorsResponse.docs as any}
           years={years}
@@ -866,18 +930,24 @@ export async function renderBlock(
           const set = global.sets.find((s: any) => s.name === setName)
 
           if (set?.locations && Array.isArray(set.locations)) {
-            locations = set.locations.map((loc: any) => ({
-              image: loc.image || null,
-              header: loc.header || '',
-              subheader: loc.subheader || null,
-              office: loc.office || null,
-              fax: loc.fax || null,
-              linkText: loc.linkText || null,
-              linkType: loc.linkType || null,
-              page: loc.page || null,
-              customUrl: loc.customUrl || null,
-              openInNewTab: loc.openInNewTab || null,
-            }))
+            locations = set.locations.map((loc: any) => {
+              const img = loc.image
+              const strippedImage = img && typeof img === 'object'
+                ? { id: img.id, url: img.url || '', alt: img.alt || '' }
+                : img || null
+              return {
+                image: strippedImage,
+                header: loc.header || '',
+                subheader: loc.subheader || null,
+                office: loc.office || null,
+                fax: loc.fax || null,
+                linkText: loc.linkText || null,
+                linkType: loc.linkType || null,
+                page: loc.page || null,
+                customUrl: loc.customUrl || null,
+                openInNewTab: loc.openInNewTab || null,
+              }
+            })
           }
         }
       } catch (error) {
