@@ -1,6 +1,5 @@
-import { getPayload } from 'payload'
 import React from 'react'
-import config from '@/payload.config'
+import { cachedFind } from '@/utils/payload-cache'
 import type { Metadata } from 'next'
 import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
@@ -26,11 +25,8 @@ export default async function PropertySearchPage({
 }) {
   const params = await searchParams
   const isForLease = params.saleOrLease === 'lease'
-  const payload = await getPayload({ config })
-  
   // Fetch the page with slug 'property-search' if it exists, otherwise use default
-  const { docs } = await payload.find({
-    collection: 'pages',
+  const { docs } = await cachedFind('pages', {
     where: {
       slug: {
         equals: 'property-search',
@@ -44,7 +40,7 @@ export default async function PropertySearchPage({
 
   // If page exists, render it with blocks, otherwise use default layout
   if (page && page.blocks && page.blocks.length > 0) {
-    const blocks = await renderBlocks(page.blocks, payload)
+    const blocks = await renderBlocks(page.blocks)
     return <div>{blocks}</div>
   }
 

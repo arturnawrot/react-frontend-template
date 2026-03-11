@@ -4,6 +4,8 @@ import { getBlogMetadata } from '@/utils/getBlogMetadata'
 
 // ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
 export const revalidate = 60
+export const dynamicParams = true
+export async function generateStaticParams() { return [] }
 
 interface BlogPageProps {
   params: Promise<{ slug: string[] }>

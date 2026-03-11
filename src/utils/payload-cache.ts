@@ -5,8 +5,13 @@
  * Data is cached in-memory and revalidated on a configurable interval.
  */
 import { unstable_cache } from 'next/cache'
-import { getPayload, type GlobalSlug } from 'payload'
+import { getPayload, type GlobalSlug, type Where } from 'payload'
 import config from '@/payload.config'
+
+// ─── Build-time guard ────────────────────────────────────────────────────────
+// During Docker builds there is no MongoDB. Return empty data so prerender
+// succeeds; the page will be regenerated on the first real request via ISR.
+const IS_BUILD_SKIP_DB = process.env.NEXT_BUILD_SKIP_DB === 'true'
 
 // ─── Revalidation intervals (seconds) ────────────────────────────────────────
 // Change these values to control how often data is refreshed across the site.
@@ -29,6 +34,7 @@ function cachedGlobal<T = any>(
   opts: { depth?: number; revalidate?: number } = {}
 ) {
   const { depth, revalidate = CACHE_MEDIUM } = opts
+  if (IS_BUILD_SKIP_DB) return async () => ({} as T)
   return unstable_cache(
     async (): Promise<T> => {
       const payload = await getPayload({ config })
@@ -37,6 +43,44 @@ function cachedGlobal<T = any>(
     [slug],
     { revalidate }
   )
+}
+
+// ─── Cached Collection Queries ───────────────────────────────────────────────
+
+/**
+ * Cached payload.find() — wraps the query in unstable_cache so that
+ * getPayload's internal cookies()/headers() calls do NOT opt the page
+ * out of ISR / static rendering.
+ */
+export async function cachedFind<T = any>(
+  collection: string,
+  opts: {
+    where?: Where
+    depth?: number
+    limit?: number
+    sort?: string
+    select?: Record<string, boolean>
+    revalidate?: number
+  } = {},
+): Promise<{ docs: T[]; totalDocs: number }> {
+  const { where, depth, limit, sort, select, revalidate = PAGE_REVALIDATE_SECONDS } = opts
+  if (IS_BUILD_SKIP_DB) return { docs: [] as T[], totalDocs: 0 }
+  const cacheKey = `find:${collection}:${JSON.stringify(where ?? {})}:d${depth}:l${limit}:s${sort ?? ''}:sel${JSON.stringify(select ?? {})}`
+  return unstable_cache(
+    async () => {
+      const payload = await getPayload({ config })
+      return payload.find({
+        collection: collection as any,
+        ...(where && { where }),
+        ...(depth !== undefined && { depth }),
+        ...(limit !== undefined && { limit }),
+        ...(sort && { sort }),
+        ...(select && { select }),
+      })
+    },
+    [cacheKey],
+    { revalidate },
+  )() as Promise<{ docs: T[]; totalDocs: number }>
 }
 
 // ─── Cached Global Fetchers ──────────────────────────────────────────────────

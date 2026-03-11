@@ -1,13 +1,11 @@
 import React from 'react'
 import type { Page } from '@/payload-types'
-import type { Payload } from 'payload'
 import { renderBlocks, type RenderBlocksOptions } from '@/utils/renderBlocks'
 
 type ContainerBlock = Extract<Page['blocks'][number], { blockType: 'container' }>
 
 type ContainerProps = {
   block: ContainerBlock
-  payload?: Payload
   options?: RenderBlocksOptions
 }
 
@@ -44,13 +42,13 @@ const getCSSStyles = (
   return { cssClasses, cssCode }
 }
 
-export default async function PayloadContainer({ block, payload, options }: ContainerProps) {
+export default async function PayloadContainer({ block, options }: ContainerProps) {
   const { cssClasses, cssCode } = getCSSStyles(block.cssStyles)
   const combinedClasses = cssClasses.length > 0 ? cssClasses.join(' ') : undefined
 
   // Cast to any to handle nested container blocks (like availableRoles) which have different types
   // Pass options through to avoid redundant siteSettings fetches
-  const blocks = await renderBlocks(block.blocks as any, payload, options)
+  const blocks = await renderBlocks(block.blocks as any, options)
 
   // Build spacing classes based on extraPadding and extraMargin selections
   const spacingClasses: string[] = []
@@ -99,4 +97,3 @@ export default async function PayloadContainer({ block, payload, options }: Cont
     </div>
   )
 }
-

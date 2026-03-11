@@ -1,7 +1,8 @@
-import { getPayload } from 'payload'
-import config from '@/payload.config'
 import type { Navbar as NavbarType } from '@/payload-types'
 import { resolveLink, getConstantLinksMap, type ConstantLinksMap, type LinkData, type ResolvedLink } from './linkResolver'
+import { unstable_cache } from 'next/cache'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
 
 export interface DropdownColumn {
   columnName: string
@@ -72,7 +73,7 @@ function transformDropdownColumns(
   }))
 }
 
-export async function getNavbarLinks(): Promise<NavbarData> {
+export const getNavbarLinks = unstable_cache(async (): Promise<NavbarData> => {
   const payload = await getPayload({ config })
 
   let navbar: NavbarType | null = null
@@ -82,7 +83,11 @@ export async function getNavbarLinks(): Promise<NavbarData> {
     console.error('Error fetching navbar:', error)
   }
 
-  const constantLinksMap = await getConstantLinksMap(payload)
+  let constantLinksGlobal: any = null
+  try {
+    constantLinksGlobal = await payload.findGlobal({ slug: 'constantLinks', depth: 1 })
+  } catch {}
+  const constantLinksMap = await getConstantLinksMap(constantLinksGlobal)
 
   function extractQuote(link: { dropdownQuote?: { text?: string | null; highlightedText?: string | null; author?: string | null; company?: string | null } | null }): DropdownQuote | undefined {
     const raw = link.dropdownQuote
@@ -122,4 +127,4 @@ export async function getNavbarLinks(): Promise<NavbarData> {
     })) || []
 
   return { upperLinks, mainLinks }
-}
+}, ['navbar-links'], { revalidate: 300 })

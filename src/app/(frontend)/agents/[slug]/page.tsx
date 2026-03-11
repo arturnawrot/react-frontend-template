@@ -1,7 +1,5 @@
-import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
-import config from '@/payload.config'
 import type { Agent, Role, Specialty, ServingLocation, Media } from '@/payload-types'
 import type { Metadata } from 'next'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
@@ -17,10 +15,12 @@ import type { BuildoutProperty } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
 import { resolvePrefixedLink } from '@/utils/linkResolver'
-import { getCachedFeaturedPropertiesSets, getCachedProvenTrackRecordSets } from '@/utils/payload-cache'
+import { cachedFind, getCachedFeaturedPropertiesSets, getCachedProvenTrackRecordSets } from '@/utils/payload-cache'
 
 // ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
 export const revalidate = 60
+export const dynamicParams = true
+export async function generateStaticParams() { return [] }
 
 interface AgentPageProps {
   params: Promise<{ slug: string }>
@@ -28,10 +28,7 @@ interface AgentPageProps {
 
 export async function generateMetadata({ params }: AgentPageProps): Promise<Metadata> {
   const { slug } = await params
-  const payload = await getPayload({ config })
-
-  const { docs } = await payload.find({
-    collection: 'agents',
+  const { docs } = await cachedFind<Agent>('agents', {
     where: { slug: { equals: slug } },
     depth: 1,
     limit: 1,
@@ -88,11 +85,8 @@ export async function generateMetadata({ params }: AgentPageProps): Promise<Meta
 export default async function AgentPage({ params }: AgentPageProps) {
   const { slug } = await params
 
-  const payload = await getPayload({ config })
-
   // Fetch the agent by slug
-  const { docs } = await payload.find({
-    collection: 'agents',
+  const { docs } = await cachedFind<Agent>('agents', {
     where: {
       slug: {
         equals: slug,

@@ -2,13 +2,14 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+  const { pathname } = request.nextUrl
 
   // Skip admin routes and API routes
-  const { pathname } = request.nextUrl
   if (pathname.startsWith('/admin') || pathname.startsWith('/api')) {
-    return response
+    return NextResponse.next()
   }
+
+  const response = NextResponse.next()
 
   // Add CDN-friendly cache headers for frontend pages
   // s-maxage: CDN/Cloudflare caches for 60s

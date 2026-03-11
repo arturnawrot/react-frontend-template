@@ -1,14 +1,21 @@
-import { getPayload } from 'payload'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import React from 'react'
-import config from '@/payload.config'
 import type { Metadata } from 'next'
 import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
+import { cachedFind } from '@/utils/payload-cache'
 
-// ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
+// ISR: cached for 60s then revalidated in background
 export const revalidate = 60
+
+// Allow on-demand ISR for any slug (not just pre-built ones)
+export const dynamicParams = true
+
+// Return empty array — pages are generated on first request and cached via ISR
+export async function generateStaticParams() {
+  return []
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -17,25 +24,19 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
 
-  if (slug === 'home') {
-    return {}
-  }
-
-  const payload = await getPayload({ config })
-  const { docs } = await payload.find({
-    collection: 'pages',
+  const { docs } = await cachedFind<PageType>('pages', {
     where: { slug: { equals: slug } },
     depth: 1,
     limit: 1,
   })
 
-  const page = docs[0] as PageType | undefined
+  const page = docs[0]
   if (!page) {
     return { title: 'Page Not Found' }
   }
 
   return getSeoMetadata({
-    path: `/${slug}`,
+    path: slug === 'home' ? '/' : `/${slug}`,
     docMeta: page.meta,
     fallbackTitle: page.title || undefined,
   })
@@ -44,33 +45,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function DynamicPage({ params }: PageProps) {
   const { slug } = await params
 
-  // Redirect /home to root
-  if (slug === 'home') {
-    redirect('/')
-  }
-
-  const payload = await getPayload({ config })
-
-  // Fetch the page by slug
-  const { docs } = await payload.find({
-    collection: 'pages',
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
+  const { docs } = await cachedFind<PageType>('pages', {
+    where: { slug: { equals: slug } },
     depth: 2,
     limit: 1,
   })
 
-  const page = docs[0] as PageType | undefined
+  const page = docs[0]
 
   if (!page) {
     notFound()
   }
 
-  const blocks = await renderBlocks(page.blocks, payload)
+  const blocks = await renderBlocks(page.blocks)
 
   return <div>{blocks}</div>
 }
-

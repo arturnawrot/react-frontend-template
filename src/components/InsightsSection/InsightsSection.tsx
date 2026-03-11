@@ -26,8 +26,9 @@ interface InsightsSectionProps {
 
 // Article Card Wrapper Component
 const ArticleCardWrapper = ({ article }: { article: Article }) => {
-  const image = typeof article.image === 'object' && article.image !== null ? article.image : null
-  const imageUrl = image?.url || ''
+  const imageUrl = typeof article.image === 'string'
+    ? article.image
+    : (typeof article.image === 'object' && article.image !== null ? article.image.url || '' : '')
   const tags = article.tags?.map(t => t.tag).filter(Boolean) || []
 
   // Map type to URL path

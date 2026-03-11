@@ -1,26 +1,22 @@
-import { getPayload } from 'payload'
 import React from 'react'
-import config from '@/payload.config'
-import { renderBlocks } from '@/utils/renderBlocks'
-import { getSeoMetadata } from '@/utils/getSeoMetadata'
-import type { Page as PageType } from '@/payload-types'
 import type { Metadata } from 'next'
+import { renderBlocks } from '@/utils/renderBlocks'
+import type { Page as PageType } from '@/payload-types'
+import { getSeoMetadata } from '@/utils/getSeoMetadata'
+import { cachedFind } from '@/utils/payload-cache'
 
 // force-dynamic: skip build-time prerender (no DB during Docker build)
 // Data is still cached at the query layer via unstable_cache in payload-cache.ts
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const payload = await getPayload({ config })
-
-  const { docs } = await payload.find({
-    collection: 'pages',
+  const { docs } = await cachedFind<PageType>('pages', {
     where: { slug: { equals: 'home' } },
     depth: 1,
     limit: 1,
   })
 
-  const page = docs[0] as PageType | undefined
+  const page = docs[0]
 
   return getSeoMetadata({
     path: '/',
@@ -30,21 +26,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const payload = await getPayload({ config })
-
-  // Fetch the page with slug 'home' or the first page if no slug matches
-  const { docs } = await payload.find({
-    collection: 'pages',
-    where: {
-      slug: {
-        equals: 'home',
-      },
-    },
-    depth: 1,
+  const { docs } = await cachedFind<PageType>('pages', {
+    where: { slug: { equals: 'home' } },
+    depth: 2,
     limit: 1,
   })
 
-  const page = docs[0] as PageType | undefined
+  const page = docs[0]
 
   if (!page) {
     return (
@@ -54,7 +42,7 @@ export default async function HomePage() {
     )
   }
 
-  const blocks = await renderBlocks(page.blocks, payload)
+  const blocks = await renderBlocks(page.blocks)
 
   return <div>{blocks}</div>
 }

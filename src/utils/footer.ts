@@ -1,7 +1,8 @@
-import { getPayload } from 'payload'
-import config from '@/payload.config'
 import type { Footer as FooterType } from '@/payload-types'
 import { resolveLink, getConstantLinksMap, type ResolvedLink, type LinkData } from './linkResolver'
+import { unstable_cache } from 'next/cache'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
 
 export type FooterLink = ResolvedLink & { label: string }
 
@@ -53,7 +54,7 @@ function resolveFooterLink(link: {
   }
 }
 
-export async function getFooterData(): Promise<FooterData> {
+export const getFooterData = unstable_cache(async (): Promise<FooterData> => {
   const payload = await getPayload({ config })
 
   let footer: FooterType | null = null
@@ -63,7 +64,11 @@ export async function getFooterData(): Promise<FooterData> {
     console.error('Error fetching footer:', error)
   }
 
-  const constantLinksMap = await getConstantLinksMap(payload)
+  let constantLinksGlobal: any = null
+  try {
+    constantLinksGlobal = await payload.findGlobal({ slug: 'constantLinks', depth: 1 })
+  } catch {}
+  const constantLinksMap = await getConstantLinksMap(constantLinksGlobal)
 
   const navigationColumns: FooterLink[][] =
     footer?.navigationColumns?.map((column) =>
@@ -96,4 +101,4 @@ export async function getFooterData(): Promise<FooterData> {
       policyLinks,
     },
   }
-}
+}, ['footer-data'], { revalidate: 300 })

@@ -1,6 +1,5 @@
-import { getPayload } from 'payload'
+import { cachedFind } from '@/utils/payload-cache'
 import { notFound } from 'next/navigation'
-import config from '@/payload.config'
 import type { Metadata } from 'next'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
@@ -13,6 +12,8 @@ type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
 // ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
 export const revalidate = 60
+export const dynamicParams = true
+export async function generateStaticParams() { return [] }
 
 interface BlogPageProps {
   params: Promise<{ slug: string }>
@@ -26,18 +27,15 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
 export default async function BlogPage({ params }: BlogPageProps) {
   const { slug } = await params
 
-  const payload = await getPayload({ config })
-
   // Extract the actual slug (remove type prefix if present)
   // Slugs in DB are stored without type prefix (e.g., "my-title" not "article/my-title")
-  const actualSlug = slug.includes('/') 
+  const actualSlug = slug.includes('/')
     ? slug.split('/').slice(1).join('/') // Remove first segment (type prefix)
     : slug
 
   // Fetch the blog by slug
   // Use depth 3 to ensure uploads in Lexical content are fully populated
-  const { docs } = await payload.find({
-    collection: 'blogs',
+  const { docs } = await cachedFind('blogs', {
     where: {
       slug: {
         equals: actualSlug,
@@ -63,8 +61,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
     const relatedIds = blog.relatedArticles.map((rel: string | Blog) =>
       typeof rel === 'object' && rel !== null ? rel.id : rel
     )
-    const { docs: relatedDocs } = await payload.find({
-      collection: 'blogs',
+    const { docs: relatedDocs } = await cachedFind('blogs', {
       where: {
         and: [
           {
@@ -88,8 +85,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
     const categoryIds = blog.categories.map((cat: string | { id: string }) =>
       typeof cat === 'object' && cat !== null ? cat.id : cat
     )
-    const { docs: relatedDocs } = await payload.find({
-      collection: 'blogs',
+    const { docs: relatedDocs } = await cachedFind('blogs', {
       where: {
         and: [
           {

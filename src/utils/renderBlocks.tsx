@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import type { Page } from '@/payload-types'
-import type { Payload } from 'payload'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import FlippedM from '@/components/FlippedM/FlippedM'
 import PayloadContainer from '@/components/Container/PayloadContainer'
@@ -53,6 +52,8 @@ import {
   getCachedBlogHighlights,
   getCachedAvailableJobSets,
   getCachedOfficeLocationSets,
+  getCachedConstantLinks,
+  cachedFind,
 } from '@/utils/payload-cache'
 
 // Type for any block from a Page (also compatible with Container blocks)
@@ -102,7 +103,6 @@ export interface RenderBlocksOptions {
 export async function renderBlock(
   block: PageBlock,
   index: number,
-  payload?: Payload,
   options?: RenderBlocksOptions
 ): Promise<React.ReactNode> {
   if (block.blockType === 'hero') {
@@ -120,7 +120,7 @@ export async function renderBlock(
     return <FlippedM key={index} block={strippedBlock as typeof block} />
   }
   if (block.blockType === 'container') {
-    return <PayloadContainer key={index} block={block} payload={payload} options={options} />
+    return <PayloadContainer key={index} block={block} options={options} />
   }
   if (block.blockType === 'cardSection') {
     return <CardSection key={index} block={block} />
@@ -607,7 +607,7 @@ export async function renderBlock(
     )
   }
   if (block.blockType === 'agentDirectory') {
-    return <AgentDirectory key={index} block={block} />
+    return <Suspense key={index} fallback={null}><AgentDirectory block={block} /></Suspense>
   }
   if (block.blockType === 'agentsByCategory') {
     // Fetch agent categories from global
@@ -638,46 +638,44 @@ export async function renderBlock(
     let heading = 'Expertise That Moves Markets'
     let description = 'Our agents specialize in everything from raw land and infill redevelopment to national net-lease portfolios.'
 
-    if (payload) {
-      try {
-        const global = await getCachedAgentCategories()
+    try {
+      const global = await getCachedAgentCategories()
 
-        if (global?.heading) {
-          heading = global.heading
-        }
-        if (global?.description) {
-          description = global.description
-        }
+      if (global?.heading) {
+        heading = global.heading
+      }
+      if (global?.description) {
+        description = global.description
+      }
 
-        if (global?.categories && Array.isArray(global.categories)) {
-          // Fetch agents for each category's specialty in parallel
-          categories = await Promise.all(
-            global.categories.map(async (cat: any, catIndex: number) => {
-              const specialtyId = typeof cat.specialty === 'object' ? cat.specialty?.id : cat.specialty
-              let agents: MappedAgent[] = []
+      if (global?.categories && Array.isArray(global.categories)) {
+        // Fetch agents for each category's specialty in parallel
+        categories = await Promise.all(
+          global.categories.map(async (cat: any, catIndex: number) => {
+            const specialtyId = typeof cat.specialty === 'object' ? cat.specialty?.id : cat.specialty
+            let agents: MappedAgent[] = []
 
-              if (specialtyId) {
-                const { docs: agentDocs } = await payload.find({
-                  collection: 'agents',
-                  where: {
-                    specialties: { contains: specialtyId },
-                  },
-                  limit: 50,
-                  depth: 1,
-                  select: {
-                    fullName: true,
-                    firstName: true,
-                    lastName: true,
-                    displayTitle: true,
-                    cardImage: true,
-                    specialties: true,
-                    servingLocations: true,
-                    email: true,
-                    phone: true,
-                    linkedin: true,
-                    slug: true,
-                  },
-                })
+            if (specialtyId) {
+              const { docs: agentDocs } = await cachedFind('agents', {
+                where: {
+                  specialties: { contains: specialtyId },
+                },
+                limit: 50,
+                depth: 1,
+                select: {
+                  fullName: true,
+                  firstName: true,
+                  lastName: true,
+                  displayTitle: true,
+                  cardImage: true,
+                  specialties: true,
+                  servingLocations: true,
+                  email: true,
+                  phone: true,
+                  linkedin: true,
+                  slug: true,
+                },
+              })
 
                 agents = agentDocs.map((agent: any) => {
                   const specialties = (agent.specialties || [])
@@ -724,7 +722,6 @@ export async function renderBlock(
       } catch (error) {
         console.error('[renderBlocks] Error fetching agent categories:', error)
       }
-    }
 
     return <AgentsByCategory key={index} block={{ ...block, categories, heading, description } as any} />
   }
@@ -738,64 +735,33 @@ export async function renderBlock(
     return <Footer key={index} />
   }
   if (block.blockType === 'blogHighlightsBlock') {
-    // Fetch BlogHighlights global config and initial data
-    if (!payload) {
-      console.warn('[renderBlocks] BlogHighlightsBlock requires payload instance')
-      return null
-    }
-
     try {
       // Fetch the BlogHighlights global config (cached) and initial data in parallel
       const [blogHighlightsConfig, blogsResponse, categoriesResponse, authorsResponse, allBlogsForYears] = await Promise.all([
         getCachedBlogHighlights(),
-        payload.find({
-          collection: 'blogs',
-          limit: 10,
-          sort: '-createdAt',
-          depth: 1,
-        }),
-        payload.find({
-          collection: 'blog-categories',
-          limit: 100,
-          depth: 0,
-        }),
-        payload.find({
-          collection: 'users',
-          limit: 100,
-          depth: 0,
-          select: { firstName: true, lastName: true, email: true },
-        }),
-        // Only fetch createdAt to extract years — no need for full blog objects
-        payload.find({
-          collection: 'blogs',
-          limit: 1000,
-          depth: 0,
-          select: { createdAt: true },
-        }),
+        cachedFind('blogs', { limit: 10, sort: '-createdAt', depth: 1 }),
+        cachedFind('blog-categories', { limit: 100, depth: 0 }),
+        cachedFind('users', { limit: 100, depth: 0, select: { firstName: true, lastName: true, email: true } }),
+        cachedFind('blogs', { limit: 1000, depth: 0, select: { createdAt: true } }),
       ])
 
       // Use postsPerPage from config if different from default
       const postsPerPage = blogHighlightsConfig.exploreByCategory?.postsPerPage || 10
       let blogs = blogsResponse
       if (postsPerPage !== 10) {
-        blogs = await payload.find({
-          collection: 'blogs',
-          limit: postsPerPage,
-          sort: '-createdAt',
-          depth: 1,
-        })
+        blogs = await cachedFind('blogs', { limit: postsPerPage, sort: '-createdAt', depth: 1 })
       }
 
       const years = Array.from(
         new Set(
           allBlogsForYears.docs
-            .map((blog) => {
+            .map((blog: any) => {
               const date = blog.createdAt
               return date ? new Date(date).getFullYear() : null
             })
-            .filter((year): year is number => year !== null)
+            .filter((year: any): year is number => year !== null)
         )
-      ).sort((a, b) => b - a)
+      ).sort((a, b) => (b as number) - (a as number)) as number[]
 
       // Strip blog objects to only fields used by BlogCard to reduce serialized HTML.
       // Full Blog objects include heavy Lexical content, relatedArticles, meta/SEO, etc.
@@ -829,14 +795,15 @@ export async function renderBlock(
       }
 
       return (
-        <BlogHighlightsBlock
-          key={index}
-          config={strippedConfig as any}
-          initialBlogs={blogs.docs.map(stripBlog) as any}
-          allCategories={categoriesResponse.docs as any}
-          authors={authorsResponse.docs as any}
-          years={years}
-        />
+        <Suspense key={index} fallback={null}>
+          <BlogHighlightsBlock
+            config={strippedConfig as any}
+            initialBlogs={blogs.docs.map(stripBlog) as any}
+            allCategories={categoriesResponse.docs as any}
+            authors={authorsResponse.docs as any}
+            years={years}
+          />
+        </Suspense>
       )
     } catch (error) {
       console.error('[renderBlocks] Error fetching BlogHighlights data:', error)
@@ -984,7 +951,6 @@ export async function renderBlock(
  */
 export async function renderBlocks(
   blocks: Page['blocks'] | null | undefined,
-  payload?: Payload,
   options?: RenderBlocksOptions
 ): Promise<React.ReactNode[]> {
   if (!blocks || !Array.isArray(blocks)) {
@@ -1019,9 +985,10 @@ export async function renderBlocks(
 
   // Fetch constant links if not already provided
   let constantLinksMap = options?.constantLinksMap
-  if (!constantLinksMap && payload) {
+  if (!constantLinksMap) {
     try {
-      constantLinksMap = await getConstantLinksMap(payload)
+      const constantLinksGlobal = await getCachedConstantLinks()
+      constantLinksMap = await getConstantLinksMap(constantLinksGlobal)
       // Cache it globally so resolveLinkUrl can use it automatically
       setCachedConstantLinksMap(constantLinksMap)
       // Add to resolved options for nested calls
@@ -1041,7 +1008,7 @@ export async function renderBlocks(
 
   // Render all blocks in parallel
   const renderedBlocks = await Promise.all(
-    blocks.map((block, index) => renderBlock(block, index, payload, resolvedOptions))
+    blocks.map((block, index) => renderBlock(block, index, resolvedOptions))
   )
 
   // Wrap blocks with spacing

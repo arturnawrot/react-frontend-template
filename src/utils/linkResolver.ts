@@ -1,5 +1,4 @@
 import { getPageUrl } from './getPageUrl'
-import type { Payload } from 'payload'
 
 /**
  * Resolved link properties for rendering
@@ -43,16 +42,9 @@ export function getCachedConstantLinksMap(): ConstantLinksMap | null {
  * Fetches constant links from the global and returns a map of key -> ResolvedLink
  * Can be used in server components to pre-fetch constant links
  */
-export async function getConstantLinksMap(payload?: Payload): Promise<ConstantLinksMap> {
-  if (!payload) {
-    return new Map()
-  }
-
+export async function getConstantLinksMap(global?: any): Promise<ConstantLinksMap> {
   try {
-    const global = await payload.findGlobal({
-      slug: 'constantLinks',
-      depth: 1, // Populate page relationships
-    })
+    if (!global) return new Map()
 
     if (!global?.links || !Array.isArray(global.links)) {
       return new Map()

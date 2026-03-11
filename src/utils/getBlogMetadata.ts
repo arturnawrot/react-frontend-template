@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
 import type { Blog, Media, User, BlogCategory } from '@/payload-types'
 import { getSeoMetadata } from './getSeoMetadata'
+import { cachedFind } from '@/utils/payload-cache'
 
 /**
  * Shared metadata generator for blog routes (article, market-report, investment-spotlight).
@@ -14,9 +13,7 @@ export async function getBlogMetadata(fullSlug: string): Promise<Metadata> {
     ? fullSlug.split('/').slice(1).join('/')
     : fullSlug
 
-  const payload = await getPayload({ config })
-  const { docs } = await payload.find({
-    collection: 'blogs',
+  const { docs } = await cachedFind<Blog>('blogs', {
     where: { slug: { equals: actualSlug } },
     depth: 1,
     limit: 1,

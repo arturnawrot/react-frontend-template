@@ -1,7 +1,5 @@
-import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
-import config from '@/payload.config'
 import type { Metadata } from 'next'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import type { Job } from '@/payload-types'
@@ -15,9 +13,12 @@ import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 import Container from '@/components/Container/Container'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
+import { cachedFind, getCachedAgentIconsSets } from '@/utils/payload-cache'
 
 // ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
 export const revalidate = 60
+export const dynamicParams = true
+export async function generateStaticParams() { return [] }
 
 interface JobPageProps {
   params: Promise<{ slug: string }>
@@ -30,10 +31,7 @@ const formatEmploymentTypeLabel = (type: string | undefined) => {
 
 export async function generateMetadata({ params }: JobPageProps): Promise<Metadata> {
   const { slug } = await params
-  const payload = await getPayload({ config })
-
-  const { docs } = await payload.find({
-    collection: 'jobs',
+  const { docs } = await cachedFind<Job>('jobs', {
     where: { slug: { equals: slug } },
     depth: 0,
     limit: 1,
@@ -63,11 +61,8 @@ export async function generateMetadata({ params }: JobPageProps): Promise<Metada
 export default async function JobPage({ params }: JobPageProps) {
   const { slug } = await params
 
-  const payload = await getPayload({ config })
-
   // Fetch the job by slug
-  const { docs } = await payload.find({
-    collection: 'jobs',
+  const { docs } = await cachedFind<Job>('jobs', {
     where: {
       slug: {
         equals: slug,
@@ -94,10 +89,7 @@ export default async function JobPage({ params }: JobPageProps) {
   }> = []
 
   try {
-    const global = await payload.findGlobal({
-      slug: 'agentIconsSets',
-      depth: 2,
-    })
+    const global = await getCachedAgentIconsSets()
 
     if (global?.sets && Array.isArray(global.sets)) {
       const set = (global.sets as Array<{ name: string; agents?: any[] }>).find((s) => s.name === 'default')

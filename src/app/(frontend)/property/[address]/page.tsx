@@ -1,7 +1,5 @@
-import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
-import config from '@/payload.config'
 import type { Metadata } from 'next'
 import PropertyDetails from '@/components/PropertyDetails/PropertyDetails'
 import Footer from '@/components/Footer/Footer'
@@ -14,9 +12,12 @@ import { getSeoMetadata } from '@/utils/getSeoMetadata'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getPropertyTypeLabel } from '@/utils/property-types'
 import Container from '@/components/Container/Container'
+import { cachedFind } from '@/utils/payload-cache'
 
 // ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
 export const revalidate = 60
+export const dynamicParams = true
+export async function generateStaticParams() { return [] }
 
 interface PropertyPageProps {
   params: Promise<{ address: string }>
@@ -101,7 +102,6 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
   )
 
   // Look up agent data for each broker from Agents collection
-  const payload = await getPayload({ config })
   const brokerIdToAgentSlug: Record<number, string> = {}
   const brokerIdToAgentData: Record<number, {
     slug?: string
@@ -112,11 +112,10 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     fullName?: string
     displayTitle?: string | null
   }> = {}
-  
+
   for (const broker of propertyBrokers) {
     try {
-      const { docs } = await payload.find({
-        collection: 'agents',
+      const { docs } = await cachedFind('agents', {
         where: {
           buildout_broker_id: {
             equals: String(broker.id),
@@ -193,8 +192,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
   // Fetch CustomHtml for property page contact form
   let customContactForm: { html: string } | null = null
   try {
-    const { docs } = await payload.find({
-      collection: 'custom-html',
+    const { docs } = await cachedFind('custom-html', {
       where: {
         name: {
           equals: 'property-page-contact-form',

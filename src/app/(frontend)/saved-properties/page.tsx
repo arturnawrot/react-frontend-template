@@ -1,6 +1,5 @@
-import { getPayload } from 'payload'
 import React, { Suspense } from 'react'
-import config from '@/payload.config'
+import { cachedFind } from '@/utils/payload-cache'
 import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
 import PropertySearchAdvanced from '@/components/PropertySearchAdvanced/PropertySearchAdvanced'
@@ -12,11 +11,8 @@ import Footer from '@/components/Footer/Footer'
 export const dynamic = 'force-dynamic'
 
 export default async function SavedPropertiesPage() {
-  const payload = await getPayload({ config })
-
   // Fetch the page with slug 'saved-properties' if it exists, otherwise use default
-  const { docs } = await payload.find({
-    collection: 'pages',
+  const { docs } = await cachedFind('pages', {
     where: {
       slug: {
         equals: 'saved-properties',
@@ -30,7 +26,7 @@ export default async function SavedPropertiesPage() {
 
   // If page exists, render it with blocks, otherwise use default layout
   if (page && page.blocks && page.blocks.length > 0) {
-    const blocks = await renderBlocks(page.blocks, payload)
+    const blocks = await renderBlocks(page.blocks)
     return <div>{blocks}</div>
   }
 

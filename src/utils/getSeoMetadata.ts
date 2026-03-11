@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import type { Media, PageSeo } from '@/payload-types'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
+import { cachedFind } from '@/utils/payload-cache'
 
 export interface SeoData {
   title?: string | null
@@ -56,9 +55,7 @@ export async function getSeoMetadata(options: GetSeoMetadataOptions = {}): Promi
   // 1. Check PageSEO collection for exact path match (static entries)
   if (path) {
     try {
-      const payload = await getPayload({ config })
-      const { docs } = await payload.find({
-        collection: 'page-seo',
+      const { docs } = await cachedFind<PageSeo>('page-seo', {
         where: {
           and: [
             { pageType: { equals: 'static' } },
@@ -91,9 +88,7 @@ export async function getSeoMetadata(options: GetSeoMetadataOptions = {}): Promi
   // 3. Fall back to dynamic page type template if no document meta
   if (!seoData && pageType) {
     try {
-      const payload = await getPayload({ config })
-      const { docs } = await payload.find({
-        collection: 'page-seo',
+      const { docs } = await cachedFind<PageSeo>('page-seo', {
         where: { pageType: { equals: pageType } },
         limit: 1,
         depth: 1,
