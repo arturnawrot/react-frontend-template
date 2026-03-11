@@ -592,6 +592,9 @@ const CenteredLayout = (
         video.removeEventListener('loadeddata', handleLoadedData)
         video.removeEventListener('canplaythrough', handleCanPlayThrough)
         video.removeEventListener('error', handleError)
+        video.pause()
+        video.src = ''
+        video.load()
       }
     }
   }, [isFullWidthColor, backgroundVideoUrl, videoError])
@@ -627,7 +630,7 @@ const CenteredLayout = (
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="none"
             aria-hidden="true"
           >
             <source src={backgroundVideoUrl} type="video/mp4" />

@@ -42,10 +42,12 @@ export default function ComingSoon({ block }: ComingSoonProps) {
     <div className={styles.container}>
       {/* Logo */}
       <div className={styles.logoContainer}>
-        <img 
-          src="/img/single-m-green-logo.png" 
-          alt="Meybohm" 
+        <img
+          src="/img/single-m-green-logo.png"
+          alt="Meybohm"
           className={styles.logo}
+          loading="lazy"
+          fetchPriority="low"
         />
       </div>
 
