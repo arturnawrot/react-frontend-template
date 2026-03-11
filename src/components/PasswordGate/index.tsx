@@ -14,15 +14,26 @@ interface SiteLockSettings {
 interface PasswordGateProps {
   children: React.ReactNode
   siteLockSettings: SiteLockSettings | null
-  isUnlocked: boolean
 }
 
-export function PasswordGate({ children, siteLockSettings, isUnlocked }: PasswordGateProps) {
+function getCookie(name: string): string | undefined {
+  if (typeof document === 'undefined') return undefined
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+  return match ? decodeURIComponent(match[2]) : undefined
+}
+
+export function PasswordGate({ children, siteLockSettings }: PasswordGateProps) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isUnlocked, setIsUnlocked] = useState(true) // default true to avoid flash
   const pathname = usePathname()
   const router = useRouter()
+
+  // Read cookie client-side on mount
+  React.useEffect(() => {
+    setIsUnlocked(getCookie('meybohm_site_unlocked') === 'true')
+  }, [])
 
   // Check if current path is excluded
   const isPathExcluded = () => {
@@ -63,8 +74,8 @@ export function PasswordGate({ children, siteLockSettings, isUnlocked }: Passwor
       const data = await response.json()
 
       if (data.success) {
-        // Refresh the page to pick up the new cookie server-side
-        router.refresh()
+        // Cookie is now set, update state to show content
+        setIsUnlocked(true)
       } else {
         setError(data.error || 'Incorrect password. Please try again.')
         setPassword('')

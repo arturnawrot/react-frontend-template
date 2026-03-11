@@ -6,8 +6,9 @@ import DarkNavbar from '@/components/Navbar/DarkNavbar'
 import CTAFooter from '@/components/CTAFooter/CTAFooter'
 import Footer from '@/components/Footer/Footer'
 
-// ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
-export const revalidate = 60
+// force-dynamic: skip build-time prerender (no DB during Docker build)
+// Data is still cached at the query layer via unstable_cache in payload-cache.ts
+export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'All Content | Meybohm Commercial',
@@ -38,7 +39,7 @@ export default async function AllContentPage() {
     displayedCategories = (blogHighlightsConfig.exploreByCategory?.displayedCategories || []).filter(
       (cat): cat is BlogCategory => typeof cat !== 'string'
     )
-  } catch (error) {
+  } catch {
     // BlogHighlights global might not exist yet
     console.warn('BlogHighlights global not found, using empty displayed categories')
   }

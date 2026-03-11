@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       // Set HTTP-only cookie
       const cookieStore = await cookies()
       cookieStore.set(COOKIE_NAME, 'true', {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         maxAge: COOKIE_MAX_AGE,

@@ -5,7 +5,6 @@ import { HashNavigation } from '@/components/HashNavigation'
 import { PasswordGate } from '@/components/PasswordGate'
 import { HeadScripts, HeadTags, BodyScripts } from '@/components/ScriptInjection'
 
-import { cookies } from 'next/headers'
 import type { ScriptInjection } from '@/payload-types'
 import { getCachedSiteLock, getCachedScriptInjection } from '@/utils/payload-cache'
 
@@ -16,10 +15,6 @@ export const metadata = {
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
-
-  // Check if user is unlocked via HTTP-only cookie
-  const cookieStore = await cookies()
-  const isUnlocked = cookieStore.get('meybohm_site_unlocked')?.value === 'true'
 
   // Fetch site lock settings (excluding password - never sent to client)
   let siteLockSettings: {
@@ -99,7 +94,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
           (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
         `}</Script>
         <HashNavigation />
-        <PasswordGate siteLockSettings={siteLockSettings} isUnlocked={isUnlocked}>
+        <PasswordGate siteLockSettings={siteLockSettings}>
           <main>{children}</main>
         </PasswordGate>
         {/* Custom body end scripts from CMS */}

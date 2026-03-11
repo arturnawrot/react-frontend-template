@@ -71,6 +71,9 @@ export default buildConfig({
   },
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
+    connectOptions: {
+      serverSelectionTimeoutMS: 5000,
+    },
   }),
   sharp,
   plugins: [

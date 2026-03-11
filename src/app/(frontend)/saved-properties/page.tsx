@@ -1,5 +1,5 @@
 import { getPayload } from 'payload'
-import React from 'react'
+import React, { Suspense } from 'react'
 import config from '@/payload.config'
 import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
@@ -7,12 +7,13 @@ import PropertySearchAdvanced from '@/components/PropertySearchAdvanced/Property
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import Footer from '@/components/Footer/Footer'
 
-// ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
-export const revalidate = 60
+// force-dynamic: skip build-time prerender (no DB during Docker build)
+// Data is still cached at the query layer via unstable_cache in payload-cache.ts
+export const dynamic = 'force-dynamic'
 
 export default async function SavedPropertiesPage() {
   const payload = await getPayload({ config })
-  
+
   // Fetch the page with slug 'saved-properties' if it exists, otherwise use default
   const { docs } = await payload.find({
     collection: 'pages',
@@ -63,14 +64,15 @@ export default async function SavedPropertiesPage() {
       <HeroWrapper block={defaultHeroBlock} />
 
       {/* PropertySearchAdvanced with saved properties mode and no map */}
-      <PropertySearchAdvanced 
-        backgroundColor="var(--strong-green)"
-        savedPropertiesMode={true}
-        hideMap={true}
-      />
+      <Suspense>
+        <PropertySearchAdvanced
+          backgroundColor="var(--strong-green)"
+          savedPropertiesMode={true}
+          hideMap={true}
+        />
+      </Suspense>
 
       <Footer />
     </div>
   )
 }
-

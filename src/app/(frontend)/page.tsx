@@ -6,12 +6,13 @@ import { getSeoMetadata } from '@/utils/getSeoMetadata'
 import type { Page as PageType } from '@/payload-types'
 import type { Metadata } from 'next'
 
-// ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
-export const revalidate = 60
+// force-dynamic: skip build-time prerender (no DB during Docker build)
+// Data is still cached at the query layer via unstable_cache in payload-cache.ts
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   const payload = await getPayload({ config })
-  
+
   const { docs } = await payload.find({
     collection: 'pages',
     where: { slug: { equals: 'home' } },
@@ -30,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const payload = await getPayload({ config })
-  
+
   // Fetch the page with slug 'home' or the first page if no slug matches
   const { docs } = await payload.find({
     collection: 'pages',
