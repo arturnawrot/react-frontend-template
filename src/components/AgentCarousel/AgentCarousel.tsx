@@ -30,8 +30,9 @@ interface AgentCarouselProps {
 
 // Agent Card Component
 const AgentCard = ({ agent }: { agent: Agent }) => {
-  const image = typeof agent.image === 'object' && agent.image !== null ? agent.image : null
-  const imageUrl = image?.url || ''
+  const imageUrl = typeof agent.image === 'string'
+    ? agent.image
+    : (typeof agent.image === 'object' && agent.image !== null ? agent.image.url || '' : '')
   const agentSlug = agent.slug
   const agentHref = agentSlug ? `/agents/${agentSlug}` : '#'
 
