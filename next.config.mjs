@@ -3,6 +3,16 @@ import { withPayload } from '@payloadcms/next/withPayload'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  async redirects() {
+    return [
+      {
+        source: '/Property-Search',
+        destination: '/api/legacy-property-redirect?propertyId=:propertyId',
+        permanent: false,
+        has: [{ type: 'query', key: 'propertyId' }],
+      },
+    ]
+  },
   devIndicators: false,
   // Exclude non-payloadcms-version from build
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],

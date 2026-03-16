@@ -1097,12 +1097,13 @@ class BuildoutApiClient {
       if (cached) return cached
     }
 
-    const data = await fetchFromBuildout<BuildoutProperty>(`/properties/${id}.json`)
-    
+    const data = await fetchFromBuildout<{ property: BuildoutProperty }>(`/properties/${id}.json`)
+    const property = data.property
+
     // Save to Redis cache
-    await setRedisCache(cacheKey, data)
-    
-    return data
+    await setRedisCache(cacheKey, property)
+
+    return property
   }
 }
 
