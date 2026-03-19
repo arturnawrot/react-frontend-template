@@ -394,7 +394,7 @@ const INACTIVE_DEAL_STATUSES = [DealStatus.Inactive, DealStatus.UnderContract, D
  * Check if a property is active (not inactive, under contract, or closed)
  */
 export function isPropertyActive(property: BuildoutProperty): boolean {
-  return !INACTIVE_DEAL_STATUSES.includes(property.sale_deal_status_id)
+  return !INACTIVE_DEAL_STATUSES.includes(property.sale_deal_status_id) || property.lease_deal_status_ids.some(id => !INACTIVE_DEAL_STATUSES.includes(id))
 }
 
 /**
