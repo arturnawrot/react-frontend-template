@@ -8,7 +8,7 @@ import {
   Maximize2,
 } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
+// Images loaded directly from source (no Next.js proxy)
 import dynamic from 'next/dynamic'
 import Arrow from '../Arrow/Arrow'
 import CopyableContactLink from '../CopyableContactLink'
@@ -68,7 +68,7 @@ const AgentCard = ({
   return (
     <div className="flex gap-4 mb-6">
       <div className="w-24 h-24 bg-gray-300 rounded-sm flex-shrink-0 overflow-hidden relative">
-        {image && <Image src={image} alt={name} fill className="object-cover" sizes="96px" />}
+        {image && <img src={image} alt={name} className="absolute inset-0 w-full h-full object-cover" />}
       </div>
       
       <div className="flex flex-col justify-start">
@@ -146,10 +146,6 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   useEffect(() => {
     if (images.length <= 1) return
     let cancelled = false
-    const vw = window.innerWidth
-    const cssWidth = vw <= 1024 ? vw : Math.round(vw * 0.66)
-    const deviceSizes = [640, 750, 828, 1080, 1200, 1920, 2048, 3840]
-    const w = deviceSizes.find(s => s >= cssWidth) || 3840
 
     const loadSequentially = async () => {
       for (let idx = 1; idx < images.length; idx++) {
@@ -158,7 +154,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
           const img = new window.Image()
           img.onload = () => resolve()
           img.onerror = () => resolve()
-          img.src = `/_next/image?url=${encodeURIComponent(images[idx])}&w=${w}&q=75`
+          img.src = images[idx]
         })
       }
     }
@@ -480,12 +476,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
           {/* Main Image */}
           {images.length > 0 && (
             <div className="relative w-full aspect-video bg-gray-200 rounded-sm overflow-hidden mb-4 group cursor-pointer" onClick={openFullscreen}>
-              <Image
+              <img
                 src={images[currentImageIndex]}
                 alt={`Property ${currentImageIndex + 1}`}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 66vw"
+                className="absolute inset-0 w-full h-full object-cover"
               />
               {/* Overlays */}
               <div className="absolute top-4 left-4 flex gap-2 z-10">
@@ -583,13 +577,11 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
                   }`}
                   style={{ width: 'calc(25% - 12px)', minWidth: '120px', pointerEvents: isDragging ? 'none' : 'auto' }}
                 >
-                  <Image 
-                    src={img} 
-                    alt={`Thumbnail ${idx + 1}`} 
-                    fill
-                    className="object-cover pointer-events-none"
+                  <img
+                    src={img}
+                    alt={`Thumbnail ${idx + 1}`}
+                    className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                     draggable={false}
-                    sizes="(max-width: 1024px) 25vw, 16vw"
                   />
                 </div>
               ))}
@@ -881,15 +873,13 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
                 }
               }}
             >
-              <Image
+              <img
                 key={currentImageIndex}
                 src={images[currentImageIndex]}
                 alt={`Property ${currentImageIndex + 1}`}
-                fill
-                className={`object-contain transition-opacity duration-[50ms] ${
+                className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-[50ms] ${
                   imageTransition ? 'opacity-0' : 'opacity-100'
                 }`}
-                sizes="100vw"
               />
             </div>
           </div>
@@ -951,7 +941,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
                     currentImageIndex === idx ? 'ring-2 ring-white' : 'opacity-60'
                   }`}
                 >
-                  <Image src={img} alt={`Thumbnail ${idx + 1}`} fill className="object-cover" sizes="80px" />
+                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" />
                 </div>
               ))}
             </div>
