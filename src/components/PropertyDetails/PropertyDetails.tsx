@@ -196,21 +196,13 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   // Navigation handlers with smooth transition
   const handlePreviousImage = useCallback(() => {
     if (images.length > 0) {
-      setImageTransition(true)
-      setTimeout(() => {
-        setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
-        setTimeout(() => setImageTransition(false), 50)
-      }, 150)
+      setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
     }
   }, [images.length])
 
   const handleNextImage = useCallback(() => {
     if (images.length > 0) {
-      setImageTransition(true)
-      setTimeout(() => {
-        setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
-        setTimeout(() => setImageTransition(false), 50)
-      }, 150)
+      setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
     }
   }, [images.length])
 
@@ -463,14 +455,20 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
           {/* Main Image */}
           {images.length > 0 && (
             <div className="relative w-full aspect-video bg-gray-200 rounded-sm overflow-hidden mb-4 group cursor-pointer" onClick={openFullscreen}>
-              <Image 
-                src={images[currentImageIndex]} 
-                alt={`Property ${currentImageIndex + 1}`} 
+              <Image
+                src={images[currentImageIndex]}
+                alt={`Property ${currentImageIndex + 1}`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 66vw"
               />
-              
+              {/* Preload all other images so navigation is instant */}
+              {images.map((src, idx) =>
+                idx !== currentImageIndex ? (
+                  <link key={idx} rel="preload" as="image" href={src} />
+                ) : null
+              )}
+
               {/* Overlays */}
               <div className="absolute top-4 left-4 flex gap-2 z-10">
                 {property.sale && property.sale_listing_published && (
@@ -831,18 +829,46 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
           </div>
 
           {/* Main Image */}
-          <div 
+          <div
             className="relative w-full h-full flex items-center justify-center px-8 pt-8"
             style={{ paddingBottom: '140px' }}
-            onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative w-full h-full max-w-[90vw] max-h-[calc(100vh-140px)]">
-              <Image 
+            <div
+              className="relative w-full h-full max-w-[90vw] max-h-[calc(100vh-140px)]"
+              onClick={(e) => {
+                // Calculate the visible image bounds within the object-contain container
+                const container = e.currentTarget
+                const rect = container.getBoundingClientRect()
+                const img = container.querySelector('img')
+                if (img && img.naturalWidth && img.naturalHeight) {
+                  const containerRatio = rect.width / rect.height
+                  const imageRatio = img.naturalWidth / img.naturalHeight
+                  let imgLeft, imgTop, imgWidth, imgHeight
+                  if (imageRatio > containerRatio) {
+                    imgWidth = rect.width
+                    imgHeight = rect.width / imageRatio
+                    imgLeft = rect.left
+                    imgTop = rect.top + (rect.height - imgHeight) / 2
+                  } else {
+                    imgHeight = rect.height
+                    imgWidth = rect.height * imageRatio
+                    imgTop = rect.top
+                    imgLeft = rect.left + (rect.width - imgWidth) / 2
+                  }
+                  const clickX = e.clientX
+                  const clickY = e.clientY
+                  if (clickX >= imgLeft && clickX <= imgLeft + imgWidth && clickY >= imgTop && clickY <= imgTop + imgHeight) {
+                    e.stopPropagation()
+                  }
+                }
+              }}
+            >
+              <Image
                 key={currentImageIndex}
-                src={images[currentImageIndex]} 
-                alt={`Property ${currentImageIndex + 1}`} 
+                src={images[currentImageIndex]}
+                alt={`Property ${currentImageIndex + 1}`}
                 fill
-                className={`object-contain transition-opacity duration-300 ${
+                className={`object-contain transition-opacity duration-[50ms] ${
                   imageTransition ? 'opacity-0' : 'opacity-100'
                 }`}
                 sizes="100vw"

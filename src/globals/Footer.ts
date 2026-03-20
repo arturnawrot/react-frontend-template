@@ -98,6 +98,14 @@ export const Footer: GlobalConfig = {
             description: 'Leave empty to hide LinkedIn icon',
           },
         },
+        {
+          name: 'instagram',
+          type: 'text',
+          label: 'Instagram URL',
+          admin: {
+            description: 'Leave empty to hide Instagram icon',
+          },
+        },
       ],
     },
     {

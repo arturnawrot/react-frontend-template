@@ -8971,6 +8971,10 @@ export interface Footer {
      * Leave empty to hide LinkedIn icon
      */
     linkedin?: string | null;
+    /**
+     * Leave empty to hide Instagram icon
+     */
+    instagram?: string | null;
   };
   bottomBar?: {
     /**
@@ -9971,6 +9975,7 @@ export interface FooterSelect<T extends boolean = true> {
     | {
         facebook?: T;
         linkedin?: T;
+        instagram?: T;
       };
   bottomBar?:
     | T

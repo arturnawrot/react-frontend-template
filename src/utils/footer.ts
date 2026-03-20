@@ -20,6 +20,7 @@ export interface FooterData {
   socialMedia: {
     facebook?: string
     linkedin?: string
+    instagram?: string
   }
   bottomBar: {
     copyrightText: string
@@ -87,6 +88,7 @@ export const getFooterData = unstable_cache(async (): Promise<FooterData> => {
   const socialMedia = {
     facebook: footer?.socialMedia?.facebook || undefined,
     linkedin: footer?.socialMedia?.linkedin || undefined,
+    instagram: footer?.socialMedia?.instagram || undefined,
   }
 
   const policyLinks: FooterLink[] =
