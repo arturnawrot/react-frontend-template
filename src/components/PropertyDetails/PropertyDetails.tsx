@@ -153,7 +153,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
     images.forEach((src, idx) => {
       if (idx === 0) return
       const img = new window.Image()
-      img.src = `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=100`
+      img.src = `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`
     })
   }, [images])
 
