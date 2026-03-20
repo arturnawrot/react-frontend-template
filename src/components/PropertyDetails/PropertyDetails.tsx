@@ -138,23 +138,32 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
 
   // Get property images
   const images = property.photos && property.photos.length > 0
-    ? property.photos.map(photo => photo.formats?.xlarge || photo.url || photo.original_file_url)
+    ? property.photos.map(photo => photo.formats?.large || photo.url || photo.original_file_url)
     : []
 
-  // Preload all gallery images through Next.js image optimization endpoint
-  // Match the exact width the <Image> component will request based on viewport + sizes prop
+  // Preload gallery images sequentially (one by one, in order)
+  // This avoids flooding the network with 500kb+ images all at once
   useEffect(() => {
+    if (images.length <= 1) return
+    let cancelled = false
     const vw = window.innerWidth
-    // Mirror sizes="(max-width: 1024px) 100vw, 66vw"
     const cssWidth = vw <= 1024 ? vw : Math.round(vw * 0.66)
-    // Pick the smallest Next.js deviceSize that covers the CSS width
     const deviceSizes = [640, 750, 828, 1080, 1200, 1920, 2048, 3840]
     const w = deviceSizes.find(s => s >= cssWidth) || 3840
-    images.forEach((src, idx) => {
-      if (idx === 0) return
-      const img = new window.Image()
-      img.src = `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`
-    })
+
+    const loadSequentially = async () => {
+      for (let idx = 1; idx < images.length; idx++) {
+        if (cancelled) return
+        await new Promise<void>((resolve) => {
+          const img = new window.Image()
+          img.onload = () => resolve()
+          img.onerror = () => resolve()
+          img.src = `/_next/image?url=${encodeURIComponent(images[idx])}&w=${w}&q=75`
+        })
+      }
+    }
+    loadSequentially()
+    return () => { cancelled = true }
   }, [images])
 
   // Format address
