@@ -1242,11 +1242,11 @@ export default function PropertySearchAdvanced({
             <div className={`w-full ${hideMap ? '' : 'lg:w-1/2'} flex flex-col`}>
               <div className={`grid grid-cols-1 ${hideMap ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-2'} gap-6`}>
                 {loading ? (
-                  <div className={`col-span-full text-center py-8 text-stone-600`}>Loading properties...</div>
+                  <div className={`col-span-full text-center py-8 ${backgroundColor ? 'text-white' : 'text-stone-600'}`}>Loading properties...</div>
                 ) : error ? (
-                  <div className={`col-span-full text-center py-8 text-red-600`}>{error}</div>
+                  <div className={`col-span-full text-center py-8 ${backgroundColor ? 'text-red-300' : 'text-red-600'}`}>{error}</div>
                 ) : properties.length === 0 ? (
-                  <div className={`col-span-full text-center py-8 text-stone-600`}>
+                  <div className={`col-span-full text-center py-8 ${backgroundColor ? 'text-white' : 'text-stone-600'}`}>
                     {savedPropertiesMode ? 'No saved properties found' : 'No properties found'}
                   </div>
                 ) : (

@@ -414,7 +414,7 @@ export default function PropertySearchInput({ forLeaseOnly = false }: { forLease
                    {/* Search Button */}
                    <button 
                      onClick={() => handleSearch()}
-                     className="mt-4 lg:mt-0 bg-[#CDDC39] hover:bg-[#c3d135] text-[#1C2B28] rounded-full px-6 py-3 lg:py-3.5 flex items-center justify-center gap-2 font-medium transition-transform active:scale-95 shadow-sm min-w-fit"
+                     className="mt-4 lg:mt-0 bg-[#dce676] hover:bg-[#d3dd6a] text-[#1C2B28] rounded-full px-6 py-3 lg:py-3.5 flex items-center justify-center gap-2 font-medium transition-transform active:scale-95 shadow-sm min-w-fit"
                    >
                       Search <Search size={18} strokeWidth={2.5} />
                   </button>
