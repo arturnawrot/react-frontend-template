@@ -137,9 +137,25 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   const clickedThumbnailRef = useRef<number | null>(null)
 
   // Get property images
-  const images = property.photos && property.photos.length > 0 
+  const images = property.photos && property.photos.length > 0
     ? property.photos.map(photo => photo.formats?.xlarge || photo.url || photo.original_file_url)
     : []
+
+  // Preload all gallery images through Next.js image optimization endpoint
+  // Match the exact width the <Image> component will request based on viewport + sizes prop
+  useEffect(() => {
+    const vw = window.innerWidth
+    // Mirror sizes="(max-width: 1024px) 100vw, 66vw"
+    const cssWidth = vw <= 1024 ? vw : Math.round(vw * 0.66)
+    // Pick the smallest Next.js deviceSize that covers the CSS width
+    const deviceSizes = [640, 750, 828, 1080, 1200, 1920, 2048, 3840]
+    const w = deviceSizes.find(s => s >= cssWidth) || 3840
+    images.forEach((src, idx) => {
+      if (idx === 0) return
+      const img = new window.Image()
+      img.src = `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`
+    })
+  }, [images])
 
   // Format address
   const address = property.address || property.name || 'Property'
@@ -462,13 +478,6 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 66vw"
               />
-              {/* Preload all other images so navigation is instant */}
-              {images.map((src, idx) =>
-                idx !== currentImageIndex ? (
-                  <link key={idx} rel="preload" as="image" href={src} />
-                ) : null
-              )}
-
               {/* Overlays */}
               <div className="absolute top-4 left-4 flex gap-2 z-10">
                 {property.sale && property.sale_listing_published && (
