@@ -15,6 +15,7 @@ import type { BuildoutProperty } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
 import { resolvePrefixedLink } from '@/utils/linkResolver'
+import { AgentScheduleHash } from '@/components/AgentScheduleHash'
 import { cachedFind, getCachedFeaturedPropertiesSets, getCachedProvenTrackRecordSets } from '@/utils/payload-cache'
 
 // ISR: cached for 60s then revalidated in background (see PAGE_REVALIDATE_SECONDS in payload-cache.ts)
@@ -424,6 +425,12 @@ export default async function AgentPage({ params }: AgentPageProps) {
 
   return (
     <>
+      {consultationLink?.calLink && (
+        <AgentScheduleHash
+          calLink={consultationLink.calLink}
+          calNamespace={consultationLink.calNamespace}
+        />
+      )}
       <HeroWrapper block={heroBlock} />
       <AboutAgent
         agentFirstName={agent.firstName || 'Agent'}
