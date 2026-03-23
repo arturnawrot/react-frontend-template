@@ -1,10 +1,11 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import React from 'react'
 import type { Metadata } from 'next'
 import { renderBlocks } from '@/utils/renderBlocks'
 import type { Page as PageType } from '@/payload-types'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
 import { cachedFind } from '@/utils/payload-cache'
+import { resolvePropertyRedirect } from '@/utils/legacy-property-redirect'
 
 // ISR: cached for 60s then revalidated in background
 export const revalidate = 60
@@ -19,6 +20,7 @@ export async function generateStaticParams() {
 
 interface PageProps {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -42,7 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   })
 }
 
-export default async function DynamicPage({ params }: PageProps) {
+export default async function DynamicPage({ params, searchParams }: PageProps) {
   const { slug } = await params
 
   const { docs } = await cachedFind<PageType>('pages', {
@@ -54,6 +56,12 @@ export default async function DynamicPage({ params }: PageProps) {
   const page = docs[0]
 
   if (!page) {
+    // Check if this is a legacy property redirect (listing slug or property ID)
+    const sp = await searchParams
+    const propertyId = typeof sp.propertyId === 'string' ? sp.propertyId : undefined
+    const redirectUrl = await resolvePropertyRedirect(slug, propertyId)
+    if (redirectUrl) redirect(redirectUrl)
+
     notFound()
   }
 
