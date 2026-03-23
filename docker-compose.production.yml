@@ -53,6 +53,7 @@ services:
       driver: none
 
   cron:
+    container_name: cron
     image: alpine:3.19
     restart: unless-stopped
     depends_on:
