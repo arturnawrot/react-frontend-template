@@ -20,7 +20,6 @@ export async function generateStaticParams() {
 
 interface PageProps {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -44,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   })
 }
 
-export default async function DynamicPage({ params, searchParams }: PageProps) {
+export default async function DynamicPage({ params }: PageProps) {
   const { slug } = await params
 
   const { docs } = await cachedFind<PageType>('pages', {
@@ -56,10 +55,8 @@ export default async function DynamicPage({ params, searchParams }: PageProps) {
   const page = docs[0]
 
   if (!page) {
-    // Check if this is a legacy property redirect (listing slug or property ID)
-    const sp = await searchParams
-    const propertyId = typeof sp.propertyId === 'string' ? sp.propertyId : undefined
-    const redirectUrl = await resolvePropertyRedirect(slug, propertyId)
+    // Check if this is a legacy property redirect (listing slug)
+    const redirectUrl = await resolvePropertyRedirect(slug)
     if (redirectUrl) redirect(redirectUrl)
 
     notFound()
