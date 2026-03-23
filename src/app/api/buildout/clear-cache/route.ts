@@ -3,7 +3,6 @@ import { buildoutApi } from '@/utils/buildout-api'
 
 export async function POST(_request: Request) {
   try {
-    // Clear the cache
     await buildoutApi.clearCache()
 
     return NextResponse.json({
@@ -12,13 +11,12 @@ export async function POST(_request: Request) {
     })
   } catch (error) {
     console.error('Error clearing Buildout cache:', error)
-    
+
     const errorMessage = error instanceof Error ? error.message : 'An error occurred while clearing cache'
-    
+
     return NextResponse.json(
       { error: errorMessage },
       { status: 500 }
     )
   }
 }
-
