@@ -97,9 +97,18 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
 
   // Get brokers for this property
   const brokers = await buildoutApi.getAllBrokers()
-  const propertyBrokers = brokers.brokers.filter(broker => 
-    property.broker_ids?.includes(broker.id)
-  )
+  const brokerOrder = [
+    property.broker_id,
+    property.second_broker_id,
+    property.third_broker_id,
+  ].filter((id): id is number => id != null)
+  // Append any remaining broker_ids not already in the explicit order
+  for (const id of property.broker_ids ?? []) {
+    if (!brokerOrder.includes(id)) brokerOrder.push(id)
+  }
+  const propertyBrokers = brokers.brokers
+    .filter(broker => property.broker_ids?.includes(broker.id))
+    .sort((a, b) => brokerOrder.indexOf(a.id) - brokerOrder.indexOf(b.id))
 
   // Look up agent data for each broker from Agents collection
   const brokerIdToAgentSlug: Record<number, string> = {}
