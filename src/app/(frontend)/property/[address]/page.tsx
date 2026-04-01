@@ -6,7 +6,7 @@ import Footer from '@/components/Footer/Footer'
 import DarkNavbar from '@/components/Navbar/DarkNavbar'
 import FeaturedProperties from '@/components/FeaturedProperties/FeaturedProperties'
 import { buildoutApi, getNearestProperties, isPropertyActive, getDealStatusLabel } from '@/utils/buildout-api'
-import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
+import type { BuildoutProperty, BuildoutBroker, BuildoutLeaseSpace } from '@/utils/buildout-api'
 import { addressToSlug } from '@/utils/address-slug'
 import { getSeoMetadata } from '@/utils/getSeoMetadata'
 import { transformPropertyToCard } from '@/utils/property-transform'
@@ -160,6 +160,19 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     }
   }
 
+  // Fetch lease spaces for this property
+  let propertyLeaseSpaces: BuildoutLeaseSpace[] = []
+  if (property.lease) {
+    try {
+      const allLeaseSpaces = await buildoutApi.getAllLeaseSpaces()
+      propertyLeaseSpaces = allLeaseSpaces.lease_spaces.filter(
+        (ls) => ls.property_id === property.id
+      )
+    } catch (error) {
+      console.error('Error fetching lease spaces:', error)
+    }
+  }
+
   // Get nearest properties of the same type (with fallback to all types)
   const nearestResult = await getNearestProperties({
     currentProperty: property,
@@ -238,6 +251,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           brokerIdToAgentSlug={brokerIdToAgentSlug}
           brokerIdToAgentData={brokerIdToAgentData}
           customContactForm={customContactForm}
+          leaseSpaces={propertyLeaseSpaces}
         />
         {nearbyPropertyCards.length > 0 && (
           <div className="bg-[#dad6cc] py-30">

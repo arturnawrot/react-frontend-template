@@ -14,7 +14,7 @@ import Arrow from '../Arrow/Arrow'
 import CopyableContactLink from '../CopyableContactLink'
 import { CustomHtml } from '../CustomHtml/CustomHtml'
 import ShareButtons from '../ShareButtons/ShareButtons'
-import type { BuildoutProperty, BuildoutBroker } from '@/utils/buildout-api'
+import type { BuildoutProperty, BuildoutBroker, BuildoutLeaseSpace } from '@/utils/buildout-api'
 import { transformPropertyToCard } from '@/utils/property-transform'
 import { getPropertyTypeLabel } from '@/utils/property-types'
 import { isPropertySaved, togglePropertySaved } from '@/utils/saved-properties'
@@ -43,6 +43,7 @@ interface PropertyDetailsProps {
     displayTitle?: string | null
   }>
   customContactForm?: { html: string } | null
+  leaseSpaces?: BuildoutLeaseSpace[]
 }
 
 // Simple AgentCard component for PropertyDetails
@@ -119,7 +120,33 @@ const AgentCard = ({
   )
 }
 
-const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [], brokerIdToAgentSlug = {}, brokerIdToAgentData = {}, customContactForm = null }) => {
+function formatLeaseRateUnit(unit: string | null): string {
+  switch (unit) {
+    case 'dollars_per_sf_per_year': return ' / SF / Year'
+    case 'dollars_per_sf_per_month': return ' / SF / Month'
+    case 'dollars_per_sm_per_year': return ' / SM / Year'
+    case 'dollars_per_sm_per_month': return ' / SM / Month'
+    case 'dollars_per_acre_per_year': return ' / Ac / Year'
+    case 'dollars_per_acre_per_month': return ' / Ac / Month'
+    case 'dollars_per_hectare_per_year': return ' / Ha / Year'
+    case 'dollars_per_hectare_per_month': return ' / Ha / Month'
+    case 'dollars_per_year': return ' / Year'
+    case 'dollars_per_month': return ' / Month'
+    default: return ''
+  }
+}
+
+function formatLeaseRate(rate: number, rateMax: number | null, unit: string | null): string {
+  const unitLabel = formatLeaseRateUnit(unit)
+  const fmt = (n: number) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)
+  if (rateMax) {
+    return `${fmt(rate)} – ${fmt(rateMax)}${unitLabel}`
+  }
+  return `${fmt(rate)}${unitLabel}`
+}
+
+const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [], brokerIdToAgentSlug = {}, brokerIdToAgentData = {}, customContactForm = null, leaseSpaces = [] }) => {
   const limeGreen = "bg-[#dce676]"
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isSaved, setIsSaved] = useState(false)
@@ -166,9 +193,34 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   const address = property.name || property.address || 'Property'
   const cityStateZip = [property.city, property.state, property.zip].filter(Boolean).join(', ')
 
+  // Lease-only: lease=true, sale=false
+  const isLeaseOnly = property.lease === true && !property.sale
+
   // Format price
   let price = 'Price on Request'
-  if (property.sale_price_dollars) {
+  let priceLabel = 'Sale Price'
+
+  if (isLeaseOnly) {
+    priceLabel = 'Lease Rate'
+    const visibleSpaces = leaseSpaces.filter((ls) => !ls.hide_lease_rate && ls.lease_rate != null)
+    if (visibleSpaces.length === 0) {
+      price = leaseSpaces.length > 0 ? 'Rate on Request' : 'Price on Request'
+    } else if (visibleSpaces.length === 1) {
+      price = formatLeaseRate(visibleSpaces[0].lease_rate!, visibleSpaces[0].lease_rate_max, visibleSpaces[0].lease_rate_units)
+    } else {
+      // Range across all visible spaces
+      const allRates = visibleSpaces.map((ls) => ls.lease_rate!)
+      const allMaxRates = visibleSpaces.map((ls) => ls.lease_rate_max ?? ls.lease_rate!)
+      const minRate = Math.min(...allRates)
+      const maxRate = Math.max(...allMaxRates)
+      // Use the unit from the first space
+      const unit = visibleSpaces[0].lease_rate_units
+      const unitLabel = formatLeaseRateUnit(unit)
+      const fmt = (n: number) =>
+        new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)
+      price = minRate === maxRate ? `${fmt(minRate)}${unitLabel}` : `${fmt(minRate)} – ${fmt(maxRate)}${unitLabel}`
+    }
+  } else if (property.sale_price_dollars) {
     price = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -464,7 +516,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
         </div>
         <div className="mt-4 md:mt-0 text-right">
           <h2 className="text-3xl font-bold text-gray-900">{price}</h2>
-          <p className="text-sm font-semibold text-gray-900">Sale Price</p>
+          <p className="text-sm font-semibold text-gray-900">{priceLabel}</p>
         </div>
       </div>
 
@@ -593,17 +645,17 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
             <h2 className="font-serif text-3xl text-gray-800 mb-6">Property Details</h2>
             <div className="border-t border-gray-300">
               <div className="flex justify-between py-4 border-b border-gray-300">
-                <span className="font-bold text-gray-800">Sale Price.</span>
+                <span className="font-bold text-gray-800">{priceLabel}</span>
                 <span className="text-gray-600">{price}</span>
               </div>
               {yearBuilt !== 'N/A' && (
                 <div className="flex justify-between py-4 border-b border-gray-300">
-                  <span className="font-bold text-gray-800">Year Built.</span>
+                  <span className="font-bold text-gray-800">Year Built</span>
                   <span className="text-gray-600">{yearBuilt}</span>
                 </div>
               )}
               <div className="flex justify-between py-4 border-b border-gray-300">
-                <span className="font-bold text-gray-800">Property Type.</span>
+                <span className="font-bold text-gray-800">Property Type</span>
                 <span className="text-gray-600">{propertyType}</span>
               </div>
               {buildingClass !== 'N/A' && (
@@ -640,6 +692,47 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
               <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-line">
                 {description}
               </p>
+            </div>
+          )}
+
+          {/* Lease Spaces */}
+          {leaseSpaces.length > 0 && (
+            <div className="mb-10">
+              <h2 className="font-serif text-3xl text-gray-800 mb-6">Available Spaces</h2>
+              <div className="border-t border-gray-300">
+                {leaseSpaces.map((ls) => {
+                  const spaceLabel = [ls.suite && `Suite ${ls.suite}`, ls.floor && `Floor ${ls.floor}`].filter(Boolean).join(', ') || `Space #${ls.id}`
+                  const spaceSizeSf = ls.size_sf
+                    ? `${ls.size_sf.toLocaleString()} SF`
+                    : ls.space_size
+                    ? `${ls.space_size.toLocaleString()} ${ls.space_size_units || 'SF'}`
+                    : null
+                  const spaceRate = ls.hide_lease_rate
+                    ? (ls.hidden_lease_rate_label_override || 'Rate on Request')
+                    : ls.lease_rate != null
+                    ? formatLeaseRate(ls.lease_rate, ls.lease_rate_max, ls.lease_rate_units)
+                    : 'Rate on Request'
+                  const available = ls.date_available
+                    ? new Date(ls.date_available).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    : 'Now'
+                  return (
+                    <div key={ls.id} className="py-4 border-b border-gray-300">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="font-bold text-gray-800">{spaceLabel}</span>
+                        <span className="text-gray-800 font-semibold text-right">{spaceRate}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray-600">
+                        {spaceSizeSf && <span>{spaceSizeSf}</span>}
+                        {ls.lease_term && <span>Term: {ls.lease_term} mo</span>}
+                        <span>Available: {available}</span>
+                      </div>
+                      {ls.description && (
+                        <p className="mt-2 text-sm text-gray-600 whitespace-pre-line">{ls.description}</p>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           )}
 

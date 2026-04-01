@@ -312,6 +312,47 @@ export interface ListPropertiesResponse extends BuildoutResponse<BuildoutPropert
   count: number
 }
 
+export interface BuildoutLeaseSpace {
+  id: number
+  property_id: number
+  tenant_name: string
+  deal_status_id: number
+  space_type_id: number | null
+  address2: string
+  suite: string
+  floor: string
+  hide_lease_rate: boolean | null
+  hidden_lease_rate_label_override: string
+  lease_rate: number | null
+  lease_rate_max: number | null
+  lease_rate_units: string | null
+  size_sf: number | null
+  space_size: number | null
+  space_size_units: string | null
+  lease_type_id: number | null
+  lease_term: string | null
+  min_divisible_sf: number | null
+  max_contiguous_sf: number | null
+  tax_per_sf: number | null
+  cam_per_sf: number | null
+  description: string
+  date_available: string | null
+  floor_plan_url: string | null
+  space_type_label_override: string
+  lease_type_label_override: string
+  sublease: boolean | null
+  sublease_expiration: string | null
+  photos: BuildoutPropertyPhoto[]
+  custom_fields: Record<string, unknown>
+  external_id: string | null
+  sort_order: number
+}
+
+export interface ListLeaseSpacesResponse extends BuildoutResponse<BuildoutLeaseSpace> {
+  lease_spaces: BuildoutLeaseSpace[]
+  count: number
+}
+
 export interface LightweightProperty {
   id: number
   latitude: number
@@ -1105,6 +1146,23 @@ class BuildoutApiClient {
 
     return property
   }
+
+  /**
+   * Get ALL lease spaces.
+   * Uses Redis caching to share cache across all serverless instances.
+   */
+  async getAllLeaseSpaces(options?: { skipCache?: boolean }): Promise<ListLeaseSpacesResponse> {
+    if (!options?.skipCache) {
+      const cached = await getFromRedisCache<ListLeaseSpacesResponse>(CACHE_KEYS.LEASE_SPACES)
+      if (cached) return cached
+    }
+
+    const data = await this.fetchAllFromEndpoint<ListLeaseSpacesResponse>('/lease_spaces.json', 'lease_spaces')
+
+    await setRedisCache(CACHE_KEYS.LEASE_SPACES, data)
+
+    return data
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -1166,6 +1224,10 @@ export const buildoutApi = {
     }
   ): Promise<BuildoutProperty> {
     return instance.getPropertyById(id, options)
+  },
+
+  async getAllLeaseSpaces(options?: { skipCache?: boolean }): Promise<ListLeaseSpacesResponse> {
+    return instance.getAllLeaseSpaces(options)
   },
 
   async clearCache(): Promise<void> {
