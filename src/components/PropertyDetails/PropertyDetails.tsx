@@ -163,7 +163,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   }, [images])
 
   // Format address
-  const address = property.address || property.name || 'Property'
+  const address = property.name || property.address || 'Property'
   const cityStateZip = [property.city, property.state, property.zip].filter(Boolean).join(', ')
 
   // Format price
