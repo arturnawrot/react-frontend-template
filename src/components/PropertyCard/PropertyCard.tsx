@@ -13,6 +13,7 @@ interface PropertyCardProps {
   property: {
     id?: number
     image: string
+    name?: string | null
     address: string
     cityStateZip: string
     price: string
@@ -112,12 +113,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, variant = 'vertic
       <div className={`flex flex-col w-full min-h-0 flex-1 min-w-0 justify-between ${isVertical ? 'p-3' : 'py-2 px-4'}`}>
         {/* Group 1: Title + Address */}
         <div className="flex-shrink-0 min-w-0">
-          <Link 
+          <Link
             href={`/property/${addressToSlug(property.address)}`}
             className={`${styles.title} hover:text-stone-700 transition-colors truncate block min-w-0`}
-            title={property.address}
+            title={property.name || property.address}
           >
-            {property.address}
+            {property.name || property.address}
           </Link>
           <span className={styles.address}>{property.cityStateZip}</span>
         </div>

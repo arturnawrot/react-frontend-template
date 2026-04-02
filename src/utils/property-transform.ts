@@ -3,6 +3,7 @@ import { getPropertyTypeLabel } from './property-types'
 
 export interface PropertyCardData {
   id: number
+  name?: string | null
   address: string
   cityStateZip: string
   price: string
@@ -55,7 +56,7 @@ export function transformPropertyToCard(
   const prop = property as PropertyLike
 
   // Format address
-  const address = prop.address || prop.name || 'Property'
+  const address = prop.address || 'Property'
   const cityStateZip = [prop.city, prop.state, prop.zip].filter(Boolean).join(', ')
   
   // Format price
@@ -106,6 +107,7 @@ export function transformPropertyToCard(
   
   return {
     id: prop.id,
+    name: prop.name || null,
     address,
     cityStateZip,
     price,
