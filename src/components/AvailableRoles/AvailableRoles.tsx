@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import type { Job } from '@/payload-types'
-import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import SectionHeading from '@/components/SectionHeading/SectionHeading'
 import Container from '../Container/Container'
 
@@ -51,18 +50,28 @@ export default function AvailableRoles({ block }: AvailableRolesProps) {
 
           return (
             <div key={job.id || index} className="border-b border-gray-200 first:border-t">
-              <button
+              <div
+                className="flex items-center py-5 cursor-pointer"
                 onClick={() => toggleJob(index)}
-                className="w-full flex items-center justify-between py-5 text-left group"
-                aria-expanded={isOpen}
               >
-                <span className="text-[var(--strong-green)] text-lg font-medium pr-8 flex-1">
-                  {job.title}
-                </span>
-                <span className="text-[var(--strong-green)] text-2xl font-light flex-shrink-0 transition-transform duration-200 group-hover:opacity-80">
+                {job.slug ? (
+                  <Link
+                    href={`/jobs/${job.slug}`}
+                    className="text-[var(--strong-green)] text-lg font-medium hover:underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {job.title}
+                  </Link>
+                ) : (
+                  <span className="text-[var(--strong-green)] text-lg font-medium">
+                    {job.title}
+                  </span>
+                )}
+                <span className="flex-1" />
+                <span className="text-[var(--strong-green)] text-2xl font-light flex-shrink-0">
                   {isOpen ? '−' : '+'}
                 </span>
-              </button>
+              </div>
 
               {isOpen && (
                 <div className="pb-6 pr-12">
@@ -94,20 +103,13 @@ export default function AvailableRoles({ block }: AvailableRolesProps) {
                     )}
                   </div>
 
-                  {/* Job description */}
-                  {job.jobDescription && (
-                    <div className="text-gray-700 text-base leading-relaxed mb-6 prose prose-sm max-w-none">
-                      <LexicalRenderer content={job.jobDescription} />
-                    </div>
-                  )}
-
-                  {/* Apply button */}
+                  {/* See more link */}
                   {job.slug && (
                     <Link
                       href={`/jobs/${job.slug}`}
-                      className="inline-block bg-[var(--strong-green)] text-white font-medium px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
+                      className="inline-block bg-[var(--strong-green)] text-white font-medium px-4 py-2 text-sm rounded-lg hover:opacity-90 transition-opacity"
                     >
-                      View Details & Apply
+                      See more...
                     </Link>
                   )}
                 </div>
