@@ -233,8 +233,8 @@ export default async function BlogPage({ params }: BlogPageProps) {
           </article>
         </div>
       </div>
+      <Footer />
     </div>
-    <Footer />
   )
 }
 
