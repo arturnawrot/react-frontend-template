@@ -69,20 +69,20 @@ services:
     logging:
       driver: none
 
-  cron:
-    container_name: cron
-    image: alpine:3.19
-    restart: unless-stopped
-    depends_on:
-      - payload-production
-    env_file:
-      - .env
-    entrypoint: /bin/sh
-    command:
-      - -c
-      - |
-        echo "0 * * * * wget -qO- --header='Authorization: Bearer $${CRON_SECRET}' http://payload-production:3000/api/cron/purge-caches > /proc/1/fd/1 2>&1" | crontab -
-        crond -f -l 2
+  # cron:
+  #   container_name: cron
+  #   image: alpine:3.19
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - payload-production
+  #   env_file:
+  #     - .env
+  #   entrypoint: /bin/sh
+  #   command:
+  #     - -c
+  #     - |
+  #       echo "0 * * * * wget -qO- --header='Authorization: Bearer $${CRON_SECRET}' http://payload-production:3000/api/cron/purge-caches > /proc/1/fd/1 2>&1" | crontab -
+  #       crond -f -l 2
 
 volumes:
   data:
