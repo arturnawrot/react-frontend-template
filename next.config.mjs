@@ -3,6 +3,19 @@ import { withPayload } from '@payloadcms/next/withPayload'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  async headers() {
+    return [
+      {
+        source: '/((?!_next/static|_next/image|favicon.ico|admin|api|fontawesome).*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300, s-maxage=60, stale-while-revalidate=300',
+          },
+        ],
+      },
+    ]
+  },
   async redirects() {
     return [
       {
