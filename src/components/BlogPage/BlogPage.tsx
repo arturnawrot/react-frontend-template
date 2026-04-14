@@ -142,7 +142,7 @@ export default async function BlogPage({ slug, defaultType = 'article' }: BlogPa
     subheading: blog.description || undefined,
     backgroundImage: blog.featuredImage || undefined,
     blogAuthor: blog.author || undefined,
-    blogDate: blog.createdAt ? new Date(blog.createdAt).toISOString().split('T')[0] : undefined,
+    blogDate: (blog.publishedAt || blog.createdAt) ? new Date((blog.publishedAt as string) || blog.createdAt).toISOString().split('T')[0] : undefined,
     blogCategories: blog.categories || undefined,
   }
 

@@ -7,6 +7,7 @@ import InvestmentSpotlightSidebar from '@/components/InvestmentSpotlightSidebar/
 import type { Blog, Page } from '@/payload-types'
 import Link from 'next/link'
 import { getBlogMetadata } from '@/utils/getBlogMetadata'
+import Footer from '@/components/Footer/Footer'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
@@ -158,7 +159,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
     subheading: blog.description || undefined,
     backgroundImage: blog.featuredImage || undefined,
     blogAuthor: blog.author || undefined,
-    blogDate: blog.createdAt ? new Date(blog.createdAt).toISOString().split('T')[0] : undefined,
+    blogDate: (blog.publishedAt || blog.createdAt) ? new Date((blog.publishedAt as string) || blog.createdAt).toISOString().split('T')[0] : undefined,
     blogCategories: blog.categories || undefined,
   }
 
@@ -180,7 +181,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-serif text-[#1a2e2a]">{relatedLabel}</h2>
               <Link
-                href="/insights"
+                href="/blog/all"
                 className="text-sm font-sans text-[#1a2e2a] hover:underline"
               >
                 {browseAllText} →
@@ -235,6 +236,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
           </article>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

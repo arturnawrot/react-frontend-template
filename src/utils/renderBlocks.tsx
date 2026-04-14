@@ -739,24 +739,24 @@ export async function renderBlock(
       // Fetch the BlogHighlights global config (cached) and initial data in parallel
       const [blogHighlightsConfig, blogsResponse, categoriesResponse, authorsResponse, allBlogsForYears] = await Promise.all([
         getCachedBlogHighlights(),
-        cachedFind('blogs', { limit: 10, sort: '-createdAt', depth: 1 }),
+        cachedFind('blogs', { limit: 10, sort: '-publishedAt', depth: 1 }),
         cachedFind('blog-categories', { limit: 100, depth: 0 }),
         cachedFind('users', { limit: 100, depth: 0, select: { firstName: true, lastName: true, email: true } }),
-        cachedFind('blogs', { limit: 1000, depth: 0, select: { createdAt: true } }),
+        cachedFind('blogs', { limit: 1000, depth: 0, select: { publishedAt: true, createdAt: true } }),
       ])
 
       // Use postsPerPage from config if different from default
       const postsPerPage = blogHighlightsConfig.exploreByCategory?.postsPerPage || 10
       let blogs = blogsResponse
       if (postsPerPage !== 10) {
-        blogs = await cachedFind('blogs', { limit: postsPerPage, sort: '-createdAt', depth: 1 })
+        blogs = await cachedFind('blogs', { limit: postsPerPage, sort: '-publishedAt', depth: 1 })
       }
 
       const years = Array.from(
         new Set(
           allBlogsForYears.docs
             .map((blog: any) => {
-              const date = blog.createdAt
+              const date = blog.publishedAt || blog.createdAt
               return date ? new Date(date).getFullYear() : null
             })
             .filter((year: any): year is number => year !== null)

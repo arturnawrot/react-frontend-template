@@ -62,7 +62,7 @@ const FeaturedCard: React.FC<{ blog: Blog }> = ({ blog }) => {
   const imageUrl = getImageUrl(blog.featuredImage)
   const authorName = getAuthorName(blog.author)
   const categories = getCategoryNames(blog.categories)
-  const formattedDate = formatDate(blog.createdAt)
+  const formattedDate = formatDate((blog.publishedAt as string | undefined) || blog.createdAt)
   const blogUrl = getBlogUrl(blog)
 
   return (
@@ -96,7 +96,7 @@ const FeaturedCard: React.FC<{ blog: Blog }> = ({ blog }) => {
         <div className="flex items-center gap-3 text-sm text-stone-500 mb-6">
           <span className="font-medium text-[#1a2e2a]">{authorName}</span>
           <span>·</span>
-          <time dateTime={blog.createdAt}>{formattedDate}</time>
+          <time dateTime={(blog.publishedAt as string | undefined) || blog.createdAt}>{formattedDate}</time>
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -136,7 +136,7 @@ const DefaultCard: React.FC<{ blog: Blog; lite?: boolean }> = ({ blog, lite = fa
   const imageUrl = getImageUrl(blog.featuredImage)
   const authorName = getAuthorName(blog.author)
   const categories = getCategoryNames(blog.categories)
-  const formattedDate = formatDate(blog.createdAt)
+  const formattedDate = formatDate((blog.publishedAt as string | undefined) || blog.createdAt)
   const blogUrl = getBlogUrl(blog)
 
   return (
@@ -186,7 +186,7 @@ const DefaultCard: React.FC<{ blog: Blog; lite?: boolean }> = ({ blog, lite = fa
             <div className="flex items-center gap-2 text-xs text-stone-500">
               <span className="font-medium text-[#1a2e2a]">{authorName}</span>
               <span>·</span>
-              <time dateTime={blog.createdAt}>{formattedDate}</time>
+              <time dateTime={(blog.publishedAt as string | undefined) || blog.createdAt}>{formattedDate}</time>
             </div>
           )}
 
@@ -213,7 +213,7 @@ const StoryCard: React.FC<{ blog: Blog }> = ({ blog }) => {
   const imageUrl = getImageUrl(blog.featuredImage)
   const authorName = getAuthorName(blog.author)
   const categories = getCategoryNames(blog.categories)
-  const formattedDate = formatDate(blog.createdAt)
+  const formattedDate = formatDate((blog.publishedAt as string | undefined) || blog.createdAt)
   const blogUrl = getBlogUrl(blog)
 
   return (
@@ -229,7 +229,7 @@ const StoryCard: React.FC<{ blog: Blog }> = ({ blog }) => {
         <div className="flex items-center gap-2 text-xs text-stone-500 mb-3">
           <span className="font-medium text-[#1a2e2a]">{authorName}</span>
           <span>·</span>
-          <time dateTime={blog.createdAt}>{formattedDate}</time>
+          <time dateTime={(blog.publishedAt as string | undefined) || blog.createdAt}>{formattedDate}</time>
         </div>
 
         {blog.description && (

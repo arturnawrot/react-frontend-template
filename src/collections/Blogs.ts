@@ -6,7 +6,7 @@ export const Blogs: CollectionConfig = {
   slug: 'blogs',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'type', 'author', 'categories', 'createdAt', 'updatedAt'],
+    defaultColumns: ['title', 'type', 'author', 'categories', 'publishedAt', 'updatedAt'],
   },
   access: {
     read: () => true, // Public read access
@@ -50,7 +50,7 @@ export const Blogs: CollectionConfig = {
       unique: true,
       index: true,
       admin: {
-        description: 'URL-friendly slug. Auto-generated from title.',
+        description: 'URL-friendly slug. Auto-generated from title on creation — you can override it manually.',
       },
     },
     {
@@ -94,6 +94,17 @@ export const Blogs: CollectionConfig = {
       required: true,
       admin: {
         description: 'Main blog post content',
+      },
+    },
+    {
+      name: 'publishedAt',
+      type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+        description: 'Publish date shown publicly. Defaults to creation date if left empty. Can be set to a past date.',
+        position: 'sidebar',
       },
     },
     {
@@ -207,9 +218,9 @@ export const Blogs: CollectionConfig = {
   ],
   hooks: {
     beforeValidate: [
-      ({ data }) => {
-        // Auto-generate slug from title using slugify utility
-        if (data && data.title) {
+      ({ data, operation }) => {
+        // Auto-generate slug from title only when creating and no slug is provided
+        if (data && data.title && (operation === 'create' && !data.slug)) {
           data.slug = slugify(data.title)
         }
         return data

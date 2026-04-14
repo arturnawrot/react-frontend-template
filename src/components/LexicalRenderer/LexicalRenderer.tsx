@@ -158,22 +158,24 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
     }
 
     // Link
-    if (nodeType === 'link') {
-      const url = node.url || node.href || '#'
+    if (nodeType === 'link' || nodeType === 'autolink') {
+      // Payload CMS Lexical stores the URL in node.fields.url; fall back to legacy shapes
+      const url = node.fields?.url || node.url || node.href || '#'
+      const newTab = node.fields?.newTab ?? (node.target === '_blank')
       const children = node.children?.map((child: any, i: number) => renderNode(child, i)).filter(Boolean)
-      
+
       if (!children || children.length === 0) {
         return null
       }
 
-      const isInternal = isInternalLink(url) && node.target !== '_blank'
+      const isInternal = isInternalLink(url) && !newTab
       const LinkComponent = isInternal ? Link : 'a'
       const linkProps = isInternal
         ? { href: url, className: 'text-blue-600 hover:underline' }
         : {
             href: url,
-            target: node.target || undefined,
-            rel: node.target === '_blank' ? 'noopener noreferrer' : undefined,
+            target: newTab ? '_blank' : undefined,
+            rel: newTab ? 'noopener noreferrer' : undefined,
             className: 'text-blue-600 hover:underline',
           }
 

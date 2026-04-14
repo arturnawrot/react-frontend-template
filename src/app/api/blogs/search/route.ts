@@ -59,15 +59,26 @@ export async function GET(request: Request) {
       })
     }
 
-    // Filter by year (using createdAt)
+    // Filter by year (using publishedAt, falling back to createdAt)
     if (year) {
       const yearNum = parseInt(year, 10)
       const startDate = new Date(yearNum, 0, 1).toISOString()
       const endDate = new Date(yearNum + 1, 0, 1).toISOString()
       whereConditions.push({
-        and: [
-          { createdAt: { greater_than_equal: startDate } },
-          { createdAt: { less_than: endDate } },
+        or: [
+          {
+            and: [
+              { publishedAt: { greater_than_equal: startDate } },
+              { publishedAt: { less_than: endDate } },
+            ],
+          },
+          {
+            and: [
+              { publishedAt: { exists: false } },
+              { createdAt: { greater_than_equal: startDate } },
+              { createdAt: { less_than: endDate } },
+            ],
+          },
         ],
       })
     }
@@ -91,7 +102,7 @@ export async function GET(request: Request) {
       limit,
       page,
       depth: 2, // Populate relationships (author, categories, featuredImage)
-      sort: '-createdAt', // Newest first
+      sort: '-publishedAt', // Newest first
     })
 
     // Fetch filter options
@@ -124,7 +135,8 @@ export async function GET(request: Request) {
       limit: 1000,
     })
     allBlogsResult.docs.forEach((blog) => {
-      const blogYear = new Date(blog.createdAt).getFullYear()
+      const date = (blog as any).publishedAt || blog.createdAt
+      const blogYear = new Date(date).getFullYear()
       yearsSet.add(blogYear)
     })
     const years = Array.from(yearsSet).sort((a, b) => b - a) // Descending
