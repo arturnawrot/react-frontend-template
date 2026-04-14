@@ -6,11 +6,11 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/((?!_next/static|_next/image|favicon.ico|admin|api|fontawesome).*)',
+        source: '/((?!_next/static|_next/image|favicon.ico|admin|fontawesome).*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=300, s-maxage=60, stale-while-revalidate=300',
+            value: 'public, max-age=300, s-maxage=300, stale-while-revalidate=300',
           },
         ],
       },
