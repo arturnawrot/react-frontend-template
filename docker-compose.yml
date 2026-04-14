@@ -23,7 +23,7 @@ services:
         condition: service_started
 
   payload:
-    image: node:18-alpine
+    image: node:22-alpine
     ports:
       - '8080:3000'
     volumes:

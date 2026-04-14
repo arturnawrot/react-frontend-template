@@ -36,11 +36,11 @@ import { default as default_2e89adc84f4e289de55b95e609515c0a } from '../../../co
 import { default as default_c4d02dbea99512adc8532232035f58ec } from '../../../components/TemplateVariablesInfo'
 import { default as default_3cfcbae1c8285b1dc0d2fcbf4d40a752 } from '../../../components/BuildoutBrokerIdField'
 import { default as default_5c82d05d3979d3a77d2f937acbecc21f } from '../../../components/AgentPropertiesDashboard'
-import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
+import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { default as default_9191a585a82a0aecfd02686e839bffab } from '../../../components/Logo/Icon'
 import { default as default_d4e726f63cbd33f92385903da964392d } from '../../../components/Logo/LogoDark'
 import { default as default_1ea5719e8a8a26dae6f14f3dc39b5f12 } from '../../../components/ClearBuildoutCache'
-import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
   "payload-plugin-import-export/client#ViewWrapper": ViewWrapper_023789d862ecf764c682ca49ec4d5e56,
@@ -81,9 +81,9 @@ export const importMap = {
   "/components/TemplateVariablesInfo#default": default_c4d02dbea99512adc8532232035f58ec,
   "/components/BuildoutBrokerIdField#default": default_3cfcbae1c8285b1dc0d2fcbf4d40a752,
   "/components/AgentPropertiesDashboard#default": default_5c82d05d3979d3a77d2f937acbecc21f,
-  "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
+  "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
   "/components/Logo/Icon#default": default_9191a585a82a0aecfd02686e839bffab,
   "/components/Logo/LogoDark#default": default_d4e726f63cbd33f92385903da964392d,
   "/components/ClearBuildoutCache#default": default_1ea5719e8a8a26dae6f14f3dc39b5f12,
-  "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
