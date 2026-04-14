@@ -936,27 +936,28 @@ class BuildoutApiClient {
    */
   private async fetchAllFromEndpoint<TResponse extends { count: number; [key: string]: unknown }>(
     endpoint: string,
-    arrayKey: string
+    arrayKey: string,
+    extraParams?: Record<string, string | number | boolean>
   ): Promise<TResponse> {
     const batchSize = 100 // Buildout max limit per request usually
     let offset = 0
     const allItems: unknown[] = []
-    
+
     // 1. Initial Fetch
-    const firstResponse = await fetchFromBuildout<TResponse>(endpoint, { limit: batchSize, offset: 0 })
-    
+    const firstResponse = await fetchFromBuildout<TResponse>(endpoint, { limit: batchSize, offset: 0, ...extraParams })
+
     // Dynamic access to array key - safe because we know TResponse has this key
     const firstBatch = (firstResponse as Record<string, unknown[]>)[arrayKey] as unknown[]
     allItems.push(...firstBatch)
     const totalCount = firstResponse.count
-    
+
     // 2. Fetch remaining if necessary
     if (allItems.length < totalCount) {
       const promises: Promise<TResponse>[] = []
-      
+
       for (offset = batchSize; offset < totalCount; offset += batchSize) {
         promises.push(
-          fetchFromBuildout<TResponse>(endpoint, { limit: batchSize, offset })
+          fetchFromBuildout<TResponse>(endpoint, { limit: batchSize, offset, ...extraParams })
         )
       }
 
@@ -992,7 +993,7 @@ class BuildoutApiClient {
       if (cached) return cached
     }
 
-    const data = await this.fetchAllFromEndpoint<ListPropertiesResponse>('/properties.json', 'properties')
+    const data = await this.fetchAllFromEndpoint<ListPropertiesResponse>('/properties.json', 'properties', { proposal: 'all' })
     
     // Save to Redis cache
     await setRedisCache(CACHE_KEYS.PROPERTIES, data)
