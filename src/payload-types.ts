@@ -5657,7 +5657,7 @@ export interface Blog {
   type: 'article' | 'market-report' | 'investment-spotlight';
   title: string;
   /**
-   * URL-friendly slug. Auto-generated from title.
+   * URL-friendly slug. Auto-generated from title on creation — you can override it manually.
    */
   slug: string;
   /**
@@ -5694,6 +5694,10 @@ export interface Blog {
     };
     [k: string]: unknown;
   };
+  /**
+   * Publish date shown publicly. Defaults to creation date if left empty. Can be set to a past date.
+   */
+  publishedAt?: string | null;
   /**
    * Manually selected related articles. If empty, articles with the same categories and type will be shown.
    */
@@ -8476,6 +8480,7 @@ export interface BlogsSelect<T extends boolean = true> {
   author?: T;
   categories?: T;
   content?: T;
+  publishedAt?: T;
   relatedArticles?: T;
   propertyType?: T;
   size?: T;
