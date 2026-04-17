@@ -178,14 +178,8 @@ export default async function BlogPage({ params }: BlogPageProps) {
               <InvestmentSpotlightSidebar blog={blog} />
             )}
 
-            <div className="flex items-center justify-between mb-8">
+            <div className="mb-8">
               <h2 className="text-3xl font-serif text-[#1a2e2a]">{relatedLabel}</h2>
-              <Link
-                href="/blog/all"
-                className="text-sm font-sans text-[#1a2e2a] hover:underline"
-              >
-                {browseAllText} →
-              </Link>
             </div>
 
             {relatedArticlesData.length > 0 ? (
@@ -194,17 +188,17 @@ export default async function BlogPage({ params }: BlogPageProps) {
                   const articleTitle = article.title || 'Untitled Article'
                   const articleSlug = article.slug || ''
                   const articleType = article.type || 'article'
-                  
+
                   // Map type to URL path
                   const typePathMap: Record<string, string> = {
                     'article': 'article',
                     'market-report': 'market-report',
                     'investment-spotlight': 'investment-spotlight',
                   }
-                  
+
                   const typePath = typePathMap[articleType] || 'article'
                   const articleUrl = `/${typePath}/${articleSlug}`
-                  
+
                   return (
                     <div key={article.id} className="border-b border-gray-200 pb-6 last:border-0">
                       <Link href={articleUrl}>
@@ -222,6 +216,15 @@ export default async function BlogPage({ params }: BlogPageProps) {
             ) : (
               <p className="text-gray-500 italic">No related articles available.</p>
             )}
+
+            <div className="mt-8">
+              <Link
+                href="/blog/all"
+                className="text-sm font-sans text-[#1a2e2a] hover:underline"
+              >
+                {browseAllText} →
+              </Link>
+            </div>
           </aside>
 
           {/* Right Column - Article Content */}
