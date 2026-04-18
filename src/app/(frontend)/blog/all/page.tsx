@@ -21,7 +21,7 @@ export default async function AllContentPage() {
   const initialBlogsResult = await cachedFind('blogs', {
     limit: POSTS_PER_PAGE,
     depth: 2,
-    sort: '-publishedAt',
+    sort: 'publishedAt',
   })
 
   // Fetch BlogHighlights config for displayed categories

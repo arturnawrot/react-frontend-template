@@ -102,7 +102,7 @@ export async function GET(request: Request) {
       limit,
       page,
       depth: 2, // Populate relationships (author, categories, featuredImage)
-      sort: '-publishedAt', // Newest first
+      sort: 'publishedAt', // Oldest first
     })
 
     // Fetch filter options

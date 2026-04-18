@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import BlogCard from '../BlogCard/BlogCard'
 import BlogSearchFilters, { type BlogFilters } from '../BlogSearchFilters/BlogSearchFilters'
 import Container from '../Container/Container'
@@ -28,6 +28,7 @@ export default function BlogAllContent({
   showTypeFilters = true,
 }: BlogAllContentProps) {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
   // Parse initial filters from URL
@@ -130,9 +131,9 @@ export default function BlogAllContent({
     const queryString = params.toString()
     const newUrl = `/blog/all${queryString ? `?${queryString}` : ''}`
     
-    // Update URL without navigation
-    window.history.replaceState(null, '', newUrl)
-  }, [filters])
+    // Update URL via Next.js router so back navigation works correctly
+    router.replace(newUrl, { scroll: false })
+  }, [filters, router])
 
   // Infinite scroll - Intersection Observer
   useEffect(() => {
