@@ -415,7 +415,6 @@ const BlogLayout = (
               className="absolute inset-0 w-full h-full bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl"
               style={{ backgroundImage: `url('${finalImage}')` }}
             >
-              <div className="absolute inset-0 bg-[#1C2F2980]" aria-hidden />
             </div>
             <div className="lg:hidden absolute inset-0 flex items-center justify-center z-20">
               <button
