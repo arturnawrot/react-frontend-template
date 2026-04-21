@@ -5,6 +5,7 @@ import InvestmentSpotlightSidebar from '@/components/InvestmentSpotlightSidebar/
 import type { Blog, Page } from '@/payload-types'
 import Link from 'next/link'
 import { cachedFind } from '@/utils/payload-cache'
+import Footer from '@/components/Footer/Footer'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
 
@@ -222,6 +223,7 @@ export default async function BlogPage({ slug, defaultType = 'article' }: BlogPa
           </article>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
