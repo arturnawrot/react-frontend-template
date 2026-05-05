@@ -79,5 +79,18 @@ export const CustomHtmlBlock: Block = {
         description: 'Optional heading text to display inside the form card',
       },
     },
+    {
+      name: 'noCard',
+      type: 'checkbox',
+      label: 'No Card',
+      defaultValue: false,
+      admin: {
+        description: 'Render without the card wrapper',
+        condition: (data, siblingData) => {
+          const variant = data?.variant || siblingData?.variant
+          return variant === 'default'
+        },
+      },
+    },
   ],
 }

@@ -35,44 +35,44 @@ export default function CustomHtmlBlock({ block }: CustomHtmlBlockProps) {
   const justifyContent = justifyContentMap[block.justifyContent || 'start']
   const hasHeading = block.heading
 
-  // Form Card Content
-  const formCardContent = (
-    <FormCard>
-      <div className="flex flex-col space-y-4 md:space-y-6">
-        {hasHeading && (
-          <div className="w-full">
-            <SectionHeading className="text-center">
-              <ResponsiveText
-                desktop="--display4"
-                mobile="--display4"
-                fontWeight={300}
-                desktopLineHeight="--display4"
-                align="center"
-                letterSpacing="0px"
-                as="span"
-                color="var(--strong-green)"
-              >
-                {block.heading} 
-              </ResponsiveText>
-            </SectionHeading>
-          </div>
-        )}
+  const innerContent = (
+    <div className="flex flex-col space-y-4 md:space-y-6">
+      {hasHeading && (
+        <div className="w-full">
+          <SectionHeading className="text-center">
+            <ResponsiveText
+              desktop="--display4"
+              mobile="--display4"
+              fontWeight={300}
+              desktopLineHeight="--display4"
+              align="center"
+              letterSpacing="0px"
+              as="span"
+              color="var(--strong-green)"
+            >
+              {block.heading}
+            </ResponsiveText>
+          </SectionHeading>
+        </div>
+      )}
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent,
-            width: '100%',
-            alignItems: 'flex-start',
-          }}
-        >
-          <div style={{ width: '100%', maxWidth: '100%' }}>
-            <CustomHtml html={customHtml.html} />
-          </div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent,
+          width: '100%',
+          alignItems: 'flex-start',
+        }}
+      >
+        <div style={{ width: '100%', maxWidth: '100%' }}>
+          <CustomHtml html={customHtml.html} />
         </div>
       </div>
-    </FormCard>
+    </div>
   )
+
+  // Form Card Content
+  const formCardContent = block.noCard ? innerContent : <FormCard>{innerContent}</FormCard>
 
   if (!isWithImage) {
     return (

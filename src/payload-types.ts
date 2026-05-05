@@ -1428,6 +1428,10 @@ export interface Page {
                    * Optional heading text to display inside the form card
                    */
                   heading?: string | null;
+                  /**
+                   * Render without the card wrapper
+                   */
+                  noCard?: boolean | null;
                   id?: string | null;
                   blockName?: string | null;
                   blockType: 'customHtmlBlock';
@@ -2413,6 +2417,10 @@ export interface Page {
                              * Optional heading text to display inside the form card
                              */
                             heading?: string | null;
+                            /**
+                             * Render without the card wrapper
+                             */
+                            noCard?: boolean | null;
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'customHtmlBlock';
@@ -3398,6 +3406,10 @@ export interface Page {
                                        * Optional heading text to display inside the form card
                                        */
                                       heading?: string | null;
+                                      /**
+                                       * Render without the card wrapper
+                                       */
+                                      noCard?: boolean | null;
                                       id?: string | null;
                                       blockName?: string | null;
                                       blockType: 'customHtmlBlock';
@@ -4404,6 +4416,10 @@ export interface Page {
                                                  * Optional heading text to display inside the form card
                                                  */
                                                 heading?: string | null;
+                                                /**
+                                                 * Render without the card wrapper
+                                                 */
+                                                noCard?: boolean | null;
                                                 id?: string | null;
                                                 blockName?: string | null;
                                                 blockType: 'customHtmlBlock';
@@ -5248,6 +5264,10 @@ export interface Page {
          * Optional heading text to display inside the form card
          */
         heading?: string | null;
+        /**
+         * Render without the card wrapper
+         */
+        noCard?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'customHtmlBlock';
@@ -6685,6 +6705,7 @@ export interface PagesSelect<T extends boolean = true> {
                           customHtml?: T;
                           justifyContent?: T;
                           heading?: T;
+                          noCard?: T;
                           id?: T;
                           blockName?: T;
                         };
@@ -7128,6 +7149,7 @@ export interface PagesSelect<T extends boolean = true> {
                                       customHtml?: T;
                                       justifyContent?: T;
                                       heading?: T;
+                                      noCard?: T;
                                       id?: T;
                                       blockName?: T;
                                     };
@@ -7571,6 +7593,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                   customHtml?: T;
                                                   justifyContent?: T;
                                                   heading?: T;
+                                                  noCard?: T;
                                                   id?: T;
                                                   blockName?: T;
                                                 };
@@ -8014,6 +8037,7 @@ export interface PagesSelect<T extends boolean = true> {
                                                               customHtml?: T;
                                                               justifyContent?: T;
                                                               heading?: T;
+                                                              noCard?: T;
                                                               id?: T;
                                                               blockName?: T;
                                                             };
@@ -8418,6 +8442,7 @@ export interface PagesSelect<T extends boolean = true> {
               customHtml?: T;
               justifyContent?: T;
               heading?: T;
+              noCard?: T;
               id?: T;
               blockName?: T;
             };
