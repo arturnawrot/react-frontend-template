@@ -1,6 +1,30 @@
 import type { CollectionConfig } from 'payload'
+import { lexicalEditor, BlocksFeature } from '@payloadcms/richtext-lexical'
 import { slugify } from '../utils/slugify'
 import { seoFields } from '../fields/seoFields'
+import { createLinkFields } from '../fields/linkField'
+import { BlogBannerBlock } from '../blocks/BlogBannerBlock'
+
+function bannerFields(label: string) {
+  return [
+    {
+      name: 'enabled',
+      type: 'checkbox' as const,
+      label: `Show ${label}`,
+      defaultValue: false,
+    },
+    {
+      name: 'image',
+      type: 'upload' as const,
+      relationTo: 'media' as const,
+      admin: {
+        condition: (_: unknown, siblingData: Record<string, unknown>) => Boolean(siblingData?.enabled),
+        description: 'Banner image',
+      },
+    },
+    ...createLinkFields({ includeText: false }),
+  ]
+}
 
 export const Blogs: CollectionConfig = {
   slug: 'blogs',
@@ -92,8 +116,14 @@ export const Blogs: CollectionConfig = {
       name: 'content',
       type: 'richText',
       required: true,
+      editor: lexicalEditor({
+        features: ({ defaultFeatures }) => [
+          ...defaultFeatures,
+          BlocksFeature({ blocks: [BlogBannerBlock] }),
+        ],
+      }),
       admin: {
-        description: 'Main blog post content',
+        description: 'Main blog post content. Use the Banner block to insert ad banners inline.',
       },
     },
     {
@@ -213,6 +243,34 @@ export const Blogs: CollectionConfig = {
           },
         ],
       },
+    },
+    {
+      name: 'banners',
+      type: 'group',
+      label: 'Banners',
+      admin: {
+        description: 'Banner images shown at various positions in the blog post. Each banner links to a URL when clicked.',
+      },
+      fields: [
+        {
+          name: 'sidebar',
+          type: 'group',
+          label: 'Sidebar Banner',
+          fields: bannerFields('Sidebar Banner'),
+        },
+        {
+          name: 'beforeContent',
+          type: 'group',
+          label: 'Before Content Banner',
+          fields: bannerFields('Before Content Banner'),
+        },
+        {
+          name: 'afterContent',
+          type: 'group',
+          label: 'After Content Banner',
+          fields: bannerFields('After Content Banner'),
+        },
+      ],
     },
     seoFields,
   ],

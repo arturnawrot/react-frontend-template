@@ -2,9 +2,11 @@ import { notFound } from 'next/navigation'
 import HeroWrapper from '@/components/Hero/HeroWrapper'
 import LexicalRenderer from '@/components/LexicalRenderer/LexicalRenderer'
 import InvestmentSpotlightSidebar from '@/components/InvestmentSpotlightSidebar/InvestmentSpotlightSidebar'
+import BlogBanner from '@/components/BlogBanner/BlogBanner'
 import type { Blog, Page } from '@/payload-types'
 import Link from 'next/link'
-import { cachedFind } from '@/utils/payload-cache'
+import { cachedFind, getCachedConstantLinks } from '@/utils/payload-cache'
+import { getConstantLinksMap } from '@/utils/linkResolver'
 import Footer from '@/components/Footer/Footer'
 
 type HeroBlock = Extract<Page['blocks'][number], { blockType: 'hero' }>
@@ -129,6 +131,9 @@ export default async function BlogPage({ slug, defaultType = 'article' }: BlogPa
 
   const browseAllText = getBrowseAllText(blogType)
 
+  const constantLinksGlobal = await getCachedConstantLinks()
+  const constantLinksMap = await getConstantLinksMap(constantLinksGlobal)
+
   // Create hero block from blog data
   const heroBlock = {
     blockType: 'hero' as const,
@@ -160,6 +165,23 @@ export default async function BlogPage({ slug, defaultType = 'article' }: BlogPa
             {/* Investment Spotlight Sidebar */}
             {blogType === 'investment-spotlight' && (
               <InvestmentSpotlightSidebar blog={blog} />
+            )}
+
+            {/* Sidebar Banner */}
+            {(blog as any).banners?.sidebar?.enabled && (blog as any).banners.sidebar.image && (
+              <BlogBanner
+                image={(blog as any).banners.sidebar.image}
+                linkType={(blog as any).banners.sidebar.linkType}
+                page={(blog as any).banners.sidebar.page}
+                customUrl={(blog as any).banners.sidebar.customUrl}
+                constantLink={(blog as any).banners.sidebar.constantLink}
+                calLink={(blog as any).banners.sidebar.calLink}
+                calNamespace={(blog as any).banners.sidebar.calNamespace}
+                openInNewTab={(blog as any).banners.sidebar.openInNewTab}
+                disabled={(blog as any).banners.sidebar.disabled}
+                constantLinksMap={constantLinksMap}
+                className="mb-8 w-full"
+              />
             )}
 
             <div className="mb-8">
@@ -213,13 +235,47 @@ export default async function BlogPage({ slug, defaultType = 'article' }: BlogPa
 
           {/* Right Column - Article Content */}
           <article className="flex-1">
+            {/* Before Content Banner */}
+            {(blog as any).banners?.beforeContent?.enabled && (blog as any).banners.beforeContent.image && (
+              <BlogBanner
+                image={(blog as any).banners.beforeContent.image}
+                linkType={(blog as any).banners.beforeContent.linkType}
+                page={(blog as any).banners.beforeContent.page}
+                customUrl={(blog as any).banners.beforeContent.customUrl}
+                constantLink={(blog as any).banners.beforeContent.constantLink}
+                calLink={(blog as any).banners.beforeContent.calLink}
+                calNamespace={(blog as any).banners.beforeContent.calNamespace}
+                openInNewTab={(blog as any).banners.beforeContent.openInNewTab}
+                disabled={(blog as any).banners.beforeContent.disabled}
+                constantLinksMap={constantLinksMap}
+                className="mb-8"
+              />
+            )}
+
             <div className="prose prose-lg max-w-none">
               {blog.content ? (
-                <LexicalRenderer content={blog.content} />
+                <LexicalRenderer content={blog.content} constantLinksMap={constantLinksMap} />
               ) : (
                 <p className="text-gray-500 italic">No content available.</p>
               )}
             </div>
+
+            {/* After Content Banner */}
+            {(blog as any).banners?.afterContent?.enabled && (blog as any).banners.afterContent.image && (
+              <BlogBanner
+                image={(blog as any).banners.afterContent.image}
+                linkType={(blog as any).banners.afterContent.linkType}
+                page={(blog as any).banners.afterContent.page}
+                customUrl={(blog as any).banners.afterContent.customUrl}
+                constantLink={(blog as any).banners.afterContent.constantLink}
+                calLink={(blog as any).banners.afterContent.calLink}
+                calNamespace={(blog as any).banners.afterContent.calNamespace}
+                openInNewTab={(blog as any).banners.afterContent.openInNewTab}
+                disabled={(blog as any).banners.afterContent.disabled}
+                constantLinksMap={constantLinksMap}
+                className="mt-8"
+              />
+            )}
           </article>
         </div>
       </div>

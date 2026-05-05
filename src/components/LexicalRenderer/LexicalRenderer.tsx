@@ -5,16 +5,18 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { SerializedEditorState } from 'lexical'
 import { isInternalLink } from '@/utils/link-utils'
+import { resolveLink, type ConstantLinksMap, type LinkType } from '@/utils/linkResolver'
 
 interface LexicalRendererProps {
   content: SerializedEditorState | null | undefined
+  constantLinksMap?: ConstantLinksMap
 }
 
 /**
  * Renders Lexical rich text content as HTML
  * This renderer converts Lexical nodes to React components
  */
-export default function LexicalRenderer({ content }: LexicalRendererProps) {
+export default function LexicalRenderer({ content, constantLinksMap }: LexicalRendererProps) {
   // Handle null/undefined content
   if (!content || !content.root) {
     return null
@@ -262,6 +264,63 @@ export default function LexicalRenderer({ content }: LexicalRendererProps) {
           </figure>
         )
       }
+    }
+
+    // Payload Lexical block node (e.g. blogBanner inserted inline via BlocksFeature)
+    if (nodeType === 'block') {
+      const fields = node.fields || {}
+      if (fields.blockType === 'blogBanner') {
+        const image = fields.image
+        const imgUrl = typeof image === 'object' && image !== null ? image.url : null
+        const imgAlt = typeof image === 'object' && image !== null ? (image.alt || '') : ''
+        const imgW = typeof image === 'object' && image !== null ? (image.width || 800) : 800
+        const imgH = typeof image === 'object' && image !== null ? (image.height || 400) : 400
+
+        if (!imgUrl) return null
+
+        const link = resolveLink(
+          {
+            linkType: fields.linkType as LinkType,
+            page: fields.page,
+            customUrl: fields.customUrl,
+            constantLink: fields.constantLink,
+            calLink: fields.calLink,
+            calNamespace: fields.calNamespace,
+            openInNewTab: fields.openInNewTab,
+            disabled: fields.disabled,
+          },
+          constantLinksMap,
+        )
+
+        const img = (
+          <Image
+            src={imgUrl}
+            alt={imgAlt}
+            width={imgW}
+            height={imgH}
+            className="w-full h-auto"
+            sizes="(max-width: 768px) 100vw, 80vw"
+          />
+        )
+
+        return (
+          <div key={`block-banner-${index}`} className="my-8">
+            {link.href && !link.disabled ? (
+              <Link
+                href={link.href}
+                target={link.openInNewTab ? '_blank' : undefined}
+                rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+              >
+                {img}
+              </Link>
+            ) : (
+              img
+            )}
+          </div>
+        )
+      }
+
+      return null
     }
 
     // Default: render children if they exist

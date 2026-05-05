@@ -5677,7 +5677,7 @@ export interface Blog {
    */
   categories: (string | BlogCategory)[];
   /**
-   * Main blog post content
+   * Main blog post content. Use the Banner block to insert ad banners inline.
    */
   content: {
     root: {
@@ -5730,6 +5730,128 @@ export interface Blog {
    * Full URL to the blog post (read-only, auto-generated)
    */
   url?: string | null;
+  /**
+   * Banner images shown at various positions in the blog post. Each banner links to a URL when clicked.
+   */
+  banners?: {
+    sidebar?: {
+      enabled?: boolean | null;
+      /**
+       * Banner image
+       */
+      image?: (string | null) | Media;
+      /**
+       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+       */
+      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
+      /**
+       * Select a page to link to
+       */
+      page?: (string | null) | Page;
+      /**
+       * Enter a custom URL (e.g., /contact, https://example.com)
+       */
+      customUrl?: string | null;
+      /**
+       * Select a constant link. These links can be managed globally and updated in one place.
+       */
+      constantLink?: string | null;
+      /**
+       * Cal.com link path (e.g., team/meybohm/consult)
+       */
+      calLink?: string | null;
+      /**
+       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+       */
+      calNamespace?: string | null;
+      /**
+       * Open the link in a new browser tab
+       */
+      openInNewTab?: boolean | null;
+      /**
+       * Disable the link (renders as non-clickable text)
+       */
+      disabled?: boolean | null;
+    };
+    beforeContent?: {
+      enabled?: boolean | null;
+      /**
+       * Banner image
+       */
+      image?: (string | null) | Media;
+      /**
+       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+       */
+      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
+      /**
+       * Select a page to link to
+       */
+      page?: (string | null) | Page;
+      /**
+       * Enter a custom URL (e.g., /contact, https://example.com)
+       */
+      customUrl?: string | null;
+      /**
+       * Select a constant link. These links can be managed globally and updated in one place.
+       */
+      constantLink?: string | null;
+      /**
+       * Cal.com link path (e.g., team/meybohm/consult)
+       */
+      calLink?: string | null;
+      /**
+       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+       */
+      calNamespace?: string | null;
+      /**
+       * Open the link in a new browser tab
+       */
+      openInNewTab?: boolean | null;
+      /**
+       * Disable the link (renders as non-clickable text)
+       */
+      disabled?: boolean | null;
+    };
+    afterContent?: {
+      enabled?: boolean | null;
+      /**
+       * Banner image
+       */
+      image?: (string | null) | Media;
+      /**
+       * Choose whether to link to an existing page, a custom URL, a constant link, or no link
+       */
+      linkType?: ('none' | 'page' | 'custom' | 'constant' | 'cal') | null;
+      /**
+       * Select a page to link to
+       */
+      page?: (string | null) | Page;
+      /**
+       * Enter a custom URL (e.g., /contact, https://example.com)
+       */
+      customUrl?: string | null;
+      /**
+       * Select a constant link. These links can be managed globally and updated in one place.
+       */
+      constantLink?: string | null;
+      /**
+       * Cal.com link path (e.g., team/meybohm/consult)
+       */
+      calLink?: string | null;
+      /**
+       * Cal.com namespace — must match the Cal("init") call (e.g., consult)
+       */
+      calNamespace?: string | null;
+      /**
+       * Open the link in a new browser tab
+       */
+      openInNewTab?: boolean | null;
+      /**
+       * Disable the link (renders as non-clickable text)
+       */
+      disabled?: boolean | null;
+    };
+  };
   /**
    * Search engine optimization settings
    */
@@ -8489,6 +8611,52 @@ export interface BlogsSelect<T extends boolean = true> {
   closeTime?: T;
   status?: T;
   url?: T;
+  banners?:
+    | T
+    | {
+        sidebar?:
+          | T
+          | {
+              enabled?: T;
+              image?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
+              openInNewTab?: T;
+              disabled?: T;
+            };
+        beforeContent?:
+          | T
+          | {
+              enabled?: T;
+              image?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
+              openInNewTab?: T;
+              disabled?: T;
+            };
+        afterContent?:
+          | T
+          | {
+              enabled?: T;
+              image?: T;
+              linkType?: T;
+              page?: T;
+              customUrl?: T;
+              constantLink?: T;
+              calLink?: T;
+              calNamespace?: T;
+              openInNewTab?: T;
+              disabled?: T;
+            };
+      };
   meta?:
     | T
     | {
