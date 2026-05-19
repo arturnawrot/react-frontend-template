@@ -220,13 +220,15 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
         new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)
       price = minRate === maxRate ? `${fmt(minRate)}${unitLabel}` : `${fmt(minRate)} – ${fmt(maxRate)}${unitLabel}`
     }
-  } else if (property.sale_price_dollars) {
+  } else if (property.sale_price_dollars && !property.hide_sale_price) {
     price = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(property.sale_price_dollars)
+  } else if (property.hide_sale_price) {
+    price = property.hidden_price_label || 'Price on Request'
   }
 
   // Format square footage

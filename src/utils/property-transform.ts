@@ -28,6 +28,8 @@ interface PropertyLike {
   state?: string | null
   zip?: string | null
   sale_price_dollars?: number | null
+  hide_sale_price?: boolean | null
+  hidden_price_label?: string | null
   lease_listing_published?: boolean | null
   building_size_sf?: number | null
   property_type_id?: number | null
@@ -61,13 +63,15 @@ export function transformPropertyToCard(
   
   // Format price
   let price = 'Price on Request'
-  if (prop.sale_price_dollars) {
+  if (prop.sale_price_dollars && !prop.hide_sale_price) {
     price = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(prop.sale_price_dollars)
+  } else if (prop.hide_sale_price) {
+    price = prop.hidden_price_label || 'Price on Request'
   } else if (prop.lease_listing_published) {
     price = 'Lease Available'
   }

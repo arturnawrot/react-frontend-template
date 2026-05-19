@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: PropertyPageProps): Promise<M
   const buildingSize = property.building_size_sf
     ? `${property.building_size_sf.toLocaleString()} SF`
     : ''
-  const salePrice = property.sale_price_dollars
+  const salePrice = property.sale_price_dollars && !property.hide_sale_price
     ? `$${property.sale_price_dollars.toLocaleString()}`
     : ''
   const propertyType = getPropertyTypeLabel(property.property_type_id)
