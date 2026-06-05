@@ -17,7 +17,8 @@ export async function middleware(request: NextRequest) {
     !pathname.startsWith('/media') &&
     (FILE_EXT_REGEX.test(pathname) || pathname.startsWith('/.well-known'))
   ) {
-    const checkUrl = new URL('/api/static-file', request.nextUrl.origin)
+    const internalOrigin = request.nextUrl.origin.replace(/^https:/i, 'http:')
+    const checkUrl = new URL('/api/static-file', internalOrigin)
     checkUrl.searchParams.set('path', pathname)
 
     const res = await fetch(checkUrl.toString(), {
