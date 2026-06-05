@@ -262,17 +262,7 @@ const resolveHeroContent = (block: HeroBlock, constantLinksMap?: ConstantLinksMa
     }))
   }
 
-  let sub = block.subheading
-  if (!sub) {
-    if (isFullWidthColor)
-      sub = "Approach every deal confidently, knowing you're backed by analytical excellence, investment foresight, and personal care."
-    else if (isSplit)
-      sub = 'From investment acquisitions to site selection, we find opportunities that align with your best interests.'
-    else if (isAgent) sub = 'Agent & Broker'
-    else if (isBlog) sub = 'Explore market reports and investment spotlights designed to guide confident decisions.'
-    else
-      sub = 'Advisory-led commercial real estate solutions across the Southeast. Rooted in partnership. Driven by performance. Informed by perspective.'
-  }
+  const sub = block.subheading || ''
 
   const primaryCta =
     block.ctaPrimaryLabel ??
@@ -381,11 +371,9 @@ const BlogLayout = (
                   allowWrap={true}
                 />
             </div>
-            {subheading && (
-              <p className="text-xl text-white/90 font-light leading-relaxed mb-12">
-                {subheading}
-              </p>
-            )}
+            <p className="text-xl text-white/90 font-light leading-relaxed mb-12">
+              {subheading}
+            </p>
             <div className="mt-auto flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-t border-white/10 pt-8 lg:border-none lg:pt-0">
               <div className="flex flex-col gap-1">
                 {blogAuthor && <span className="font-bold text-base">{blogAuthor}</span>}
@@ -481,7 +469,7 @@ const SideBySideLayout = (
             <div className="w-full">
               <HeroHeader segments={segments} className={headingClass} align="start" allowWrap={isAgent} />
 
-              {subheading && <p className={subClass}>{subheading}</p>}
+              <p className={subClass}>{subheading}</p>
             </div>
 
             {isAgent && (
@@ -651,7 +639,7 @@ const CenteredLayout = (
               responsiveMobileLeft={true}
             />
 
-            {subheading && <p className={subClass}>{subheading}</p>}
+            <p className={subClass}>{subheading}</p>
 
             <ActionButtons
               primaryLabel={primaryCta}
