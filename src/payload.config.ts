@@ -21,6 +21,7 @@ import { BlogCategories } from './collections/BlogCategories'
 import { Blogs } from './collections/Blogs'
 import { Jobs } from './collections/Jobs'
 import { JobApplications } from './collections/JobApplications'
+import { StaticFiles } from './collections/StaticFiles'
 import { Navbar } from './globals/Navbar'
 import { Footer } from './globals/Footer'
 import { SiteSettings } from './globals/SiteSettings'
@@ -62,7 +63,7 @@ export default buildConfig({
       icons: [{ url: '/favicon.ico' }],
     },
   },
-  collections: [Users, Media, Pages, PageSEO, CSSStyles, CustomHTML, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications],
+  collections: [Users, Media, Pages, PageSEO, CSSStyles, CustomHTML, Agents, Roles, Specialties, ServingLocations, BlogCategories, Blogs, Jobs, JobApplications, StaticFiles],
   globals: [Navbar, Footer, SiteSettings, SiteLock, ScriptInjection, SEOSettings, FeaturedPropertiesSets, FeaturedAgentsSets, AgentIconsSets, FeaturedArticles, ProvenTrackRecordSets, TestimonialsSets, FAQSets, FAQFullPage, AgentCategories, BlogHighlights, AvailableJobSets, OfficeLocationSets, ConstantLinks],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

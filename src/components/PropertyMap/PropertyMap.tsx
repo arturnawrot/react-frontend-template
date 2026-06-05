@@ -188,7 +188,7 @@ function LeafletMap({
   )
 
   // Offset coincident markers so stacked pins are all visible.
-  // ~0.0003° ≈ 33 m radius; at zoom 16 that's ~14 px separation, clearly distinct when zoomed in.
+  // ~0.0001° ≈ 11 m radius; at zoom 16 that's ~14 px separation, clearly distinct when zoomed in.
   const OFFSET_RADIUS = 0.0001
   const coordKey = (lat: number, lng: number) => `${lat.toFixed(6)},${lng.toFixed(6)}`
 

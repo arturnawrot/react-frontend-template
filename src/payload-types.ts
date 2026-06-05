@@ -81,6 +81,7 @@ export interface Config {
     blogs: Blog;
     jobs: Job;
     'job-applications': JobApplication;
+    'static-files': StaticFile;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -102,6 +103,7 @@ export interface Config {
     blogs: BlogsSelect<false> | BlogsSelect<true>;
     jobs: JobsSelect<false> | JobsSelect<true>;
     'job-applications': JobApplicationsSelect<false> | JobApplicationsSelect<true>;
+    'static-files': StaticFilesSelect<false> | StaticFilesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -6014,6 +6016,26 @@ export interface JobApplication {
   createdAt: string;
 }
 /**
+ * Files served at the domain root. E.g. path "google-abc.txt" → domain.com/google-abc.txt
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "static-files".
+ */
+export interface StaticFile {
+  id: string;
+  /**
+   * URL path without leading slash. Examples: "google-site-verification.txt", ".well-known/security.txt"
+   */
+  path: string;
+  content: string;
+  /**
+   * MIME type header returned with the file. Defaults to text/plain.
+   */
+  contentType?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -6092,6 +6114,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'job-applications';
         value: string | JobApplication;
+      } | null)
+    | ({
+        relationTo: 'static-files';
+        value: string | StaticFile;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -8739,6 +8765,17 @@ export interface JobApplicationsSelect<T extends boolean = true> {
   address?: T;
   resume?: T;
   additionalInfo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "static-files_select".
+ */
+export interface StaticFilesSelect<T extends boolean = true> {
+  path?: T;
+  content?: T;
+  contentType?: T;
   updatedAt?: T;
   createdAt?: T;
 }
