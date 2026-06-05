@@ -183,9 +183,36 @@ function LeafletMap({
   const validProperties = filterValidCoordinates(properties)
   // Deduplicate by ID - keep first occurrence
   const uniqueProperties = validProperties.filter(
-    (property, index, self) => 
+    (property, index, self) =>
       index === self.findIndex((p) => p.id === property.id)
   )
+
+  // Offset coincident markers so stacked pins are all visible.
+  // ~0.0003° ≈ 33 m radius; at zoom 16 that's ~14 px separation, clearly distinct when zoomed in.
+  const OFFSET_RADIUS = 0.0001
+  const coordKey = (lat: number, lng: number) => `${lat.toFixed(6)},${lng.toFixed(6)}`
+
+  const coordCounts = new Map<string, number>()
+  uniqueProperties.forEach(p => {
+    const key = coordKey(p.latitude!, p.longitude!)
+    coordCounts.set(key, (coordCounts.get(key) ?? 0) + 1)
+  })
+
+  const coordIndices = new Map<string, number>()
+  const displayProperties = uniqueProperties.map(property => {
+    const key = coordKey(property.latitude!, property.longitude!)
+    const idx = coordIndices.get(key) ?? 0
+    coordIndices.set(key, idx + 1)
+    const total = coordCounts.get(key) ?? 1
+    if (total === 1) return property
+    // Distribute all coincident pins evenly around a small circle
+    const angle = (idx / total) * 2 * Math.PI
+    return {
+      ...property,
+      latitude: property.latitude! + OFFSET_RADIUS * Math.cos(angle),
+      longitude: property.longitude! + OFFSET_RADIUS * Math.sin(angle),
+    }
+  })
 
   // Use provided center/zoom or calculate from uniqueProperties or use default
   const center: [number, number] = propCenter || (uniqueProperties.length > 0
@@ -525,7 +552,7 @@ function LeafletMap({
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             
-            {uniqueProperties.map((property) => (
+            {displayProperties.map((property) => (
               <PropertyMarker
                 key={property.id}
                 property={property}
