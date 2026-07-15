@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from 'react'
 type CustomHtmlProps = {
   html: string
   className?: string
+  iframeQueryParams?: Record<string, string>
 }
 
 /**
@@ -17,20 +18,28 @@ type CustomHtmlProps = {
  *    (specifically for HighLevel/LeadConnector forms) to ensure the iframe 
  *    resizes correctly even if the external script fails to re-initialize.
  */
-export const CustomHtml = ({ html, className }: CustomHtmlProps) => {
+export const CustomHtml = ({ html, className, iframeQueryParams }: CustomHtmlProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!html || !containerRef.current) return
 
     const container = containerRef.current
-    
+
     // 1. Inject HTML manually to avoid React Hydration mismatches
     container.innerHTML = html
 
     // 2. Setup Manual Iframe Resizer (Safety Net)
     // HighLevel/LeadConnector forms use postMessage to signal their height.
     const iframe = container.querySelector('iframe')
+
+    if (iframe && iframeQueryParams && Object.keys(iframeQueryParams).length > 0) {
+      const url = new URL(iframe.src)
+      Object.entries(iframeQueryParams).forEach(([key, value]) => {
+        url.searchParams.set(key, value)
+      })
+      iframe.src = url.toString()
+    }
     
     const handleResizeMessage = (event: MessageEvent) => {
       // If we can't find our iframe, stop
@@ -95,7 +104,7 @@ export const CustomHtml = ({ html, className }: CustomHtmlProps) => {
       // Cleanup content on unmount to prevent ID conflicts
       container.innerHTML = ''
     }
-  }, [html])
+  }, [html, iframeQueryParams])
 
   return (
     <div

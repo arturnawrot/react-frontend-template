@@ -251,9 +251,25 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
     : []
 
   // Get highlights from sale_bullets or lease_bullets
-  const highlights = property.sale_bullets?.length 
-    ? property.sale_bullets 
+  const highlights = property.sale_bullets?.length
+    ? property.sale_bullets
     : property.lease_bullets || []
+
+  // Build query params for the contact form iframe
+  const contactFormParams: Record<string, string> = {
+    property_id: property.id != null ? String(property.id) : 'none',
+    property_name: property.lease_listing_web_title || property.sale_listing_web_title || property.name || 'none',
+    broker_names: propertyBrokers.length > 0
+      ? propertyBrokers.map(b => `${b.first_name} ${b.last_name}`).join(', ')
+      : 'none',
+    lease_rate: (() => {
+      const visibleSpaces = leaseSpaces.filter((ls) => !ls.hide_lease_rate && ls.lease_rate != null)
+      if (visibleSpaces.length === 0) return 'none'
+      const s = visibleSpaces[0]
+      return formatLeaseRate(s.lease_rate!, s.lease_rate_max, s.lease_rate_units)
+    })(),
+    property_type: propertyType || 'none',
+  }
 
   // Get description
   const description = property.sale_description || property.lease_description || property.sale_listing_web_description || property.lease_listing_web_description || ''
@@ -847,7 +863,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
             <p className="text-gray-700 font-medium mb-4">Request More Info</p>
 
             {customContactForm ? (
-              <CustomHtml html={customContactForm.html} />
+              <CustomHtml html={customContactForm.html} iframeQueryParams={contactFormParams} />
             ) : (
               <div className="relative">
                 {/* Glassy overlay effect */}
