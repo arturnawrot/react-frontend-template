@@ -150,6 +150,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
   const limeGreen = "bg-[#dce676]"
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isSaved, setIsSaved] = useState(false)
+  const [propertyUrl, setPropertyUrl] = useState('none')
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [imageTransition, setImageTransition] = useState(false)
   const thumbnailContainerRef = useRef<HTMLDivElement>(null)
@@ -269,6 +270,11 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
       return formatLeaseRate(s.lease_rate!, s.lease_rate_max, s.lease_rate_units)
     })(),
     property_type: propertyType || 'none',
+    property_url: propertyUrl,
+    primary_broker: propertyBrokers[0] ? `${propertyBrokers[0].first_name} ${propertyBrokers[0].last_name}` : 'none',
+    secondary_broker: propertyBrokers[1] ? `${propertyBrokers[1].first_name} ${propertyBrokers[1].last_name}` : 'none',
+    third_broker: propertyBrokers[2] ? `${propertyBrokers[2].first_name} ${propertyBrokers[2].last_name}` : 'none',
+    property_price: price !== 'Price on Request' ? price : 'none',
   }
 
   // Get description
@@ -283,6 +289,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property, brokers = [
       setIsSaved(isPropertySaved(property.id))
     }
   }, [property.id])
+
+  useEffect(() => {
+    setPropertyUrl(window.location.href)
+  }, [])
 
   // Navigation handlers with smooth transition
   const handlePreviousImage = useCallback(() => {
