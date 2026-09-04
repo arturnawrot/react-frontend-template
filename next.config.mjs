@@ -3,6 +3,12 @@ import { withPayload } from '@payloadcms/next/withPayload'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  experimental: {
+    // Raise the request-body buffer limit (default 10MB) so large media
+    // uploads through /api/media aren't truncated when middleware runs.
+    // NOTE: renamed to `proxyClientMaxBodySize` in Next.js 16+.
+    middlewareClientMaxBodySize: '25mb',
+  },
   async headers() {
     return [
       {
