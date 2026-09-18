@@ -33,11 +33,11 @@ import { default as default_a56e3005ebf421f70cea055433604e2c } from '../../../co
 import { default as default_2247cc648d23c0c4dd42aa8c515ce669 } from '../../../components/AvailableJobSetSelector/AvailableJobSetSelector'
 import { default as default_000273f608b216d98abb6ae4393192bf } from '../../../components/OfficeLocationSetSelector/OfficeLocationSetSelector'
 import { default as default_2e89adc84f4e289de55b95e609515c0a } from '../../../components/FAQSetSelector/FAQSetSelector'
+import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { default as default_c4d02dbea99512adc8532232035f58ec } from '../../../components/TemplateVariablesInfo'
 import { default as default_3cfcbae1c8285b1dc0d2fcbf4d40a752 } from '../../../components/BuildoutBrokerIdField'
 import { default as default_5c82d05d3979d3a77d2f937acbecc21f } from '../../../components/AgentPropertiesDashboard'
 import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
-import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { default as default_9191a585a82a0aecfd02686e839bffab } from '../../../components/Logo/Icon'
 import { default as default_d4e726f63cbd33f92385903da964392d } from '../../../components/Logo/LogoDark'
 import { default as default_1ea5719e8a8a26dae6f14f3dc39b5f12 } from '../../../components/ClearBuildoutCache'
@@ -79,11 +79,11 @@ export const importMap = {
   "/components/AvailableJobSetSelector/AvailableJobSetSelector#default": default_2247cc648d23c0c4dd42aa8c515ce669,
   "/components/OfficeLocationSetSelector/OfficeLocationSetSelector#default": default_000273f608b216d98abb6ae4393192bf,
   "/components/FAQSetSelector/FAQSetSelector#default": default_2e89adc84f4e289de55b95e609515c0a,
+  "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/TemplateVariablesInfo#default": default_c4d02dbea99512adc8532232035f58ec,
   "/components/BuildoutBrokerIdField#default": default_3cfcbae1c8285b1dc0d2fcbf4d40a752,
   "/components/AgentPropertiesDashboard#default": default_5c82d05d3979d3a77d2f937acbecc21f,
   "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
-  "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/Logo/Icon#default": default_9191a585a82a0aecfd02686e839bffab,
   "/components/Logo/LogoDark#default": default_d4e726f63cbd33f92385903da964392d,
   "/components/ClearBuildoutCache#default": default_1ea5719e8a8a26dae6f14f3dc39b5f12,

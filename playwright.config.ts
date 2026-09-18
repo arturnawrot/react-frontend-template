@@ -22,7 +22,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:8080',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -33,9 +33,12 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
   ],
+  /* The app is served by the `payload` compose service (container 3000 -> host 8080),
+   * so reuse it when it is already up instead of starting a second dev server. */
   webServer: {
-    command: 'pnpm dev',
+    command: 'docker compose up -d payload',
     reuseExistingServer: true,
-    url: 'http://localhost:3000',
+    url: 'http://localhost:8080',
+    timeout: 180_000,
   },
 })

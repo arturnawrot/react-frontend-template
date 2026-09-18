@@ -5339,7 +5339,7 @@ export interface Page {
       }
     | {
         /**
-         * Rich text content with full formatting support
+         * Rich text content with full formatting support. Use the Blocks menu to insert editorial sections — lead answers, key takeaways, table of contents, comparison tables, pull quotes, callouts, CTAs, FAQs and sources.
          */
         content: {
           root: {
@@ -5699,7 +5699,7 @@ export interface Blog {
    */
   categories: (string | BlogCategory)[];
   /**
-   * Main blog post content. Use the Banner block to insert ad banners inline.
+   * Main blog post content. Use the Blocks menu to insert ad banners plus editorial sections — lead answers, key takeaways, table of contents, comparison tables, pull quotes, callouts, CTAs, FAQs and sources.
    */
   content: {
     root: {

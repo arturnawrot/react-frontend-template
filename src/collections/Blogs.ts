@@ -4,6 +4,7 @@ import { slugify } from '../utils/slugify'
 import { seoFields } from '../fields/seoFields'
 import { createLinkFields } from '../fields/linkField'
 import { BlogBannerBlock } from '../blocks/BlogBannerBlock'
+import { articleBlocks } from '../blocks/ArticleBlocks'
 
 function bannerFields(label: string) {
   return [
@@ -119,11 +120,12 @@ export const Blogs: CollectionConfig = {
       editor: lexicalEditor({
         features: ({ defaultFeatures }) => [
           ...defaultFeatures,
-          BlocksFeature({ blocks: [BlogBannerBlock] }),
+          BlocksFeature({ blocks: [BlogBannerBlock, ...articleBlocks] }),
         ],
       }),
       admin: {
-        description: 'Main blog post content. Use the Banner block to insert ad banners inline.',
+        description:
+          'Main blog post content. Use the Blocks menu to insert ad banners plus editorial sections — lead answers, key takeaways, table of contents, comparison tables, pull quotes, callouts, CTAs, FAQs and sources.',
       },
     },
     {

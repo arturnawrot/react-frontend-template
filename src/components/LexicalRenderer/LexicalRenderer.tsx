@@ -6,6 +6,7 @@ import Link from 'next/link'
 import type { SerializedEditorState } from 'lexical'
 import { isInternalLink } from '@/utils/link-utils'
 import { resolveLink, type ConstantLinksMap, type LinkType } from '@/utils/linkResolver'
+import { renderArticleBlock } from '@/components/ArticleBlocks/ArticleBlocks'
 
 interface LexicalRendererProps {
   content: SerializedEditorState | null | undefined
@@ -85,7 +86,10 @@ export default function LexicalRenderer({ content, constantLinksMap }: LexicalRe
 
     // Heading
     if (nodeType === 'heading') {
-      const headingTag = node.tag || node.headingTag || 2
+      // Lexical stores the level as a string ("h3"); older shapes used a number.
+      const rawTag = node.tag ?? node.headingTag ?? 2
+      const level = typeof rawTag === 'string' ? Number(rawTag.replace(/^h/i, '')) : Number(rawTag)
+      const headingTag = Number.isFinite(level) && level >= 1 && level <= 6 ? level : 2
       const children = node.children?.map((child: any, i: number) => renderNode(child, i)).filter(Boolean)
       
       if (!children || children.length === 0) {
@@ -122,8 +126,11 @@ export default function LexicalRenderer({ content, constantLinksMap }: LexicalRe
         return null
       }
 
+      // Numbered lists must use decimal markers, not bullets.
+      const marker = listType === 'number' ? 'list-decimal' : 'list-disc'
+
       return (
-        <Tag key={`list-${index}`} className="mb-4 ml-6 list-disc">
+        <Tag key={`list-${index}`} className={`mb-4 ml-6 ${marker}`}>
           {children}
         </Tag>
       )
@@ -269,6 +276,13 @@ export default function LexicalRenderer({ content, constantLinksMap }: LexicalRe
     // Payload Lexical block node (e.g. blogBanner inserted inline via BlocksFeature)
     if (nodeType === 'block') {
       const fields = node.fields || {}
+
+      // Editorial article blocks (key takeaways, TOC, FAQ, CTA, …)
+      const articleBlock = renderArticleBlock(fields, `block-${fields.blockType}-${index}`, constantLinksMap)
+      if (articleBlock !== undefined) {
+        return articleBlock
+      }
+
       if (fields.blockType === 'blogBanner') {
         const image = fields.image
         const imgUrl = typeof image === 'object' && image !== null ? image.url : null
